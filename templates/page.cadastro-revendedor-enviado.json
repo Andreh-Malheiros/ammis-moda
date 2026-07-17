@@ -3,15 +3,23 @@
     "main": {
       "type": "revendedor-thank-you",
       "settings": {
+        "enable_section": true,
         "color_scheme": "background-1",
+        "layout": "text-only",
         "alignment": "center",
-        "heading": "Cadastro enviado",
-        "text": "<p>Recebemos suas informacoes. Nossa equipe analisara o cadastro e entrara em contato caso haja alinhamento com o perfil comercial da AMMIS.</p>",
+        "eyebrow": "CADASTRO RECEBIDO",
+        "heading": "Recebemos suas informacoes",
+        "text": "<p>Nossa equipe analisara o cadastro e entrara em contato caso haja alinhamento com o perfil comercial da AMMIS.</p>",
+        "image": "",
+        "image_alt": "Imagem editorial AMMIS",
         "button_label": "Voltar para a loja",
         "button_link": "/",
         "button_style": "secondary",
-        "margin_top": "m",
-        "margin_bottom": "m"
+        "secondary_button_label": "Continuar comprando",
+        "secondary_button_link": "/",
+        "secondary_button_style": "simple",
+        "margin_top": "xl",
+        "margin_bottom": "xl"
       }
     }
   },

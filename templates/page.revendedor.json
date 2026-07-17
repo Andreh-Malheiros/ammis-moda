@@ -1,20 +1,447 @@
 {
   "sections": {
-    "main": {
+    "hero": {
       "type": "revendedor-page",
       "settings": {
-        "enable_content": true,
+        "enable_section": true,
+        "color_scheme": "background-2",
+        "eyebrow": "PARCERIA COMERCIAL AMMIS",
+        "heading": "Leve o universo AMMIS para a sua loja",
+        "text": "<p>Faca parte de uma selecao de lojistas conectados a identidade, ao estilo e ao posicionamento da AMMIS. Preencha seu cadastro e apresente sua loja a nossa equipe comercial.</p>",
+        "image": "",
+        "image_alt": "Campanha AMMIS para apresentacao da parceria comercial",
+        "mobile_image": "",
+        "mobile_image_alt": "Campanha AMMIS para apresentacao da parceria comercial",
+        "overlay_opacity": 35,
+        "content_position": "left",
+        "alignment": "left",
+        "primary_button_label": "Quero ser revendedor",
+        "primary_button_link": "#cadastro-revendedor",
+        "primary_button_style": "primary",
+        "secondary_button_label": "Conhecer a parceria",
+        "secondary_button_link": "#oportunidade-revenda",
+        "secondary_button_style": "tertiary",
+        "margin_top": "no-indent",
+        "margin_bottom": "no-indent"
+      }
+    },
+    "opportunity": {
+      "type": "revendedor-content",
+      "blocks": {
+        "opportunity_image": {
+          "type": "image",
+          "settings": {
+            "image": "",
+            "image_alt": "Detalhe editorial AMMIS para apresentacao comercial",
+            "image_ratio": "portrait"
+          }
+        }
+      },
+      "block_order": ["opportunity_image"],
+      "settings": {
+        "enable_section": true,
+        "anchor_id": "oportunidade-revenda",
         "color_scheme": "background-1",
-        "alignment": "center",
-        "heading": "Seja um Revendedor AMMIS",
-        "text": "<p>Pagina em preparacao. Esta estrutura sera usada para a futura captacao de revendedores.</p>",
+        "style": "standard",
+        "layout": "media-right",
+        "alignment": "left",
+        "eyebrow": "OPORTUNIDADE DE REVENDA",
+        "heading": "Uma parceria construida para marcas que valorizam identidade",
+        "heading_size": "h2",
+        "text": "<p>A AMMIS busca lojas que compartilham atencao aos detalhes, curadoria de produto e uma experiencia de compra alinhada a um posicionamento contemporaneo. O cadastro e o primeiro passo para apresentar sua operacao e iniciar uma possivel relacao comercial com a marca.</p>",
+        "secondary_text": "<p>Cada solicitacao e analisada individualmente pela equipe comercial, considerando as informacoes da loja, o perfil de atuacao e a compatibilidade com o universo AMMIS.</p>",
+        "show_media": true,
+        "media_label": "Imagem editorial da oportunidade comercial AMMIS",
         "button_label": "",
         "button_link": "",
         "button_style": "secondary",
+        "secondary_button_label": "",
+        "secondary_button_link": "",
+        "secondary_button_style": "simple",
+        "margin_top": "xl",
+        "margin_bottom": "l"
+      }
+    },
+    "benefits": {
+      "type": "revendedor-cards",
+      "blocks": {
+        "benefit_1": {
+          "type": "benefit",
+          "settings": {
+            "show_item": true,
+            "icon_text": "01",
+            "image": "",
+            "image_alt": "",
+            "heading": "Identidade que fortalece o mix",
+            "text": "<p>Produtos inseridos em um universo visual consistente, permitindo composicoes alinhadas a lojas que valorizam estilo, curadoria e apresentacao.</p>"
+          }
+        },
+        "benefit_2": {
+          "type": "benefit",
+          "settings": {
+            "show_item": true,
+            "icon_text": "02",
+            "image": "",
+            "image_alt": "",
+            "heading": "Colecoes com presenca comercial",
+            "text": "<p>Uma proposta de moda construida para gerar desejo, ampliar possibilidades de exposicao e contribuir para uma experiencia de compra mais completa.</p>"
+          }
+        },
+        "benefit_3": {
+          "type": "benefit",
+          "settings": {
+            "show_item": true,
+            "icon_text": "03",
+            "image": "",
+            "image_alt": "",
+            "heading": "Relacionamento proximo",
+            "text": "<p>Contato comercial direcionado para entender o perfil da loja, esclarecer duvidas e conduzir os proximos passos da parceria.</p>"
+          }
+        },
+        "benefit_4": {
+          "type": "benefit",
+          "settings": {
+            "show_item": true,
+            "icon_text": "04",
+            "image": "",
+            "image_alt": "",
+            "heading": "Curadoria alinhada a marca",
+            "text": "<p>Uma selecao pensada para lojistas que procuram trabalhar com produtos conectados a uma identidade contemporanea e reconhecivel.</p>"
+          }
+        },
+        "benefit_5": {
+          "type": "benefit",
+          "settings": {
+            "show_item": true,
+            "icon_text": "05",
+            "image": "",
+            "image_alt": "",
+            "heading": "Possibilidade de ampliar o portfolio",
+            "text": "<p>Uma oportunidade para complementar o mix da loja com produtos que conversem com o posicionamento e o publico do estabelecimento.</p>"
+          }
+        },
+        "benefit_6": {
+          "type": "benefit",
+          "settings": {
+            "show_item": true,
+            "icon_text": "06",
+            "image": "",
+            "image_alt": "",
+            "heading": "Parceria analisada individualmente",
+            "text": "<p>Cada cadastro e avaliado de forma cuidadosa, buscando compatibilidade entre a AMMIS e a proposta comercial da loja.</p>"
+          }
+        }
+      },
+      "block_order": ["benefit_1", "benefit_2", "benefit_3", "benefit_4", "benefit_5", "benefit_6"],
+      "settings": {
+        "enable_section": true,
+        "color_scheme": "background-1",
+        "eyebrow": "PARA LOJISTAS",
+        "heading": "Por que levar a AMMIS para a sua loja?",
+        "heading_size": "h2",
+        "text": "",
+        "alignment": "center",
+        "columns_desktop": 3,
+        "margin_top": "m",
+        "margin_bottom": "l"
+      }
+    },
+    "brand_universe": {
+      "type": "revendedor-content",
+      "blocks": {
+        "brand_image_1": {
+          "type": "image",
+          "settings": {
+            "image": "",
+            "image_alt": "Imagem de campanha AMMIS com foco em identidade visual",
+            "image_ratio": "portrait"
+          }
+        },
+        "brand_image_2": {
+          "type": "image",
+          "settings": {
+            "image": "",
+            "image_alt": "Detalhe de produto AMMIS",
+            "image_ratio": "square"
+          }
+        },
+        "brand_image_3": {
+          "type": "image",
+          "settings": {
+            "image": "",
+            "image_alt": "Composicao editorial AMMIS",
+            "image_ratio": "landscape"
+          }
+        }
+      },
+      "block_order": ["brand_image_1", "brand_image_2", "brand_image_3"],
+      "settings": {
+        "enable_section": true,
+        "anchor_id": "",
+        "color_scheme": "background-1",
+        "style": "standard",
+        "layout": "media-left",
+        "alignment": "left",
+        "eyebrow": "UNIVERSO DA MARCA",
+        "heading": "Uma marca pensada nos detalhes",
+        "heading_size": "h2",
+        "text": "<p>Da escolha dos materiais a composicao de cada campanha, a AMMIS constroi uma identidade visual que valoriza produto, imagem e experiencia. A parceria com lojistas deve preservar esse mesmo cuidado em cada ponto de contato com a cliente.</p>",
+        "secondary_text": "",
+        "show_media": true,
+        "media_label": "Imagens editoriais do universo AMMIS",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "secondary",
+        "secondary_button_label": "",
+        "secondary_button_link": "",
+        "secondary_button_style": "simple",
+        "margin_top": "m",
+        "margin_bottom": "l"
+      }
+    },
+    "steps": {
+      "type": "revendedor-steps",
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "show_item": true,
+            "heading": "Apresente sua loja",
+            "text": "<p>Preencha os dados empresariais, informacoes de contato e caracteristicas da sua operacao.</p>"
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "show_item": true,
+            "heading": "Analise comercial",
+            "text": "<p>A equipe AMMIS avaliara as informacoes enviadas e a compatibilidade da loja com a proposta da marca.</p>"
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "show_item": true,
+            "heading": "Contato da equipe",
+            "text": "<p>Quando houver alinhamento, o setor comercial entrara em contato para apresentar os proximos passos.</p>"
+          }
+        },
+        "step_4": {
+          "type": "step",
+          "settings": {
+            "show_item": true,
+            "heading": "Continuidade da parceria",
+            "text": "<p>Apos o contato, condicoes, disponibilidade e demais informacoes comerciais serao tratadas diretamente com a equipe responsavel.</p>"
+          }
+        }
+      },
+      "block_order": ["step_1", "step_2", "step_3", "step_4"],
+      "settings": {
+        "enable_section": true,
+        "color_scheme": "background-1",
+        "eyebrow": "PROCESSO",
+        "heading": "Como funciona o cadastro",
+        "heading_size": "h2",
+        "alignment": "center",
+        "margin_top": "m",
+        "margin_bottom": "l"
+      }
+    },
+    "mid_cta": {
+      "type": "revendedor-content",
+      "settings": {
+        "enable_section": true,
+        "anchor_id": "",
+        "color_scheme": "background-2",
+        "style": "highlight",
+        "layout": "text-only",
+        "alignment": "center",
+        "eyebrow": "",
+        "heading": "Sua loja combina com o universo AMMIS?",
+        "heading_size": "h2",
+        "text": "<p>Apresente sua operacao a nossa equipe e de o primeiro passo para uma possivel parceria comercial.</p>",
+        "secondary_text": "",
+        "show_media": false,
+        "media_label": "Imagens da marca AMMIS",
+        "button_label": "Iniciar cadastro",
+        "button_link": "#cadastro-revendedor",
+        "button_style": "primary",
+        "secondary_button_label": "",
+        "secondary_button_link": "",
+        "secondary_button_style": "simple",
         "margin_top": "m",
         "margin_bottom": "m"
       }
+    },
+    "form_intro": {
+      "type": "revendedor-content",
+      "settings": {
+        "enable_section": true,
+        "anchor_id": "cadastro-revendedor",
+        "color_scheme": "background-1",
+        "style": "form",
+        "layout": "text-only",
+        "alignment": "center",
+        "eyebrow": "CADASTRO DE LOJISTA",
+        "heading": "Apresente sua loja a AMMIS",
+        "heading_size": "h2",
+        "text": "<p>Preencha seus dados empresariais e comerciais para que nossa equipe possa conhecer sua operacao e analisar a possibilidade de parceria.</p>",
+        "secondary_text": "<p>As informacoes enviadas serao avaliadas pela equipe comercial conforme o perfil da loja e a compatibilidade com o posicionamento da AMMIS.</p>",
+        "show_media": false,
+        "media_label": "Area de cadastro de lojista AMMIS",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "secondary",
+        "secondary_button_label": "",
+        "secondary_button_link": "",
+        "secondary_button_style": "simple",
+        "margin_top": "l",
+        "margin_bottom": "s"
+      }
+    },
+    "commercial_contact": {
+      "type": "revendedor-content",
+      "settings": {
+        "enable_section": true,
+        "anchor_id": "",
+        "color_scheme": "background-1",
+        "style": "compact",
+        "layout": "text-only",
+        "alignment": "center",
+        "eyebrow": "",
+        "heading": "Precisa falar com o setor comercial?",
+        "heading_size": "h3",
+        "text": "<p>Caso tenha alguma duvida antes de preencher o cadastro, nossa equipe comercial esta disponivel para orientar voce.</p>",
+        "secondary_text": "",
+        "show_media": false,
+        "media_label": "Contato comercial AMMIS",
+        "button_label": "Falar com o setor comercial",
+        "button_link": "",
+        "button_style": "secondary",
+        "secondary_button_label": "",
+        "secondary_button_link": "",
+        "secondary_button_style": "simple",
+        "margin_top": "s",
+        "margin_bottom": "l"
+      }
+    },
+    "faq": {
+      "type": "revendedor-faq",
+      "blocks": {
+        "faq_1": {
+          "type": "question",
+          "settings": {
+            "show_item": true,
+            "question": "Quem pode se cadastrar?",
+            "answer": "<p>Lojistas com operacao fisica, online ou em ambos os formatos podem apresentar sua empresa para analise da equipe comercial.</p>"
+          }
+        },
+        "faq_2": {
+          "type": "question",
+          "settings": {
+            "show_item": true,
+            "question": "Preciso ter loja fisica?",
+            "answer": "<p>Nao. O cadastro podera ser realizado por lojas fisicas, e-commerces ou operacoes que atuem nos dois formatos.</p>"
+          }
+        },
+        "faq_3": {
+          "type": "question",
+          "settings": {
+            "show_item": true,
+            "question": "O cadastro garante aprovacao?",
+            "answer": "<p>Nao. O envio das informacoes inicia uma analise comercial e nao representa aprovacao automatica.</p>"
+          }
+        },
+        "faq_4": {
+          "type": "question",
+          "settings": {
+            "show_item": true,
+            "question": "Como funciona a analise?",
+            "answer": "<p>A equipe avalia os dados empresariais, o perfil da loja e a compatibilidade da operacao com o posicionamento da AMMIS.</p>"
+          }
+        },
+        "faq_5": {
+          "type": "question",
+          "settings": {
+            "show_item": true,
+            "question": "Quando receberei retorno?",
+            "answer": "<p>Quando houver alinhamento comercial, a equipe responsavel entrara em contato pelos dados informados no cadastro.</p>"
+          }
+        },
+        "faq_6": {
+          "type": "question",
+          "settings": {
+            "show_item": true,
+            "question": "Posso atualizar minhas informacoes depois?",
+            "answer": "<p>Caso precise corrigir ou complementar informacoes, sera possivel falar diretamente com o setor comercial.</p>"
+          }
+        },
+        "faq_7": {
+          "type": "question",
+          "settings": {
+            "show_item": true,
+            "question": "Posso me cadastrar sem Instagram?",
+            "answer": "<p>Sim. O formulario permitira informar que a loja ainda nao possui perfil no Instagram.</p>"
+          }
+        },
+        "faq_8": {
+          "type": "question",
+          "settings": {
+            "show_item": true,
+            "question": "Lojas de outros estados podem se cadastrar?",
+            "answer": "<p>Sim. O formulario estara disponivel para lojas interessadas em apresentar sua operacao a equipe comercial.</p>"
+          }
+        }
+      },
+      "block_order": ["faq_1", "faq_2", "faq_3", "faq_4", "faq_5", "faq_6", "faq_7", "faq_8"],
+      "settings": {
+        "enable_section": true,
+        "color_scheme": "background-1",
+        "eyebrow": "FAQ",
+        "heading": "Perguntas frequentes",
+        "heading_size": "h2",
+        "text": "",
+        "margin_top": "m",
+        "margin_bottom": "l"
+      }
+    },
+    "final_cta": {
+      "type": "revendedor-content",
+      "settings": {
+        "enable_section": true,
+        "anchor_id": "",
+        "color_scheme": "background-2",
+        "style": "highlight",
+        "layout": "text-only",
+        "alignment": "center",
+        "eyebrow": "",
+        "heading": "Pronto para apresentar sua loja?",
+        "heading_size": "h2",
+        "text": "<p>Preencha o cadastro e permita que a equipe AMMIS conheca melhor a sua operacao.</p>",
+        "secondary_text": "",
+        "show_media": false,
+        "media_label": "Chamada final para cadastro de revendedor AMMIS",
+        "button_label": "Quero ser revendedor",
+        "button_link": "#cadastro-revendedor",
+        "button_style": "primary",
+        "secondary_button_label": "",
+        "secondary_button_link": "",
+        "secondary_button_style": "simple",
+        "margin_top": "m",
+        "margin_bottom": "xl"
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "hero",
+    "opportunity",
+    "benefits",
+    "brand_universe",
+    "steps",
+    "mid_cta",
+    "form_intro",
+    "commercial_contact",
+    "faq",
+    "final_cta"
+  ]
 }

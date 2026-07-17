@@ -1,0 +1,206 @@
+{{ 'section-revendedor-page.css' | asset_url | stylesheet_tag }}
+
+{%- if section.settings.enable_section -%}
+  {%- style -%}
+    {% render 'section-margin' %}
+  {%- endstyle -%}
+
+  <section class="revendedor-faq color-{{ section.settings.color_scheme }} background" aria-labelledby="RevendedorFaq-{{ section.id }}">
+    <div class="container">
+      <div class="revendedor-faq__grid">
+        <div class="revendedor-section-heading revendedor-section-heading--left">
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="revendedor-eyebrow">{{ section.settings.eyebrow | escape }}</p>
+          {%- endif -%}
+          {%- if section.settings.heading != blank -%}
+            <h2 id="RevendedorFaq-{{ section.id }}" class="title--section title--section-m-none {{ section.settings.heading_size }}">
+              {{ section.settings.heading | escape }}
+            </h2>
+          {%- endif -%}
+          {%- if section.settings.text != blank -%}
+            <div class="revendedor-section-heading__text rte">{{ section.settings.text }}</div>
+          {%- endif -%}
+        </div>
+
+        <div class="revendedor-faq__items">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'question' and block.settings.show_item -%}
+              <details class="revendedor-faq__item" {{ block.shopify_attributes }}>
+                <summary class="revendedor-faq__summary">
+                  <span>{{ block.settings.question | escape }}</span>
+                  {% render 'icon-caret' %}
+                </summary>
+                {%- if block.settings.answer != blank -%}
+                  <div class="revendedor-faq__answer rte">
+                    {{ block.settings.answer }}
+                  </div>
+                {%- endif -%}
+              </details>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Revendedor - FAQ",
+  "tag": "section",
+  "class": "revendedor-faq-section spaced-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_section",
+      "default": true,
+      "label": "Exibir secao"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "t:sections.all.color_scheme.label"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Sobretitulo"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Perguntas frequentes",
+      "label": "t:sections.all.heading.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "h3",
+          "label": "t:sections.all.heading_size.options__3.label"
+        }
+      ],
+      "default": "h2",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Texto"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-margin.header.content"
+    },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "m",
+      "label": "t:sections.all.section-margin.margin_top.label"
+    },
+    {
+      "type": "select",
+      "id": "margin_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "m",
+      "label": "t:sections.all.section-margin.margin_bottom.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Pergunta",
+      "limit": 20,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_item",
+          "default": true,
+          "label": "Exibir pergunta"
+        },
+        {
+          "type": "text",
+          "id": "question",
+          "default": "Pergunta",
+          "label": "Pergunta"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "default": "<p>Resposta.</p>",
+          "label": "Resposta"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Revendedor - FAQ"
+    }
+  ]
+}
+{% endschema %}

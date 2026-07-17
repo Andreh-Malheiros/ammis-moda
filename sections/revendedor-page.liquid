@@ -1,78 +1,184 @@
 {{ 'section-revendedor-page.css' | asset_url | stylesheet_tag }}
 
-{%- if section.settings.enable_content -%}
+{%- if section.settings.enable_section -%}
   {%- style -%}
     {% render 'section-margin' %}
+
+    #shopify-section-{{ section.id }} .revendedor-hero__overlay {
+      opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    }
   {%- endstyle -%}
 
-  <div class="revendedor-page revendedor-page--{{ section.settings.alignment }} color-{{ section.settings.color_scheme }} background">
-    <div class="container">
-      <div class="revendedor-page__inner{% if section.settings.image != blank %} revendedor-page__inner--with-image{% endif %}">
-        <div class="revendedor-page__content">
-          {%- if section.settings.heading != blank -%}
-            <h1 class="revendedor-page__heading title--section title--section-m-none h1">
-              {{ section.settings.heading | escape }}
-            </h1>
-          {%- endif -%}
+  <section class="revendedor-hero{% if section.settings.mobile_image != blank %} revendedor-hero--has-mobile-image{% endif %} color-{{ section.settings.color_scheme }} background" aria-labelledby="RevendedorHero-{{ section.id }}">
+    <div class="revendedor-hero__media">
+      {%- if section.settings.image != blank -%}
+        {{
+          section.settings.image
+          | image_url: width: 2400
+          | image_tag:
+            loading: 'eager',
+            widths: '750, 990, 1200, 1600, 2000, 2400',
+            sizes: '100vw',
+            class: 'revendedor-hero__image revendedor-hero__image--desktop',
+            alt: section.settings.image_alt
+        }}
+      {%- endif -%}
 
-          {%- if section.settings.text != blank -%}
-            <div class="revendedor-page__text rte">
-              {{ section.settings.text }}
-            </div>
-          {%- endif -%}
+      {%- if section.settings.mobile_image != blank -%}
+        {{
+          section.settings.mobile_image
+          | image_url: width: 1200
+          | image_tag:
+            loading: 'eager',
+            widths: '375, 550, 750, 990, 1200',
+            sizes: '100vw',
+            class: 'revendedor-hero__image revendedor-hero__image--mobile',
+            alt: section.settings.mobile_image_alt
+        }}
+      {%- endif -%}
+      <span class="revendedor-hero__overlay" aria-hidden="true"></span>
+    </div>
 
-          {%- if section.settings.button_label != blank -%}
-            <a
-              {% if section.settings.button_link != blank %}
-                href="{{ section.settings.button_link }}"
-              {% else %}
-                aria-disabled="true"
-              {% endif %}
-              class="revendedor-page__button button button--{{ section.settings.button_style }} focus-inset"
-            >
-              <span>{{ section.settings.button_label | escape }}</span>
-            </a>
-          {%- endif -%}
-        </div>
+    <div class="container revendedor-hero__container revendedor-hero__container--{{ section.settings.content_position }}">
+      <div class="revendedor-hero__content revendedor-hero__content--{{ section.settings.alignment }}">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="revendedor-eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
 
-        {%- if section.settings.image != blank -%}
-          <div class="revendedor-page__media media">
-            {{
-              section.settings.image
-              | image_url: width: 1800
-              | image_tag:
-                loading: 'lazy',
-                widths: '360, 533, 720, 940, 1066, 1200, 1400, 1600, 1800',
-                sizes: '(min-width: 990px) 45vw, 100vw',
-                class: 'revendedor-page__image'
-            }}
+        {%- if section.settings.heading != blank -%}
+          <h1 id="RevendedorHero-{{ section.id }}" class="revendedor-hero__heading title--section title--section-m-none h1">
+            {{ section.settings.heading | escape }}
+          </h1>
+        {%- endif -%}
+
+        {%- if section.settings.text != blank -%}
+          <div class="revendedor-hero__text rte">
+            {{ section.settings.text }}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.primary_button_label != blank or section.settings.secondary_button_label != blank -%}
+          <div class="revendedor-button-group">
+            {%- if section.settings.primary_button_label != blank -%}
+              <a
+                {% if section.settings.primary_button_link != blank %}
+                  href="{{ section.settings.primary_button_link }}"
+                {% else %}
+                  aria-disabled="true"
+                {% endif %}
+                class="button button--{{ section.settings.primary_button_style }} focus-inset"
+              >
+                <span>{{ section.settings.primary_button_label | escape }}</span>
+              </a>
+            {%- endif -%}
+
+            {%- if section.settings.secondary_button_label != blank -%}
+              <a
+                {% if section.settings.secondary_button_link != blank %}
+                  href="{{ section.settings.secondary_button_link }}"
+                {% else %}
+                  aria-disabled="true"
+                {% endif %}
+                class="button button--{{ section.settings.secondary_button_style }} focus-inset"
+              >
+                <span>{{ section.settings.secondary_button_label | escape }}</span>
+              </a>
+            {%- endif -%}
           </div>
         {%- endif -%}
       </div>
     </div>
-  </div>
+  </section>
 {%- endif -%}
 
 {% schema %}
 {
-  "name": "Revendedor - pagina",
+  "name": "Revendedor - hero",
   "tag": "section",
-  "class": "revendedor-page-section spaced-section",
+  "class": "revendedor-hero-section spaced-section",
   "enabled_on": {
     "templates": ["page"]
   },
   "settings": [
     {
       "type": "checkbox",
-      "id": "enable_content",
+      "id": "enable_section",
       "default": true,
-      "label": "Exibir conteudo"
+      "label": "Exibir secao"
     },
     {
       "type": "color_scheme",
       "id": "color_scheme",
-      "default": "background-1",
+      "default": "background-2",
       "label": "t:sections.all.color_scheme.label"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "default": "PARCERIA COMERCIAL AMMIS",
+      "label": "Sobretitulo"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Leve o universo AMMIS para a sua loja",
+      "label": "t:sections.all.heading.label"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "default": "<p>Faca parte de uma selecao de lojistas conectados a identidade, ao estilo e ao posicionamento da AMMIS. Preencha seu cadastro e apresente sua loja a nossa equipe comercial.</p>",
+      "label": "t:sections.all.text.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Imagem desktop"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Texto alternativo da imagem desktop"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Imagem mobile"
+    },
+    {
+      "type": "text",
+      "id": "mobile_image_alt",
+      "label": "Texto alternativo da imagem mobile"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 35,
+      "label": "Opacidade do overlay"
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "options": [
+        {
+          "value": "left",
+          "label": "Esquerda"
+        },
+        {
+          "value": "center",
+          "label": "Centro"
+        },
+        {
+          "value": "right",
+          "label": "Direita"
+        }
+      ],
+      "default": "left",
+      "label": "Posicao do conteudo"
     },
     {
       "type": "select",
@@ -87,39 +193,54 @@
           "label": "t:sections.rich-text.settings.alignment.options__2.label"
         }
       ],
-      "default": "center",
+      "default": "left",
       "label": "t:sections.rich-text.settings.alignment.label"
     },
     {
       "type": "text",
-      "id": "heading",
-      "default": "Seja um Revendedor AMMIS",
-      "label": "t:sections.all.heading.label"
-    },
-    {
-      "type": "richtext",
-      "id": "text",
-      "default": "<p>Pagina em preparacao. Esta estrutura sera usada para a futura captacao de revendedores.</p>",
-      "label": "t:sections.all.text.label"
-    },
-    {
-      "type": "image_picker",
-      "id": "image",
-      "label": "t:sections.all.image.label"
-    },
-    {
-      "type": "text",
-      "id": "button_label",
-      "label": "t:sections.all.button.button_label.label"
+      "id": "primary_button_label",
+      "default": "Quero ser revendedor",
+      "label": "Texto do botao principal"
     },
     {
       "type": "url",
-      "id": "button_link",
-      "label": "t:sections.all.button.button_link.label"
+      "id": "primary_button_link",
+      "label": "Link do botao principal"
     },
     {
       "type": "select",
-      "id": "button_style",
+      "id": "primary_button_style",
+      "options": [
+        {
+          "value": "primary",
+          "label": "t:sections.all.button.button_style.options__1.label"
+        },
+        {
+          "value": "secondary",
+          "label": "t:sections.all.button.button_style.options__2.label"
+        },
+        {
+          "value": "tertiary",
+          "label": "t:sections.all.button.button_style.options__3.label"
+        }
+      ],
+      "default": "primary",
+      "label": "Estilo do botao principal"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_label",
+      "default": "Conhecer a parceria",
+      "label": "Texto do botao secundario"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Link do botao secundario"
+    },
+    {
+      "type": "select",
+      "id": "secondary_button_style",
       "options": [
         {
           "value": "primary",
@@ -138,8 +259,8 @@
           "label": "t:sections.all.button.button_style.options__4.label"
         }
       ],
-      "default": "secondary",
-      "label": "t:sections.all.button.button_style.label"
+      "default": "tertiary",
+      "label": "Estilo do botao secundario"
     },
     {
       "type": "header",
@@ -174,7 +295,7 @@
           "label": "t:sections.all.section-margin.options__6.label"
         }
       ],
-      "default": "m",
+      "default": "no-indent",
       "label": "t:sections.all.section-margin.margin_top.label"
     },
     {
@@ -206,13 +327,13 @@
           "label": "t:sections.all.section-margin.options__6.label"
         }
       ],
-      "default": "m",
+      "default": "no-indent",
       "label": "t:sections.all.section-margin.margin_bottom.label"
     }
   ],
   "presets": [
     {
-      "name": "Revendedor - pagina"
+      "name": "Revendedor - hero"
     }
   ]
 }
