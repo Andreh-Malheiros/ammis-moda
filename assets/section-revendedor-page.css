@@ -482,3 +482,375 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================
+   Refinamento visual AMMIS — substituir o arquivo atual por
+   este arquivo completo. Regras abaixo sobrescrevem apenas
+   os estilos necessários, mantendo a estrutura original.
+   ========================================================== */
+
+.revendedor-eyebrow {
+  letter-spacing: 0.08em;
+  color: rgba(var(--color-foreground), 0.66);
+}
+
+.revendedor-hero {
+  min-height: clamp(54rem, 66vh, 72rem);
+  isolation: isolate;
+}
+
+.revendedor-hero__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.64) 0%,
+    rgba(0, 0, 0, 0.43) 38%,
+    rgba(0, 0, 0, 0.09) 72%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.revendedor-hero__overlay {
+  z-index: 0;
+}
+
+.revendedor-hero__container {
+  z-index: 2;
+  padding-block: clamp(6rem, 8vw, 9rem);
+}
+
+.revendedor-hero__content,
+.revendedor-hero__content .revendedor-eyebrow,
+.revendedor-hero__heading,
+.revendedor-hero__text {
+  color: #fff;
+}
+
+.revendedor-hero__heading {
+  max-width: 11em;
+  font-size: clamp(3.4rem, 5vw, 6rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.revendedor-hero__text {
+  font-size: 1.75rem;
+}
+
+.revendedor-hero__content .button--primary {
+  color: rgb(var(--color-background));
+  background: rgb(var(--color-foreground));
+  border-color: rgb(var(--color-foreground));
+}
+
+.revendedor-hero__content .button--secondary,
+.revendedor-hero__content .button--tertiary,
+.revendedor-hero__content .button--simple {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.72);
+}
+
+.revendedor-content,
+.revendedor-cards,
+.revendedor-steps,
+.revendedor-faq {
+  position: relative;
+}
+
+.revendedor-cards {
+  background: linear-gradient(
+    180deg,
+    rgba(var(--color-foreground), 0.03) 0%,
+    rgba(var(--color-foreground), 0.012) 100%
+  );
+}
+
+.revendedor-faq {
+  background: rgba(var(--color-foreground), 0.03);
+}
+
+.revendedor-content--standard.revendedor-content--media-left,
+.revendedor-content--standard.revendedor-content--media-right {
+  background: rgba(var(--color-foreground), 0.018);
+}
+
+.revendedor-content__heading {
+  letter-spacing: -0.02em;
+}
+
+.revendedor-content__text,
+.revendedor-section-heading__text {
+  font-size: 1.65rem;
+  line-height: 1.72;
+  color: rgba(var(--color-foreground), 0.82);
+}
+
+.revendedor-content__media-grid {
+  gap: 1.4rem;
+}
+
+.revendedor-content__figure {
+  box-shadow: 0 1.8rem 4.8rem rgba(0, 0, 0, 0.08);
+}
+
+.revendedor-content--highlight .revendedor-content__grid {
+  max-width: 104rem;
+  padding: clamp(4rem, 6vw, 6.8rem);
+  border: 0;
+  color: rgb(var(--color-background));
+  background: rgb(var(--color-foreground));
+}
+
+.revendedor-content--highlight .revendedor-eyebrow,
+.revendedor-content--highlight .revendedor-content__heading,
+.revendedor-content--highlight .revendedor-content__text,
+.revendedor-content--highlight .revendedor-content__note {
+  color: rgb(var(--color-background));
+}
+
+.revendedor-content--highlight .revendedor-content__text,
+.revendedor-content--highlight .revendedor-content__note {
+  opacity: 0.84;
+}
+
+.revendedor-content--highlight .button--primary,
+.revendedor-content--highlight .button--secondary,
+.revendedor-content--highlight .button--tertiary {
+  color: rgb(var(--color-foreground));
+  background: rgb(var(--color-background));
+  border-color: rgb(var(--color-background));
+}
+
+.revendedor-content--highlight .button--simple {
+  color: rgb(var(--color-background));
+}
+
+.revendedor-content--form .revendedor-content__grid {
+  max-width: 104rem;
+  min-height: 30rem;
+  padding: clamp(4rem, 6vw, 6.4rem);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--color-foreground), 0.065),
+    rgba(var(--color-foreground), 0.018)
+  );
+}
+
+.revendedor-content--form .revendedor-content__heading {
+  font-size: clamp(2.8rem, 4vw, 4.6rem);
+}
+
+.revendedor-content--compact .revendedor-content__grid {
+  padding: 2.8rem 3.2rem;
+  border-top: 0.1rem solid rgba(var(--color-border), 1);
+  border-bottom: 0.1rem solid rgba(var(--color-border), 1);
+}
+
+.revendedor-content--confirmation {
+  min-height: 56rem;
+  display: flex;
+  align-items: center;
+  background: radial-gradient(
+    circle at top,
+    rgba(var(--color-foreground), 0.06),
+    transparent 52%
+  );
+}
+
+.revendedor-content--confirmation .revendedor-content__grid {
+  max-width: 82rem;
+  padding: clamp(4rem, 6vw, 6rem);
+  background: rgb(var(--color-background));
+  box-shadow: 0 2.4rem 7rem rgba(0, 0, 0, 0.08);
+}
+
+.revendedor-content--confirmation .revendedor-content__heading {
+  font-size: clamp(3rem, 4vw, 4.8rem);
+}
+
+.revendedor-content--confirmation .revendedor-content__text {
+  max-width: 62rem;
+  margin-inline: auto;
+}
+
+.revendedor-card-grid {
+  gap: 1.8rem;
+}
+
+.revendedor-card {
+  position: relative;
+  min-height: 25rem;
+  padding: 3rem;
+  overflow: hidden;
+  background: rgb(var(--color-background));
+  box-shadow: 0 1.6rem 4rem rgba(0, 0, 0, 0.045);
+  transition:
+    transform var(--duration-default),
+    border-color var(--duration-default),
+    box-shadow var(--duration-default);
+}
+
+.revendedor-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0.3rem;
+  background: rgb(var(--color-foreground));
+  opacity: 0.8;
+}
+
+.revendedor-card:hover {
+  transform: translateY(-0.4rem);
+  border-color: rgba(var(--color-foreground), 0.26);
+  box-shadow: 0 2.2rem 5rem rgba(0, 0, 0, 0.075);
+}
+
+.revendedor-card__icon {
+  width: 5rem;
+  height: 5rem;
+  margin-bottom: 2.2rem;
+  border-color: rgba(var(--color-foreground), 0.18);
+  font-family: var(--font-heading-family);
+  font-size: 1.4rem;
+  color: rgb(var(--color-background));
+  background: rgb(var(--color-foreground));
+}
+
+.revendedor-card__heading {
+  font-size: 1.8rem;
+}
+
+.revendedor-step-list {
+  gap: 1.6rem;
+}
+
+.revendedor-step {
+  padding: 2.8rem;
+  background: rgba(var(--color-foreground), 0.018);
+}
+
+.revendedor-step__number {
+  width: 5.2rem;
+  height: 5.2rem;
+  border: 0;
+  color: rgb(var(--color-background));
+  background: rgb(var(--color-foreground));
+}
+
+.revendedor-faq__grid {
+  max-width: 100rem;
+  gap: 3.2rem;
+}
+
+.revendedor-faq__item {
+  overflow: hidden;
+  background: rgb(var(--color-background));
+  transition:
+    border-color var(--duration-default),
+    box-shadow var(--duration-default);
+}
+
+.revendedor-faq__item[open] {
+  border-color: rgba(var(--color-foreground), 0.24);
+  box-shadow: 0 1.2rem 3.4rem rgba(0, 0, 0, 0.05);
+}
+
+.revendedor-faq__summary {
+  min-height: 6.6rem;
+  padding: 1.9rem 2.2rem;
+}
+
+.revendedor-faq__answer {
+  max-width: 74rem;
+  padding: 0 2.2rem 2.2rem;
+}
+
+@media screen and (max-width: 749px) {
+  .revendedor-hero {
+    min-height: 54rem;
+  }
+
+  .revendedor-hero__media::after {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.18) 0%,
+      rgba(0, 0, 0, 0.4) 52%,
+      rgba(0, 0, 0, 0.74) 100%
+    );
+  }
+
+  .revendedor-hero__heading {
+    font-size: clamp(3.2rem, 11vw, 4.6rem);
+  }
+
+  .revendedor-hero__text,
+  .revendedor-content__text,
+  .revendedor-section-heading__text {
+    font-size: 1.55rem;
+  }
+
+  .revendedor-content--highlight .revendedor-content__grid,
+  .revendedor-content--form .revendedor-content__grid,
+  .revendedor-content--confirmation .revendedor-content__grid {
+    padding: 3rem 2.4rem;
+  }
+
+  .revendedor-content--confirmation {
+    min-height: 48rem;
+  }
+
+  .revendedor-card {
+    padding: 2.6rem;
+  }
+
+  .revendedor-step {
+    padding: 2.4rem;
+  }
+
+  .revendedor-faq__summary {
+    min-height: 6rem;
+    padding: 1.7rem 1.8rem;
+  }
+
+  .revendedor-faq__answer {
+    padding: 0 1.8rem 1.8rem;
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .revendedor-content--media-right .revendedor-content__grid,
+  .revendedor-content--media-left .revendedor-content__grid {
+    grid-template-columns: minmax(0, 0.9fr) minmax(38rem, 1.1fr);
+    gap: 6.4rem;
+  }
+
+  .revendedor-card-grid--2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .revendedor-card-grid--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .revendedor-card-grid--4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .revendedor-card,
+  .revendedor-faq__item,
+  .revendedor-faq__summary .icon-caret {
+    transition: none;
+  }
+
+  .revendedor-card:hover {
+    transform: none;
+  }
+}
