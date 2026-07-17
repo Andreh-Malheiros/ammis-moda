@@ -3,7 +3,6 @@
   font-family: var(--font-subtitle-family);
   font-size: calc(var(--font-subtitle-scale) * 1.15rem);
   font-weight: var(--font-subtitle-weight);
-  letter-spacing: var(--font-subtitle-letter-spacing);
   line-height: 1.35;
   text-transform: var(--font-subtitle-text-transform);
   color: rgba(var(--color-foreground), 0.7);

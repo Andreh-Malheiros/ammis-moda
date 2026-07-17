@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
@@ -8,9 +17,8 @@
         "eyebrow": "PARCERIA COMERCIAL AMMIS",
         "heading": "Leve o universo AMMIS para a sua loja",
         "text": "<p>Faca parte de uma selecao de lojistas conectados a identidade, ao estilo e ao posicionamento da AMMIS. Preencha seu cadastro e apresente sua loja a nossa equipe comercial.</p>",
-        "image": "",
+        "image": "shopify://shop_images/BLACK_FRIDAY_25_-_banner_site_1.png",
         "image_alt": "Campanha AMMIS para apresentacao da parceria comercial",
-        "mobile_image": "",
         "mobile_image_alt": "Campanha AMMIS para apresentacao da parceria comercial",
         "overlay_opacity": 35,
         "content_position": "left",
@@ -31,13 +39,14 @@
         "opportunity_image": {
           "type": "image",
           "settings": {
-            "image": "",
             "image_alt": "Detalhe editorial AMMIS para apresentacao comercial",
             "image_ratio": "portrait"
           }
         }
       },
-      "block_order": ["opportunity_image"],
+      "block_order": [
+        "opportunity_image"
+      ],
       "settings": {
         "enable_section": true,
         "anchor_id": "oportunidade-revenda",
@@ -70,7 +79,6 @@
           "settings": {
             "show_item": true,
             "icon_text": "01",
-            "image": "",
             "image_alt": "",
             "heading": "Identidade que fortalece o mix",
             "text": "<p>Produtos inseridos em um universo visual consistente, permitindo composicoes alinhadas a lojas que valorizam estilo, curadoria e apresentacao.</p>"
@@ -81,7 +89,6 @@
           "settings": {
             "show_item": true,
             "icon_text": "02",
-            "image": "",
             "image_alt": "",
             "heading": "Colecoes com presenca comercial",
             "text": "<p>Uma proposta de moda construida para gerar desejo, ampliar possibilidades de exposicao e contribuir para uma experiencia de compra mais completa.</p>"
@@ -92,7 +99,6 @@
           "settings": {
             "show_item": true,
             "icon_text": "03",
-            "image": "",
             "image_alt": "",
             "heading": "Relacionamento proximo",
             "text": "<p>Contato comercial direcionado para entender o perfil da loja, esclarecer duvidas e conduzir os proximos passos da parceria.</p>"
@@ -103,7 +109,6 @@
           "settings": {
             "show_item": true,
             "icon_text": "04",
-            "image": "",
             "image_alt": "",
             "heading": "Curadoria alinhada a marca",
             "text": "<p>Uma selecao pensada para lojistas que procuram trabalhar com produtos conectados a uma identidade contemporanea e reconhecivel.</p>"
@@ -114,7 +119,6 @@
           "settings": {
             "show_item": true,
             "icon_text": "05",
-            "image": "",
             "image_alt": "",
             "heading": "Possibilidade de ampliar o portfolio",
             "text": "<p>Uma oportunidade para complementar o mix da loja com produtos que conversem com o posicionamento e o publico do estabelecimento.</p>"
@@ -125,14 +129,20 @@
           "settings": {
             "show_item": true,
             "icon_text": "06",
-            "image": "",
             "image_alt": "",
             "heading": "Parceria analisada individualmente",
             "text": "<p>Cada cadastro e avaliado de forma cuidadosa, buscando compatibilidade entre a AMMIS e a proposta comercial da loja.</p>"
           }
         }
       },
-      "block_order": ["benefit_1", "benefit_2", "benefit_3", "benefit_4", "benefit_5", "benefit_6"],
+      "block_order": [
+        "benefit_1",
+        "benefit_2",
+        "benefit_3",
+        "benefit_4",
+        "benefit_5",
+        "benefit_6"
+      ],
       "settings": {
         "enable_section": true,
         "color_scheme": "background-1",
@@ -152,7 +162,6 @@
         "brand_image_1": {
           "type": "image",
           "settings": {
-            "image": "",
             "image_alt": "Imagem de campanha AMMIS com foco em identidade visual",
             "image_ratio": "portrait"
           }
@@ -160,7 +169,6 @@
         "brand_image_2": {
           "type": "image",
           "settings": {
-            "image": "",
             "image_alt": "Detalhe de produto AMMIS",
             "image_ratio": "square"
           }
@@ -168,13 +176,16 @@
         "brand_image_3": {
           "type": "image",
           "settings": {
-            "image": "",
             "image_alt": "Composicao editorial AMMIS",
             "image_ratio": "landscape"
           }
         }
       },
-      "block_order": ["brand_image_1", "brand_image_2", "brand_image_3"],
+      "block_order": [
+        "brand_image_1",
+        "brand_image_2",
+        "brand_image_3"
+      ],
       "settings": {
         "enable_section": true,
         "anchor_id": "",
@@ -235,7 +246,12 @@
           }
         }
       },
-      "block_order": ["step_1", "step_2", "step_3", "step_4"],
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3",
+        "step_4"
+      ],
       "settings": {
         "enable_section": true,
         "color_scheme": "background-1",
@@ -393,7 +409,16 @@
           }
         }
       },
-      "block_order": ["faq_1", "faq_2", "faq_3", "faq_4", "faq_5", "faq_6", "faq_7", "faq_8"],
+      "block_order": [
+        "faq_1",
+        "faq_2",
+        "faq_3",
+        "faq_4",
+        "faq_5",
+        "faq_6",
+        "faq_7",
+        "faq_8"
+      ],
       "settings": {
         "enable_section": true,
         "color_scheme": "background-1",
