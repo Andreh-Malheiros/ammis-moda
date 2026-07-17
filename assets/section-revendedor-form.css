@@ -178,6 +178,24 @@
   position: relative;
 }
 
+.revendedor-form__website-confirm {
+  position: absolute;
+  top: auto;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.revendedor-form__website-confirm-input {
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+}
+
 .revendedor-form__choice input[type=checkbox]:focus-visible + label::before {
   outline: 0.2rem solid rgba(var(--color-foreground), 0.45);
   outline-offset: 0.3rem;

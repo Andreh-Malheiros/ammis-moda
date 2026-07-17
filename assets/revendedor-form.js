@@ -5,6 +5,7 @@
   const IBGE_CITIES_URL = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados/{uf}/municipios';
   const REQUEST_TIMEOUT = 8000;
   const SUBMIT_TIMEOUT = 15000;
+  const ANTISPAM_VERSION = 'ammis-revendedor-v1';
 
   const cityCache = new Map();
   const cepCache = new Map();
@@ -307,11 +308,63 @@
     return trimSpaces(field.value || '');
   }
 
+  function createFormInstanceId() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+      try {
+        return window.crypto.randomUUID();
+      } catch (error) {
+        // Fallback below keeps the form usable on browsers with partial support.
+      }
+    }
+
+    return [
+      'ammis',
+      Date.now().toString(36),
+      Math.random().toString(36).slice(2, 12)
+    ].join('-');
+  }
+
+  function createAntispamState() {
+    const startedAtMs = Date.now();
+    const safeStartedAtMs = Number.isFinite(startedAtMs) ? startedAtMs : 0;
+
+    return {
+      startedAtMs: safeStartedAtMs,
+      startedAtIso: new Date(safeStartedAtMs).toISOString(),
+      instanceId: createFormInstanceId()
+    };
+  }
+
+  function getAntispamState(form) {
+    if (!form.revendedorAntispamState) {
+      form.revendedorAntispamState = createAntispamState();
+    }
+
+    return form.revendedorAntispamState;
+  }
+
+  function getAntispamPayload(form) {
+    const state = getAntispamState(form);
+    const submittedAtMs = Date.now();
+    const elapsedMs = submittedAtMs - state.startedAtMs;
+
+    return {
+      websiteConfirm: getActiveFieldValue(form, 'website_confirm'),
+      formStartedAt: state.startedAtIso,
+      formSubmittedAt: new Date(Number.isFinite(submittedAtMs) ? submittedAtMs : 0).toISOString(),
+      formElapsedMs: Number.isFinite(elapsedMs) && elapsedMs >= 0 ? Math.round(elapsedMs) : 0,
+      formInstanceId: state.instanceId,
+      antispamVersion: ANTISPAM_VERSION
+    };
+  }
+
   function buildPayload(form) {
     const payload = {};
     payloadFields.forEach((name) => {
       payload[name] = getActiveFieldValue(form, name);
     });
+
+    const antispamPayload = getAntispamPayload(form);
 
     payload.no_instagram = Boolean(form.querySelector('[name="no_instagram"]')?.checked);
     payload.is_landline = Boolean(form.querySelector('[name="is_landline"]')?.checked);
@@ -323,6 +376,12 @@
     payload.utm_campaign = getUtmValue('utm_campaign');
     payload.utm_content = getUtmValue('utm_content');
     payload.utm_term = getUtmValue('utm_term');
+    payload.website_confirm = antispamPayload.websiteConfirm;
+    payload.form_started_at = antispamPayload.formStartedAt;
+    payload.form_submitted_at = antispamPayload.formSubmittedAt;
+    payload.form_elapsed_ms = antispamPayload.formElapsedMs;
+    payload.form_instance_id = antispamPayload.formInstanceId;
+    payload.antispam_version = antispamPayload.antispamVersion;
 
     return payload;
   }
@@ -1016,6 +1075,7 @@
     const form = section.querySelector(FORM_SELECTOR);
     if (!form) return;
 
+    form.revendedorAntispamState = createAntispamState();
     updateInstagramState(form);
     updateLandlineState(form);
     updateCountryState(form);

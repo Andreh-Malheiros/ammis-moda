@@ -63,6 +63,19 @@
 
           <div id="{{ submit_error_id }}" class="revendedor-form__submit-error form__message" role="alert" tabindex="-1" hidden data-submit-error></div>
 
+          <div class="revendedor-form__website-confirm" aria-hidden="true">
+            <input
+              class="revendedor-form__website-confirm-input"
+              id="{{ form_id }}-website_confirm"
+              name="website_confirm"
+              type="text"
+              autocomplete="off"
+              tabindex="-1"
+              aria-hidden="true"
+              data-website-confirm
+            >
+          </div>
+
           <fieldset class="revendedor-form__group">
             <legend class="revendedor-form__legend h3">{{ section.settings.company_group_title | escape }}</legend>
             <div class="revendedor-form__grid">
