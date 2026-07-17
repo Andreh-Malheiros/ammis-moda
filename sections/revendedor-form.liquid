@@ -1,0 +1,512 @@
+{{ 'section-revendedor-form.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'revendedor-form.js' | asset_url }}" defer="defer"></script>
+
+{%- if section.settings.enable_section -%}
+  {%- style -%}
+    {% render 'section-margin' %}
+  {%- endstyle -%}
+
+  {%- liquid
+    assign form_id = 'RevendedorForm-' | append: section.id
+    assign heading_id = form_id | append: '-heading'
+    assign summary_id = form_id | append: '-summary'
+    assign success_id = form_id | append: '-success'
+  -%}
+
+  <section
+    id="cadastro-revendedor"
+    class="revendedor-form color-{{ section.settings.color_scheme }} background"
+    aria-labelledby="{{ heading_id }}"
+    data-revendedor-form-section
+  >
+    <div class="container">
+      <div class="revendedor-form__shell">
+        <div class="revendedor-form__header revendedor-form__header--{{ section.settings.alignment }}">
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="revendedor-eyebrow">{{ section.settings.eyebrow | escape }}</p>
+          {%- endif -%}
+          {%- if section.settings.heading != blank -%}
+            <h2 id="{{ heading_id }}" class="revendedor-form__heading title--section title--section-m-none {{ section.settings.heading_size }}">
+              {{ section.settings.heading | escape }}
+            </h2>
+          {%- endif -%}
+          {%- if section.settings.intro_text != blank -%}
+            <div class="revendedor-form__intro rte">{{ section.settings.intro_text }}</div>
+          {%- endif -%}
+        </div>
+
+        <form id="{{ form_id }}" class="revendedor-form__form" action="#cadastro-revendedor" method="post" novalidate onsubmit="return false;" data-revendedor-form>
+          <div id="{{ summary_id }}" class="revendedor-form__summary" role="alert" tabindex="-1" hidden data-error-summary>
+            <p class="revendedor-form__summary-title">{{ section.settings.error_summary_title | escape }}</p>
+            <ul data-error-list></ul>
+          </div>
+
+          <div id="{{ success_id }}" class="revendedor-form__success form__message" role="status" tabindex="-1" hidden data-success-message>
+            {{ section.settings.success_message | escape }}
+          </div>
+
+          <fieldset class="revendedor-form__group">
+            <legend class="revendedor-form__legend h3">{{ section.settings.company_group_title | escape }}</legend>
+            <div class="revendedor-form__grid">
+              <div class="field revendedor-form__field revendedor-form__field--full" data-field-wrapper>
+                <input class="field__input focus-inset" id="{{ form_id }}-company_legal_name" name="company_legal_name" type="text" autocomplete="organization" maxlength="150" required placeholder="Razao social" aria-describedby="{{ form_id }}-company_legal_name-error">
+                <label class="field__label secondary_text" for="{{ form_id }}-company_legal_name">Razao social</label>
+                <small class="revendedor-form__field-error form__message" id="{{ form_id }}-company_legal_name-error" data-error-for="company_legal_name"></small>
+              </div>
+
+              <div class="field revendedor-form__field" data-field-wrapper>
+                <input class="field__input focus-inset" id="{{ form_id }}-cnpj" name="cnpj" type="text" inputmode="numeric" autocomplete="off" maxlength="18" required placeholder="00.000.000/0000-00" aria-describedby="{{ form_id }}-cnpj-error" data-mask="cnpj">
+                <label class="field__label secondary_text" for="{{ form_id }}-cnpj">CNPJ</label>
+                <small class="revendedor-form__field-error form__message" id="{{ form_id }}-cnpj-error" data-error-for="cnpj"></small>
+              </div>
+
+              <div class="revendedor-form__stack">
+                <div class="field revendedor-form__field" data-field-wrapper>
+                  <input class="field__input focus-inset" id="{{ form_id }}-instagram" name="instagram" type="text" autocomplete="url" maxlength="150" required placeholder="@nomedaloja" aria-describedby="{{ form_id }}-instagram-error" data-instagram>
+                  <label class="field__label secondary_text" for="{{ form_id }}-instagram">Instagram da loja</label>
+                  <small class="revendedor-form__field-error form__message" id="{{ form_id }}-instagram-error" data-error-for="instagram"></small>
+                </div>
+                <div class="field--checkbox revendedor-form__choice" data-field-wrapper>
+                  <input id="{{ form_id }}-no_instagram" name="no_instagram" type="checkbox" value="yes" data-no-instagram>
+                  <label for="{{ form_id }}-no_instagram">
+                    <svg class="icon-checkmark" aria-hidden="true" focusable="false" viewBox="0 0 12 10"><path fill="currentColor" d="M4.2 9.2 0.8 5.8l1.4-1.4 2 2 5.6-5.6 1.4 1.4z"/></svg>
+                    <span>Minha loja nao possui Instagram</span>
+                  </label>
+                </div>
+              </div>
+
+              {%- if section.settings.show_website -%}
+                <div class="field revendedor-form__field" data-field-wrapper>
+                  <input class="field__input focus-inset" id="{{ form_id }}-website" name="website" type="text" inputmode="url" autocomplete="url" maxlength="300" placeholder="sualoja.com.br" aria-describedby="{{ form_id }}-website-error">
+                  <label class="field__label secondary_text" for="{{ form_id }}-website">Site ou loja virtual</label>
+                  <small class="revendedor-form__field-error form__message" id="{{ form_id }}-website-error" data-error-for="website"></small>
+                </div>
+              {%- endif -%}
+
+              {%- if section.settings.show_other_brands -%}
+                <div class="field revendedor-form__field revendedor-form__field--full" data-field-wrapper>
+                  <textarea class="text-area field__input focus-inset" id="{{ form_id }}-other_brands" name="other_brands" maxlength="500" placeholder="Marcas comercializadas" aria-describedby="{{ form_id }}-other_brands-error"></textarea>
+                  <label class="field__label secondary_text" for="{{ form_id }}-other_brands">Quais outras marcas sua loja comercializa?</label>
+                  <small class="revendedor-form__field-error form__message" id="{{ form_id }}-other_brands-error" data-error-for="other_brands"></small>
+                </div>
+              {%- endif -%}
+
+              {%- if section.settings.show_store_description -%}
+                <div class="field revendedor-form__field revendedor-form__field--full" data-field-wrapper>
+                  <textarea class="text-area field__input focus-inset" id="{{ form_id }}-store_description" name="store_description" maxlength="1500" placeholder="Conte um pouco sobre sua loja" aria-describedby="{{ form_id }}-store_description-error {{ form_id }}-store_description-count" data-counter-input></textarea>
+                  <label class="field__label secondary_text" for="{{ form_id }}-store_description">Conte um pouco sobre sua loja</label>
+                  <small class="revendedor-form__counter" id="{{ form_id }}-store_description-count" data-counter>0/1500</small>
+                  <small class="revendedor-form__field-error form__message" id="{{ form_id }}-store_description-error" data-error-for="store_description"></small>
+                </div>
+              {%- endif -%}
+            </div>
+          </fieldset>
+
+          <fieldset class="revendedor-form__group">
+            <legend class="revendedor-form__legend h3">{{ section.settings.responsible_group_title | escape }}</legend>
+            <div class="revendedor-form__grid">
+              <div class="field revendedor-form__field" data-field-wrapper>
+                <input class="field__input focus-inset" id="{{ form_id }}-responsible_name" name="responsible_name" type="text" autocomplete="name" maxlength="120" required placeholder="Nome completo" aria-describedby="{{ form_id }}-responsible_name-error">
+                <label class="field__label secondary_text" for="{{ form_id }}-responsible_name">Nome completo do responsavel</label>
+                <small class="revendedor-form__field-error form__message" id="{{ form_id }}-responsible_name-error" data-error-for="responsible_name"></small>
+              </div>
+
+              <div class="field revendedor-form__field" data-field-wrapper>
+                <input class="field__input focus-inset" id="{{ form_id }}-email" name="email" type="email" autocomplete="email" maxlength="254" required placeholder="email@loja.com" aria-describedby="{{ form_id }}-email-error">
+                <label class="field__label secondary_text" for="{{ form_id }}-email">E-mail</label>
+                <small class="revendedor-form__field-error form__message" id="{{ form_id }}-email-error" data-error-for="email"></small>
+              </div>
+
+              <div class="field revendedor-form__field" data-field-wrapper>
+                <div class="select">
+                  <select class="field__input focus-inset" id="{{ form_id }}-phone_country" name="phone_country" autocomplete="tel-country-code" required aria-describedby="{{ form_id }}-phone_country-error" data-country-select>
+                    <option value="BR" selected>Brasil (+55)</option>
+                    <option value="AR">Argentina (+54)</option>
+                    <option value="CL">Chile (+56)</option>
+                    <option value="CO">Colombia (+57)</option>
+                    <option value="USCA">Estados Unidos/Canada (+1)</option>
+                    <option value="PY">Paraguai (+595)</option>
+                    <option value="PT">Portugal (+351)</option>
+                    <option value="UY">Uruguai (+598)</option>
+                    <option value="OTHER">Outro</option>
+                  </select>
+                  {% render 'icon-caret' %}
+                </div>
+                <label class="field__label secondary_text" for="{{ form_id }}-phone_country">Pais do telefone</label>
+                <small class="revendedor-form__field-error form__message" id="{{ form_id }}-phone_country-error" data-error-for="phone_country"></small>
+              </div>
+
+              <div class="revendedor-form__stack">
+                <div class="field revendedor-form__field" data-field-wrapper>
+                  <input class="field__input focus-inset" id="{{ form_id }}-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="24" required placeholder="(00) 00000-0000" aria-describedby="{{ form_id }}-phone-error" data-phone>
+                  <label class="field__label secondary_text" for="{{ form_id }}-phone">Telefone de contato</label>
+                  <small class="revendedor-form__field-error form__message" id="{{ form_id }}-phone-error" data-error-for="phone"></small>
+                </div>
+                <div class="field--checkbox revendedor-form__choice" data-field-wrapper>
+                  <input id="{{ form_id }}-is_landline" name="is_landline" type="checkbox" value="yes" data-landline>
+                  <label for="{{ form_id }}-is_landline">
+                    <svg class="icon-checkmark" aria-hidden="true" focusable="false" viewBox="0 0 12 10"><path fill="currentColor" d="M4.2 9.2 0.8 5.8l1.4-1.4 2 2 5.6-5.6 1.4 1.4z"/></svg>
+                    <span>Este numero e um telefone fixo</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="field revendedor-form__field" data-whatsapp-group data-field-wrapper hidden>
+                <input class="field__input focus-inset" id="{{ form_id }}-whatsapp_phone" name="whatsapp_phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="24" placeholder="(00) 00000-0000" aria-describedby="{{ form_id }}-whatsapp_phone-error" data-whatsapp disabled>
+                <label class="field__label secondary_text" for="{{ form_id }}-whatsapp_phone">Celular com WhatsApp</label>
+                <small class="revendedor-form__field-error form__message" id="{{ form_id }}-whatsapp_phone-error" data-error-for="whatsapp_phone"></small>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="revendedor-form__group">
+            <legend class="revendedor-form__legend h3">{{ section.settings.address_group_title | escape }}</legend>
+            <div class="revendedor-form__grid">
+              <div class="field revendedor-form__field" data-field-wrapper>
+                <input class="field__input focus-inset" id="{{ form_id }}-postal_code" name="postal_code" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="20" required placeholder="00000-000" aria-describedby="{{ form_id }}-postal_code-error" data-postal-code>
+                <label class="field__label secondary_text" for="{{ form_id }}-postal_code">CEP</label>
+                <small class="revendedor-form__field-error form__message" id="{{ form_id }}-postal_code-error" data-error-for="postal_code"></small>
+              </div>
+
+              <div class="field revendedor-form__field" data-field-wrapper>
+                <input class="field__input focus-inset" id="{{ form_id }}-address_line" name="address_line" type="text" autocomplete="address-line1" maxlength="180" required placeholder="Logradouro" aria-describedby="{{ form_id }}-address_line-error">
+                <label class="field__label secondary_text" for="{{ form_id }}-address_line">Logradouro</label>
+                <small class="revendedor-form__field-error form__message" id="{{ form_id }}-address_line-error" data-error-for="address_line"></small>
+              </div>
+
+              <div class="field revendedor-form__field" data-field-wrapper>
+                <input class="field__input focus-inset" id="{{ form_id }}-address_number" name="address_number" type="text" autocomplete="address-line2" maxlength="20" required placeholder="Numero" aria-describedby="{{ form_id }}-address_number-error">
+                <label class="field__label secondary_text" for="{{ form_id }}-address_number">Numero</label>
+                <small class="revendedor-form__field-error form__message" id="{{ form_id }}-address_number-error" data-error-for="address_number"></small>
+              </div>
+
+              <div class="field revendedor-form__field" data-field-wrapper>
+                <input class="field__input focus-inset" id="{{ form_id }}-address_complement" name="address_complement" type="text" autocomplete="address-line3" maxlength="100" placeholder="Complemento" aria-describedby="{{ form_id }}-address_complement-error">
+                <label class="field__label secondary_text" for="{{ form_id }}-address_complement">Complemento</label>
+                <small class="revendedor-form__field-error form__message" id="{{ form_id }}-address_complement-error" data-error-for="address_complement"></small>
+              </div>
+
+              <div class="field revendedor-form__field" data-field-wrapper>
+                <input class="field__input focus-inset" id="{{ form_id }}-neighborhood" name="neighborhood" type="text" autocomplete="address-level3" maxlength="100" required placeholder="Bairro" aria-describedby="{{ form_id }}-neighborhood-error">
+                <label class="field__label secondary_text" for="{{ form_id }}-neighborhood">Bairro</label>
+                <small class="revendedor-form__field-error form__message" id="{{ form_id }}-neighborhood-error" data-error-for="neighborhood"></small>
+              </div>
+
+              <div class="field revendedor-form__field" data-field-wrapper>
+                <div class="select" data-state-select-wrap>
+                  <select class="field__input focus-inset" id="{{ form_id }}-state" name="state" autocomplete="address-level1" required aria-describedby="{{ form_id }}-state-error" data-state-select>
+                    <option value="">Selecione</option>
+                    <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+                  </select>
+                  {% render 'icon-caret' %}
+                </div>
+                <input class="field__input focus-inset" id="{{ form_id }}-state_text" name="state" type="text" autocomplete="address-level1" maxlength="100" placeholder="Estado, provincia ou regiao" aria-describedby="{{ form_id }}-state-error" data-state-text hidden disabled>
+                <label class="field__label secondary_text" for="{{ form_id }}-state" data-state-label>Estado</label>
+                <small class="revendedor-form__field-error form__message" id="{{ form_id }}-state-error" data-error-for="state"></small>
+              </div>
+
+              <div class="field revendedor-form__field" data-field-wrapper>
+                <input class="field__input focus-inset" id="{{ form_id }}-city" name="city" type="text" autocomplete="address-level2" maxlength="100" required placeholder="Cidade" aria-describedby="{{ form_id }}-city-error">
+                <label class="field__label secondary_text" for="{{ form_id }}-city">Cidade</label>
+                <small class="revendedor-form__field-error form__message" id="{{ form_id }}-city-error" data-error-for="city"></small>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="revendedor-form__group">
+            <legend class="revendedor-form__legend h3">{{ section.settings.profile_group_title | escape }}</legend>
+            <div class="revendedor-form__radio-group" data-field-wrapper data-radio-group="store_type" aria-describedby="{{ form_id }}-store_type-error">
+              <div class="revendedor-form__radio">
+                <input id="{{ form_id }}-store_type-physical" name="store_type" type="radio" value="physical">
+                <label for="{{ form_id }}-store_type-physical">Loja fisica</label>
+              </div>
+              <div class="revendedor-form__radio">
+                <input id="{{ form_id }}-store_type-ecommerce" name="store_type" type="radio" value="ecommerce">
+                <label for="{{ form_id }}-store_type-ecommerce">E-commerce</label>
+              </div>
+              <div class="revendedor-form__radio">
+                <input id="{{ form_id }}-store_type-both" name="store_type" type="radio" value="both">
+                <label for="{{ form_id }}-store_type-both">Ambos</label>
+              </div>
+              <small class="revendedor-form__field-error form__message" id="{{ form_id }}-store_type-error" data-error-for="store_type"></small>
+            </div>
+          </fieldset>
+
+          <fieldset class="revendedor-form__group revendedor-form__group--consent">
+            <legend class="revendedor-form__legend h3">{{ section.settings.consent_group_title | escape }}</legend>
+            <div class="field--checkbox revendedor-form__choice revendedor-form__choice--consent" data-field-wrapper>
+              <input id="{{ form_id }}-privacy_consent" name="privacy_consent" type="checkbox" value="yes" required aria-describedby="{{ form_id }}-privacy_consent-error">
+              <label for="{{ form_id }}-privacy_consent">
+                <svg class="icon-checkmark" aria-hidden="true" focusable="false" viewBox="0 0 12 10"><path fill="currentColor" d="M4.2 9.2 0.8 5.8l1.4-1.4 2 2 5.6-5.6 1.4 1.4z"/></svg>
+                <span>Concordo que meus dados sejam utilizados pela AMMIS para analise cadastral e contato comercial, conforme a <a href="{{ section.settings.policy_link | escape }}">Politica de Privacidade</a>.</span>
+              </label>
+              <small class="revendedor-form__field-error form__message" id="{{ form_id }}-privacy_consent-error" data-error-for="privacy_consent"></small>
+            </div>
+          </fieldset>
+
+          <div class="revendedor-form__actions">
+            <button type="submit" class="button button--{{ section.settings.button_style }} focus-inset" data-submit-button>
+              <span>{{ section.settings.button_label | escape }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Revendedor - formulario",
+  "tag": "section",
+  "class": "revendedor-form-section spaced-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_section",
+      "default": true,
+      "label": "Exibir secao"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "t:sections.all.color_scheme.label"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.rich-text.settings.alignment.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.rich-text.settings.alignment.options__2.label"
+        }
+      ],
+      "default": "center",
+      "label": "t:sections.rich-text.settings.alignment.label"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "default": "CADASTRO DE LOJISTA",
+      "label": "Sobretitulo"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Apresente sua loja a AMMIS",
+      "label": "t:sections.all.heading.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "h3",
+          "label": "t:sections.all.heading_size.options__3.label"
+        }
+      ],
+      "default": "h2",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "richtext",
+      "id": "intro_text",
+      "default": "<p>Preencha seus dados empresariais e comerciais para que nossa equipe possa conhecer sua operacao e analisar a possibilidade de parceria.</p>",
+      "label": "Texto introdutorio"
+    },
+    {
+      "type": "header",
+      "content": "Titulos dos grupos"
+    },
+    {
+      "type": "text",
+      "id": "company_group_title",
+      "default": "Dados da empresa",
+      "label": "Dados da empresa"
+    },
+    {
+      "type": "text",
+      "id": "responsible_group_title",
+      "default": "Responsavel pelo cadastro",
+      "label": "Responsavel"
+    },
+    {
+      "type": "text",
+      "id": "address_group_title",
+      "default": "Endereco comercial",
+      "label": "Endereco"
+    },
+    {
+      "type": "text",
+      "id": "profile_group_title",
+      "default": "Perfil da loja",
+      "label": "Perfil"
+    },
+    {
+      "type": "text",
+      "id": "consent_group_title",
+      "default": "Consentimento",
+      "label": "Consentimento"
+    },
+    {
+      "type": "header",
+      "content": "Campos opcionais"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_website",
+      "default": true,
+      "label": "Exibir site ou loja virtual"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_other_brands",
+      "default": true,
+      "label": "Exibir outras marcas"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_store_description",
+      "default": true,
+      "label": "Exibir apresentacao da loja"
+    },
+    {
+      "type": "header",
+      "content": "Validacao local"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "Validar cadastro",
+      "label": "Texto do botao"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "options": [
+        {
+          "value": "primary",
+          "label": "t:sections.all.button.button_style.options__1.label"
+        },
+        {
+          "value": "secondary",
+          "label": "t:sections.all.button.button_style.options__2.label"
+        },
+        {
+          "value": "tertiary",
+          "label": "t:sections.all.button.button_style.options__3.label"
+        }
+      ],
+      "default": "primary",
+      "label": "Estilo do botao"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "default": "Cadastro validado. A integracao de envio sera habilitada na proxima etapa.",
+      "label": "Mensagem de validacao local"
+    },
+    {
+      "type": "text",
+      "id": "error_summary_title",
+      "default": "Revise os campos abaixo:",
+      "label": "Titulo do resumo de erros"
+    },
+    {
+      "type": "text",
+      "id": "policy_link",
+      "default": "https://ammismoda.com.br/policies/privacy-policy",
+      "label": "Link da Politica de Privacidade"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-margin.header.content"
+    },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "l",
+      "label": "t:sections.all.section-margin.margin_top.label"
+    },
+    {
+      "type": "select",
+      "id": "margin_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "s",
+      "label": "t:sections.all.section-margin.margin_bottom.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Revendedor - formulario"
+    }
+  ]
+}
+{% endschema %}
