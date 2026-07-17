@@ -286,6 +286,9 @@
     },
     "mid_cta": {
       "type": "revendedor-content",
+      "custom_css": [
+        "p{color: white !important;}"
+      ],
       "settings": {
         "enable_section": true,
         "anchor_id": "",
