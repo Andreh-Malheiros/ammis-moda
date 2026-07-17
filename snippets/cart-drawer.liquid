@@ -1,0 +1,1261 @@
+{% comment %}
+  Renders cart drawer
+{% endcomment %}
+
+<style>
+  .drawer { visibility: hidden; }
+  .cart-item__remove-icon { display: flex; align-items: center; justify-content: center; }
+  .cart-remove-button-svg { background: none; border: none; cursor: pointer; padding: 8px; color: rgba(var(--color-foreground), 0.5); transition: color 0.3s ease; display: flex; }
+  .cart-remove-button-svg:hover { color: rgba(var(--color-foreground), 1); }
+  .cart-remove-button-svg svg { width: 16px; height: 16px; }
+  .cart-item__bottom { display: flex !important; align-items: center !important; justify-content: space-between !important; width: 100% !important; margin-top: 1rem; }
+</style>
+
+<cart-drawer class="drawer{% if cart == empty %} is-empty{% endif %}">
+  {%- assign is_b2b_cart = false -%}
+  {%- if request.path contains 'atacado' or template.suffix == 'b2b-readonly' -%}
+    {%- assign is_b2b_cart = true -%}
+  {%- else -%}
+    {%- for item in cart.items -%}
+      {%- if item.product.tags contains 'atacado' -%}
+        {%- assign is_b2b_cart = true -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+  <div id="CartDrawer" class="cart-drawer {% if settings.notification %} notification {% endif %}">
+    <div id="CartDrawer-Overlay" class="cart-drawer__overlay"></div>
+    <div
+      class="drawer__inner color-{{ settings.cart_color_scheme }}"
+      role="dialog"
+      aria-modal="true"
+      aria-label="{{ 'general.cart.item_added' | t }}"
+      tabindex="-1"
+    >
+      <div class="drawer__header" style="border-bottom: none; padding-bottom: 1rem;">
+        <div style="display: flex; align-items: center; gap: 1.2rem;">
+          <h2 class="drawer__heading h3" style="margin: 0; text-transform: uppercase;">Cart ({{ cart.item_count }})</h2>
+
+          {% comment %}
+            {% unless is_b2b_cart %}
+              <div
+                class="circular-progress-container"
+                id="CartCircularProgressContainer"
+                style="display: {% if settings.show_shipping %}block{% else %}none{% endif %};"
+              >
+                <div class="circular-progress" id="CartCircularProgressIndicator">
+                  <span class="circular-progress-value" id="CartCircularProgressValue">0%</span>
+                </div>
+              </div>
+            {% endunless %}
+          {% endcomment %}
+        </div>
+
+        <button
+          type="button"
+          class="drawer__close focus-inset modal-close-button"
+          onclick="this.closest('cart-drawer').close()"
+          aria-label="{{ 'accessibility.close' | t }}"
+        >
+          {% render 'icon-close' %}
+        </button>
+      </div>
+
+      {% comment %}
+        {% unless is_b2b_cart %}
+          <div
+            class="cart-shipping-banner"
+            id="CartShippingBannerContainer"
+            style="display: {% if settings.show_shipping %}block{% else %}none{% endif %};"
+          >
+            <p class="cart-shipping__message banner-text" id="CartShippingMessageDefault"></p>
+            <p
+              class="cart-shipping__message banner-text success-text"
+              id="CartShippingMessageSuccess"
+              style="display: none;"
+            >
+              Parabéns! Você alcançou o <strong>Frete Grátis</strong>.
+            </p>
+          </div>
+        {% endunless %}
+      {% endcomment %}
+
+      {% if settings.show_commercial_benefits %}
+        {% assign free_shipping_threshold_cents = settings.free_shipping_threshold | times: 100 %}
+        {% assign free_shipping_progress = 0 %}
+        {% assign free_shipping_remaining = free_shipping_threshold_cents | minus: cart.total_price %}
+
+        {% if free_shipping_threshold_cents > 0 %}
+          {% assign free_shipping_progress = cart.total_price | times: 100.0 | divided_by: free_shipping_threshold_cents %}
+        {% endif %}
+
+        {% if free_shipping_progress > 100 %}
+          {% assign free_shipping_progress = 100 %}
+        {% endif %}
+
+        <div class="ammis-cart-benefits" aria-live="polite">
+          <div class="ammis-cart-benefits__shipping">
+            {% if cart.total_price >= free_shipping_threshold_cents and free_shipping_threshold_cents > 0 %}
+              <p class="ammis-cart-benefits__message ammis-cart-benefits__message--success">
+                Você ganhou <strong>frete grátis</strong>.
+              </p>
+            {% elsif free_shipping_threshold_cents > 0 %}
+              <p class="ammis-cart-benefits__message">
+                Faltam <strong>{{ free_shipping_remaining | money }}</strong> para você ganhar frete grátis.
+              </p>
+            {% endif %}
+
+            {% if free_shipping_threshold_cents > 0 %}
+              <div
+                class="ammis-cart-benefits__progress"
+                role="progressbar"
+                aria-label="Progresso para obter frete grátis"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="{{ free_shipping_progress | round }}"
+              >
+                <span style="width: {{ free_shipping_progress }}%;"></span>
+              </div>
+            {% endif %}
+          </div>
+
+          <p class="ammis-cart-benefits__installment-rule">
+            Até <strong>{{ settings.max_installments }}x sem juros</strong>, com parcela mínima de
+            <strong>{{ settings.min_installment_value | times: 100 | money_without_trailing_zeros }}</strong>.
+          </p>
+        </div>
+      {% endif %}
+
+      {%- if cart == empty -%}
+        <div class="drawer__inner-empty">
+          <div class="top">
+            <div class="cart__empty-wrapper">
+              <p class="cart__empty-text h3">{{ 'general.cart.empty_cart' | t }}</p>
+              <p class="cart__empty-dec secondary_text">{{ settings.empty_cart_dec }}</p>
+            </div>
+            <a
+              href="{{ routes.all_products_collection_url }}"
+              class="button button--{{ settings.cart_button_style }} focus-inset"
+            >
+              <span> {{ 'general.cart.button_label' | t }} </span>
+            </a>
+          </div>
+        </div>
+      {%- endif -%}
+
+      <cart-drawer-items
+        {% if cart == empty %}
+          class=" is-empty"
+        {% endif %}
+      >
+        <form
+          action="{{ routes.cart_url }}"
+          id="CartDrawer-Form"
+          class="cart__contents cart-drawer__form"
+          method="post"
+        >
+          <div id="CartDrawer-CartItems" class="drawer__contents js-contents">
+            {%- if cart != empty -%}
+              <div class="drawer__cart-items-wrapper">
+                {%- for item in cart.items -%}
+                  <div
+                    id="CartDrawer-Item-{{ item.index | plus: 1 }}"
+                    class="cart-item"
+                    data-product-id="{{ item.id }}"
+                  >
+                    <div class="cart-item__inner-top">
+                      {% if item.image %}
+                        <div class="cart-item__left">
+                          <div
+                            class="cart-item__media"
+                            {%- if settings.cart_image_ratio == 'landscape' -%}
+                              style="padding-bottom: 70%;"
+                            {%- endif -%}
+                            {%- if settings.cart_image_ratio == 'portrait' -%}
+                              style="padding-bottom: 125%;"
+                            {%- endif -%}
+                            {%- if settings.cart_image_ratio == 'square' -%}
+                              style="padding-bottom: 100%;"
+                            {%- endif -%}
+                          >
+                            {% assign width_ratio = 1 %}
+                            {% if item.image.width < item.image.height or settings.cart_image_ratio == 'landscape' %}
+                              {% assign width_ratio = 1 %}
+                            {% elsif item.image.width > item.image.height %}
+                              {% assign width_ratio = item.image.width
+                                | plus: 0.0
+                                | divided_by: item.image.height
+                                | round: 2
+                              %}
+                              {% if settings.cart_image_ratio == 'portrait' %}
+                                {% assign width_ratio = width_ratio | times: 1.3 %}
+                              {% endif %}
+                            {% endif %}
+                            {% assign width = 140 | times: width_ratio %}
+                            <img
+                              class="cart-item__image"
+                              src="{{ item.image | image_url: width: width }}"
+                              alt="{{ item.image.alt | escape }}"
+                              width="{{ width }}"
+                              height="auto"
+                              loading="lazy"
+                              {%- if settings.cart_image_fit == 'contain' -%}
+                                style="object-fit: contain;"
+                              {%- endif -%}
+                              {%- if settings.cart_image_fit == 'cover' -%}
+                                style="object-fit: cover;"
+                              {%- endif -%}
+                            >
+                            <a href="{{ item.url }}" class="cart-item__img_link"></a>
+                          </div>
+                        </div>
+                      {% endif %}
+                      <div class="cart-item__details">
+                        <div class="cart-item__details-wrapper">
+                          <div class="cart-item__info">
+                            {%- if settings.cart_show_vendor -%}
+                              <div class="cart-item__vendor card__subtitle">{{ item.product.vendor }}</div>
+                            {% endif %}
+                            <div class="cart-item__line">
+                              <div class="cart-item__col">
+                                <a href="{{ item.url }}" class="cart-item__name">{{ item.product.title | escape }}</a>
+
+                                {%- if item.product.has_only_default_variant == false
+                                  or item.properties.size != 0
+                                  or item.selling_plan_allocation != null
+                                -%}
+                                  <dl class="product-option__group secondary_text">
+                                    {%- if item.product.has_only_default_variant == false -%}
+                                      {%- for option in item.options_with_values -%}
+                                        <div class="product-option">
+                                          <dd>{{ option.value }}</dd>
+                                        </div>
+                                      {%- endfor -%}
+                                    {%- endif -%}
+                                    {%- for property in item.properties -%}
+                                      {%- assign property_first_char = property.first | slice: 0 -%}
+                                      {%- if property.last != blank and property_first_char != '_' -%}
+                                        <div class="product-option">
+                                          <dt>{{ property.first }}:</dt>
+                                          <dd>
+                                            {%- if property.last contains '/uploads/' -%}
+                                              <a
+                                                href="{{ property.last }}"
+                                                class="link"
+                                                target="_blank"
+                                                aria-describedby="a11y-new-window-message"
+                                              >
+                                                {{- property.last | split: '/' | last -}}
+                                              </a>
+                                            {%- else -%}
+                                              {{ property.last }}
+                                            {%- endif -%}
+                                          </dd>
+                                        </div>
+                                      {%- endif -%}
+                                    {%- endfor -%}
+                                  </dl>
+                                {%- endif -%}
+                              </div>
+
+                              <div class="cart-item__col cart-item__price-wrapper">
+                                {%- if item.original_price != item.final_price -%}
+                                  <div class="cart-item__discounted-prices">
+                                    <span class="visually-hidden">
+                                      {{- 'products.product.price.regular_price' | t -}}
+                                    </span>
+                                    <s class="cart-item__old-price">
+                                      {% if settings.currency_code_enabled %}
+                                        {{- item.original_price | money_with_currency -}}
+                                      {% else %}
+                                        {{- item.original_price | money -}}
+                                      {% endif %}
+                                    </s>
+                                    <span class="visually-hidden">{{ 'products.product.price.sale_price' | t }}</span>
+                                    <span class="cart-item__final-price cart-item__final-price_sale">
+                                      {% if settings.currency_code_enabled -%}
+                                        {{- item.final_price | money_with_currency -}}
+                                      {%- else -%}
+                                        {{- item.final_price | money -}}
+                                      {%- endif %}
+                                    </span>
+                                  </div>
+                                {%- else -%}
+                                  <div class="cart-item__final-price">
+                                    {% if settings.currency_code_enabled -%}
+                                      {{- item.original_price | money_with_currency -}}
+                                    {%- else -%}
+                                      {{- item.original_price | money -}}
+                                    {%- endif %}
+                                  </div>
+                                {%- endif -%}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="cart-item__bottom">
+                          <div class="cart-item__quantity-wrapper">
+                            <label class="visually-hidden" for="Quantity-{{ item.index | plus: 1 }}">
+                              {{- 'products.product.quantity.label' | t -}}
+                            </label>
+                            <quantity-input class="quantity">
+                              <button class="quantity__button no-js-hidden focus-inset" name="minus" type="button">
+                                <span class="visually-hidden">
+                                  {{- 'products.product.quantity.decrease' | t: product: item.product.title | escape -}}
+                                </span>
+                                {% render 'icon-minus' %}
+                              </button>
+                              <input
+                                class="quantity__input focus-inset"
+                                type="number"
+                                name="updates[]"
+                                value="{{ item.quantity }}"
+                                min="0"
+                                aria-label="{{ 'products.product.quantity.input_label' | t: product: item.product.title | escape }}"
+                                id="Quantity-{{ item.index | plus: 1 }}"
+                                data-index="{{ item.index | plus: 1 }}"
+                              >
+                              <button class="quantity__button no-js-hidden focus-inset" name="plus" type="button">
+                                <span class="visually-hidden">
+                                  {{- 'products.product.quantity.increase' | t: product: item.product.title | escape -}}
+                                </span>
+                                {% render 'icon-plus' %}
+                              </button>
+                            </quantity-input>
+                          </div>
+
+                          {% if item.quantity > 1 %}
+                            <div class="cart-item__total-price">
+                              <div class="cart-item__price-wrapper">
+                                {%- if item.original_line_price != item.final_line_price -%}
+                                  <dl class="cart-item__discounted-prices">
+                                    <dt class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</dt>
+                                    <dd>
+                                      <s class="cart-item__old-price">
+                                        {%- if settings.currency_code_enabled -%}
+                                          {{- item.original_line_price | money_with_currency -}}
+                                        {%- else -%}
+                                          {{- item.original_line_price | money -}}
+                                        {%- endif -%}
+                                      </s>
+                                    </dd>
+                                    <dt class="visually-hidden">{{ 'products.product.price.sale_price' | t }}</dt>
+                                    <dd class="cart-item__final-price cart-item__final-price_sale">
+                                      {% if settings.currency_code_enabled -%}
+                                        {{- item.final_line_price | money_with_currency -}}
+                                      {%- else -%}
+                                        {{- item.final_line_price | money -}}
+                                      {%- endif %}
+                                    </dd>
+                                  </dl>
+                                {%- else -%}
+                                  <span class="cart-item__final-price">
+                                    {%- if settings.currency_code_enabled -%}
+                                      {{- item.original_line_price | money_with_currency -}}
+                                    {%- else -%}
+                                      {{- item.original_line_price | money -}}
+                                    {%- endif -%}
+                                  </span>
+                                {%- endif -%}
+                              </div>
+                            </div>
+                          {% endif %}
+
+                          <cart-remove-button
+                            id="CartDrawer-Remove-{{ item.index | plus: 1 }}"
+                            data-index="{{ item.index | plus: 1 }}"
+                            class="cart-item__remove-icon"
+                          >
+                            <button
+                              type="button"
+                              class="cart-remove-button-svg focus-inset"
+                              aria-label="{{ 'sections.cart.remove_title' | t: title: item.title }}"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 16 16"
+                                aria-hidden="true"
+                                focusable="false"
+                                role="presentation"
+                                class="icon icon-remove"
+                              >
+                                <path d="M14 3h-3.53a3.07 3.07 0 00-.6-1.65C9.44.82 8.8.5 8 .5s-1.44.32-1.87.85A3.06 3.06 0 005.53 3H2a.5.5 0 000 1h1.25v10c0 .28.22.5.5.5h8.5c.28 0 .5-.22.5-.5V4H14a.5.5 0 000-1zM6.91 1.98c.23-.29.58-.48 1.09-.48s.85.19 1.09.48c.2.24.3.6.36 1.02h-2.9c.05-.42.17-.78.36-1.02zm4.84 11.52h-7.5V4h7.5v9.5z" fill="currentColor"/>
+                                <path d="M6.55 5.25a.5.5 0 00-.5.5v6a.5.5 0 001 0v-6a.5.5 0 00-.5-.5zM9.45 5.25a.5.5 0 00-.5.5v6a.5.5 0 001 0v-6a.5.5 0 00-.5-.5z" fill="currentColor"/>
+                              </svg>
+                            </button>
+                          </cart-remove-button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {%- endif -%}
+            <p id="CartDrawer-LiveRegionText" class="visually-hidden" role="status"></p>
+            <p id="CartDrawer-LineItemStatus" class="visually-hidden" aria-hidden="true" role="status">
+              {{ 'accessibility.loading' | t }}
+            </p>
+          </div>
+          <div id="CartDrawer-CartErrors" role="alert"></div>
+        </form>
+      </cart-drawer-items>
+
+      {%- assign upsell_collection = collections.acessorios -%}
+      {%- if upsell_collection == blank or upsell_collection.products_count == 0 -%}
+        {%- assign upsell_collection = collections.cinto -%}
+      {%- endif -%}
+
+      {% comment %} Bloqueia renderização no Atacado {% endcomment %}
+      {%- if upsell_collection != blank and upsell_collection.products_count > 0 and is_b2b_cart == false -%}
+        <div class="cart-drawer__upsell">
+          <p class="subtitle upsell-title">
+            {% if cart == empty %}Sugestões para você{% else %}Para completar o seu look{% endif %}
+          </p>
+
+          <div class="cart-drawer__upsell-wrapper">
+            <button
+              class="upsell-nav-btn upsell-nav-left focus-inset"
+              onclick="scrollUpsell('left')"
+              aria-label="Rolar para a esquerda"
+            >
+              ❮
+            </button>
+
+            <div class="cart-drawer__upsell-container" id="UpsellContainer">
+              {%- for upsell_product in upsell_collection.products limit: 6 -%}
+                {%- if upsell_product.available -%}
+                  {%- assign is_in_cart = false -%}
+                  {%- for item in cart.items -%}
+                    {%- if item.product.id == upsell_product.id -%}{%- assign is_in_cart = true -%}{%- endif -%}
+                  {%- endfor -%}
+
+                  {%- unless is_in_cart -%}
+                    <div class="upsell-item">
+                      <div class="upsell-item__image">
+                        <img
+                          src="{{ upsell_product.featured_image | image_url: width: 120 }}"
+                          alt="{{ upsell_product.title | escape }}"
+                          width="120"
+                          height="120"
+                          loading="lazy"
+                        >
+                      </div>
+                      <div class="upsell-item__details">
+                        <p class="upsell-item__title">{{ upsell_product.title }}</p>
+                        <div class="upsell-item__price-row">
+                          <p class="upsell-item__price">{{ upsell_product.price | money }}</p>
+                          <button
+                            type="button"
+                            class="upsell-add-btn focus-inset"
+                            onclick="addUpsellItem(this, {{ upsell_product.variants.first.id }})"
+                            aria-label="Adicionar {{ upsell_product.title }}"
+                          >
+                            <span class="icon-wrapper">
+                              {% render 'icon-plus-to-cart' %}
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  {%- endunless -%}
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+
+            <button
+              class="upsell-nav-btn upsell-nav-right focus-inset"
+              onclick="scrollUpsell('right')"
+              aria-label="Rolar para a direita"
+            >
+              ❯
+            </button>
+          </div>
+        </div>
+
+        <style>
+          .cart-drawer__upsell { border-top: 1px solid rgba(0,0,0,0.08); padding: 1.5rem 0 1rem; margin: 0 2rem; }
+          .upsell-title { font-size: 0.95rem; margin-bottom: 1.2rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; color: rgba(var(--color-foreground), 0.7); }
+
+          /* Wrapper e Navegação */
+          .cart-drawer__upsell-wrapper { position: relative; display: flex; align-items: center; }
+          .upsell-nav-btn { position: absolute; z-index: 2; background: #ffffff; border: 1px solid rgba(0,0,0,0.1); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); color: rgba(var(--color-foreground), 1); top: 35%; transform: translateY(-50%); transition: background 0.2s; }
+          .upsell-nav-btn:hover { background: #f4f4f4; }
+          .upsell-nav-left { left: -14px; }
+          .upsell-nav-right { right: -14px; }
+
+          /* Ocultar setas no mobile (permite swipe nativo) */
+          @media screen and (max-width: 768px) {
+            .upsell-nav-btn { display: none; }
+          }
+
+          /* Container e Itens */
+          .cart-drawer__upsell-container { display: flex; gap: 1.2rem; overflow-x: auto; padding-bottom: 0.5rem; scrollbar-width: none; width: 100%; scroll-behavior: smooth; }
+          .cart-drawer__upsell-container::-webkit-scrollbar { display: none; }
+          .upsell-item { min-width: 95px; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+
+          /* Imagens Padronizadas */
+          .upsell-item__image { width: 100%; height: 110px; background-color: #f9f9f9; border-radius: 4px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0.5rem; }
+          .upsell-item__image img { max-width: 100%; max-height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+
+          /* Detalhes */
+          .upsell-item__title { font-size: 0.85rem; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: rgba(var(--color-foreground), 1); text-transform: uppercase; }
+          .upsell-item__price-row { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
+          .upsell-item__price { font-size: 0.9rem; margin: 0; font-weight: 500; color: rgba(var(--color-foreground), 0.75); }
+
+          /* Botão de Adição com Ícone */
+          .upsell-add-btn { background: none; border: none; padding: 4px; padding-top: 0; cursor: pointer; color: rgba(var(--color-foreground), 1); display: flex; align-items: center; justify-content: center; transition: opacity 0.3s; scale: 1.1 }
+          .upsell-add-btn:hover { opacity: 0.6; scale: 1.3; color: rgba(47, 206, 7, 0.8)}
+          .upsell-add-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+          .icon-wrapper { width: 18px; height: 18px; display: block; }
+          .icon-wrapper svg { width: 100%; height: 100%; fill: currentColor; }
+        </style>
+
+        <script>
+          // Função de Rolagem Horizontal
+          function scrollUpsell(direction) {
+            const container = document.getElementById('UpsellContainer');
+            const scrollAmount = 140; // Aproximadamente a largura de um item + gap
+            if (direction === 'left') {
+              container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+              container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+          }
+
+          // Função de Adição via Ajax
+          function addUpsellItem(button, variantId) {
+            button.disabled = true;
+            button.style.opacity = '0.5';
+
+            let formData = {
+              items: [
+                {
+                  id: variantId,
+                  quantity: 1,
+                },
+              ],
+            };
+
+            fetch(window.Shopify.routes.root + 'cart/add.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(formData),
+            })
+              .then((response) => {
+                if (!response.ok) throw new Error('Erro ao adicionar produto');
+                return fetch(window.location.pathname + '?section_id=cart-drawer');
+              })
+              .then((response) => response.text())
+              .then((text) => {
+                const html = new DOMParser().parseFromString(text, 'text/html');
+                const newDrawerContent = html.querySelector('cart-drawer').innerHTML;
+                document.querySelector('cart-drawer').innerHTML = newDrawerContent;
+              })
+              .catch((error) => {
+                console.error('Erro:', error);
+                button.disabled = false;
+                button.style.opacity = '1';
+              });
+          }
+        </script>
+      {%- endif -%}
+
+      {%- if cart != empty -%}
+        {% assign active_coupon = cart.attributes.Cupom_Aplicado | upcase %}
+        {% assign discount_percentage = 0 %}
+        {% assign is_free_shipping = false %}
+        {% assign discount_amount = 0 %}
+
+        {% assign eligible_total_arcadia = 0 %}
+        {% assign eligible_total_clubeammis = 0 %}
+
+        {% for item in cart.items %}
+          {% assign in_arcadia = false %}
+          {% assign in_clubeammis = false %}
+
+          {% for collection in item.product.collections %}
+            {% assign handle = collection.handle | downcase %}
+            {% if handle == 'arcadia26' %}
+              {% assign in_arcadia = true %}
+            {% endif %}
+            {% if handle == 'couro' or handle == 'alfaiataria' or handle == 'aqva' %}
+              {% assign in_clubeammis = true %}
+            {% endif %}
+          {% endfor %}
+
+          {% if in_arcadia %}
+            {% assign eligible_total_arcadia = eligible_total_arcadia | plus: item.final_line_price %}
+          {% endif %}
+          {% if in_clubeammis %}
+            {% assign eligible_total_clubeammis = eligible_total_clubeammis | plus: item.final_line_price %}
+          {% endif %}
+        {% endfor %}
+
+        <div
+          id="Cart-Totals-Data"
+          data-raw-total="{{ cart.total_price }}"
+          data-arcadia="{{ eligible_total_arcadia }}"
+          data-clubeammis="{{ eligible_total_clubeammis }}"
+          style="display:none;"
+        ></div>
+
+        {% assign active_coupon_invalid = false %}
+        {% assign active_coupon_error_msg = '' %}
+
+        {% if active_coupon == 'PRIMEIRACOMPRA' or active_coupon == 'GIFT CARD' or active_coupon == 'GIFTCARD' or active_coupon == 'ANIV10' %}
+          {% if eligible_total_arcadia > 0 %}
+            {% assign discount_percentage = 15 %}
+            {% assign discount_multiplier = discount_percentage | divided_by: 100.0 %}
+            {% assign discount_amount = eligible_total_arcadia | times: discount_multiplier | round %}
+          {% else %}
+            {% assign active_coupon_invalid = true %}
+            {% assign active_coupon_error_msg = 'Cupom válido apenas para a coleção Arcádia.' %}
+          {% endif %}
+        {% elsif active_coupon == 'BDAY' %}
+          {% assign discount_percentage = 10 %}
+          {% assign discount_multiplier = discount_percentage | divided_by: 100.0 %}
+          {% assign discount_amount = cart.total_price | times: discount_multiplier | round %}
+        {% elsif active_coupon == 'CLUBEAMMIS' %}
+          {% if eligible_total_clubeammis > 0 %}
+            {% assign discount_percentage = 10 %}
+            {% assign discount_multiplier = discount_percentage | divided_by: 100.0 %}
+            {% assign discount_amount = eligible_total_clubeammis | times: discount_multiplier | round %}
+          {% else %}
+            {% assign active_coupon_invalid = true %}
+            {% assign active_coupon_error_msg = 'Cupom válido apenas para coleções Couro, Alfaiataria e Aqva.' %}
+          {% endif %}
+          {% comment %}
+            {% elsif active_coupon == 'FRETEGRÁTIS' or active_coupon == 'FRETEGRATIS' %}
+            {% if cart.total_price >= 200000 %}
+              {% assign is_free_shipping = true %}
+            {% else %}
+              {% assign active_coupon_invalid = true %}
+              {% assign active_coupon_error_msg = 'Valor mínimo de R$ 2.000,00 não atingido.' %}
+            {% endif %}
+          {% endcomment %}
+        {% elsif active_coupon != blank %}
+          {% assign active_coupon_invalid = true %}
+          {% assign active_coupon_error_msg = 'Cupom inválido.' %}
+        {% endif %}
+
+        {% assign final_total = cart.total_price | minus: discount_amount %}
+
+        <div class="drawer__footer">
+          <div class="cart-drawer__footer" {{ block.shopify_attributes }}>
+            {% unless is_b2b_cart %}
+              <details
+                class="cart-drawer__accordion-item"
+                id="CartDrawer-DiscountAccordion"
+                {% if active_coupon != blank %}
+                  open
+                {% endif %}
+              >
+                <summary class="accordion-summary">
+                  <span class="subtitle">Adicionar cupom de desconto</span>
+                  <svg
+                    viewBox="0 0 14 10"
+                    fill="none"
+                    aria-hidden="true"
+                    focusable="false"
+                    class="icon icon-caret"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M10.954 3.046a.5.5 0 0 1 .707.708l-4.339 4.338a.5.5 0 0 1-.707 0L2.276 3.754a.5.5 0 0 1 .707-.708l3.985 3.986 3.986-3.986z" fill="currentColor"></path>
+                  </svg>
+                </summary>
+                <div class="accordion-wrapper" id="CartDrawer-DiscountWrapper">
+                  <div class="accordion-input-container">
+                    <span
+                      class="accordion-icon {% if active_coupon == blank %}hidden{% endif %}"
+                      id="CartDrawer-DiscountIcon"
+                    >
+                      {%- render 'icon-discount' -%}
+                    </span>
+                    <input
+                      type="text"
+                      id="CartDrawer-Discount"
+                      class="field__input custom-input"
+                      placeholder=""
+                      value="{{ active_coupon }}"
+                      {% if active_coupon != blank %}
+                        disabled
+                      {% endif %}
+                    >
+                  </div>
+                  <button
+                    type="button"
+                    class="button button--secondary focus-inset {% if active_coupon != blank %}hidden{% endif %} custom-btn"
+                    id="CartDrawer-ApplyDiscount"
+                  >
+                    Aplicar
+                  </button>
+                  <button
+                    type="button"
+                    class="button button--tertiary focus-inset {% if active_coupon == blank %}hidden{% endif %} custom-btn"
+                    id="CartDrawer-RemoveDiscount"
+                  >
+                    Remover
+                  </button>
+                </div>
+                <p
+                  id="discount-message-area"
+                  class="accordion-message {% if active_coupon == blank %}hidden{% elsif active_coupon_invalid %}error{% else %}success{% endif %}"
+                >
+                  {% if is_free_shipping %}
+                    <strong>Frete Grátis</strong> ativado.
+                  {% elsif discount_percentage > 0 %}
+                    {% if active_coupon == 'BDAY' %}
+                      <strong>{{ discount_percentage }}% OFF</strong> ativado para todo o pedido.
+                    {% else %}
+                      <strong>{{ discount_percentage }}% OFF</strong> ativado para itens elegíveis.
+                    {% endif %}
+                  {% elsif active_coupon_invalid %}
+                    {{ active_coupon_error_msg }}
+                  {% endif %}
+                </p>
+              </details>
+            {% endunless %}
+            <style>
+              .cart-drawer__accordion-item { margin-bottom: 1.5rem; }
+              .accordion-summary { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; cursor: pointer; list-style: none; position: relative; z-index: 20; border-bottom: 1px solid rgba(0,0,0,0.08); }
+              .accordion-summary::-webkit-details-marker { display: none; }
+              .accordion-summary .subtitle { font-size: 1.1rem; color: rgba(var(--color-foreground), 1); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+              .accordion-summary svg { width: 12px; transition: transform 0.3s ease; opacity: 0.6; }
+              .cart-drawer__accordion-item[open] .accordion-summary svg { transform: rotate(180deg); }
+              .accordion-wrapper { display: flex; gap: 1rem; padding-top: 1.5rem; padding-bottom: 0.5rem; position: relative; z-index: 20; align-items: stretch; }
+              .accordion-input-container { position: relative; flex-grow: 1; display: flex; align-items: center; }
+              .accordion-icon { position: absolute; left: 1rem; display: flex; align-items: center; justify-content: center; color: #2e7d32; width: 18px; height: 18px; z-index: 2;}
+              .accordion-icon svg { width: 100%; height: 100%; fill: currentColor; }
+
+              .custom-input { width: 100%; min-height: 40px !important; pointer-events: auto !important; border: 1px solid rgba(0,0,0,0.2) !important; padding-left: 1rem; transition: all 0.3s ease; background: transparent; }
+              #CartDrawer-Discount { text-transform: uppercase; }
+              .custom-input:disabled { background-color: transparent; color: #2e7d32; font-weight: 600; border-color: #2e7d32 !important; padding-left: 2.8rem; cursor: default; opacity: 1; -webkit-text-fill-color: #2e7d32; }
+              .custom-btn { min-height: 40px !important; padding: 0 1.5rem !important; min-width: 100px; pointer-events: auto !important; }
+
+              .accordion-message { font-size: 1.1rem; margin-top: 0.5rem; font-weight: 500; }
+              .accordion-message.success { color: #2e7d32; }
+              .accordion-message.error { color: #d32f2f; }
+
+              .shipping-results { margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.03); border-radius: 4px; font-size: 1.1rem; }
+              .shipping-results ul { list-style: none; padding: 0; margin: 0; }
+              .shipping-results li { display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+              .shipping-results li:last-child { border-bottom: none; padding-bottom: 0; }
+
+              .hidden { display: none !important; }
+            </style>
+
+            <div
+              class="totals"
+              role="status"
+              style="display: flex; flex-direction: column; width: 100%; margin-top: 1rem;"
+            >
+              <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 0.8rem;">
+                <span class="subtitle" style="font-size: 1rem;">Subtotal</span>
+                <span class="secondary_text" id="CartDrawer-OriginalTotal">
+                  {{- cart.total_price | money_with_currency -}}
+                </span>
+              </div>
+
+              <div
+                id="CartDrawer-DiscountRow"
+                style="display: {% if discount_percentage > 0 %}flex{% else %}none{% endif %}; justify-content: space-between; width: 100%; margin-bottom: 0.8rem; color: #2e7d32;"
+              >
+                <span class="subtitle" style="font-size: 1rem;">Desconto</span>
+                <span id="CartDrawer-DiscountValue" style="font-weight: 600;"
+                  >- {{ discount_amount | money_with_currency -}}
+                </span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 1rem;">
+                <h3 class="totals__subtotal subtitle" style="margin: 0; font-size: 1.2rem;">Total</h3>
+                <p
+                  class="totals__subtotal-value secondary_text"
+                  id="CartDrawer-FinalTotal"
+                  style="margin: 0; font-size: 1.3rem; font-weight: 600; color: rgba(var(--color-foreground), 1);"
+                >
+                  {{ final_total | money_with_currency }}
+                </p>
+              </div>
+
+              {% assign max_installments = settings.max_installments %}
+              {% assign min_installment_value = settings.min_installment_value | times: 100 %}
+              {% assign calculated_installments = final_total | divided_by: min_installment_value %}
+
+              {% if calculated_installments > max_installments %}
+                {% assign final_installment_count = max_installments %}
+              {% else %}
+                {% assign final_installment_count = calculated_installments %}
+              {% endif %}
+
+              <div style="text-align: right; width: 100%; margin-top: 0.5rem;">
+                {% if final_installment_count >= 1 %}
+                  {% assign installment_value = final_total | divided_by: final_installment_count %}
+                  <p
+                    class="installment-text"
+                    id="CartDrawer-InstallmentDisplay"
+                    style="font-size: 1.1rem; margin: 0; color: rgba(var(--color-foreground), 0.75);"
+                  >
+                    em até <strong>{{ final_installment_count }}x</strong> de
+                    <strong>{{ installment_value | money }}</strong> sem juros
+                  </p>
+                {% else %}
+                  <p
+                    class="installment-text"
+                    id="CartDrawer-InstallmentDisplay"
+                    style="display: none; font-size: 1.1rem; margin: 0; color: rgba(var(--color-foreground), 0.75);"
+                  ></p>
+                {% endif %}
+              </div>
+
+              <small class="tax-note secondary_text" style="display: block; text-align: right; margin-top: 1.5rem;">
+                {% if is_free_shipping %}
+                  Frete: <strong style="color:#2e7d32;">Grátis</strong> (Aplicado via cupom)
+                {% else %}
+                  Impostos e frete calculados no checkout.
+                {% endif %}
+              </small>
+            </div>
+
+            <div class="cart-drawer__bottom">
+              <div class="cart__ctas" {{ block.shopify_attributes }}>
+                <button
+                  type="submit"
+                  id="CartDrawer-Checkout"
+                  class="cart__checkout-button button button--{{ settings.cart_button_style }} button--full-width focus-inset"
+                  name="checkout"
+                  form="CartDrawer-Form"
+                >
+                  <span> {{ 'sections.cart.checkout' | t }} </span>
+                </button>
+              </div>
+            </div>
+          </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {% comment %}
+    <script>
+      (function () {
+        'use strict';
+
+        // Configuração
+        const MIN_SPEND = 200000; // Meta de R$ 2.000,00 em centavos da Shopify
+        const routesRoot =
+          window.Shopify && window.Shopify.routes && window.Shopify.routes.root ? window.Shopify.routes.root : '/';
+
+        // Formatador de Moeda
+        const formatMoney = (cents) => {
+          return 'R$ ' + (cents / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        };
+
+        // Função central de atualização de UI
+        const updateFreeShippingUI = async () => {
+          try {
+            // Consome a API nativa da Shopify de forma assíncrona
+            const response = await fetch(routesRoot + 'cart.js');
+            const cart = await response.json();
+            const total = cart.total_price;
+
+            // Elementos do DOM
+            const circularProgress = document.getElementById('CartCircularProgressIndicator');
+            const circularValue = document.getElementById('CartCircularProgressValue');
+            const bannerDefault = document.getElementById('CartShippingMessageDefault');
+            const bannerSuccess = document.getElementById('CartShippingMessageSuccess');
+            const bannerContainer = document.getElementById('CartShippingBannerContainer');
+
+            if (!circularProgress || !circularValue || !bannerDefault || !bannerSuccess) return;
+
+            let percent = (total / MIN_SPEND) * 100;
+            if (percent > 100) percent = 100;
+
+            // Lógica de Decisão: Meta Atingida vs Faltante
+            if (total >= MIN_SPEND) {
+              bannerDefault.style.display = 'none';
+              bannerSuccess.style.display = 'block';
+              bannerContainer.classList.add('shipping-success-anim');
+
+              circularProgress.style.background = `conic-gradient(#2e7d32 100%, #E5E5E5 100%)`;
+              circularValue.style.color = '#2e7d32';
+              circularValue.textContent = '100%';
+            } else {
+              const remaining = MIN_SPEND - total;
+              bannerDefault.innerHTML = `Faltam <strong>${formatMoney(remaining)}</strong> para ganhar frete grátis.`;
+              bannerDefault.style.display = 'block';
+              bannerSuccess.style.display = 'none';
+              bannerContainer.classList.remove('shipping-success-anim');
+
+              circularProgress.style.background = `conic-gradient(#000000 ${percent}%, #E5E5E5 ${percent}%)`;
+              circularValue.style.color = '#000000';
+              circularValue.textContent = Math.floor(percent) + '%';
+            }
+          } catch (error) {
+            console.error('[AMMIS] Erro ao sincronizar estado do carrinho:', error);
+          }
+        };
+
+        // 1. Gatilho de Inicialização (Primeira Carga)
+        document.addEventListener('DOMContentLoaded', updateFreeShippingUI);
+
+        // 2. Fetch Interceptor: Detecta ações de Add/Remove/Update sem recarregar a página
+        const originalFetch = window.fetch;
+        window.fetch = async function () {
+          const response = await originalFetch.apply(this, arguments);
+          const url = arguments[0];
+
+          // Filtra exclusivamente chamadas da API do carrinho
+          if (typeof url === 'string' && url.match(/\/cart\/(change|add|update|clear)/i)) {
+            // Clona a promessa para não quebrar a lógica nativa do tema
+            response
+              .clone()
+              .json()
+              .then(() => {
+                updateFreeShippingUI();
+              })
+              .catch(() => {}); // Falha silenciosa em caso de requisição não json
+          }
+          return response;
+        };
+      })();
+    </script>
+  {% endcomment %}
+</cart-drawer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const formatMoney = (cents) => {
+      return (
+        'R$ ' + (cents / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' BRL'
+      );
+    };
+
+    const updateInstallmentsUI = (totalCents) => {
+      const maxInstallments = {{ settings.max_installments | json }};
+      const minInstallmentValue = {{ settings.min_installment_value | times: 100 | json }};
+      let count = Math.floor(totalCents / minInstallmentValue);
+
+      if (count > maxInstallments) count = maxInstallments;
+
+      const installmentDisplay = document.getElementById('CartDrawer-InstallmentDisplay');
+
+      if (installmentDisplay) {
+        if (count >= 1) {
+          const parcelValue = totalCents / count;
+          const formattedParcel = formatMoney(Math.round(parcelValue)).replace(' BRL', '');
+
+          installmentDisplay.innerHTML = `em até <strong>${count}x</strong> de <strong>${formattedParcel}</strong> sem juros`;
+          installmentDisplay.style.display = 'block';
+        } else {
+          installmentDisplay.innerHTML = '';
+          installmentDisplay.style.display = 'none';
+        }
+      }
+    };
+
+    // --- MÁSCARA DO CEP ---
+    const cepInput = document.getElementById('CartDrawer-CEP');
+    if (cepInput) {
+      cepInput.addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
+        if (value.length > 5) {
+          value = value.replace(/^(\d{5})(\d)/, '$1-$2'); // Insere o traço
+        }
+        e.target.value = value;
+      });
+    }
+
+    document.body.addEventListener('click', function (e) {
+      // --- LÓGICA DO SIMULADOR DE FRETE ---
+      if (e.target && e.target.id === 'CartDrawer-CalculateShipping') {
+        e.preventDefault();
+        const cepRaw = document.getElementById('CartDrawer-CEP').value;
+        const cepLimpo = cepRaw.replace(/\D/g, '');
+        const resultsArea = document.getElementById('shipping-results-area');
+        const btn = document.getElementById('CartDrawer-CalculateShipping');
+
+        if (cepLimpo.length === 8) {
+          btn.innerText = 'Calculando...';
+          btn.disabled = true;
+          resultsArea.innerHTML = '';
+          resultsArea.classList.add('hidden');
+
+          // PASSO 1: Preparar as taxas de frete
+          fetch('/cart/prepare_shipping_rates.json', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({
+              shipping_address: {
+                country: 'BR',
+                zip: cepLimpo,
+              },
+              include_carrier_rates: true,
+            }),
+          })
+            .then((response) => {
+              if (response.ok) {
+                // PASSO 2: Polling para buscar as taxas calculadas
+                return new Promise((resolve, reject) => {
+                  let attempts = 0;
+                  const maxAttempts = 10;
+
+                  const pollRates = () => {
+                    attempts++;
+
+                    fetch(
+                      `/cart/async_shipping_rates.json?shipping_address[country]=BR&shipping_address[zip]=${cepLimpo}&include_carrier_rates=true`,
+                      {
+                        headers: {
+                          'X-Requested-With': 'XMLHttpRequest',
+                        },
+                      }
+                    )
+                      .then((res) => res.json())
+                      .then((data) => {
+                        // Se as taxas ainda estão sendo processadas
+                        if (data.status === 'pending' && attempts < maxAttempts) {
+                          setTimeout(pollRates, 1000);
+                        }
+                        // Se as taxas estão prontas
+                        else if (data.shipping_rates) {
+                          resolve(data);
+                        }
+                        // Se deu erro ou não há taxas
+                        else {
+                          reject({ type: 'no_rates', data });
+                        }
+                      })
+                      .catch((err) => reject({ type: 'fetch_error', error: err }));
+                  };
+
+                  // Começa o polling após 1 segundo
+                  setTimeout(pollRates, 1000);
+                });
+              } else {
+                throw new Error('Erro ao preparar o frete');
+              }
+            })
+            .then((data) => {
+              btn.innerText = 'Calcular';
+              btn.disabled = false;
+              resultsArea.classList.remove('hidden');
+
+              if (data.shipping_rates && data.shipping_rates.length > 0) {
+                let html = '<ul>';
+                data.shipping_rates.forEach((rate) => {
+                  let priceCents = Math.round(parseFloat(rate.price) * 100);
+                  let priceFormatted =
+                    priceCents === 0
+                      ? '<span style="color:#2e7d32;font-weight:bold;">Grátis</span>'
+                      : `<strong>${formatMoney(priceCents).replace(' BRL', '')}</strong>`;
+
+                  html += `<li>
+                     <span style="color: rgba(var(--color-foreground), 0.85);">${rate.name}${
+                    rate.delivery_days ? ` (${rate.delivery_days} dias)` : ''
+                  }</span>
+                     ${priceFormatted}
+                   </li>`;
+                });
+                html += '</ul>';
+                resultsArea.innerHTML = html;
+              } else {
+                resultsArea.innerHTML =
+                  '<p class="accordion-message error">Nenhuma opção de frete encontrada para este CEP.</p>';
+              }
+            })
+            .catch((error) => {
+              btn.innerText = 'Calcular';
+              btn.disabled = false;
+              resultsArea.classList.remove('hidden');
+
+              console.error('Erro detalhado:', error);
+
+              let errorMessage = 'Erro ao consultar o frete.';
+
+              if (error.type === 'no_rates') {
+                errorMessage =
+                  'Não há opções de frete configuradas para este CEP. Verifique as configurações de frete no painel Shopify.';
+              } else if (error.response) {
+                // Se for um erro HTTP
+                if (error.response.status === 422) {
+                  errorMessage = 'Não foi possível calcular o frete. Verifique se o CEP é válido.';
+                }
+              }
+
+              resultsArea.innerHTML = `<p class="accordion-message error">${errorMessage}</p>`;
+            });
+        } else {
+          resultsArea.classList.remove('hidden');
+          resultsArea.innerHTML = '<p class="accordion-message error">Digite um CEP válido com 8 dígitos.</p>';
+        }
+      }
+
+      // --- LÓGICA DO CUPOM DE DESCONTO ---
+      if (e.target && e.target.id === 'CartDrawer-ApplyDiscount') {
+        e.preventDefault();
+        const discountInput = document.getElementById('CartDrawer-Discount');
+        const applyBtn = document.getElementById('CartDrawer-ApplyDiscount');
+        const removeBtn = document.getElementById('CartDrawer-RemoveDiscount');
+        const icon = document.getElementById('CartDrawer-DiscountIcon');
+        const msgArea = document.getElementById('discount-message-area');
+        const taxNote = document.querySelector('.tax-note');
+
+        const originalTotalDisplay = document.getElementById('CartDrawer-OriginalTotal');
+        const discountRow = document.getElementById('CartDrawer-DiscountRow');
+        const discountValueDisplay = document.getElementById('CartDrawer-DiscountValue');
+        const finalTotalDisplay = document.getElementById('CartDrawer-FinalTotal');
+
+        // Resgate dos subtotais estruturados no Liquid
+        const totalsDataEl = document.getElementById('Cart-Totals-Data');
+        const rawTotal = totalsDataEl ? parseInt(totalsDataEl.dataset.rawTotal, 10) : 0;
+        const arcadiaTotal = totalsDataEl ? parseInt(totalsDataEl.dataset.arcadia, 10) : 0;
+        const clubeammisTotal = totalsDataEl ? parseInt(totalsDataEl.dataset.clubeammis, 10) : 0;
+
+        const validCoupons = {
+          PRIMEIRACOMPRA: {
+            type: 'percent',
+            val: 15,
+            eligibleTotal: arcadiaTotal,
+            errorMsg: 'Cupom válido apenas para a coleção Arcádia.',
+          },
+          GIFTCARD: {
+            type: 'percent',
+            val: 15,
+            eligibleTotal: arcadiaTotal,
+            errorMsg: 'Cupom válido apenas para a coleção Arcádia.',
+          },
+          
+          BDAY: {
+            type: 'percent',
+            val: 10,
+            eligibleTotal: rawTotal,
+            appliesToEntireOrder: true,
+            errorMsg: '',
+          },
+          ANIV10: {
+            type: 'percent',
+            val: 15,
+            eligibleTotal: arcadiaTotal,
+            errorMsg: 'Cupom válido apenas para a coleção Arcádia.',
+          },
+          CLUBEAMMIS: {
+            type: 'percent',
+            val: 10,
+            eligibleTotal: clubeammisTotal,
+            errorMsg: 'Cupom válido apenas para coleções Couro, Alfaiataria e Aqva.',
+          },
+          FRETEGRÁTIS: {
+            type: 'shipping_min',
+            val: 200000,
+            eligibleTotal: rawTotal,
+            errorMsg: 'Valor mínimo de R$ 2.000,00 não atingido.',
+          },
+          FRETEGRATIS: {
+            type: 'shipping_min',
+            val: 200000,
+            eligibleTotal: rawTotal,
+            errorMsg: 'Valor mínimo de R$ 2.000,00 não atingido.',
+          },
+        };
+
+        if (discountInput && discountInput.value.trim() !== '') {
+          let code = discountInput.value.trim().toUpperCase();
+
+          if (validCoupons.hasOwnProperty(code)) {
+            let coupon = validCoupons[code];
+
+            // Validação de elegibilidade (seja por falta de itens na coleção ou valor mínimo de frete)
+            if (
+              (coupon.type === 'percent' && coupon.eligibleTotal <= 0) ||
+              (coupon.type === 'shipping_min' && rawTotal < coupon.val)
+            ) {
+              msgArea.classList.remove('hidden', 'success');
+              msgArea.classList.add('error');
+              msgArea.innerHTML = coupon.errorMsg;
+              return;
+            }
+
+            discountInput.disabled = true;
+            discountInput.value = code;
+            icon.classList.remove('hidden');
+            applyBtn.classList.add('hidden');
+            removeBtn.classList.remove('hidden');
+            msgArea.classList.remove('hidden', 'error');
+            msgArea.classList.add('success');
+
+            if (coupon.type === 'percent') {
+              let discountAmount = Math.round(coupon.eligibleTotal * (coupon.val / 100));
+              let finalTotal = rawTotal - discountAmount;
+
+              msgArea.innerHTML = coupon.appliesToEntireOrder
+                ? ` <strong>${coupon.val}% OFF</strong> ativado para todo o pedido.`
+                : ` <strong>${coupon.val}% OFF</strong> ativado para itens elegíveis.`;
+              if (discountRow) {
+                discountRow.style.display = 'flex';
+                discountValueDisplay.innerHTML = `- ${formatMoney(discountAmount)}`;
+              }
+              if (finalTotalDisplay) finalTotalDisplay.innerHTML = formatMoney(finalTotal);
+              if (taxNote) taxNote.innerHTML = 'Impostos e frete calculados no checkout.';
+
+              updateInstallmentsUI(finalTotal);
+            } else if (coupon.type === 'shipping_min') {
+              msgArea.innerHTML = ' <strong>Frete Grátis</strong> ativado.';
+              if (discountRow) discountRow.style.display = 'none';
+              if (finalTotalDisplay) finalTotalDisplay.innerHTML = formatMoney(rawTotal);
+              if (taxNote)
+                taxNote.innerHTML = ' Frete: <strong style="color:#2e7d32;">Grátis</strong> (Aplicado via cupom)';
+
+              updateInstallmentsUI(rawTotal);
+            }
+
+            fetch(window.Shopify.routes.root + 'cart/update.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ attributes: { Cupom_Aplicado: code } }),
+            });
+          } else {
+            msgArea.classList.remove('hidden', 'success');
+            msgArea.classList.add('error');
+            msgArea.innerHTML = 'Cupom inválido ou expirado.';
+          }
+        }
+      }
+      if (e.target && e.target.id === 'CartDrawer-RemoveDiscount') {
+        e.preventDefault();
+        const discountInput = document.getElementById('CartDrawer-Discount');
+        const applyBtn = document.getElementById('CartDrawer-ApplyDiscount');
+        const removeBtn = document.getElementById('CartDrawer-RemoveDiscount');
+        const icon = document.getElementById('CartDrawer-DiscountIcon');
+        const msgArea = document.getElementById('discount-message-area');
+        const taxNote = document.querySelector('.tax-note');
+
+        const discountRow = document.getElementById('CartDrawer-DiscountRow');
+        const finalTotalDisplay = document.getElementById('CartDrawer-FinalTotal');
+        const totalsDataEl = document.getElementById('Cart-Totals-Data');
+        const rawTotal = totalsDataEl ? parseInt(totalsDataEl.dataset.rawTotal, 10) : 0;
+
+        discountInput.disabled = false;
+        discountInput.value = '';
+        icon.classList.add('hidden');
+        removeBtn.classList.add('hidden');
+        applyBtn.classList.remove('hidden');
+        msgArea.classList.add('hidden');
+
+        if (discountRow) discountRow.style.display = 'none';
+        if (finalTotalDisplay) finalTotalDisplay.innerHTML = formatMoney(rawTotal);
+        if (taxNote) taxNote.innerHTML = 'Impostos e frete calculados no checkout.';
+
+        updateInstallmentsUI(rawTotal);
+
+        fetch(window.Shopify.routes.root + 'cart/update.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ attributes: { Cupom_Aplicado: '' } }),
+        });
+      }
+    });
+  });
+</script>

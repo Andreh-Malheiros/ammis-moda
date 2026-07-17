@@ -1,0 +1,212 @@
+{{ 'section-revendedor-page.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  {% render 'section-margin' %}
+{%- endstyle -%}
+
+<div class="revendedor-page revendedor-page--{{ section.settings.alignment }} color-{{ section.settings.color_scheme }} background">
+  <div class="container">
+    <div class="revendedor-page__inner{% if section.settings.image != blank %} revendedor-page__inner--with-image{% endif %}">
+      <div class="revendedor-page__content">
+        {%- if section.settings.heading != blank -%}
+          <h1 class="revendedor-page__heading title--section title--section-m-none h1">
+            {{ section.settings.heading | escape }}
+          </h1>
+        {%- endif -%}
+
+        {%- if section.settings.text != blank -%}
+          <div class="revendedor-page__text rte">
+            {{ section.settings.text }}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.button_label != blank -%}
+          <a
+            {% if section.settings.button_link != blank %}
+              href="{{ section.settings.button_link }}"
+            {% else %}
+              aria-disabled="true"
+            {% endif %}
+            class="revendedor-page__button button button--{{ section.settings.button_style }} focus-inset"
+          >
+            <span>{{ section.settings.button_label | escape }}</span>
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.image != blank -%}
+        <div class="revendedor-page__media media">
+          {{
+            section.settings.image
+            | image_url: width: 1800
+            | image_tag:
+              loading: 'lazy',
+              widths: '360, 533, 720, 940, 1066, 1200, 1400, 1600, 1800',
+              sizes: '(min-width: 990px) 45vw, 100vw',
+              class: 'revendedor-page__image'
+          }}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Revendedor - confirmacao",
+  "tag": "section",
+  "class": "revendedor-page-section spaced-section",
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "t:sections.all.color_scheme.label"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.rich-text.settings.alignment.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.rich-text.settings.alignment.options__2.label"
+        }
+      ],
+      "default": "center",
+      "label": "t:sections.rich-text.settings.alignment.label"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Cadastro enviado",
+      "label": "t:sections.all.heading.label"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "default": "<p>Recebemos suas informacoes. Nossa equipe analisara o cadastro e entrara em contato caso haja alinhamento com o perfil comercial da AMMIS.</p>",
+      "label": "t:sections.all.text.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.all.image.label"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "Voltar para a loja",
+      "label": "t:sections.all.button.button_label.label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:sections.all.button.button_link.label"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "options": [
+        {
+          "value": "primary",
+          "label": "t:sections.all.button.button_style.options__1.label"
+        },
+        {
+          "value": "secondary",
+          "label": "t:sections.all.button.button_style.options__2.label"
+        },
+        {
+          "value": "tertiary",
+          "label": "t:sections.all.button.button_style.options__3.label"
+        },
+        {
+          "value": "simple",
+          "label": "t:sections.all.button.button_style.options__4.label"
+        }
+      ],
+      "default": "secondary",
+      "label": "t:sections.all.button.button_style.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.section-margin.header.content"
+    },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "m",
+      "label": "t:sections.all.section-margin.margin_top.label"
+    },
+    {
+      "type": "select",
+      "id": "margin_bottom",
+      "options": [
+        {
+          "value": "no-indent",
+          "label": "t:sections.all.section-margin.options__1.label"
+        },
+        {
+          "value": "xs",
+          "label": "t:sections.all.section-margin.options__2.label"
+        },
+        {
+          "value": "s",
+          "label": "t:sections.all.section-margin.options__3.label"
+        },
+        {
+          "value": "m",
+          "label": "t:sections.all.section-margin.options__4.label"
+        },
+        {
+          "value": "l",
+          "label": "t:sections.all.section-margin.options__5.label"
+        },
+        {
+          "value": "xl",
+          "label": "t:sections.all.section-margin.options__6.label"
+        }
+      ],
+      "default": "m",
+      "label": "t:sections.all.section-margin.margin_bottom.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Revendedor - confirmacao"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,129 @@
+<div class="arcadia-promo-navigation">
+  <p class="arcadia-promo-title">
+    Selecione <strong class="destaque">3 produtos</strong> da mesma categoria para liberar seu voucher:
+  </p>
+  <div class="arcadia-buttons-container">
+    <a href="/collections/arcadia-too-basic" class="arcadia-btn btn-too-basic">
+      <span class="arcadia-btn-title">Too Basic</span>
+      <span class="arcadia-btn-value">Voucher R$ 1.000</span>
+    </a>
+    <a href="/collections/arcadia-specials" class="arcadia-btn btn-specials">
+      <span class="arcadia-btn-title">Specials</span>
+      <span class="arcadia-btn-value">Voucher R$ 1.500</span>
+    </a>
+    <a href="/collections/arcadia-leather" class="arcadia-btn btn-leather">
+      <span class="arcadia-btn-title">Leather</span>
+      <span class="arcadia-btn-value">Voucher R$ 3.000</span>
+    </a>
+  </div>
+</div>
+
+<style>
+    .arcadia-promo-navigation {
+      width: 100%;
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 15px;
+      text-align: center;
+      font-family: inherit;
+    }
+    
+    .arcadia-promo-title {
+      font-size: 14px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #333;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+    
+    .arcadia-promo-title .destaque {
+      font-weight: bold;
+      font-size: 1.2em;
+      display: inline;
+    }
+    
+    .arcadia-buttons-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    /* Configuração estrutural do botão principal */
+    .arcadia-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 160px;
+      padding: 10px 24px; /* Padding vertical levemente reduzido para compensar as duas linhas */
+      text-decoration: none;
+      text-align: center;
+      border: 1px solid #000;
+      background-color: #fff;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    /* Estilização da Categoria */
+    .arcadia-btn-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #000;
+      transition: color 0.3s ease;
+    }
+    
+    /* Estilização do Valor do Voucher */
+    .arcadia-btn-value {
+      font-size: 11px;
+      font-weight: 400;
+      color: #737373; /* Cinza sutil para hierarquia visual */
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+      text-transform: none;
+      transition: color 0.3s ease;
+    }
+    
+    /* Estado Hover: Inversão de Cores */
+    .arcadia-btn:hover {
+      background-color: #000;
+      border-color: #000;
+    }
+    
+    .arcadia-btn:hover .arcadia-btn-title {
+      color: #fff;
+    }
+    
+    .arcadia-btn:hover .arcadia-btn-value {
+      color: #e0e0e0; /* Branco levemente ofuscado para manter a hierarquia de leitura */
+    }
+    
+    /* Responsividade */
+    @media (max-width: 767px) {
+      .arcadia-buttons-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      .arcadia-btn {
+        width: 100%;
+        max-width: 280px;
+        padding: 12px 20px;
+      }
+    }
+</style>
+
+{% schema %}
+{
+  "name": "Navegação Arcádia",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Navegação Arcádia"
+    }
+  ]
+}
+{% endschema %}

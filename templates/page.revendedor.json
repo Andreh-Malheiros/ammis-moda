@@ -1,0 +1,20 @@
+{
+  "sections": {
+    "main": {
+      "type": "revendedor-page",
+      "settings": {
+        "enable_content": true,
+        "color_scheme": "background-1",
+        "alignment": "center",
+        "heading": "Seja um Revendedor AMMIS",
+        "text": "<p>Pagina em preparacao. Esta estrutura sera usada para a futura captacao de revendedores.</p>",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "secondary",
+        "margin_top": "m",
+        "margin_bottom": "m"
+      }
+    }
+  },
+  "order": ["main"]
+}

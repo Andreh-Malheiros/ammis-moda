@@ -1,0 +1,840 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}" data-scheme="{{ settings.color_scheme }}">
+  <head>
+    <meta charset="utf-8">
+    {{ content_for_header }}
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    {%- unless settings.type_header_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
+
+    <title>
+      {{ page_title }}
+      - Acesso B2B
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    {% render 'meta-tags' %}
+
+    <script src="{{ 'constants.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'pubsub.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
+
+    {%- if settings.quickview_show or settings.add_to_cart_enabled or settings.show_on_mobile -%}
+      <script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+    {% endif %}
+
+    {%- liquid
+      assign body_font_ligh = settings.type_body_font | font_modify: 'weight', '300'
+      assign body_font_regular = settings.type_body_font | font_modify: 'weight', '400'
+      assign body_font_medium = settings.type_body_font | font_modify: 'weight', '500'
+      assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
+      assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
+      assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+      assign heading_font_italic = settings.type_header_font | font_modify: 'style', 'italic'
+    %}
+
+    {% style %}
+            {{ settings.type_header_font | font_face: font_display: 'swap' }}
+            {{ settings.type_header_font_card | font_face: font_display: 'swap' }}
+            {{ settings.type_text_font_card | font_face: font_display: 'swap' }}
+            {{ settings.type_body_font | font_face: font_display: 'swap' }}
+            {{ settings.type_subtitle_font | font_face: font_display: 'swap' }}
+            {{ settings.type_button_font | font_face: font_display: 'swap' }}
+            {{ settings.type_header_menu_font | font_face: font_display: 'swap' }}
+            {{ settings.type_footer_menu_font | font_face: font_display: 'swap' }}
+            {{ settings.type_popups_heading_font | font_face: font_display: 'swap' }}
+            {{ settings.type_popups_text_font | font_face: font_display: 'swap' }}
+            {{ body_font_ligh | font_face: font_display: 'swap' }}
+            {{ body_font_regular | font_face: font_display: 'swap' }}
+            {{ body_font_medium | font_face: font_display: 'swap' }}
+            {{ body_font_bold | font_face: font_display: 'swap' }}
+            {{ body_font_italic | font_face: font_display: 'swap' }}
+            {{ heading_font_italic | font_face: font_display: 'swap' }}
+            {{ body_font_bold_italic | font_face: font_display: 'swap' }}
+
+            {% for scheme in settings.color_schemes -%}
+              {% assign scheme_classes = scheme_classes | append: ', .color-' | append: scheme.id %}
+              {% if forloop.index == 1 -%}
+                :root,
+              {%- endif %}
+              [data-scheme=light] .color-{{ scheme.id }} {
+                --color-background: {{ scheme.settings.colors_background_1.red }},{{ scheme.settings.colors_background_1.green }},{{ scheme.settings.colors_background_1.blue }};
+                --color-background-secondary: {{ scheme.settings.colors_background_2.red }},{{ scheme.settings.colors_background_2.green }},{{ scheme.settings.colors_background_2.blue }};
+                {% if scheme.settings.background_gradient != empty %}
+                  --gradient-background: {{ scheme.settings.background_gradient }};
+                {% else %}
+                  --gradient-background: {{ scheme.settings.colors_background_1 }};
+                {% endif %}
+                --color-foreground: {{ scheme.settings.colors_text.red }}, {{ scheme.settings.colors_text.green }}, {{ scheme.settings.colors_text.blue }};
+                --color-foreground-secondary: {{ scheme.settings.colors_secondary_text.red }}, {{ scheme.settings.colors_secondary_text.green }}, {{ scheme.settings.colors_secondary_text.blue }};
+                --color-foreground-title: {{ scheme.settings.colors_text_title.red }}, {{ scheme.settings.colors_text_title.green }}, {{ scheme.settings.colors_text_title.blue }};
+
+                --color-button-text: {{ scheme.settings.colors_solid_button_labels.red }}, {{ scheme.settings.colors_solid_button_labels.green }}, {{ scheme.settings.colors_solid_button_labels.blue }};
+                --color-button-text-hover: {{ scheme.settings.colors_solid_button_labels_hover.red }}, {{ scheme.settings.colors_solid_button_labels_hover.green }}, {{ scheme.settings.colors_solid_button_labels_hover.blue }};
+                --color-button: {{ scheme.settings.colors_solid_button_background.red }}, {{ scheme.settings.colors_solid_button_background.green }}, {{ scheme.settings.colors_solid_button_background.blue }};
+                --color-button-hover: {{ scheme.settings.colors_solid_button_background_hover.red }}, {{ scheme.settings.colors_solid_button_background_hover.green }}, {{ scheme.settings.colors_solid_button_background_hover.blue }};
+
+                --color-button-secondary: {{ scheme.settings.colors_outline_button_labels.red }}, {{ scheme.settings.colors_outline_button_labels.green }}, {{ scheme.settings.colors_outline_button_labels.blue }};
+                --color-button-secondary-hover: {{ scheme.settings.colors_outline_button_labels_hover.red }}, {{ scheme.settings.colors_outline_button_labels_hover.green }}, {{ scheme.settings.colors_outline_button_labels_hover.blue }};
+                --color-button-secondary-text: {{ scheme.settings.colors_secondary_button_labels.red }}, {{ scheme.settings.colors_secondary_button_labels.green }}, {{ scheme.settings.colors_secondary_button_labels.blue }};
+                --color-button-secondary-text-hover: {{ scheme.settings.colors_secondary_button_labels_hover.red }}, {{ scheme.settings.colors_secondary_button_labels_hover.green }}, {{ scheme.settings.colors_secondary_button_labels_hover.blue }};
+
+                --color-button-tertiary-text: {{ scheme.settings.colors_tertiary_button_labels.red }}, {{ scheme.settings.colors_tertiary_button_labels.green }}, {{ scheme.settings.colors_tertiary_button_labels.blue }};
+                --color-button-tertiary-text-hover: {{ scheme.settings.colors_tertiary_button_labels_hover.red }}, {{ scheme.settings.colors_tertiary_button_labels_hover.green }}, {{ scheme.settings.colors_tertiary_button_labels_hover.blue }};
+                --color-button-tertiary: {{ scheme.settings.colors_tertiary_button_background.red }}, {{ scheme.settings.colors_tertiary_button_background.green }}, {{ scheme.settings.colors_tertiary_button_background.blue }};
+                --color-button-tertiary-hover: {{ scheme.settings.colors_tertiary_button_background_hover.red }}, {{ scheme.settings.colors_tertiary_button_background_hover.green }}, {{ scheme.settings.colors_tertiary_button_background_hover.blue }};
+
+                --color-overlay: {{ scheme.settings.colors_background_overlay.red }}, {{ scheme.settings.colors_background_overlay.green }}, {{ scheme.settings.colors_background_overlay.blue }};
+                --color-border-input: {{ scheme.settings.colors_input_border.red }}, {{ scheme.settings.colors_input_border.green }}, {{ scheme.settings.colors_input_border.blue }};
+                --color-border-input-hover: {{ scheme.settings.colors_input_hover_border.red }}, {{ scheme.settings.colors_input_hover_border.green }}, {{ scheme.settings.colors_input_hover_border.blue }};
+                --color-background-input: {{ scheme.settings.colors_input_background.red }}, {{ scheme.settings.colors_input_background.green }}, {{ scheme.settings.colors_input_background.blue }};
+                --color-border: {{ scheme.settings.color_border.red }}, {{ scheme.settings.color_border.green }}, {{ scheme.settings.color_border.blue }};
+              }
+              @media (prefers-color-scheme: light) {
+                {% if forloop.index == 1 -%}
+                  :root,
+                {%- endif %}
+                [data-scheme=auto] .color-{{ scheme.id }} {
+                  --color-background: {{ scheme.settings.colors_background_1.red }},{{ scheme.settings.colors_background_1.green }},{{ scheme.settings.colors_background_1.blue }};
+                  --color-background-secondaryu: {{ scheme.settings.colors_background_2.red }},{{ scheme.settings.colors_background_2.green }},{{ scheme.settings.colors_background_2.blue }};
+                  {% if scheme.settings.background_gradient != empty %}
+                    --gradient-background: {{ scheme.settings.background_gradient }};
+                  {% else %}
+                    --gradient-background: {{ scheme.settings.colors_background_1 }};
+                  {% endif %}
+                  --color-foreground: {{ scheme.settings.colors_text.red }}, {{ scheme.settings.colors_text.green }}, {{ scheme.settings.colors_text.blue }};
+                  --color-foreground-secondary: {{ scheme.settings.colors_secondary_text.red }}, {{ scheme.settings.colors_secondary_text.green }}, {{ scheme.settings.colors_secondary_text.blue }};
+                  --color-foreground-title: {{ scheme.settings.colors_text_title.red }}, {{ scheme.settings.colors_text_title.green }}, {{ scheme.settings.colors_text_title.blue }};
+
+                  --color-button-text: {{ scheme.settings.colors_solid_button_labels.red }}, {{ scheme.settings.colors_solid_button_labels.green }}, {{ scheme.settings.colors_solid_button_labels.blue }};
+                  --color-button-text-hover: {{ scheme.settings.colors_solid_button_labels_hover.red }}, {{ scheme.settings.colors_solid_button_labels_hover.green }}, {{ scheme.settings.colors_solid_button_labels_hover.blue }};
+                  --color-button: {{ scheme.settings.colors_solid_button_background.red }}, {{ scheme.settings.colors_solid_button_background.green }}, {{ scheme.settings.colors_solid_button_background.blue }};
+                  --color-button-hover: {{ scheme.settings.colors_solid_button_background_hover.red }}, {{ scheme.settings.colors_solid_button_background_hover.green }}, {{ scheme.settings.colors_solid_button_background_hover.blue }};
+
+                  --color-button-secondary: {{ scheme.settings.colors_outline_button_labels.red }}, {{ scheme.settings.colors_outline_button_labels.green }}, {{ scheme.settings.colors_outline_button_labels.blue }};
+                  --color-button-secondary-hover: {{ scheme.settings.colors_outline_button_labels_hover.red }}, {{ scheme.settings.colors_outline_button_labels_hover.green }}, {{ scheme.settings.colors_outline_button_labels_hover.blue }};
+                  --color-button-secondary-text: {{ scheme.settings.colors_secondary_button_labels.red }}, {{ scheme.settings.colors_secondary_button_labels.green }}, {{ scheme.settings.colors_secondary_button_labels.blue }};
+                  --color-button-secondary-text-hover: {{ scheme.settings.colors_secondary_button_labels_hover.red }}, {{ scheme.settings.colors_secondary_button_labels_hover.green }}, {{ scheme.settings.colors_secondary_button_labels_hover.blue }};
+
+                  --color-button-tertiary-text: {{ scheme.settings.colors_tertiary_button_labels.red }}, {{ scheme.settings.colors_tertiary_button_labels.green }}, {{ scheme.settings.colors_tertiary_button_labels.blue }};
+                  --color-button-tertiary-text-hover: {{ scheme.settings.colors_tertiary_button_labels_hover.red }}, {{ scheme.settings.colors_tertiary_button_labels_hover.green }}, {{ scheme.settings.colors_tertiary_button_labels_hover.blue }};
+                  --color-button-tertiary: {{ scheme.settings.colors_tertiary_button_background.red }}, {{ scheme.settings.colors_tertiary_button_background.green }}, {{ scheme.settings.colors_tertiary_button_background.blue }};
+                  --color-button-tertiary-hover: {{ scheme.settings.colors_tertiary_button_background_hover.red }}, {{ scheme.settings.colors_tertiary_button_background_hover.green }}, {{ scheme.settings.colors_tertiary_button_background_hover.blue }};
+
+                  --color-overlay: {{ scheme.settings.colors_background_overlay.red }}, {{ scheme.settings.colors_background_overlay.green }}, {{ scheme.settings.colors_background_overlay.blue }};
+                  --color-border-input: {{ scheme.settings.colors_input_border.red }}, {{ scheme.settings.colors_input_border.green }}, {{ scheme.settings.colors_input_border.blue }};
+                  --color-border-input-hover: {{ scheme.settings.colors_input_hover_border.red }}, {{ scheme.settings.colors_input_hover_border.green }}, {{ scheme.settings.colors_input_hover_border.blue }};
+                  --color-background-input: {{ scheme.settings.colors_input_background.red }}, {{ scheme.settings.colors_input_background.green }}, {{ scheme.settings.colors_input_background.blue }};
+                  --color-border: {{ scheme.settings.color_border.red }}, {{ scheme.settings.color_border.green }}, {{ scheme.settings.color_border.blue }};
+                }
+              }
+            {% endfor %}
+
+            {{ scheme_classes | prepend: 'body' }} {
+              color: rgba(var(--color-foreground));
+              background: rgb(var(--color-background));
+              background: var(--gradient-background);
+              background-attachment: fixed;
+            }
+
+            :root {
+              --announcement-height: 0px;
+              --header-height: 0px;
+              --breadcrumbs-height: 0px;
+              --spaced-section: 5rem;
+              --border-radius-media: {{ settings.media_border_radius }}px;
+
+              --font-body-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+              --font-body-style: {{ settings.type_body_font.style }};
+              --font-body-weight: {{ settings.type_body_font.weight }};
+              --font-body-scale: {{ settings.body_scale | divided_by: 100.0 }};
+              --font-body-second-scale: {{ settings.body_second_scale | divided_by: 100.0 }};
+              --font-body-line-height: {{ settings.type_body_line_height }};
+
+              --font-heading-family: {{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }};
+              --font-heading-style: {{ settings.type_header_font.style }};
+              --font-heading-weight: {{ settings.type_header_font.weight }};
+              --font-heading-letter-spacing: {{ settings.type_header_letter_spacing }}em;
+              --font-heading-line-height: {{ settings.type_header_line_height }};
+
+              --font-subtitle-family: {{ settings.type_subtitle_font.family }}, {{ settings.type_subtitle_font.fallback_families }};
+              --font-subtitle-style: {{ settings.type_subtitle_font.style }};
+              --font-subtitle-weight: {{ settings.type_subtitle_font.weight }};
+              --font-subtitle-text-transform: {{ settings.subtitle_text_transform }};
+              --font-subtitle-scale: {{ settings.subtitle_scale | divided_by: 100.0 }};
+
+              --font-heading-h1-scale: {{ settings.heading_h1_scale | divided_by: 100.0 }};
+              --font-heading-h2-scale: {{ settings.heading_h2_scale | divided_by: 100.0 }};
+              --font-heading-h3-scale: {{ settings.heading_h3_scale | divided_by: 100.0 }};
+
+              --font-heading-card-family: {{ settings.type_header_font_card.family }}, {{ settings.type_header_font_card.fallback_families }};
+              --font-heading-card-style: {{ settings.type_header_font_card.style }};
+              --font-heading-card-weight: {{ settings.type_header_font_card.weight }};
+              --font-text-card-family: {{ settings.type_text_font_card.family }}, {{ settings.type_text_font_card.fallback_families }};
+              --font-text-card-style: {{ settings.type_text_font_card.style }};
+              --font-text-card-weight: {{ settings.type_text_font_card.weight }};
+              --font-heading-card-letter-spacing: {{ settings.heading_card_letter_spacing }}em;
+
+              --font-heading-card-scale: {{ settings.heading_scale_card | divided_by: 100.0 }};
+              --font-text-card-scale: {{ settings.text_scale_card | divided_by: 100.0 }};
+
+              --font-button-family: {{ settings.type_button_font.family }}, {{ settings.type_button_font.fallback_families }};
+              --font-button-style: {{ settings.type_button_font.style }};
+              --font-button-weight: {{ settings.type_button_font.weight }};
+              --font-button-text-transform: {{ settings.button_text_transform }};
+              --font-button-scale: {{ settings.button_scale | divided_by: 100.0 }};
+              --font-button-letter-spacing: {{ settings.button_letter_spacing }}em;
+              --font-subtitle-letter-spacing: {{ settings.subtitle_letter_spacing }}em;
+
+              --font-header-menu-family: {{ settings.type_header_menu_font.family }}, {{ settings.type_header_menu_font.fallback_families }};
+              --font-header-menu-style: {{ settings.type_header_menu_font.style }};
+              --font-header-menu-weight: {{ settings.type_header_menu_font.weight }};
+              --font-header-menu-scale: {{ settings.header_menu_scale | divided_by: 100.0 }};
+              --font-header-menu-letter-spacing: {{ settings.type_header_menu_letter_spacing }}em;
+              --font-header-menu-text-transform: {{ settings.header_menu_text_transform }};
+
+              --font-footer-menu-family: {{ settings.type_footer_menu_font.family }}, {{ settings.type_footer_menu_font.fallback_families }};
+              --font-footer-menu-style: {{ settings.type_footer_menu_font.style }};
+              --font-footer-menu-weight: {{ settings.type_footer_menu_font.weight }};
+              --font-footer-menu-scale: {{ settings.header_footer_menu_scale | divided_by: 100.0 }};
+              --font-footer-menu-letter-spacing: {{ settings.type_footer_menu_letter_spacing }}em;
+              --font-footer-menu-text-transform: {{ settings.footer_menu_text_transform }};
+
+              --font-popups-heading-family: {{ settings.type_popups_heading_font.family }}, {{ settings.type_popups_heading_font.fallback_families }};
+              --font-popups-heading-style: {{ settings.type_popups_heading_font.style }};
+              --font-popups-heading-weight: {{ settings.type_popups_heading_font.weight }};
+              --font-popups-text-family: {{ settings.type_popups_text_font.family }}, {{ settings.type_popups_text_font.fallback_families }};
+              --font-popups-text-style: {{ settings.type_popups_text_font.style }};
+              --font-popups-text-weight: {{ settings.type_popups_text_font.weight }};
+              --font-popup-heading-scale: {{ settings.popup_heading_scale | divided_by: 100.0 }};
+              --font-popup-desc-scale: {{ settings.popup_desc_scale | divided_by: 100.0 }};
+              --font-popup-text-scale: {{ settings.popup_text_scale | divided_by: 100.0 }};
+              --font-notification-heading-scale: {{ settings.notification_heading_scale | divided_by: 100.0 }};
+              --font-notification-text-scale: {{ settings.notification_text_scale | divided_by: 100.0 }};
+
+              --border-radius-button: {{ settings.button_border_radius }}px;
+              --payment-terms-background-color: {{ settings.colors_background_1 }};
+              --color-card-price-new: {{ settings.card_new_price_color.red }}, {{ settings.card_new_price_color.green }}, {{ settings.card_new_price_color.blue }};
+              --color-card-price-old: {{ settings.card_old_price_color.red }}, {{ settings.card_old_price_color.green }}, {{ settings.card_old_price_color.blue }};
+              --color-badge-sale-background: {{ settings.badge_sale_background_color.red }}, {{ settings.badge_sale_background_color.green }}, {{ settings.badge_sale_background_color.blue }};
+              --color-badge-sale-text: {{ settings.badge_sale_text_color.red }}, {{ settings.badge_sale_text_color.green }}, {{ settings.badge_sale_text_color.blue }};
+              --color-badge-soldout-background: {{ settings.badge_soldout_background_color.red }}, {{ settings.badge_soldout_background_color.green }}, {{ settings.badge_soldout_background_color.blue }};
+              --color-badge-soldout-text: {{ settings.badge_soldout_text_color.red }}, {{ settings.badge_soldout_text_color.green }}, {{ settings.badge_soldout_text_color.blue }};
+              --color-badge-custom-background: {{ settings.badge_custom_background_color.red }}, {{ settings.badge_custom_background_color.green }}, {{ settings.badge_custom_background_color.blue }};
+              --color-badge-custom-text: {{ settings.badge_custom_text_color.red }}, {{ settings.badge_custom_text_color.green }}, {{ settings.badge_custom_text_color.blue }};
+              --color-product-card-slider-control: {{ settings.product_slider_control_color.red }}, {{ settings.product_slider_control_color.green }}, {{ settings.product_slider_control_color.blue }};
+            }
+
+            @media screen and (min-width: 990px) {
+              :root {
+                --spaced-section: 16rem;
+              }
+            }
+
+            *,
+            *::before,
+            *::after {
+              box-sizing: inherit;
+            }
+
+            html {
+              box-sizing: border-box;
+              font-size: 10px;
+              height: 100%;
+            }
+
+            body {
+              position: relative;
+              display: grid;
+              grid-template-rows: auto auto 1fr auto;
+              grid-template-columns: 100%;
+              min-height: 100%;
+              margin: 0;
+              font-size: calc(var(--font-body-scale) * 1rem);
+              line-height: var(--font-body-line-height);
+              font-family: var(--font-body-family);
+              font-style: var(--font-body-style);
+              font-weight: var(--font-body-weight);
+              overflow-x: hidden;
+            }
+
+            /* ==========================================
+         ISOLAMENTO B2B - REMOÇÃO DE FRETE E CUPOM
+         ========================================== */
+      cart-drawer .cart-shipping,
+      cart-drawer .cart-shipping__wrapper,
+      cart-drawer .shipping-bar,
+      cart-drawer .drawer__discount,
+      cart-drawer .cart-drawer__discount,
+      cart-drawer .cart__discount,
+      cart-drawer .discount-code-container,
+      cart-drawer form .discount,
+      #CartDrawer .cart-shipping,
+      #CartDrawer .drawer__discount,
+      .cart-shipping,
+      .drawer__discount {
+          display: none !important;
+          opacity: 0 !important;
+          visibility: hidden !important;
+          height: 0 !important;
+          overflow: hidden !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          pointer-events: none !important;
+      }
+    {% endstyle %}
+
+    {% render 'color-scheme-vars' %}
+    {{ 'swiper-bundle.min.css' | asset_url | stylesheet_tag }}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+
+    {%- if settings.enable_styles -%}
+      {{ 'section-reviews.css' | asset_url | stylesheet_tag: preload: true }}
+    {%- endif -%}
+
+    {%- if settings.predictive_search_enabled -%}
+      <link
+        rel="stylesheet"
+        href="{{ 'component-predictive-search.css' | asset_url }}"
+        media="print"
+        onload="this.media='all'"
+      >
+    {%- endif -%}
+
+    {%- if settings.quickview_show or settings.show_on_mobile -%}
+      <link rel="stylesheet" href="{{ 'component-deferred-media.css' | asset_url }}" media="all">
+      <link
+        rel="preload"
+        href="{{ 'quick-add.css' | asset_url }}"
+        as="style"
+        onload="this.onload=null;this.rel='stylesheet'"
+      >
+    {%- endif -%}
+
+    {%- unless settings.type_body_font.system? -%}
+      <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
+    {%- endunless -%}
+
+    {%- unless settings.type_header_font.system? -%}
+      <link rel="preload" as="font" href="{{ settings.type_header_font | font_url }}" type="font/woff2" crossorigin>
+    {%- endunless -%}
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      if (Shopify.designMode) {
+        document.documentElement.classList.add('shopify-design-mode');
+      }
+    </script>
+
+    <script src="{{ 'jquery-3.6.0.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'ScrollTrigger.min.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'gsap.min.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'swiper-bundle.min.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'product-card.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'popup.js' | asset_url }}" defer="defer"></script>
+
+    {% if settings.home_page_slider and template.name == 'index' %}
+      <script src="{{ 'slider-demo.js' | asset_url }}" defer="defer"></script>
+    {% endif %}
+
+    {% if settings.show_back_to_top %}
+      <script src="{{ 'scroll-top.js' | asset_url }}" defer="defer"></script>
+    {% endif %}
+
+    <script>
+      let cscoDarkMode = {};
+
+      (function () {
+        const body = document.querySelector('html[data-scheme]');
+
+        cscoDarkMode = {
+          init: function (e) {
+            this.initMode(e);
+            window.matchMedia('(prefers-color-scheme: dark)').addListener((e) => {
+              this.initMode(e);
+            });
+
+            window.addEventListener('load', () => {
+              const toggleBtns = document.querySelectorAll('.header__toggle-scheme');
+              toggleBtns.forEach((btn) => {
+                btn.addEventListener('click', (e) => {
+                  e.preventDefault();
+
+                  if ('auto' === body.getAttribute('data-scheme')) {
+                    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                      cscoDarkMode.changeScheme('light', true);
+                    } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+                      cscoDarkMode.changeScheme('dark', true);
+                    }
+                  } else {
+                    if ('dark' === body.getAttribute('data-scheme')) {
+                      cscoDarkMode.changeScheme('light', true);
+                    } else {
+                      cscoDarkMode.changeScheme('dark', true);
+                    }
+                  }
+                });
+              });
+            });
+          },
+          initMode: function (e) {
+            let siteScheme = false;
+            switch ('{{ settings.color_scheme }}') {
+              case 'dark':
+                siteScheme = 'dark';
+                break;
+              case 'light':
+                siteScheme = 'light';
+                break;
+              case 'system':
+                siteScheme = 'auto';
+                break;
+            }
+            if ('{{ settings.dark_mode_toggle }}') {
+              if ('light' === localStorage.getItem('_color_schema')) {
+                siteScheme = 'light';
+              }
+              if ('dark' === localStorage.getItem('_color_schema')) {
+                siteScheme = 'dark';
+              }
+            }
+            if (siteScheme && siteScheme !== body.getAttribute('data-scheme')) {
+              this.changeScheme(siteScheme, false);
+            }
+          },
+          changeScheme: function (siteScheme, cookie) {
+            body.classList.add('scheme-toggled');
+            body.setAttribute('data-scheme', siteScheme);
+            if (cookie) {
+              localStorage.setItem('_color_schema', siteScheme);
+            }
+            setTimeout(() => {
+              body.classList.remove('scheme-toggled');
+            }, 100);
+          },
+        };
+      })();
+
+      cscoDarkMode.init();
+
+      document.addEventListener('shopify:section:load', function () {
+        setTimeout(() => {
+          cscoDarkMode.init();
+        }, 100);
+      });
+    </script>
+
+    <meta name="robots" content="noindex, nofollow">
+    {{ 'custom-styles.css' | asset_url | stylesheet_tag }}
+
+    <style>
+                                    /* Esconde botões acelerados (PayPal, Shop Pay) no ambiente B2B para forçar o checkout manual */
+                                    #buttons-container,
+                                    .buttons-container[aria-label*="PayPal"],
+                                    .dynamic-checkout__content,
+                                    .shopify-payment-button,
+                                    .additional-checkout-buttons,
+                                    .additional-checkout-buttons--vertical,
+                                    [data-testid="Checkout-Shopify"],
+                                    [data-shopify-buttoncontainer="true"],
+                                    div[id*="paypal"],
+                                    div[class*="paypal"],
+                                    .paypal-buttons,
+                                    .wallet-buttons {
+                                        display: none !important;
+                                        visibility: hidden !important;
+                                        opacity: 0 !important;
+                                        height: 0 !important;
+                                        overflow: hidden !important;
+                                    }
+
+                                  /* Bloqueio de acesso à página de carrinho inteira no ambiente B2B (Escopo Corrigido) */
+                        cart-drawer a[href="/cart"],
+                        #CartDrawer a[href="/cart"],
+                        .drawer a[href="/cart"],
+                        .cart__view-cart,
+                        .drawer__footer a.button--tertiary,
+                        .cart-drawer__footer a[href="/cart"] {
+                            display: none !important;
+                            visibility: hidden !important;
+                            pointer-events: none !important;
+                        }
+
+                        /* ==========================================
+                     ISOLAMENTO B2B - FASE 1 (CABECALHO E CARRINHO)
+                     ========================================== */
+
+                  /* 1. Ocultar Menu Hamburguer, Menu Desktop, Lupa de Pesquisa e Ícone de Conta B2C */
+                  header-drawer,
+                  .header__inline-menu,
+                  details-modal.header__search,
+                  .header__icons .header__icon--account {
+                      display: none !important;
+                      visibility: hidden !important;
+                      pointer-events: none !important;
+                  }
+
+            /* 2. Ocultar vitrines de Cross-sell/Upsell dentro do Carrinho Lateral */
+              cart-drawer .drawer__inner .cart-drawer__collection,
+              cart-drawer .product-recommendations,
+              cart-drawer upsell-component,
+              cart-drawer .drawer__footer .collection,
+              #CartDrawer .cart-drawer__upsell,
+              .cart-drawer__upsell-container,.installment-text,
+              .drawer__upsell {
+                  display: none !important;
+                  visibility: hidden !important;
+                  height: 0 !important;
+                  overflow: hidden !important;
+
+                  /* Bloqueia clique nos produtos dentro do carrinho B2B */
+      cart-drawer a[href*="/products/"],
+      #CartDrawer a[href*="/products/"],
+      .cart-drawer .cart-item__name,
+      .cart-drawer .cart-item__image-container {
+          pointer-events: none !important;
+          cursor: default !important;
+          text-decoration: none !important;
+      }
+              }
+    </style>
+  </head>
+
+  <body class="template-{{ template.name }} template-{{ template | replace: '.', '-' }}">
+    <a class="skip-to-content-link button button--primary visually-hidden" href="#MainContent">
+      <span> {{ 'accessibility.skip_to_text' | t }} </span>
+    </a>
+
+    {% comment %} ===== AQUI CHAMAMOS O NOVO CABEÇALHO ISOLADO ===== {% endcomment %}
+    {% section 'header-atacado' %}
+    {% sections 'overlay-group' %}
+
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      {% comment %} ===== NOVO BLOCO DE GATING (OPÇÃO 1) ===== {% endcomment %}
+      {% if customer or request.design_mode %}
+        <div style="padding: 2rem;">
+          {{ content_for_layout }}
+        </div>
+
+      {% else %}
+        <div
+          class="b2b-auth-container"
+          style="max-width: 500px; margin: 10rem auto; padding: 4rem 2rem; text-align: center; border: 1px solid var(--color-border); border-radius: 8px;"
+        >
+          <h1 style="margin-bottom: 1.5rem; font-size: 3rem;">Área Exclusiva Atacado</h1>
+          <p style="margin-bottom: 3rem; font-size: 1.6rem; color: var(--color-foreground-secondary);">
+            O acesso ao catálogo B2B é restrito. Faça login com seu e-mail para visualizar nossos produtos e condições.
+          </p>
+
+          <a
+            href="{{ routes.storefront_login_url }}?return_to={{ request.path | url_encode }}"
+            class="button button--primary"
+            style="width: 100%;"
+          >
+            Fazer Login com E-mail
+          </a>
+        </div>
+      {% endif %}
+      {% comment %} ===== FIM DO BLOCO DE GATING ===== {% endcomment %}
+    </main>
+
+    {%- if request.page_type != 'cart' and settings.cart_type == 'drawer' -%}
+      {%- render 'cart-drawer' -%}
+    {%- endif -%}
+
+    {% render 'search-modal' %}
+
+    <ul hidden>
+      <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
+    </ul>
+
+    <script>
+      {% capture content %}{% include 'quickview' %}{% endcapture %}
+      let content = {{ content | json }};
+    </script>
+
+    <script>
+      window.routes = {
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_update_url: '{{ routes.cart_update_url }}',
+        cart_url: '{{ routes.cart_url }}',
+        predictive_search_url: '{{ routes.predictive_search_url }}'
+      };
+
+      window.cartStrings = {
+        error: `{{ 'sections.cart.cart_error' | t }}`,
+        quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t }}`,
+        empty: `{{ 'general.cart.empty_cart' | t }}`,
+        shop_now: `{{ 'customer.account.account_button_shop' | t }}`,
+        collections_url: `{{ routes.collections_url | sort_by: 'best-selling' }}`
+      }
+
+      window.variantStrings = {
+        addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+        soldOut: `{{ 'products.product.sold_out' | t }}`,
+        unavailable: `{{ 'products.product.unavailable' | t }}`,
+        unavailable_with_option: `{{ 'products.product.value_unavailable' | t: option_value: '[value]' }}`
+      }
+
+      window.theme = {
+        moneyFormat: {{ shop.money_format | json }},
+        quickviewMore: `{{ 'general.card.view__full' | t }}`,
+        reviews: `{{ 'products.product.reviews' | t }}`
+      }
+    </script>
+
+    {%- if settings.predictive_search_enabled -%}
+      <script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
+      <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {% comment %} ===== MODAL DE COLETA DE DADOS B2B ===== {% endcomment %}
+    {% if customer or request.design_mode %}
+      <style>
+        .b2b-modal-overlay {
+          position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+          background: rgba(0,0,0,0.7); z-index: 9999999;
+          display: none; justify-content: center; align-items: center;
+        }
+        .b2b-modal-box {
+          background: rgb(var(--color-background)); padding: 3rem; border-radius: 8px;
+          width: 90%; max-width: 450px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 1px solid var(--color-border);
+        }
+        .b2b-modal-box h2 { margin-top: 0; margin-bottom: 1rem; font-size: 2.2rem; }
+        .b2b-modal-box p { margin-bottom: 2.5rem; font-size: 1.4rem; color: var(--color-foreground-secondary); }
+        .b2b-modal-close {
+          background: none; border: none; font-size: 1.4rem; text-decoration: underline;
+          cursor: pointer; margin-top: 1.5rem; display: block; width: 100%; text-align: center; color: var(--color-foreground);
+        }
+      </style>
+
+      <div id="b2b-checkout-modal" class="b2b-modal-overlay">
+        <div class="b2b-modal-box">
+          <h2>Dados de Faturamento</h2>
+          <p>Confirme os dados da sua empresa para reservar o estoque.</p>
+
+          <form id="b2b-checkout-form">
+            <div class="field" style="margin-bottom: 1.5rem;">
+              <label for="b2b-final-cnpj" style="display:block; margin-bottom: 0.5rem; font-size: 1.3rem;"
+                >CNPJ (Obrigatório)</label
+              >
+              <input
+                type="text"
+                id="b2b-final-cnpj"
+                class="field__input"
+                placeholder="00.000.000/0000-00"
+                maxlength="18"
+                required
+                style="width: 100%;"
+              >
+              <span id="b2b-cnpj-error" style="color: red; font-size: 1.2rem; display: none; margin-top: 5px;"
+                >CNPJ Inválido</span
+              >
+            </div>
+
+            <div class="field" style="margin-bottom: 1.5rem;">
+              <label for="b2b-final-razao" style="display:block; margin-bottom: 0.5rem; font-size: 1.3rem;"
+                >Razão Social (Obrigatório)</label
+              >
+              <input type="text" id="b2b-final-razao" class="field__input" required style="width: 100%;">
+            </div>
+
+            <div class="field" style="margin-bottom: 1.5rem;">
+              <label for="b2b-final-tel" style="display:block; margin-bottom: 0.5rem; font-size: 1.3rem;"
+                >Telefone / WhatsApp (Obrigatório)</label
+              >
+              <input
+                type="tel"
+                id="b2b-final-tel"
+                class="field__input"
+                placeholder="(00) 00000-0000"
+                maxlength="15"
+                required
+                style="width: 100%;"
+              >
+            </div>
+
+            <div class="field" style="margin-bottom: 2.5rem;">
+              <label for="b2b-final-corretor" style="display:block; margin-bottom: 0.5rem; font-size: 1.3rem;"
+                >Nome do Corretor (Opcional)</label
+              >
+              <input type="text" id="b2b-final-corretor" class="field__input" style="width: 100%;">
+            </div>
+
+            <button type="submit" id="b2b-btn-confirm" class="button button--primary" style="width: 100%;">
+               CONFIRMAR E FINALIZAR PEDIDO
+            </button>
+            <button type="button" id="b2b-btn-cancel" class="b2b-modal-close">Cancelar e voltar</button>
+          </form>
+        </div>
+      </div>
+
+      {% comment %} <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const modal = document.getElementById('b2b-checkout-modal');
+          const btnCancel = document.getElementById('b2b-btn-cancel');
+          const form = document.getElementById('b2b-checkout-form');
+          const btnConfirm = document.getElementById('b2b-btn-confirm');
+          const cnpjInput = document.getElementById('b2b-final-cnpj');
+          const razaoInput = document.getElementById('b2b-final-razao');
+          const telInput = document.getElementById('b2b-final-tel');
+          const corretorInput = document.getElementById('b2b-final-corretor');
+          const errorSpan = document.getElementById('b2b-cnpj-error');
+
+          document.addEventListener(
+            'click',
+            function (e) {
+              const isCheckoutBtn = e.target.closest('[name="checkout"], #CartDrawer-Checkout, .cart__checkout-button');
+              if (isCheckoutBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                modal.style.display = 'flex';
+              }
+            },
+            true
+          );
+
+          btnCancel.addEventListener('click', () => (modal.style.display = 'none'));
+
+          cnpjInput.addEventListener('input', function (e) {
+            let v = e.target.value.replace(/\D/g, '');
+            v = v
+              .replace(/^(\d{2})(\d)/, '$1.$2')
+              .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+              .replace(/\.(\d{3})(\d)/, '.$1/$2')
+              .replace(/(\d{4})(\d)/, '$1-$2');
+            e.target.value = v.substring(0, 18);
+          });
+
+          telInput.addEventListener('input', function (e) {
+            let v = e.target.value.replace(/\D/g, '');
+            v = v.replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{4,5})(\d{4})/, '$1-$2');
+            e.target.value = v.substring(0, 15);
+          });
+
+          const validarCNPJ = (cnpj) => {
+            cnpj = cnpj.replace(/[^\d]+/g, '');
+            if (cnpj === '' || cnpj.length !== 14 || /^(\d)\1+$/.test(cnpj)) return false;
+            let t = cnpj.length - 2,
+              n = cnpj.substring(0, t),
+              d = cnpj.substring(t),
+              s = 0,
+              p = t - 7;
+            for (let i = t; i >= 1; i--) {
+              s += n.charAt(t - i) * p--;
+              if (p < 2) p = 9;
+            }
+            let r = s % 11 < 2 ? 0 : 11 - (s % 11);
+            if (r != d.charAt(0)) return false;
+            t = t + 1;
+            n = cnpj.substring(0, t);
+            s = 0;
+            p = t - 7;
+            for (let i = t; i >= 1; i--) {
+              s += n.charAt(t - i) * p--;
+              if (p < 2) p = 9;
+            }
+            r = s % 11 < 2 ? 0 : 11 - (s % 11);
+            if (r != d.charAt(1)) return false;
+            return true;
+          };
+
+          form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!validarCNPJ(cnpjInput.value)) {
+              errorSpan.style.display = 'block';
+              return;
+            }
+            errorSpan.style.display = 'none';
+            btnConfirm.innerText = 'Processando...';
+            btnConfirm.disabled = true;
+
+            let formData = {
+              attributes: {
+                'CNPJ Atacado': cnpjInput.value,
+                'Razão Social': razaoInput.value,
+                'Telefone Contato': telInput.value,
+                Corretor: corretorInput.value || 'Não informado',
+                'Tipo de Pedido': 'Atacado B2B',
+              },
+            };
+
+            fetch(window.Shopify.routes.root + 'cart/update.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(formData),
+            })
+              .then((r) => r.json())
+              .then((d) => {
+                window.location.href = '/checkout';
+              })
+              .catch((err) => {
+                console.error(err);
+                btnConfirm.innerText = 'Erro. Tentar Novamente';
+                btnConfirm.disabled = false;
+              });
+          });
+        });
+      </script> {% endcomment %}
+    {% endif %}
+
+    {% comment %} ===== LEÃO DE CHÁCARA B2B: Limpa itens de varejo do carrinho B2B ===== {% endcomment %}
+    {% if cart.item_count > 0 %}
+      <script>
+        (function() {
+          let updates = {};
+          let hasB2CItems = false;
+          {% for item in cart.items %}
+            {% unless item.product.tags contains 'atacado' %}
+              updates['{{ item.key }}'] = 0;
+              hasB2CItems = true;
+            {% endunless %}
+          {% endfor %}
+
+          if (hasB2CItems) {
+            fetch(window.Shopify.routes.root + 'cart/update.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ updates: updates })
+            })
+            .then(response => response.json())
+            .then(() => { window.location.reload(); });
+          }
+        })();
+      </script>
+    {% endif %}
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Captura todos os links de logotipo no cabeçalho
+        const logoLinks = document.querySelectorAll('header a.header__heading-link');
+
+        if (logoLinks.length > 0) {
+          logoLinks.forEach((link) => {
+            // Altera o destino do logotipo para a própria página de atacado
+            link.setAttribute('href', '/pages/atacado');
+          });
+        }
+        const cartIcons = document.querySelectorAll('header a.header__icon--cart, #cart-icon-bubble');
+        cartIcons.forEach((icon) => {
+          icon.setAttribute('href', 'javascript:void(0);');
+        });
+      });
+    </script>
+  </body>
+</html>

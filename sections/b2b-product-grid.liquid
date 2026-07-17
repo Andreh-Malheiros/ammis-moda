@@ -1,0 +1,546 @@
+<div class="b2b-grid-wrapper" style="max-width: 1200px; margin: 5rem auto; padding: 0 2rem;">
+  {% if section.settings.title != blank %}
+    <h2 style="text-align: center; margin-bottom: 4rem; font-family: var(--font-heading-family);">
+      {{ section.settings.title }}
+    </h2>
+  {% endif %}
+
+  {% comment %} Botão do Branding Book {% endcomment %}
+  {% if section.settings.branding_book_pdf != blank %}
+    <div style="text-align: center; margin-bottom: 4rem;">
+      <a
+        href="{{ section.settings.branding_book_pdf }}"
+        target="_blank"
+        class="button button--secondary"
+        style="display: inline-flex; align-items: center; gap: 10px; text-decoration: none; z-index: 50;"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        {{ section.settings.branding_book_text }}
+      </a>
+    </div>
+  {% endif %}
+
+  {% if section.settings.collection != blank %}
+    <div
+      class="b2b-grid"
+      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 3rem;"
+    >
+      {% paginate section.settings.collection.products by 250 %}
+        {% for product in section.settings.collection.products %}
+          <div
+            class="b2b-card"
+            style="border: 1px solid var(--color-border); padding: 1.5rem; border-radius: 8px; display: flex; flex-direction: column; background: var(--color-background);"
+          >
+            {% comment %} Área de Imagem com Carrossel e Setas {% endcomment %}
+            <div
+              class="b2b-image-container"
+              style="position: relative; width: 100%; aspect-ratio: 3/4; overflow: hidden; border-radius: 4px; margin-bottom: 1.5rem; background: #f4f4f4;"
+            >
+              <div
+                class="b2b-carousel"
+                style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; height: 100%;"
+              >
+                {% for image in product.images %}
+                  <div style="flex: 0 0 100%; scroll-snap-align: start; height: 100%;">
+                    <a href="{{ product.url }}" style="display: block; width: 100%; height: 100%;">
+                      <img
+                        src="{{ image | image_url: width: 800 }}"
+                        alt="{{ product.title | escape }}"
+                        loading="lazy"
+                        style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
+                      >
+                    </a>
+                  </div>
+                {% endfor %}
+              </div>
+
+              {% if product.images.size > 1 %}
+                {% comment %} Setas de Navegação {% endcomment %}
+                <button
+                  type="button"
+                  class="b2b-nav-arrow prev"
+                  onclick="const carrossel = this.parentElement.querySelector('.b2b-carousel'); carrossel.scrollBy({left: -carrossel.offsetWidth, behavior: 'smooth'});"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                </button>
+
+                <button
+                  type="button"
+                  class="b2b-nav-arrow next"
+                  onclick="const carrossel = this.parentElement.querySelector('.b2b-carousel'); carrossel.scrollBy({left: carrossel.offsetWidth, behavior: 'smooth'});"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+
+                <div
+                  class="b2b-counter"
+                  style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 1rem; pointer-events: none; font-weight: 500; z-index: 2;"
+                >
+                  1/{{ product.images.size }}
+                </div>
+              {% endif %}
+            </div>
+
+            <h3 style="font-size: 1.6rem; margin: 0 0 1rem 0; text-align: center;">
+              <a href="{{ product.url }}" style="text-decoration: none; color: inherit;">{{ product.title }}</a>
+            </h3>
+            <p style="font-size: 1.8rem; font-weight: bold; text-align: center; margin-bottom: 2rem;">
+              {{ product.price | money }}
+            </p>
+
+            <div style="flex-grow: 1;"></div>
+
+            <product-form>
+              <form
+                method="post"
+                action="/cart/add"
+                class="b2b-add-form"
+                style="margin: 0; display: flex; flex-direction: column; gap: 1.5rem;"
+              >
+                {% comment %} Início da nova lógica de seleção visual (Swatches) {% endcomment %}
+                {% unless product.has_only_default_variant %}
+                  <div class="b2b-swatch-container" style="margin-bottom: 1.5rem;">
+                    {% for option in product.options_with_values %}
+                      <fieldset style="border: none; padding: 0; margin: 0 0 1rem 0;">
+                        <legend style="font-size: 1.2rem; margin-bottom: 0.5rem; color: #555555; text-align: left; width: 100%;">
+                          {{ option.name }}:
+                          <span class="b2b-selected-value" style="font-weight: 600; color: #000;">
+                            {{- option.selected_value -}}
+                          </span>
+                        </legend>
+
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.8rem;">
+                          {% for value in option.values %}
+                            <label class="b2b-swatch-label" style="cursor: pointer; position: relative;">
+                              <input
+                                type="radio"
+                                name="option-{{ product.id }}-{{ option.name | handleize }}"
+                                value="{{ value | escape }}"
+                                {% if option.selected_value == value %}
+                                  checked
+                                {% endif %}
+                                class="b2b-swatch-radio"
+                                style="position: absolute; opacity: 0; width: 0; height: 0;"
+                              >
+
+                              {% comment %} Renderiza bolinha de cor se houver swatch cadastrado ou se o nome da opção for Cor/Color {% endcomment %}
+                              {% if value.swatch.color or option.name == 'Cor' or option.name == 'Color' %}
+                                {% comment %} Lógica de Fallback Mapeada para Cores sem Metacampo {% endcomment %}
+                                {% assign current_color = value.swatch.color %}
+
+                                {% if current_color == blank %}
+                                  {% assign value_downcase = value | downcase %}
+                                  {% case value_downcase %}
+                                    {% when 'azul' %}
+                                      {% assign current_color = '#0055ff' %}
+                                    {% when 'azul claro' %}
+                                      {% assign current_color = '#add8e6' %}
+                                    {% when 'azul-marinho', 'marinho' %}
+                                      {% assign current_color = '#000080' %}
+                                    {% when 'bege' %}
+                                      {% assign current_color = '#f5f5dc' %}
+                                    {% when 'blush' %}
+                                      {% assign current_color = '#de5d83' %}
+                                    {% when 'branca', 'branco' %}
+                                      {% assign current_color = '#ffffff' %}
+                                    {% when 'canela' %}
+                                      {% assign current_color = '#d2691e' %}
+                                    {% when 'demerara' %}
+                                      {% assign current_color = '#d4b895' %}
+                                    {% when 'gengibre' %}
+                                      {% assign current_color = '#b06500' %}
+                                    {% when 'hibisco' %}
+                                      {% assign current_color = '#e43f5a' %}
+                                    {% when 'listrada' %}
+                                      {% assign current_color = '#aaaaaa' %}
+                                    {% when 'madeira' %}
+                                      {% assign current_color = '#8b5a2b' %}
+                                    {% when 'natural' %}
+                                      {% assign current_color = '#eaddcf' %}
+                                    {% when 'off', 'off-white' %}
+                                      {% assign current_color = '#f4f4f0' %}
+                                    {% when 'preto' %}
+                                      {% assign current_color = '#000000' %}
+                                    {% when 'preto-branco' %}
+                                      {% assign current_color = '#808080' %}
+                                    {% when 'rose-argila' %}
+                                      {% assign current_color = '#c08081' %}
+                                    {% when 'única', 'unica' %}
+                                      {% assign current_color = '#cccccc' %}
+                                    {% else %}
+                                      {% assign current_color = '#cccccc' %}
+                                  {% endcase %}
+                                {% endif %}
+
+                                <div
+                                  class="b2b-visual-swatch type-color"
+                                  style="width: 28px; height: 28px; border-radius: 50%; background-color: {{ current_color }}; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15);"
+                                  title="{{ value }}"
+                                ></div>
+                              {% else %}
+                                <div
+                                  class="b2b-visual-swatch type-text"
+                                  style="padding: 0.6rem 1.2rem; border: 1px solid #D1D5DB; border-radius: 4px; font-size: 1.3rem; background: #fff; color: #333;"
+                                >
+                                  {{ value }}
+                                </div>
+                              {% endif %}
+                            </label>
+                          {% endfor %}
+                        </div>
+                      </fieldset>
+                    {% endfor %}
+
+                    {% comment %} Select Oculto Mestre: O carrinho lê a informação daqui {% endcomment %}
+                    <select name="id" class="b2b-master-select" style="display: none;">
+                      {% for variant in product.variants %}
+                        <option
+                          value="{{ variant.id }}"
+                          data-options="{{ variant.options | join: '||' | escape }}"
+                          data-price="{{ variant.price | money }}"
+                          data-available="{{ variant.available }}"
+                          {% if variant == product.selected_or_first_available_variant %}
+                            selected="selected"
+                          {% endif %}
+                        >
+                          {{ variant.title }}
+                        </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                {% else %}
+                  <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                {% endunless %}
+
+                <div style="display: flex; gap: 1.5rem; align-items: center;">
+                  <label for="qty-{{ product.id }}" style="font-size: 1.3rem; color: #555555;">Quantidade:</label>
+                  <input
+                    type="number"
+                    id="qty-{{ product.id }}"
+                    name="quantity"
+                    value="1"
+                    min="1"
+                    style="width: 80px; padding: 1rem; text-align: center; border: 1px solid #D1D5DB; border-radius: 4px; font-size: 1.4rem; background-color: #F9FAFB; color: #000000;"
+                  >
+                </div>
+
+                <div class="product-form__error-message-wrapper" hidden>
+                  <span class="product-form__error-message"></span>
+                </div>
+
+                <button type="submit" class="button button--primary" style="width: 100%; margin-top: 0.5rem;">
+                  <span>Adicionar</span>
+                  <div class="loading-overlay__spinner hidden" style="display: none;"></div>
+                </button>
+              </form>
+            </product-form>
+          </div>
+        {% endfor %}
+      {% endpaginate %}
+    </div>
+  {% else %}
+    <p style="text-align: center; font-size: 1.6rem;">
+      Selecione uma coleção B2B no menu lateral para exibir os produtos.
+    </p>
+  {% endif %}
+</div>
+
+{% comment %} Estilos e Elementos do Visualizador {% endcomment %}
+<style>
+  /* Estilos do Carrossel e Setas */
+  .b2b-carousel::-webkit-scrollbar { display: none; }
+  .b2b-carousel { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .b2b-nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 3;
+    color: #000;
+    transition: all 0.2s ease;
+    padding: 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .b2b-nav-arrow:hover { background: #fff; transform: translateY(-50%) scale(1.05); }
+  .b2b-nav-arrow.prev { left: 8px; }
+  .b2b-nav-arrow.next { right: 8px; }
+
+  @media (max-width: 768px) {
+    .b2b-nav-arrow { width: 28px; height: 28px; opacity: 0.8; }
+  }
+
+  /* Estilo da Galeria Modal (Visualizador) */
+  #b2b-gallery-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.95);
+    z-index: 100000;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .b2b-gallery-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 40px 20px 20px;
+    overflow: hidden;
+  }
+
+  .b2b-gallery-main img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .b2b-gallery-thumbnails {
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    justify-content: center;
+    background: rgba(0,0,0,0.5);
+  }
+
+  .b2b-gallery-thumbnails::-webkit-scrollbar { height: 6px; }
+  .b2b-gallery-thumbnails::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+
+  .b2b-thumb {
+    height: 70px;
+    width: 70px;
+    object-fit: cover;
+    cursor: pointer;
+    opacity: 0.5;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+  }
+
+  .b2b-thumb:hover { opacity: 0.8; }
+  .b2b-thumb.active {
+    opacity: 1;
+    border-color: #fff;
+  }
+
+  .b2b-close-x {
+    position: absolute;
+    top: 20px; right: 25px;
+    color: #fff; font-size: 4rem;
+    cursor: pointer;
+    line-height: 1;
+    font-family: sans-serif;
+    z-index: 100001;
+  }
+
+  /* Estilos para estado selecionado das amostras */
+  .b2b-swatch-radio:checked + .b2b-visual-swatch.type-color {
+    outline: 2px solid #000;
+    outline-offset: 2px;
+  }
+  .b2b-swatch-radio:checked + .b2b-visual-swatch.type-text {
+    border-color: #000;
+    background-color: #000;
+    color: #fff;
+  }
+
+  /* Estilo para opção indisponível/esgotada */
+  .b2b-swatch-label.is-unavailable .b2b-visual-swatch {
+    opacity: 0.4;
+    position: relative;
+    text-decoration: line-through;
+  }
+  .b2b-swatch-label.is-unavailable .b2b-visual-swatch.type-color::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 100%; height: 1px;
+    background-color: red;
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+</style>
+
+
+
+
+<script>
+  let currentGalleryImages = [];
+  let currentGalleryIndex = 0;
+
+  function openB2BGallery(clickedImgElement, startIndex) {
+    const carousel = clickedImgElement.closest('.b2b-carousel');
+    currentGalleryImages = Array.from(carousel.querySelectorAll('img')).map((img) => img.src);
+    currentGalleryIndex = startIndex;
+
+    renderB2BGallery();
+    document.getElementById('b2b-gallery-modal').style.display = 'flex';
+  }
+
+  function renderB2BGallery() {
+    const mainImg = document.getElementById('b2b-gallery-main-img');
+    const thumbContainer = document.getElementById('b2b-gallery-thumbnails');
+
+    mainImg.src = currentGalleryImages[currentGalleryIndex];
+    thumbContainer.innerHTML = '';
+
+    currentGalleryImages.forEach((src, index) => {
+      const thumb = document.createElement('img');
+      thumb.src = src;
+      thumb.className = index === currentGalleryIndex ? 'b2b-thumb active' : 'b2b-thumb';
+      thumb.onclick = () => {
+        currentGalleryIndex = index;
+        renderB2BGallery();
+      };
+      thumbContainer.appendChild(thumb);
+    });
+  }
+
+  function closeB2BGallery() {
+    document.getElementById('b2b-gallery-modal').style.display = 'none';
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') document.getElementById('b2b-visualizer').style.display = 'none';
+  });
+
+  // Lógica simples para atualizar o contador visual ao scrollar (opcional)
+  document.querySelectorAll('.b2b-carousel').forEach((carousel) => {
+    carousel.addEventListener('scroll', function () {
+      const index = Math.round(this.scrollLeft / this.offsetWidth) + 1;
+      const counter = this.parentElement.querySelector('.b2b-counter');
+      if (counter) {
+        const total = counter.innerText.split('/')[1];
+        counter.innerText = index + '/' + total;
+      }
+    });
+  });
+
+  document.addEventListener('change', function (event) {
+    if (!event.target.classList.contains('b2b-swatch-radio')) return;
+
+    const card = event.target.closest('.b2b-card');
+    if (!card) return;
+
+    // Atualiza o texto da label (ex: Cor: Canela)
+    const fieldset = event.target.closest('fieldset');
+    const labelSpan = fieldset.querySelector('.b2b-selected-value');
+    if (labelSpan) labelSpan.textContent = event.target.value;
+
+    // Coleta todas as opções selecionadas neste cartão
+    const selectedOptions = Array.from(card.querySelectorAll('.b2b-swatch-radio:checked')).map((radio) => radio.value);
+    const selectedOptionsString = selectedOptions.join('||');
+
+    // Encontra o select mestre e o botão de adicionar
+    const masterSelect = card.querySelector('.b2b-master-select');
+    const addButton = card.querySelector('button[type="submit"] span');
+    const submitBtn = card.querySelector('button[type="submit"]');
+    const priceDisplay = card.querySelector('p[style*="font-weight: bold"]');
+
+    // Varre as options do select oculto para achar a variante correta
+    let matchingVariantFound = false;
+
+    Array.from(masterSelect.options).forEach((option) => {
+      if (option.dataset.options === selectedOptionsString) {
+        matchingVariantFound = true;
+        masterSelect.value = option.value;
+
+        // Atualiza preço
+        if (priceDisplay && option.dataset.price) {
+          priceDisplay.textContent = option.dataset.price;
+        }
+
+        // Valida estoque
+        if (option.dataset.available === 'true') {
+          submitBtn.disabled = false;
+          addButton.textContent = 'Adicionar';
+          submitBtn.style.opacity = '1';
+        } else {
+          submitBtn.disabled = true;
+          addButton.textContent = 'Esgotado';
+          submitBtn.style.opacity = '0.5';
+        }
+      }
+    });
+
+    if (!matchingVariantFound) {
+      submitBtn.disabled = true;
+      addButton.textContent = 'Indisponível';
+      submitBtn.style.opacity = '0.5';
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Grade B2B Exclusiva",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título da Seção",
+      "default": "Catálogo Atacado"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Selecione a Coleção B2B"
+    },
+    {
+      "type": "url",
+      "id": "branding_book_pdf",
+      "label": "Link do Branding Book (PDF)"
+    },
+    {
+      "type": "text",
+      "id": "branding_book_text",
+      "label": "Texto do Botão",
+      "default": "Baixar Branding Book AMMIS"
+    }
+  ]
+}
+{% endschema %}

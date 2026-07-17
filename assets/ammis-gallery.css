@@ -1,0 +1,410 @@
+/* Container Principal - Convertido para Flexbox para centralização absoluta */
+.ammis-gallery-main-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 3.2rem;
+  margin: 0 auto; 
+  max-width: 1400px; 
+  padding: 0 2rem;
+}
+
+/* O Card com largura máxima controlada */
+.ammis-card {
+  position: relative;
+  overflow: hidden; 
+  background: rgb(var(--color-background));
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgb(var(--color-border, 230, 230, 230));
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 420px; /* Garante que nunca expanda além de 1/3 da tela util */
+}
+
+/* ── RODAPÉ E BOTÃO INSTAGRAM ── */
+.ammis-por-voce__footer {
+  text-align: center;
+  margin-top: 5.6rem;
+  margin-bottom: 4rem;
+  width: 100%;
+}
+
+.ammis-por-voce__btn-instagram {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: rgb(var(--color-foreground));
+  border: 1px solid rgb(var(--color-foreground));
+  padding: 1.4rem 3.2rem;
+  font-size: 1.2rem;
+  font-family: var(--font-body-family);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease, scale 0.3s ease-in-out;
+}
+
+.ammis-por-voce__btn-instagram:hover {
+  background-color: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+  scale: 1.05
+}
+
+.ammis-por-voce__footer a:hover{
+  color: #ffff !important
+}
+
+/* ── 1. POST ESTILO INSTAGRAM ── */
+.ammis-post {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.ammis-post__header {
+  padding: 1.2rem 1.6rem;
+  border-bottom: 1px solid rgb(var(--color-border));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ammis-post__header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ammis-post__avatar-ring {
+  width: 3.6rem;
+  height: 3.6rem;
+  padding: 2px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ammis-post__avatar,
+.ammis-post__avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid rgb(var(--color-background));
+  object-fit: cover;
+}
+
+.ammis-post__avatar-placeholder {
+  background-color: rgb(var(--color-background-secondary, 220, 220, 220));
+}
+
+.ammis-post__handle {
+  font-family: var(--font-body-family);
+  font-weight: 600;
+  font-size: 1.3rem;
+}
+
+.ammis-post__verified {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.ammis-post__share-btn {
+  color: rgb(var(--color-foreground));
+  display: flex;
+}
+
+.ammis-post__share-btn svg {
+  width: 2.2rem;
+  height: 2.2rem;
+}
+
+/* Área da Imagem do Post - Fixada em 1:1 */
+.ammis-post__image-area {
+  width: 100%;
+  aspect-ratio: 1 / 1; 
+  background-color: rgb(var(--color-background-secondary));
+  position: relative;
+  overflow: hidden;
+}
+
+.ammis-post__main-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  /* AJUSTE TÉCNICO: Preenchimento correto sem deformação */
+  object-fit: cover; 
+}
+
+/* Botão Gatilho (Ver Produtos) */
+.ammis-post__trigger-btn {
+  position: absolute;
+  bottom: 1.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(var(--color-background), 0.95);
+  color: rgb(var(--color-foreground));
+  border: 1px solid rgb(var(--color-border));
+  padding: 1rem 2rem;
+  border-radius: 30px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.2s, background 0.2s;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+.ammis-post__trigger-btn svg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.ammis-post__trigger-btn:hover {
+  transform: translateX(-50%) scale(1.05);
+  background: rgb(var(--color-background));
+}
+
+.ammis-post__footer {
+  padding: 1.6rem;
+}
+
+.ammis-post__engagement {
+  display: flex;
+  gap: 1.6rem;
+  margin-bottom: 1.2rem;
+}
+
+.ammis-post__icon {
+  width: 2.4rem;
+  height: 2.4rem;
+  color: rgb(var(--color-foreground));
+}
+
+.ammis-post__caption-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ammis-post__caption-text {
+  font-size: 1.3rem;
+  line-height: 1.5;
+  color: rgb(var(--color-foreground));
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ammis-post__caption-text.is-expanded {
+  -webkit-line-clamp: unset;
+}
+
+.ammis-post__caption-handle {
+  font-weight: 600;
+  margin-right: 0.4rem;
+}
+
+.ammis-post__read-more {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 0.4rem;
+  color: rgb(var(--color-foreground-secondary));
+  font-size: 1.2rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* ── 2. GAVETA INTERNA (INNER DRAWER) ── */
+.ammis-card__drawer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: rgb(var(--color-background));
+  z-index: 10;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: flex;
+  flex-direction: column;
+}
+
+.ammis-card__drawer.is-open {
+  transform: translateX(0);
+}
+
+.ammis-drawer__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.6rem;
+  border-bottom: 1px solid rgb(var(--color-border));
+  background: rgb(var(--color-background));
+}
+
+.ammis-drawer__title {
+  font-family: var(--font-heading-family);
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.ammis-drawer__close-btn {
+  background: none;
+  border: none;
+  padding: 0.4rem;
+  cursor: pointer;
+  color: rgb(var(--color-foreground));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ammis-drawer__close-btn svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.ammis-drawer__body {
+  flex: 1;
+  padding: 1.6rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+/* ── REPROJETO DA GAVETA (Preenchimento de espaço) ── */
+.ammis-drawer-product {
+  display: flex;
+  gap: 1.6rem;
+  padding: 1.2rem 0; /* AJUSTE UI: Maior respiro vertical */
+  border-bottom: 1px solid rgb(var(--color-border, 240, 240, 240));
+}
+
+.ammis-drawer-product:last-child {
+  border-bottom: none;
+}
+
+.ammis-drawer-product__image-link {
+  flex-shrink: 0;
+  /* AJUSTE TÉCNICO: Miniature maior na gaveta */
+  width: 10rem; 
+  height: 10rem;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: rgb(var(--color-background-secondary));
+}
+
+.ammis-drawer-product__image {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+.ammis-drawer-product__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* AJUSTE TÉCNICO: Distribuição vertical */
+  flex: 1;
+}
+
+.ammis-drawer-product__info-top {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem; /* AJUSTE TÉCNICO: Melhor espaçamento interno */
+}
+
+.ammis-drawer-product__title {
+  font-family: var(--font-heading-card-family, var(--font-body-family));
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: rgb(var(--color-foreground));
+  text-decoration: none;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+/* Estilo para a Descrição Incluída */
+.ammis-drawer-product__desc {
+  font-size: 1.1rem;
+  color: rgb(var(--color-foreground-secondary));
+  line-height: 1.4;
+  margin: 0;
+}
+
+.ammis-drawer-product__price {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: rgb(var(--color-foreground));
+}
+
+.ammis-drawer-product__actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+
+/* Botão Adicionar */
+.ammis-drawer-product__btn-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background-color: transparent; 
+  color: rgb(var(--color-foreground));
+  border: 1px solid rgb(var(--color-border));
+  padding: 0.8rem 1.6rem; /* AJUSTE UI: Botão maior */
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: background 0.2s;
+  flex: 1; /* AJUSTE TÉCNICO: Divide espaço */
+}
+
+.ammis-drawer-product__btn-add svg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.ammis-drawer-product__btn-add:hover {
+  background-color: rgb(var(--color-background-secondary, 245, 245, 245));
+}
+
+/* Estilo para o Botão Ver Detalhes Incluído */
+.ammis-drawer-product__btn-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: 1px solid rgb(var(--color-border));
+  color: rgb(var(--color-foreground));
+  transition: opacity 0.2s;
+  padding: 0.8rem;
+}
+
+.ammis-drawer-product__btn-view:hover {
+  opacity: 0.8;
+}

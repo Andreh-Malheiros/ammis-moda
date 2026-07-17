@@ -1,0 +1,695 @@
+{% comment %}
+  AMMIS — Category Grid
+  Section file: sections/ammis-category-grid.liquid
+{% endcomment %}
+
+{%- liquid
+  assign section_id = 'ammis-category-grid-' | append: section.id
+-%}
+
+<section
+  id="{{ section_id }}"
+  class="ammis-category-grid color-{{ section.settings.color_scheme }}"
+  style="
+    --ammis-padding-top: {{ section.settings.padding_top }}px;
+    --ammis-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --ammis-gap-desktop: {{ section.settings.gap_desktop }}px;
+    --ammis-gap-mobile: {{ section.settings.gap_mobile }}px;
+    --ammis-card-ratio-desktop: {{ section.settings.card_ratio_desktop }}%;
+    --ammis-card-ratio-mobile: {{ section.settings.card_ratio_mobile }}%;
+    --ammis-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    --ammis-title-size: {{ section.settings.title_size }}px;
+    --ammis-subtitle-size: {{ section.settings.subtitle_size }}px;
+    --ammis-card-title-size: {{ section.settings.card_title_size }}px;
+    --ammis-card-text-size: {{ section.settings.card_text_size }}px;
+    --ammis-max-width: {{ section.settings.max_width }}px;
+  "
+>
+  <div class="ammis-category-grid__inner{% if section.settings.full_width == false %} page-width{% endif %}">
+    {% if section.settings.heading != blank or section.settings.subheading != blank %}
+      <div class="ammis-category-grid__header ammis-category-grid__header--{{ section.settings.heading_alignment }}">
+        {% if section.settings.heading != blank %}
+          <h2 class="ammis-category-grid__heading">{{ section.settings.heading | escape }}</h2>
+        {% endif %}
+
+        {% if section.settings.subheading != blank %}
+          <div class="ammis-category-grid__subheading rte">
+            {{ section.settings.subheading }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if section.blocks.size > 0 %}
+      <div class="ammis-category-grid__items ammis-category-grid__items--desktop-{{ section.settings.columns_desktop }} ammis-category-grid__items--mobile-{{ section.settings.columns_mobile }}">
+        {% for block in section.blocks %}
+          {%- liquid
+            assign card_link = block.settings.link
+            assign card_title = block.settings.title
+            assign card_text = block.settings.text
+            assign card_cta = block.settings.cta_label
+          -%}
+
+          <div class="ammis-category-grid__item" {{ block.shopify_attributes }}>
+            {% if card_link != blank %}
+              <a class="ammis-category-grid__card" href="{{ card_link }}" aria-label="{{ card_title | default: card_cta | escape }}">
+            {% else %}
+              <div class="ammis-category-grid__card">
+            {% endif %}
+
+              <div class="ammis-category-grid__media">
+                {% if block.settings.image != blank %}
+                  {{
+                    block.settings.image
+                    | image_url: width: 1400
+                    | image_tag:
+                      loading: 'lazy',
+                      sizes: '(min-width: 990px) 25vw, (min-width: 750px) 50vw, 100vw',
+                      widths: '360, 540, 720, 900, 1100, 1400',
+                      class: 'ammis-category-grid__image',
+                      alt: block.settings.image.alt | default: card_title | escape
+                  }}
+                {% else %}
+                  {{ 'collection-1' | placeholder_svg_tag: 'ammis-category-grid__placeholder placeholder-svg' }}
+                {% endif %}
+              </div>
+
+              <div class="ammis-category-grid__overlay"></div>
+
+              <div class="ammis-category-grid__content ammis-category-grid__content--{{ section.settings.content_position }} ammis-category-grid__content-align--{{ section.settings.card_text_alignment }}">
+                {% if card_title != blank %}
+                  <h3 class="ammis-category-grid__card-title">{{ card_title | escape }}</h3>
+                {% endif %}
+
+                {% if card_text != blank %}
+                  <p class="ammis-category-grid__card-text">{{ card_text | escape }}</p>
+                {% endif %}
+
+                {% if card_cta != blank %}
+                  <span class="ammis-category-grid__cta">{{ card_cta | escape }}</span>
+                {% endif %}
+              </div>
+
+            {% if card_link != blank %}
+              </a>
+            {% else %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="ammis-category-grid__empty">
+        Adicione categorias no editor de tema para exibir esta seção.
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  #{{ section_id }} {
+    padding-top: var(--ammis-padding-top);
+    padding-bottom: var(--ammis-padding-bottom);
+  }
+
+  #{{ section_id }} .ammis-category-grid__inner {
+    max-width: var(--ammis-max-width);
+    margin: 0 auto;
+  }
+
+  #{{ section_id }}.ammis-category-grid .page-width {
+    max-width: var(--ammis-max-width);
+  }
+
+  #{{ section_id }} .ammis-category-grid__header {
+    margin: 0 auto 32px;
+  }
+
+  #{{ section_id }} .ammis-category-grid__header--left {
+    text-align: left;
+  }
+
+  #{{ section_id }} .ammis-category-grid__header--center {
+    text-align: center;
+  }
+
+  #{{ section_id }} .ammis-category-grid__header--right {
+    text-align: right;
+  }
+
+  #{{ section_id }} .ammis-category-grid__heading {
+    margin: 0;
+    font-size: var(--ammis-title-size);
+    line-height: 1.15;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  #{{ section_id }} .ammis-category-grid__subheading {
+    max-width: 680px;
+    margin-top: 12px;
+    font-size: var(--ammis-subtitle-size);
+    line-height: 1.6;
+    opacity: 0.76;
+  }
+
+  #{{ section_id }} .ammis-category-grid__header--center .ammis-category-grid__subheading {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #{{ section_id }} .ammis-category-grid__header--right .ammis-category-grid__subheading {
+    margin-left: auto;
+  }
+
+  #{{ section_id }} .ammis-category-grid__items {
+    display: grid;
+    gap: var(--ammis-gap-desktop);
+  }
+
+  #{{ section_id }} .ammis-category-grid__items--desktop-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #{{ section_id }} .ammis-category-grid__items--desktop-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  #{{ section_id }} .ammis-category-grid__items--desktop-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  #{{ section_id }} .ammis-category-grid__card {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    min-height: 260px;
+    color: #fff;
+    text-decoration: none;
+    background: #1f1f1f;
+  }
+
+  #{{ section_id }} .ammis-category-grid__media {
+    position: relative;
+    width: 100%;
+    padding-bottom: var(--ammis-card-ratio-desktop);
+    overflow: hidden;
+  }
+
+  #{{ section_id }} .ammis-category-grid__image,
+  #{{ section_id }} .ammis-category-grid__placeholder {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 700ms ease;
+  }
+
+  #{{ section_id }} .ammis-category-grid__placeholder {
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  #{{ section_id }} .ammis-category-grid__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, calc(var(--ammis-overlay-opacity) * 0.35)) 0%,
+      rgba(0, 0, 0, var(--ammis-overlay-opacity)) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  #{{ section_id }} .ammis-category-grid__content {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  #{{ section_id }} .ammis-category-grid__content--top {
+    top: 24px;
+  }
+
+  #{{ section_id }} .ammis-category-grid__content--center {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  #{{ section_id }} .ammis-category-grid__content--bottom {
+    bottom: 24px;
+  }
+
+  #{{ section_id }} .ammis-category-grid__content-align--left {
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  #{{ section_id }} .ammis-category-grid__content-align--center {
+    text-align: center;
+    align-items: center;
+  }
+
+  #{{ section_id }} .ammis-category-grid__content-align--right {
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  #{{ section_id }} .ammis-category-grid__card-title {
+    margin: 0;
+    color: inherit;
+    font-size: var(--ammis-card-title-size);
+    line-height: 1.15;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  #{{ section_id }} .ammis-category-grid__card-text {
+    margin: 0;
+    max-width: 320px;
+    color: inherit;
+    font-size: var(--ammis-card-text-size);
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    opacity: 0.88;
+  }
+
+  #{{ section_id }} .ammis-category-grid__cta {
+    display: inline-block;
+    width: fit-content;
+    margin-top: 8px;
+    color: inherit;
+    font-size: 11px;
+    line-height: 1.2;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 4px;
+  }
+
+  #{{ section_id }} .ammis-category-grid__card:hover .ammis-category-grid__image {
+    transform: scale(1.045);
+  }
+
+  #{{ section_id }} .ammis-category-grid__card:hover .ammis-category-grid__cta {
+    opacity: 0.72;
+  }
+
+  #{{ section_id }} .ammis-category-grid__empty {
+    padding: 32px;
+    text-align: center;
+    border: 1px dashed rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    opacity: 0.7;
+  }
+
+  
+  /* Auto-center incomplete rows */
+  #{{ section_id }} .ammis-category-grid__items {
+    justify-content: center;
+  }
+  #{{ section_id }} .ammis-category-grid__item {
+    width: 100%;
+  }
+  #{{ section_id }} .ammis-category-grid__items--desktop-2,
+  #{{ section_id }} .ammis-category-grid__items--desktop-3,
+  #{{ section_id }} .ammis-category-grid__items--desktop-4,
+  #{{ section_id }} .ammis-category-grid__items--mobile-1,
+  #{{ section_id }} .ammis-category-grid__items--mobile-2{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:var(--ammis-gap-desktop);
+  }
+  #{{ section_id }} .ammis-category-grid__items--desktop-2 .ammis-category-grid__item{flex:0 0 calc((100% - var(--ammis-gap-desktop))/2);}
+  #{{ section_id }} .ammis-category-grid__items--desktop-3 .ammis-category-grid__item{flex:0 0 calc((100% - (2 * var(--ammis-gap-desktop)))/3);}
+  #{{ section_id }} .ammis-category-grid__items--desktop-4 .ammis-category-grid__item{flex:0 0 calc((100% - (3 * var(--ammis-gap-desktop)))/4);}
+
+@media screen and (max-width: 989px) {
+    #{{ section_id }} .ammis-category-grid__items--desktop-3,
+    #{{ section_id }} .ammis-category-grid__items--desktop-4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #{{ section_id }} {
+      padding-top: calc(var(--ammis-padding-top) * 0.75);
+      padding-bottom: calc(var(--ammis-padding-bottom) * 0.75);
+    }
+
+    #{{ section_id }} .ammis-category-grid__header {
+      margin-bottom: 22px;
+    }
+
+    #{{ section_id }} .ammis-category-grid__heading {
+      font-size: clamp(20px, calc(var(--ammis-title-size) * 0.78), 30px);
+    }
+
+    #{{ section_id }} .ammis-category-grid__subheading {
+      font-size: clamp(13px, var(--ammis-subtitle-size), 15px);
+    }
+
+    #{{ section_id }} .ammis-category-grid__items {gap: var(--ammis-gap-mobile);}
+    #{{ section_id }} .ammis-category-grid__items--mobile-1,
+    #{{ section_id }} .ammis-category-grid__items--mobile-2{gap:var(--ammis-gap-mobile);}
+    #{{ section_id }} .ammis-category-grid__items--mobile-1 .ammis-category-grid__item{flex:0 0 100%;}
+    #{{ section_id }} .ammis-category-grid__items--mobile-2 .ammis-category-grid__item{flex:0 0 calc((100% - var(--ammis-gap-mobile))/2);}
+
+    #{{ section_id }} .ammis-category-grid__items--mobile-1 {
+      grid-template-columns: 1fr;
+    }
+
+    #{{ section_id }} .ammis-category-grid__items--mobile-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #{{ section_id }} .ammis-category-grid__media {
+      padding-bottom: var(--ammis-card-ratio-mobile);
+    }
+
+    #{{ section_id }} .ammis-category-grid__content {
+      left: 18px;
+      right: 18px;
+      gap: 6px;
+    }
+
+    #{{ section_id }} .ammis-category-grid__content--top {
+      top: 18px;
+    }
+
+    #{{ section_id }} .ammis-category-grid__content--bottom {
+      bottom: 18px;
+    }
+
+    #{{ section_id }} .ammis-category-grid__card-title {
+      font-size: clamp(15px, calc(var(--ammis-card-title-size) * 0.82), 22px);
+    }
+
+    #{{ section_id }} .ammis-category-grid__card-text {
+      font-size: clamp(12px, var(--ammis-card-text-size), 14px);
+    }
+
+    #{{ section_id }} .ammis-category-grid__cta {
+      font-size: 10px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "AMMIS - Categorias",
+  "tag": "section",
+  "class": "section section-ammis-category-grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "default": "Explore por categoria"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Texto de apoio",
+      "default": "<p>Peças selecionadas por presença, forma e ocasião.</p>"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Alinhamento do cabeçalho",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Esquerda" },
+        { "value": "center", "label": "Centro" },
+        { "value": "right", "label": "Direita" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Esquema de cores",
+      "default": "background-1",
+      "options": [
+        { "value": "background-1", "label": "Background 1" },
+        { "value": "background-2", "label": "Background 2" },
+        { "value": "inverse", "label": "Inverse" },
+        { "value": "accent-1", "label": "Accent 1" },
+        { "value": "accent-2", "label": "Accent 2" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Largura total",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Largura máxima",
+      "min": 900,
+      "max": 1800,
+      "step": 20,
+      "unit": "px",
+      "default": 1400
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Colunas no desktop",
+      "default": "4",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Colunas no mobile",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Posição do texto no card",
+      "default": "bottom",
+      "options": [
+        { "value": "top", "label": "Topo" },
+        { "value": "center", "label": "Centro" },
+        { "value": "bottom", "label": "Base" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "card_text_alignment",
+      "label": "Alinhamento do texto no card",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Esquerda" },
+        { "value": "center", "label": "Centro" },
+        { "value": "right", "label": "Direita" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Intensidade do overlay",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 35
+    },
+    {
+      "type": "range",
+      "id": "card_ratio_desktop",
+      "label": "Altura proporcional do card no desktop",
+      "min": 90,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 125
+    },
+    {
+      "type": "range",
+      "id": "card_ratio_mobile",
+      "label": "Altura proporcional do card no mobile",
+      "min": 80,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Tamanho do título da seção",
+      "min": 18,
+      "max": 56,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Tamanho do texto de apoio",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "card_title_size",
+      "label": "Tamanho do título dos cards",
+      "min": 14,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_text_size",
+      "label": "Tamanho do texto dos cards",
+      "min": 11,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "gap_desktop",
+      "label": "Espaçamento entre cards no desktop",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Espaçamento entre cards no mobile",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Espaçamento superior",
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Espaçamento inferior",
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Categoria",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Imagem"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Título",
+          "default": "Categoria"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texto curto",
+          "default": "Descrição curta da categoria."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link da página ou coleção"
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "Texto do CTA",
+          "default": "Explorar"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "AMMIS - Categorias",
+      "blocks": [
+        {
+          "type": "category",
+          "settings": {
+            "title": "Jaquetas",
+            "text": "Estrutura, imponência e acabamento autoral.",
+            "cta_label": "Explorar"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "title": "Vestidos",
+            "text": "Silhuetas elegantes para ocasiões especiais.",
+            "cta_label": "Explorar"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "title": "Couro",
+            "text": "Textura, presença e sofisticação tátil.",
+            "cta_label": "Explorar"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "title": "Novidades",
+            "text": "A seleção mais recente da AMMIS.",
+            "cta_label": "Explorar"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

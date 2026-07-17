@@ -1,0 +1,719 @@
+{% comment %}
+  AMMIS - Instagram Showcase
+  Section: ammis-instagram-showcase.liquid
+  Purpose: Editorial Instagram/social proof section with configurable cards.
+{% endcomment %}
+
+{%- liquid
+  assign section_id = 'ammis-instagram-showcase-' | append: section.id
+-%}
+
+<section
+  id="{{ section_id }}"
+  class="ammis-instagram-showcase color-{{ section.settings.color_scheme }}"
+  style="
+    --ammis-section-padding-top: {{ section.settings.padding_top }}px;
+    --ammis-section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --ammis-container-width: {{ section.settings.container_width }}px;
+    --ammis-grid-gap: {{ section.settings.grid_gap }}px;
+    --ammis-card-radius: {{ section.settings.card_radius }}px;
+    --ammis-image-ratio-desktop: {{ section.settings.image_ratio_desktop }}%;
+    --ammis-image-ratio-mobile: {{ section.settings.image_ratio_mobile }}%;
+    --ammis-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+  "
+>
+  <div class="ammis-instagram-showcase__inner">
+    {%- if section.settings.heading != blank or section.settings.profile_text != blank -%}
+      <div class="ammis-instagram-showcase__header ammis-instagram-showcase__header--{{ section.settings.header_alignment }}">
+        {%- if section.settings.show_instagram_icon -%}
+          <span class="ammis-instagram-showcase__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="presentation" focusable="false">
+              <path d="M7.75 2h8.5A5.76 5.76 0 0 1 22 7.75v8.5A5.76 5.76 0 0 1 16.25 22h-8.5A5.76 5.76 0 0 1 2 16.25v-8.5A5.76 5.76 0 0 1 7.75 2Zm0 1.75a4 4 0 0 0-4 4v8.5a4 4 0 0 0 4 4h8.5a4 4 0 0 0 4-4v-8.5a4 4 0 0 0-4-4h-8.5ZM12 7.4A4.6 4.6 0 1 1 7.4 12 4.6 4.6 0 0 1 12 7.4Zm0 1.75A2.85 2.85 0 1 0 14.85 12 2.85 2.85 0 0 0 12 9.15Zm5.05-2.7a1.08 1.08 0 1 1-1.08 1.08 1.08 1.08 0 0 1 1.08-1.08Z"/>
+            </svg>
+          </span>
+        {%- endif -%}
+
+        <div class="ammis-instagram-showcase__heading-wrap">
+          {%- if section.settings.heading != blank -%}
+            <h2 class="ammis-instagram-showcase__heading">{{ section.settings.heading | escape }}</h2>
+          {%- endif -%}
+
+          {%- if section.settings.profile_text != blank -%}
+            <p class="ammis-instagram-showcase__profile-text">{{ section.settings.profile_text | escape }}</p>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.description != blank -%}
+      <div class="ammis-instagram-showcase__description ammis-instagram-showcase__description--{{ section.settings.header_alignment }}">
+        {{ section.settings.description }}
+      </div>
+    {%- endif -%}
+
+    <div class="ammis-instagram-showcase__grid ammis-instagram-showcase__grid--desktop-{{ section.settings.columns_desktop }} ammis-instagram-showcase__grid--mobile-{{ section.settings.columns_mobile }}">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign image = block.settings.image
+          assign link = block.settings.link
+          assign has_link = false
+          if link != blank
+            assign has_link = true
+          endif
+        -%}
+
+        <article class="ammis-instagram-showcase__item" {{ block.shopify_attributes }}>
+          {%- if has_link -%}
+            <a
+              class="ammis-instagram-showcase__card"
+              href="{{ link }}"
+              aria-label="{{ block.settings.title | default: section.settings.heading | escape }}"
+            >
+          {%- else -%}
+            <div class="ammis-instagram-showcase__card">
+          {%- endif -%}
+
+          <div class="ammis-instagram-showcase__media">
+            {%- if image != blank -%}
+              {{
+                image
+                | image_url: width: 1200
+                | image_tag:
+                  loading: 'lazy',
+                  class: 'ammis-instagram-showcase__image',
+                  widths: '360, 540, 720, 900, 1080, 1200',
+                  sizes: '(min-width: 990px) 25vw, (min-width: 750px) 50vw, 100vw',
+                  alt: block.settings.image_alt
+                | escape
+              }}
+            {%- else -%}
+              <div class="ammis-instagram-showcase__placeholder">
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.title != blank or block.settings.text != blank or block.settings.cta_text != blank -%}
+              <div class="ammis-instagram-showcase__overlay ammis-instagram-showcase__overlay--{{ section.settings.overlay_position }}">
+                <div class="ammis-instagram-showcase__content ammis-instagram-showcase__content--{{ section.settings.text_alignment }}">
+                  {%- if block.settings.title != blank -%}
+                    <h3 class="ammis-instagram-showcase__item-title">{{ block.settings.title | escape }}</h3>
+                  {%- endif -%}
+
+                  {%- if block.settings.text != blank -%}
+                    <p class="ammis-instagram-showcase__item-text">{{ block.settings.text | escape }}</p>
+                  {%- endif -%}
+
+                  {%- if block.settings.cta_text != blank -%}
+                    <span class="ammis-instagram-showcase__item-cta">{{ block.settings.cta_text | escape }}</span>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endif -%}
+          </div>
+
+          {%- if has_link -%}
+            </a>
+          {%- else -%}
+            </div>
+          {%- endif -%}
+        </article>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.button_text != blank and section.settings.button_link != blank -%}
+      <div class="ammis-instagram-showcase__footer">
+        <a class="ammis-instagram-showcase__button" href="{{ section.settings.button_link }}">
+          {{ section.settings.button_text | escape }}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+    #{{ section_id }} {
+      padding-top: var(--ammis-section-padding-top);
+      padding-bottom: var(--ammis-section-padding-bottom);
+      background: rgb(var(--color-background));
+      color: rgb(var(--color-foreground));
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__inner {
+      width: min(100% - 40px, var(--ammis-container-width));
+      margin: 0 auto;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__header--left {
+      justify-content: flex-start;
+      text-align: left;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__header--center {
+      justify-content: center;
+      text-align: center;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__header--right {
+      justify-content: flex-end;
+      text-align: right;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__icon {
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      flex: 0 0 auto;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__icon svg {
+      width: 100%;
+      height: 100%;
+      fill: currentColor;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__heading-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__heading {
+      margin: 0;
+      font-size: clamp(20px, 2.2vw, {{ section.settings.heading_size }}px);
+      line-height: 1.15;
+      font-weight: 400;
+      letter-spacing: {{ section.settings.heading_letter_spacing }}em;
+      text-transform: {{ section.settings.heading_transform }};
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__profile-text,
+    #{{ section_id }} .ammis-instagram-showcase__description,
+    #{{ section_id }} .ammis-instagram-showcase__item-text {
+      margin: 0;
+      font-size: {{ section.settings.text_size }}px;
+      line-height: 1.5;
+      color: rgba(var(--color-foreground), 0.74);
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__description {
+      max-width: 620px;
+      margin-bottom: 28px;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__description--left {
+      margin-right: auto;
+      text-align: left;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__description--center {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__description--right {
+      margin-left: auto;
+      text-align: right;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__grid {
+      display: grid;
+      gap: var(--ammis-grid-gap);
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__grid--desktop-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #{{ section_id }} .ammis-instagram-showcase__grid--desktop-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    #{{ section_id }} .ammis-instagram-showcase__grid--desktop-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    #{{ section_id }} .ammis-instagram-showcase__grid--desktop-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+
+    #{{ section_id }} .ammis-instagram-showcase__item,
+    #{{ section_id }} .ammis-instagram-showcase__card {
+      min-width: 0;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__card {
+      display: block;
+      position: relative;
+      color: inherit;
+      text-decoration: none;
+      overflow: hidden;
+      border-radius: var(--ammis-card-radius);
+      background: rgba(var(--color-foreground), 0.04);
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__media {
+      position: relative;
+      width: 100%;
+      padding-bottom: var(--ammis-image-ratio-desktop);
+      overflow: hidden;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__image,
+    #{{ section_id }} .ammis-instagram-showcase__placeholder,
+    #{{ section_id }} .ammis-instagram-showcase__placeholder svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__image {
+      object-fit: cover;
+      transition: transform 700ms ease;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__placeholder svg {
+      object-fit: cover;
+      background: rgba(var(--color-foreground), 0.04);
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      padding: 22px;
+      color: #fff;
+      opacity: 0;
+      transition: opacity 350ms ease;
+      pointer-events: none;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__overlay::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, var(--ammis-overlay-opacity));
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__overlay--top { align-items: flex-start; }
+    #{{ section_id }} .ammis-instagram-showcase__overlay--center { align-items: center; }
+    #{{ section_id }} .ammis-instagram-showcase__overlay--bottom { align-items: flex-end; }
+
+    #{{ section_id }} .ammis-instagram-showcase__content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__content--left { text-align: left; }
+    #{{ section_id }} .ammis-instagram-showcase__content--center { text-align: center; }
+    #{{ section_id }} .ammis-instagram-showcase__content--right { text-align: right; }
+
+    #{{ section_id }} .ammis-instagram-showcase__item-title {
+      margin: 0 0 8px;
+      font-size: clamp(15px, 1.4vw, {{ section.settings.card_title_size }}px);
+      line-height: 1.2;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.88);
+      text-decoration: underline;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__overlay .ammis-instagram-showcase__item-text {
+      color: rgba(255, 255, 255, 0.88);
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__item-cta {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 11px;
+      line-height: 1;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-bottom: 1px solid currentColor;
+      padding-bottom: 5px;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__card:hover .ammis-instagram-showcase__image,
+    #{{ section_id }} .ammis-instagram-showcase__card:focus-visible .ammis-instagram-showcase__image {
+      transform: scale(1.035);
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__card:hover .ammis-instagram-showcase__overlay,
+    #{{ section_id }} .ammis-instagram-showcase__card:focus-visible .ammis-instagram-showcase__overlay {
+      opacity: 1;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__card:focus-visible {
+      outline: 1px solid currentColor;
+      outline-offset: 4px;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__footer {
+      display: flex;
+      justify-content: center;
+      margin-top: 28px;
+    }
+
+    #{{ section_id }} .ammis-instagram-showcase__button {
+      color: rgb(var(--color-foreground));
+      text-decoration: none;
+      font-size: 12px;
+      line-height: 1;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-bottom: 1px solid currentColor;
+      padding-bottom: 6px;
+    }
+
+    @media screen and (max-width: 989px) {
+      #{{ section_id }} .ammis-instagram-showcase__grid--desktop-4,
+      #{{ section_id }} .ammis-instagram-showcase__grid--desktop-5 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media screen and (max-width: 749px) {
+      #{{ section_id }} .ammis-instagram-showcase__inner {
+        width: min(100% - 28px, var(--ammis-container-width));
+      }
+
+      #{{ section_id }} .ammis-instagram-showcase__header {
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      #{{ section_id }} .ammis-instagram-showcase__description {
+        margin-bottom: 22px;
+      }
+
+      #{{ section_id }} .ammis-instagram-showcase__grid--mobile-1 {
+        grid-template-columns: 1fr;
+      }
+
+      #{{ section_id }} .ammis-instagram-showcase__grid--mobile-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      #{{ section_id }} .ammis-instagram-showcase__grid--mobile-2 .ammis-instagram-showcase__item:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    width: calc((100% - var(--ammis-grid-gap)) / 2);
+    justify-self: center;
+  }
+
+      #{{ section_id }} .ammis-instagram-showcase__media {
+        padding-bottom: var(--ammis-image-ratio-mobile);
+      }
+
+      #{{ section_id }} .ammis-instagram-showcase__overlay {
+        opacity: {{ section.settings.show_overlay_mobile | default: false | json }};
+        padding: 16px;
+      }
+    }
+</style>
+
+{% schema %}
+{
+  "name": "AMMIS - Instagram",
+  "tag": "section",
+  "class": "section section-ammis-instagram-showcase",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Esquema de cores",
+      "default": "background-1"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "default": "@ammisoficial"
+    },
+    {
+      "type": "text",
+      "id": "profile_text",
+      "label": "Texto complementar ao título",
+      "default": "Exemple"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_instagram_icon",
+      "label": "Exibir ícone do Instagram",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Descrição abaixo do título",
+      "default": "<p>Inspirações, lançamentos e bastidores da AMMIS.</p>"
+    },
+    {
+      "type": "select",
+      "id": "header_alignment",
+      "label": "Alinhamento do cabeçalho",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Esquerda" },
+        { "value": "center", "label": "Centro" },
+        { "value": "right", "label": "Direita" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Texto do botão inferior",
+      "default": "Ver perfil"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Link do botão inferior"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Largura máxima",
+      "min": 900,
+      "max": 1800,
+      "step": 20,
+      "unit": "px",
+      "default": 1320
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Colunas no desktop",
+      "default": "4",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" },
+        { "value": "5", "label": "5" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Colunas no mobile",
+      "default": "2",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Espaço entre imagens",
+      "min": 4,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Arredondamento das imagens",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_ratio_desktop",
+      "label": "Proporção da imagem no desktop",
+      "min": 70,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "image_ratio_mobile",
+      "label": "Proporção da imagem no mobile",
+      "min": 70,
+      "max": 170,
+      "step": 5,
+      "unit": "%",
+      "default": 125
+    },
+    {
+      "type": "header",
+      "content": "Overlay dos cards"
+    },
+    {
+      "type": "select",
+      "id": "overlay_position",
+      "label": "Posição do texto no overlay",
+      "default": "bottom",
+      "options": [
+        { "value": "top", "label": "Topo" },
+        { "value": "center", "label": "Centro" },
+        { "value": "bottom", "label": "Base" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Alinhamento do texto do overlay",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Esquerda" },
+        { "value": "center", "label": "Centro" },
+        { "value": "right", "label": "Direita" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Intensidade do overlay",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 35
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay_mobile",
+      "label": "Exibir overlay sempre no mobile",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Tipografia"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Tamanho do título",
+      "min": 18,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "heading_letter_spacing",
+      "label": "Espaçamento entre letras do título",
+      "min": 0,
+      "max": 0.3,
+      "step": 0.1,
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "heading_transform",
+      "label": "Transformação do título",
+      "default": "none",
+      "options": [
+        { "value": "none", "label": "Normal" },
+        { "value": "uppercase", "label": "Maiúsculas" },
+        { "value": "lowercase", "label": "Minúsculas" },
+        { "value": "capitalize", "label": "Capitalizado" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "card_title_size",
+      "label": "Tamanho do título do card",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 17
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Tamanho dos textos",
+      "min": 11,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Espaçamento"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Espaçamento superior",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Espaçamento inferior",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    }
+  ],
+  "blocks": [
+    {
+      "type": "post",
+      "name": "Imagem",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Imagem"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Texto alternativo da imagem",
+          "default": "Imagem editorial AMMIS"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Título do overlay",
+          "default": "Inspiração AMMIS"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texto do overlay",
+          "default": "Conheça a composição."
+        },
+        {
+          "type": "text",
+          "id": "cta_text",
+          "label": "Texto do CTA no overlay",
+          "default": "Ver mais"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link da imagem"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "AMMIS - Instagram",
+      "blocks": [{ "type": "post" }, { "type": "post" }, { "type": "post" }, { "type": "post" }]
+    }
+  ]
+}
+{% endschema %}

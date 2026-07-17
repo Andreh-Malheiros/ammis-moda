@@ -1,0 +1,16 @@
+{
+	"sections": {
+		"main": {
+			"type": "main-list-collections",
+			"settings": {
+				"title": "Collections",
+				"sort": "alphabetical_reversed",
+				"image": "collection",
+				"image_ratio": "portrait",
+				"image_fit": "cover",
+				"show_description": false
+			}
+		}
+	},
+	"order": ["main"]
+}

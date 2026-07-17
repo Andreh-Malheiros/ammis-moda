@@ -1,0 +1,371 @@
+{%- liquid
+  assign foto = item.foto.value
+  assign foto_perfil = item.foto_perfil.value
+  assign handle_ig = item.handle_instagram.value
+  assign tipo = item.tipo_criadora.value
+  assign descricao = item.descricao.value
+  assign url_post = item.url_post.value
+  assign variant_list = item.variantes.value
+  assign desc_limit = 110
+
+  comment
+    CÁLCULO PRÉVIO: Preço Total e Contagem de Disponibilidade
+  endcomment
+  assign total_price = 0
+  assign available_count = 0
+  assign total_count = 0
+  assign unique_products_check = ''
+
+  if variant_list != blank
+    for target_variant in variant_list
+      assign prod = target_variant.product
+      assign prod_id_str = prod.id | append: ','
+
+      if unique_products_check contains prod_id_str
+        continue
+      endif
+
+      if total_count >= 3
+        break
+      endif
+
+      assign unique_products_check = unique_products_check | append: prod_id_str
+      assign total_count = total_count | plus: 1
+      assign total_price = total_price | plus: target_variant.price
+
+      if target_variant.available
+        assign available_count = available_count | plus: 1
+      endif
+    endfor
+  endif
+-%}
+
+<div class="ammis-card">
+  {%- comment -%} 1. BASE: POST ESTILO INSTAGRAM {%- endcomment -%}
+  <div class="ammis-post">
+    <div class="ammis-post__header">
+      <div class="ammis-post__header-left">
+        <div class="ammis-post__avatar-ring">
+          {%- if foto_perfil != blank -%}
+            {{ foto_perfil | image_url: width: 80 | image_tag: class: 'ammis-post__avatar', loading: 'lazy' }}
+          {%- else -%}
+            <div class="ammis-post__avatar-placeholder"></div>
+          {%- endif -%}
+        </div>
+        <span class="ammis-post__handle">@{{ handle_ig }}</span>
+        {%- if tipo == 'influencer' -%}
+          <svg class="ammis-post__verified" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" fill="#3897f0"/>
+          </svg>
+        {%- endif -%}
+      </div>
+
+      {%- if url_post != blank -%}
+        <a
+          href="{{ url_post }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="ammis-post__share-btn"
+          aria-label="Ver postagem original"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+        </a>
+      {%- endif -%}
+    </div>
+
+    <div class="ammis-post__image-area" style="overflow: hidden; position: relative;">
+      {%- comment -%} BADGE DE DISPONIBILIDADE (Ajuste Ponto 6) {%- endcomment -%}
+      {%- if variant_list != blank and variant_list.size > 0 -%}
+        <div
+          class="ammis-post__badge"
+          style="position: absolute; top: 1.2rem; right: 1.2rem; z-index: 5; padding: 0.4rem 0.8rem; border-radius: 2px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; color: #fff; background-color: {% if available_count == total_count %}#000{% else %}#777{% endif %};"
+        >
+          {%- if available_count == total_count -%}
+            Disponível
+          {%- else -%}
+            {{ available_count }} de {{ total_count }} peças disponíveis
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if foto != blank -%}
+        {{
+          foto
+          | image_url: width: 1000, height: 1000, crop: 'center'
+          | image_tag: class: 'ammis-post__main-image', loading: 'lazy', widths: '400, 600, 800, 1000'
+        }}
+      {%- endif -%}
+
+      {%- if variant_list != blank and variant_list.size > 0 -%}
+        <button
+          class="ammis-post__trigger-btn"
+          onclick="this.closest('.ammis-card').querySelector('.ammis-card__drawer').classList.add('is-open')"
+          aria-label="Ver produtos do look"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          Ver Produtos
+        </button>
+      {%- endif -%}
+    </div>
+
+    <div class="ammis-post__footer">
+      <div class="ammis-post__engagement">
+        <svg
+          class="ammis-post__icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        <svg
+          class="ammis-post__icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+        </svg>
+        <svg
+          class="ammis-post__icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </div>
+
+      {%- comment -%} AJUSTE PONTO 7: newline_to_br adicionado {%- endcomment -%}
+      {%- if descricao != blank -%}
+        <div class="ammis-post__caption-wrapper">
+          <p class="ammis-post__caption-text {% if descricao.size <= desc_limit %}is-expanded{% endif %}">
+            <span class="ammis-post__caption-handle">{{ handle_ig }}</span> {{ descricao | newline_to_br }}
+          </p>
+          {%- if descricao.size > desc_limit -%}
+            <button
+              class="ammis-post__read-more"
+              onclick="this.previousElementSibling.classList.toggle('is-expanded'); this.textContent = this.textContent === 'Ler mais' ? 'Menos' : 'Ler mais';"
+            >
+              Ler mais
+            </button>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- comment -%} 2. OVERLAY: GAVETA INTERNA REFINADA {%- endcomment -%}
+  {%- if variant_list != blank and variant_list.size > 0 -%}
+    <div class="ammis-card__drawer" style="display: flex; flex-direction: column;">
+      <div
+        class="ammis-drawer__header"
+        style="border-bottom: 1px solid #E8E8E8; padding-bottom: 1.5rem; margin-bottom: 1.5rem; flex-shrink: 0;"
+      >
+        <span class="ammis-drawer__title" style="font-weight: 400; letter-spacing: 3px; font-size: 1.2rem;"
+          >PEÇAS DO LOOK</span
+        >
+        <button
+          class="ammis-drawer__close-btn"
+          onclick="this.closest('.ammis-card__drawer').classList.remove('is-open')"
+          aria-label="Fechar lista de produtos"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="ammis-drawer__body" style="flex: 1; overflow-y: auto;">
+        {%- assign rendered_product_ids = '' -%}
+        {%- assign unique_product_count = 0 -%}
+
+        {%- for target_variant in variant_list -%}
+          {%- assign prod = target_variant.product -%}
+          {%- assign prod_id_str = prod.id | append: ',' -%}
+
+          {%- if rendered_product_ids contains prod_id_str -%}{%- continue -%}{%- endif -%}
+          {%- if unique_product_count >= 3 -%}{%- break -%}{%- endif -%}
+
+          {%- assign rendered_product_ids = rendered_product_ids | append: prod_id_str -%}
+          {%- assign unique_product_count = unique_product_count | plus: 1 -%}
+
+          <div
+            class="ammis-drawer-product"
+            style="display: flex; gap: 1.5rem; border-bottom: 1px solid #E8E8E8; padding-bottom: 2rem; margin-bottom: 2rem;"
+          >
+            {%- comment -%} AJUSTE PONTO 14: target blank {%- endcomment -%}
+            <a
+              href="{{ target_variant.url }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="ammis-drawer-product__image-link"
+              style="flex: 0 0 90px;"
+            >
+              {%- assign img = target_variant.featured_image | default: prod.featured_image -%}
+              {%- if img -%}
+                {{
+                  img
+                  | image_url: width: 180, height: 240, crop: 'center'
+                  | image_tag:
+                    class: 'ammis-drawer-product__image',
+                    loading: 'lazy',
+                    style: 'border-radius: 4px; object-fit: cover;'
+                }}
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag: 'ammis-drawer-product__image placeholder-svg' }}
+              {%- endif -%}
+            </a>
+
+            <div
+              class="ammis-drawer-product__info"
+              style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;"
+            >
+              <div class="ammis-drawer-product__info-top">
+                {%- comment -%} AJUSTE PONTO 6 e 14: Título cinza e Tag Esgotado + target blank {%- endcomment -%}
+                <a
+                  href="{{ target_variant.url }}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="ammis-drawer-product__title"
+                  style="font-size: 1.3rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; text-decoration: none; color: {% if target_variant.available %}var(--color-foreground){% else %}#999{% endif %};"
+                >
+                  {{ prod.title }}
+                  {%- unless target_variant.available -%}
+                    <span style="display: inline-block; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.5px; background: #f0f0f0; color: #666; padding: 2px 6px; border-radius: 2px; margin-left: 6px; vertical-align: middle;"
+                      >ESGOTADO</span
+                    >
+                  {%- endunless -%}
+                </a>
+                <span
+                  class="ammis-drawer-product__price"
+                  style="display: block; margin-top: 0.8rem; font-size: 1.6rem; font-weight: 500; color: {% if target_variant.available %}#000{% else %}#999{% endif %};"
+                >
+                  {{ target_variant.price | money }}
+                </span>
+              </div>
+
+              <div class="ammis-drawer-product__actions" style="margin-top: 1.5rem;">
+                {%- assign form_id = 'QuickAddDrawer-' | append: prod.id | append: '-' | append: target_variant.id -%}
+
+                {%- form 'product', prod, id: form_id, class: 'ammis-drawer-form', novalidate: 'novalidate' -%}
+                  {%- if prod.has_only_default_variant -%}
+                    <input type="hidden" name="id" value="{{ target_variant.id }}">
+                  {%- else -%}
+                    <div class="ammis-size-pills">
+                      {%- for v in prod.variants -%}
+                        {%- if prod.options.size == 1 or v.option1 == target_variant.option1 -%}
+                          <input
+                            type="radio"
+                            id="Var-{{ form_id }}-{{ v.id }}"
+                            name="id"
+                            value="{{ v.id }}"
+                            class="ammis-size-radio"
+                            {% if v.id == target_variant.id %}
+                              checked
+                            {% endif %}
+                            {% unless v.available %}
+                              disabled
+                            {% endunless %}
+                          >
+                          <label
+                            for="Var-{{ form_id }}-{{ v.id }}"
+                            class="ammis-size-label {% unless v.available %}is-disabled{% endunless %}"
+                            title="{% unless v.available %}Esgotado{% endunless %}"
+                          >
+                            {% if prod.options.size > 1 %}{{ v.option2 }}{% else %}{{ v.title }}{% endif %}
+                          </label>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </div>
+                  {%- endif -%}
+
+                  {%- if target_variant.available -%}
+                    <button type="submit" name="add" class="button button--primary ammis-add-btn">ADICIONAR</button>
+                  {%- else -%}
+                    <a
+                      href="{{ prod.url }}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="button button--secondary ammis-notify-btn"
+                      >AVISE-ME</a
+                    >
+                  {%- endif -%}
+                {%- endform -%}
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+
+        {%- comment -%} AJUSTE PONTO 13: Total do Look Destacado {%- endcomment -%}
+        <div
+          class="ammis-drawer__footer"
+          style="border-top: 1px solid #E8E8E8; padding-top: 2rem; margin-top: 2rem; display: flex; justify-content: space-between; align-items: center;"
+        >
+          <span style="font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; color: var(--color-foreground-secondary);"
+            >Total do Look</span
+          >
+          <span style="font-size: 2rem; font-weight: 600; color: #000;">{{ total_price | money }}</span>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+
+<style>
+  /* AJUSTE PONTO 5: Posições Absolutas da Gaveta blindadas */
+  .ammis-card { position: relative; overflow: hidden; }
+  .ammis-card__drawer {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 10;
+    transform: translateX(100%); transition: transform 380ms cubic-bezier(0.32, 0, 0.15, 1);
+  }
+  .ammis-card__drawer.is-open { transform: translateX(0); }
+
+  .ammis-post__main-image { transition: transform 400ms ease-out !important; }
+  .ammis-post__image-area:hover .ammis-post__main-image { transform: scale(1.03); }
+  .ammis-post__icon { transition: color 200ms ease; }
+  .ammis-post__icon:hover { color: #000; fill: rgba(0,0,0,0.05); }
+  .ammis-size-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.2rem; }
+  .ammis-size-radio { display: none; }
+  .ammis-size-label { display: flex; align-items: center; justify-content: center; min-width: 32px; height: 28px; padding: 0 8px; border: 1px solid var(--color-border, #ccc); font-size: 1.1rem; cursor: pointer; transition: all 0.2s ease; border-radius: 2px; color: var(--color-foreground, #333); }
+  .ammis-size-radio:checked + .ammis-size-label { background-color: #000; color: #fff; border-color: #000; }
+  .ammis-size-label.is-disabled { opacity: 0.4; text-decoration: line-through; cursor: not-allowed; background-color: #f9f9f9; }
+  .ammis-add-btn, .ammis-notify-btn { width: 100%; height: 3.8rem; min-height: unset; font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; border-radius: 2px; transition: background-color 0.2s ease; }
+  .ammis-add-btn:hover { background-color: #1A1A1A !important; }
+  .ammis-notify-btn { display: flex; align-items: center; justify-content: center; text-decoration: none; border: 1px solid var(--color-border); color: var(--color-foreground); background: transparent; }
+  .ammis-drawer-product:last-of-type { border-bottom: none !important; margin-bottom: 0 !important; padding-bottom: 0 !important; }
+</style>

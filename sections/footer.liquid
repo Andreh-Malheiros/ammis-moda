@@ -1,0 +1,1559 @@
+{% comment %}theme-check-disable UndefinedObject{% endcomment %}
+{{ 'section-footer.css' | asset_url | stylesheet_tag }}
+{{- 'component-accordion.css' | asset_url | stylesheet_tag -}}
+{{- 'component-list-menu.css' | asset_url | stylesheet_tag -}}
+{{- 'component-list-payment.css' | asset_url | stylesheet_tag -}}
+{{- 'component-list-social.css' | asset_url | stylesheet_tag -}}
+{{ 'component-rte.css' | asset_url | stylesheet_tag -}}
+{{- 'disclosure.css' | asset_url | stylesheet_tag }}
+
+<script src='{{ 'footer.js' | asset_url }}' defer='defer'></script>
+
+{%- style -%}
+	{% render 'section-padding' %}
+{%- endstyle -%}
+
+{% assign copyright_bottom = section.settings.copyright_bottom %}
+{% assign copyright_position = 'middle' %}
+{% if copyright_bottom %}
+	{% assign copyright_position = 'bottom' %}
+{% endif %}
+
+{% assign template_base = template | split: '.' | first %}
+
+{% unless template_base == 'customers/login'
+	or template_base == 'customers/register'
+%}
+	{% assign is_footer_content_middle = false %}
+
+	{% if section.settings.enable_country_selector
+		or section.settings.enable_language_selector
+		or section.settings.payment_enable
+	%}
+		{% assign is_footer_content_middle = true %}
+	{% endif %}
+
+	{% liquid
+		assign enable_logo = true
+		assign center_subscribe = false
+		assign hide_last_block = false
+
+		if settings.home_page_slider and template.name == 'index'
+			assign enable_logo = false
+		endif
+
+		if section.settings.enable_subscribe and settings.home_page_slider and template.name == 'index'
+			assign center_subscribe = true
+		endif
+
+		if copyright_position == 'middle' and is_footer_content_middle == false
+			assign hide_last_block = true
+		endif
+	%}
+
+	<footer class='footer color-{{ section.settings.color_scheme }} background {% if section.settings.show_border %} footer--border {% endif %} section-{{ section.id }}-padding{% if center_subscribe %} footer--center_subscribe{% if hide_last_block %} footer--center_subscribe__four-parts{% endif %}{% endif %}'>
+		{% if center_subscribe %}
+			<div class='newsletter__form footer--newsletter__form--center container'>
+				<h2 class='newsletter__title title--section-m-none {{ section.settings.heading_size }}'>
+					{{ section.settings.heading }}
+				</h2>
+				{% form 'customer', class: 'newsletter-form' %}
+					{%- if section.settings.subscribe_heading != blank -%}
+						<h3 class='newsletter__title h2 title--section title--section-m-none'>
+							{{ section.settings.subscribe_heading }}
+						</h3>
+					{%- endif -%}
+					{%- if section.settings.subscribe_text != blank -%}
+						<div class='newsletter__text secondary_text'>
+							{{ section.settings.subscribe_text }}
+						</div>
+					{%- endif -%}
+					<div class='newsletter-form__inner'>
+						<input
+							type='hidden'
+							name='contact[tags]'
+							value='newsletter'
+						>
+						<div class='newsletter-form__field-wrapper'>
+							<div class='field'>
+								<input
+									id='NewsletterForm--{{ section.id }}'
+									type='email'
+									name='contact[email]'
+									class='field__input field'
+									value='{{ form.email }}'
+									aria-required='true'
+									autocorrect='off'
+									autocapitalize='off'
+									autocomplete='email'
+									pattern='[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$'
+									{% if form.errors %}
+										autofocus
+										aria-invalid='true'
+										aria-describedby='Newsletter-error--{{ section.id }}'
+									{% elsif form.posted_successfully? %}
+										aria-describedby='Newsletter-success--{{ section.id }}'
+									{% endif %}
+									placeholder='{{ 'newsletter.label' | t }}'
+									required
+								>
+								<label
+									class='visually-hidden'
+									for='NewsletterForm--{{ section.id }}'
+								>
+									{{ 'newsletter.label' | t }}
+								</label>
+							</div>
+							{%- if form.errors -%}
+								<small
+									class='newsletter-form__message form__message'
+									id='Newsletter-error--{{ section.id }}'
+								>
+									{%- render 'icon-error' -%}
+									{{- form.errors.translated_fields.email | capitalize }}
+									{{ form.errors.messages.email -}}
+								</small>
+							{%- endif -%}
+							<button
+								type='submit'
+								class='newsletter__button button button--tertiary'
+								name='commit'
+							>
+								{{ 'newsletter.button_label' | t }}
+							</button>
+						</div>
+					</div>
+					{%- if form.posted_successfully? -%}
+						<h3
+							class='newsletter-form__message newsletter-form__message--success form__message'
+							id='Newsletter-success--{{ section.id }}'
+							tabindex='-1'
+							autofocus
+						>
+							{{- 'newsletter.success' | t }}
+						</h3>
+					{%- endif -%}
+				{% endform %}
+			</div>
+		{% endif %}
+
+		<div class='footer__content-top container'>
+			{%- if section.settings.logo_layout == 'center' and enable_logo -%}
+				<div class='footer__logo-link--center-wrapper'>
+					<a
+						href='{{ routes.root_url }}'
+						class='footer__logo-link footer__logo-link--center link link--text focus-inset'
+					>
+						{%- if section.settings.logo != blank -%}
+							{%- assign logo_height = section.settings.logo_width
+								| divided_by: section.settings.logo.aspect_ratio
+							-%}
+							{%- assign logo_alt = section.settings.logo.alt
+								| default: shop.name
+								| escape
+							-%}
+							{%- assign image_size_2x = section.settings.logo_width
+								| times: 2
+							-%}
+							{% capture srcset %}
+								{{ section.settings.logo | image_url: width: section.settings.logo_width }}, {{ section.settings.logo | image_url: width: image_size_2x }} 2x
+							{% endcapture %}
+							{{
+								section.settings.logo
+								| image_url: width: section.settings.logo_width
+								| image_tag:
+									class: 'footer__logo header__heading-logo',
+									srcset: srcset,
+									height: logo_height,
+									width: section.settings.logo_width,
+									alt: logo_alt
+							}}
+							{%- if section.settings.logo_2 != blank -%}
+								{% capture srcset %}
+								{{ section.settings.logo_2 | image_url: width: section.settings.logo_width }}, {{ section.settings.logo_2 | image_url: width: image_size_2x }} 2x
+							{% endcapture %}
+								{{
+									section.settings.logo_2
+									| image_url: width: section.settings.logo_width
+									| image_tag:
+										class: 'footer__logo header__heading-logo footer__logo--overlay header__heading-logo--overlay',
+										srcset: srcset,
+										height: logo_height,
+										width: section.settings.logo_width,
+										alt: logo_alt
+								}}
+							{%- endif -%}
+						{%- else -%}
+							<span class='h6 h7'>{{ shop.name }}</span>
+						{%- endif -%}
+					</a>
+				</div>
+			{% endif %}
+
+			{% comment %}
+				{% if center_subscribe %}
+					<div class="newsletter__form footer--newsletter__form--center">
+						<h2 class="newsletter__title title--section-m-none {{ section.settings.heading_size }}">
+							{{ section.settings.heading }}
+						</h2>
+							{% form 'customer', class: 'newsletter-form' %}
+								{% if section.settings.subscribe_heading != blank %}
+									<h3 class="newsletter__title h4 title--section title--section-m-none">
+										{{ section.settings.subscribe_heading }}
+									</h3>
+								{% endif %}
+								<div class="newsletter__text rte">
+									{{ section.settings.subscribe_text }}
+								</div>
+								<div class="newsletter-form__inner">
+									<input
+										type="hidden"
+										name="contact[tags]"
+										value="newsletter"
+									>
+									<div class="newsletter-form__field-wrapper">
+										<div class="field">
+											<input
+												id="NewsletterForm--{{ section.id }}"
+												type="email"
+												name="contact[email]"
+												class="field__input field"
+												value="{{ form.email }}"
+												aria-required="true"
+												autocorrect="off"
+												autocapitalize="off"
+												autocomplete="email"
+												pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
+												{% if form.errors %}
+													autofocus
+													aria-invalid="true"
+													aria-describedby="Newsletter-error--{{ section.id }}"
+												{% elsif form.posted_successfully? %}
+													aria-describedby="Newsletter-success--{{ section.id }}"
+												{% endif %}
+												placeholder="{{ 'newsletter.label' | t }}"
+												required
+											>
+											<label class="visually-hidden" for="NewsletterForm--{{ section.id }}">
+												{{ 'newsletter.label' | t }}
+											</label>
+										</div>
+										{%- if form.errors -%}
+											<small
+												class="newsletter-form__message form__message"
+												id="Newsletter-error--{{ section.id }}"
+											>
+												{%- render 'icon-error' -%}
+												{{- form.errors.translated_fields.email | capitalize }}
+												{{ form.errors.messages.email -}}
+											</small>
+										{%- endif -%}
+										<button
+											type="submit"
+											class="newsletter__button button button--tertiary"
+											name="commit"
+										>
+											{{ 'newsletter.button_label' | t }}
+										</button>
+									</div>
+								</div>
+								{%- if form.posted_successfully? -%}
+									<h3
+										class="newsletter-form__message newsletter-form__message--success form__message"
+										id="Newsletter-success--{{ section.id }}"
+										tabindex="-1"
+										autofocus
+									>
+										{% render 'icon-success' -%}
+										{{- 'newsletter.success' | t }}
+									</h3>
+								{%- endif -%}
+							{% endform %}
+					</div>
+				{% endif %}
+			{% endcomment %}
+
+			{%- if section.blocks.size > 0
+				or section.settings.logo != blank
+				or section.settings.description != blank
+				or section.settings.enable_subscribe
+			-%}
+				<div class='footer__blocks-container footer__blocks-container--{{ section.settings.logo_layout }} section-{{ section.id }}-padding '>
+					<div class='footer__blocks-wrapper {% if copyright_bottom == false %}with-padding{% endif %}'>
+						<div
+							class='footer-block footer-block--logo section-{{ section.id }}-padding{% if enable_logo == false %} footer-block--logo--hidden{% endif %}'
+							{{ block.shopify_attributes }}
+						>
+							{% if enable_logo %}
+								<a
+									href='{{ routes.root_url }}'
+									class='footer__logo-link link link--text focus-inset'
+								>
+									{%- if section.settings.logo != blank -%}
+										{%- assign logo_height = section.settings.logo_width
+											| divided_by: section.settings.logo.aspect_ratio
+										-%}
+										{%- assign logo_alt = section.settings.logo.alt
+											| default: shop.name
+											| escape
+										-%}
+										{%- assign image_size_2x = section.settings.logo_width
+											| times: 2
+										-%}
+										{% capture srcset %}
+											{{ section.settings.logo | image_url: width: section.settings.logo_width }}, {{ section.settings.logo | image_url: width: image_size_2x }} 2x
+										{% endcapture %}
+										{{
+											section.settings.logo
+											| image_url: width: section.settings.logo_width
+											| image_tag:
+												class: 'footer__logo header__heading-logo',
+												srcset: srcset,
+												height: logo_height,
+												width: section.settings.logo_width,
+												alt: logo_alt
+										}}
+										{%- if section.settings.logo_2 != blank -%}
+											{% capture srcset %}
+											{{ section.settings.logo_2 | image_url: width: section.settings.logo_width }}, {{ section.settings.logo_2 | image_url: width: image_size_2x }} 2x
+										{% endcapture %}
+											{{
+												section.settings.logo_2
+												| image_url: width: section.settings.logo_width
+												| image_tag:
+													class: 'footer__logo header__heading-logo footer__logo--overlay header__heading-logo--overlay',
+													srcset: srcset,
+													height: logo_height,
+													width: section.settings.logo_width,
+													alt: logo_alt
+											}}
+										{%- endif -%}
+									{%- else -%}
+										<span class='h6 h7'>{{ shop.name }}</span>
+									{%- endif -%}
+								</a>
+							{% endif %}
+							{% if section.settings.description != blank %}
+								<div class='footer-block__text secondary_text'>
+									{{ section.settings.description }}
+								</div>
+							{% endif %}
+						</div>
+
+						{% assign linkListBlocks = section.blocks
+							| where: 'type', 'link_list'
+						%}
+						{% assign contactsBlocks = section.blocks
+							| where: 'type', 'contacts'
+						%}
+						{% assign socialBlocks = section.blocks
+							| where: 'type', 'socials'
+						%}
+
+						{% if linkListBlocks.size > 0
+							or contactsBlocks.size > 0
+							or socialBlocks > 0
+						%}
+							<div class='footer--mid-wrapper'>
+								{% for block in section.blocks %}
+									{% if block.type == 'link_list' %}
+										<div
+											class='footer-block {% if block.settings.subheading != blank %}footer-block--menu{% endif %}'
+											{{ block.shopify_attributes }}
+										>
+											{% if block.settings.subheading != blank %}
+												<h2 class='footer-block__heading subtitle'>
+													{{ block.settings.subheading | escape }}
+												</h2>
+											{% endif %}
+											{% if block.settings.menu != blank
+												and block.settings.subheading != blank
+											%}
+												<ul class='footer-block__details-content list-unstyled'>
+													{% for link in block.settings.menu.links %}
+														<li>
+															<a
+																href='{{ link.url }}'
+																class='list-menu__item link-hover-line list-menu__item--link{% if link.active %} list-menu__item--active{% endif %} focus-inset'
+															>
+																{{ link.title }}
+															</a>
+														</li>
+													{% endfor %}
+												</ul>
+											{% endif %}
+										</div>
+										{%- if block.settings.subheading != blank -%}
+											<div class='accordion'>
+												<details
+													{% if block.settings.default_open %}
+														open
+													{% endif %}
+												>
+													<summary>
+														<h2 class='footer-block__heading subtitle'>
+															{{ block.settings.subheading | escape }}
+														</h2>
+														{% render 'icon-caret' %}
+													</summary>
+													{%- if block.settings.menu != blank -%}
+														<ul class='footer-block__details-content list-unstyled'>
+															{%- for link in block.settings.menu.links -%}
+																<li>
+																	<a
+																		href='{{ link.url }}'
+																		class='list-menu__item list-menu__item--link{% if link.active %} list-menu__item--active{% endif %}'
+																	>
+																		<span>{{ link.title }}</span>
+																	</a>
+																</li>
+															{%- endfor -%}
+														</ul>
+													{%- endif -%}
+												</details>
+											</div>
+										{%- endif -%}
+									{% elsif block.type == 'contacts' %}
+										<div
+											class='footer-block footer-block--menu contacts'
+											{{ block.shopify_attributes }}
+										>
+											{% if block.settings.subheading != blank %}
+												<p class='contacts__text footer-block__heading subtitle'>
+													{{ block.settings.subheading }}
+												</p>
+											{% endif %}
+											{% if block.settings.contact_info != blank %}
+												<div class='footer-block__details-content list-unstyled'>
+													<div class='list-menu__item link-hover-line list-menu__item--link focus-inset'>
+														{{ block.settings.contact_info }}
+													</div>
+												</div>
+											{% endif %}
+										</div>
+
+										{%- if block.settings.subheading != blank -%}
+											<div class='accordion'>
+												<details
+													{% if block.settings.default_open %}
+														open
+													{% endif %}
+												>
+													<summary>
+														<h2 class='footer-block__heading subtitle'>
+															{{ block.settings.subheading | escape }}
+														</h2>
+														{% render 'icon-caret' %}
+													</summary>
+													<ul class='footer-block__details-content list-unstyled'>
+														<li>
+															{% if block.settings.contact_info != blank %}
+																<div class='footer-block__details-content list-unstyled'>
+																	{{ block.settings.contact_info }}
+																</div>
+															{% endif %}
+														</li>
+													</ul>
+												</details>
+											</div>
+										{%- endif -%}
+									{% elsif block.type == 'policies' %}
+										<div
+											class='footer-block footer-block--menu policies'
+											{{ block.shopify_attributes }}
+										>
+											{% if block.settings.subheading != blank %}
+												<p class='contacts__text footer-block__heading subtitle'>
+													{{ block.settings.subheading }}
+												</p>
+											{% endif %}
+											<ul class='footer-block__details-content list-unstyled'>
+												{%- for policy in shop.policies -%}
+													{%- if policy != blank -%}
+														<li>
+															<span class='copyright__content secondary_text'
+																><a
+																	href='{{ policy.url }}'
+																	class='list-menu__item link-hover-line list-menu__item--link{% if link.active %} list-menu__item--active{% endif %}'
+																>
+																	{{- policy.title -}}
+																</a></span
+															>
+														</li>
+													{%- endif -%}
+												{%- endfor -%}
+											</ul>
+										</div>
+
+										{%- if block.settings.subheading != blank -%}
+											<div class='accordion'>
+												<details
+													{% if block.settings.default_open %}
+														open
+													{% endif %}
+												>
+													<summary>
+														<h2 class='footer-block__heading subtitle'>
+															{{ block.settings.subheading | escape }}
+														</h2>
+														{% render 'icon-caret' %}
+													</summary>
+													<ul class='footer-block__details-content list-unstyled'>
+														{%- for policy in shop.policies -%}
+															{%- if policy != blank -%}
+																<li>
+																	<span class='copyright__content secondary_text'
+																		><a
+																			href='{{ policy.url }}'
+																			class='list-menu__item list-menu__item--link focus-inset'
+																		>
+																			{{- policy.title -}}
+																		</a></span
+																	>
+																</li>
+															{%- endif -%}
+														{%- endfor -%}
+													</ul>
+												</details>
+											</div>
+										{%- endif -%}
+									{% elsif block.type == 'show_socials' %}
+										<div class='footer-block footer-block--menu footer__column--social'>
+											{%- if block.settings.heading != blank -%}
+												<p class='contacts__text footer-block__heading subtitle'>
+													{{ block.settings.heading }}
+												</p>
+											{%- endif %}
+											<ul
+												class='footer__list-social list-unstyled list-social{% if block.settings.show_social_icons == false %} footer__list-social--texts{% endif %}'
+												role='list'
+											>
+												{%- if settings.social_instagram_link != blank -%}
+													<li class='list-social__item'>
+														<a
+															href='{{ settings.social_instagram_link }}'
+															{% if settings.new_tab %}
+																target='_blank'
+															{% endif %}
+															class='link link--text list-social__link'
+															aria-describedby='a11y-external-message'
+														>
+															{%- render 'icon-instagram' -%}
+															<span class='social-name list-menu__item link-hover-line list-menu__item--link focus-inset'>
+																{{- 'general.social.links.instagram' | t -}}
+															</span>
+															<span class='visually-hidden'>
+																{{- 'general.social.links.instagram' | t -}}
+															</span>
+														</a>
+													</li>
+												{%- endif -%}
+												{%- if settings.social_facebook_link != blank -%}
+													<li class='list-social__item'>
+														<a
+															href='{{ settings.social_facebook_link }}'
+															{% if settings.new_tab %}
+																target='_blank'
+															{% endif %}
+															class='link link--text list-social__link focus-inset'
+															aria-describedby='a11y-external-message'
+														>
+															{%- render 'icon-facebook' -%}
+															<span class='social-name list-menu__item link-hover-line list-menu__item--link focus-inset'>
+																{{- 'general.social.links.facebook' | t -}}
+															</span>
+															<span class='visually-hidden'>
+																{{- 'general.social.links.facebook' | t -}}
+															</span>
+														</a>
+													</li>
+												{%- endif -%}
+												{%- if settings.social_twitter_link != blank -%}
+													<li class='list-social__item'>
+														<a
+															href='{{ settings.social_twitter_link }}'
+															{% if settings.new_tab %}
+																target='_blank'
+															{% endif %}
+															class='link link--text list-social__link focus-inset'
+															aria-describedby='a11y-external-message'
+														>
+															{%- render 'icon-twitter' -%}
+															<span class='social-name list-menu__item link-hover-line list-menu__item--link focus-inset'>
+																{{- 'general.social.links.twitter' | t -}}
+															</span>
+															<span class='visually-hidden'>
+																{{- 'general.social.links.twitter' | t -}}
+															</span>
+														</a>
+													</li>
+												{%- endif -%}
+												{%- if settings.social_pinterest_link != blank -%}
+													<li class='list-social__item'>
+														<a
+															href='{{ settings.social_pinterest_link }}'
+															{% if settings.new_tab %}
+																target='_blank'
+															{% endif %}
+															class='link link--text list-social__link'
+															aria-describedby='a11y-external-message'
+														>
+															{%- render 'icon-pinterest' -%}
+															<span class='social-name list-menu__item link-hover-line list-menu__item--link focus-inset'>
+																{{- 'general.social.links.pinterest' | t -}}
+															</span>
+															<span class='visually-hidden'>
+																{{- 'general.social.links.pinterest' | t -}}
+															</span>
+														</a>
+													</li>
+												{%- endif -%}
+												{%- if settings.social_tiktok_link != blank -%}
+													<li class='list-social__item'>
+														<a
+															href='{{ settings.social_tiktok_link }}'
+															{% if settings.new_tab %}
+																target='_blank'
+															{% endif %}
+															class='link link--text list-social__link'
+															aria-describedby='a11y-external-message'
+														>
+															{%- render 'icon-tiktok' -%}
+															<span class='social-name list-menu__item link-hover-line list-menu__item--link focus-inset'>
+																{{- 'general.social.links.tiktok' | t -}}
+															</span>
+															<span class='visually-hidden'>
+																{{- 'general.social.links.tiktok' | t -}}
+															</span>
+														</a>
+													</li>
+												{%- endif -%}
+												{%- if settings.social_linkedin_link != blank -%}
+													<li class='list-social__item'>
+														<a
+															href='{{ settings.social_linkedin_link }}'
+															{% if settings.new_tab %}
+																target='_blank'
+															{% endif %}
+															class='link link--text list-social__link'
+															aria-describedby='a11y-external-message'
+														>
+															{%- render 'icon-linkedin' -%}
+															<span class='social-name list-menu__item link-hover-line list-menu__item--link focus-inset'>
+																{{- 'general.social.links.linkedin' | t -}}
+															</span>
+															<span class='visually-hidden'>
+																{{- 'general.social.links.linkedin' | t -}}
+															</span>
+														</a>
+													</li>
+												{%- endif -%}
+												{%- if settings.social_tumblr_link != blank -%}
+													<li class='list-social__item'>
+														<a
+															href='{{ settings.social_tumblr_link }}'
+															{% if settings.new_tab %}
+																target='_blank'
+															{% endif %}
+															class='link link--text list-social__link'
+															aria-describedby='a11y-external-message'
+														>
+															{%- render 'icon-tumblr' -%}
+															<span class='social-name list-menu__item link-hover-line list-menu__item--link focus-inset'>
+																{{- 'general.social.links.tumblr' | t -}}
+															</span>
+															<span class='visually-hidden'>
+																{{- 'general.social.links.tumblr' | t -}}
+															</span>
+														</a>
+													</li>
+												{%- endif -%}
+												{%- if settings.social_snapchat_link != blank -%}
+													<li class='list-social__item'>
+														<a
+															href='{{ settings.social_snapchat_link }}'
+															{% if settings.new_tab %}
+																target='_blank'
+															{% endif %}
+															class='link link--text list-social__link'
+															aria-describedby='a11y-external-message'
+														>
+															{%- render 'icon-snapchat' -%}
+															<span class='social-name list-menu__item link-hover-line list-menu__item--link focus-inset'>
+																{{- 'general.social.links.snapchat' | t -}}
+															</span>
+															<span class='visually-hidden'>
+																{{- 'general.social.links.snapchat' | t -}}
+															</span>
+														</a>
+													</li>
+												{%- endif -%}
+												{%- if settings.social_youtube_link != blank -%}
+													<li class='list-social__item'>
+														<a
+															href='{{ settings.social_youtube_link }}'
+															{% if settings.new_tab %}
+																target='_blank'
+															{% endif %}
+															class='link link--text list-social__link'
+															aria-describedby='a11y-external-message'
+														>
+															{%- render 'icon-youtube' -%}
+															<span class='social-name list-menu__item link-hover-line list-menu__item--link focus-inset'>
+																{{- 'general.social.links.youtube' | t -}}
+															</span>
+															<span class='visually-hidden'>
+																{{- 'general.social.links.youtube' | t -}}
+															</span>
+														</a>
+													</li>
+												{%- endif -%}
+												{%- if settings.social_vimeo_link != blank -%}
+													<li class='list-social__item'>
+														<a
+															href='{{ settings.social_vimeo_link }}'
+															{% if settings.new_tab %}
+																target='_blank'
+															{% endif %}
+															class='link link--text list-social__link'
+															aria-describedby='a11y-external-message'
+														>
+															{%- render 'icon-vimeo' -%}
+															<span class='social-name list-menu__item link-hover-line list-menu__item--link focus-inset'>
+																{{- 'general.social.links.vimeo' | t -}}
+															</span>
+															<span class='visually-hidden'>
+																{{- 'general.social.links.vimeo' | t -}}
+															</span>
+														</a>
+													</li>
+												{%- endif -%}
+											</ul>
+										</div>
+
+										{%- if block.settings.heading != blank -%}
+											<div class='accordion'>
+												<details
+													{% if block.settings.default_open %}
+														open
+													{% endif %}
+												>
+													<summary>
+														<h2 class='footer-block__heading subtitle'>
+															{{ block.settings.heading | escape }}
+														</h2>
+														{% render 'icon-caret' %}
+													</summary>
+													<ul class='footer-block__details-content list-unstyled'>
+														{%- if settings.social_instagram_link != blank -%}
+															<li class='list-social__item'>
+																<a
+																	href='{{ settings.social_instagram_link }}'
+																	{% if settings.new_tab %}
+																		target='_blank'
+																	{% endif %}
+																	class='link link--text list-social__link'
+																	aria-describedby='a11y-external-message'
+																>
+																	{%- render 'icon-instagram' -%}
+																	<span class='list-menu__item list-menu__item--link focus-inset secondary_text'>
+																		{{- 'general.social.links.instagram' | t -}}
+																	</span>
+																	<span class='visually-hidden'>
+																		{{- 'general.social.links.instagram' | t -}}
+																	</span>
+																</a>
+															</li>
+														{%- endif -%}
+														{%- if settings.social_facebook_link != blank -%}
+															<li class='list-social__item'>
+																<a
+																	href='{{ settings.social_facebook_link }}'
+																	{% if settings.new_tab %}
+																		target='_blank'
+																	{% endif %}
+																	class='link link--text list-social__link focus-inset'
+																	aria-describedby='a11y-external-message'
+																>
+																	{%- render 'icon-facebook' -%}
+																	<span class='list-menu__item list-menu__item--link focus-inset secondary_text'>
+																		{{- 'general.social.links.facebook' | t -}}
+																	</span>
+																	<span class='visually-hidden'>
+																		{{- 'general.social.links.facebook' | t -}}
+																	</span>
+																</a>
+															</li>
+														{%- endif -%}
+														{%- if settings.social_twitter_link != blank -%}
+															<li class='list-social__item'>
+																<a
+																	href='{{ settings.social_twitter_link }}'
+																	{% if settings.new_tab %}
+																		target='_blank'
+																	{% endif %}
+																	class='link link--text list-social__link focus-inset'
+																	aria-describedby='a11y-external-message'
+																>
+																	{%- render 'icon-twitter' -%}
+																	<span class='list-menu__item list-menu__item--link focus-inset secondary_text'>
+																		{{- 'general.social.links.twitter' | t -}}
+																	</span>
+																	<span class='visually-hidden'>
+																		{{- 'general.social.links.twitter' | t -}}
+																	</span>
+																</a>
+															</li>
+														{%- endif -%}
+														{%- if settings.social_pinterest_link != blank -%}
+															<li class='list-social__item'>
+																<a
+																	href='{{ settings.social_pinterest_link }}'
+																	{% if settings.new_tab %}
+																		target='_blank'
+																	{% endif %}
+																	class='link link--text list-social__link'
+																	aria-describedby='a11y-external-message'
+																>
+																	{%- render 'icon-pinterest' -%}
+																	<span class='list-menu__item list-menu__item--link focus-inset secondary_text'>
+																		{{- 'general.social.links.pinterest' | t -}}
+																	</span>
+																	<span class='visually-hidden'>
+																		{{- 'general.social.links.pinterest' | t -}}
+																	</span>
+																</a>
+															</li>
+														{%- endif -%}
+														{%- if settings.social_tiktok_link != blank -%}
+															<li class='list-social__item'>
+																<a
+																	href='{{ settings.social_tiktok_link }}'
+																	{% if settings.new_tab %}
+																		target='_blank'
+																	{% endif %}
+																	class='link link--text list-social__link'
+																	aria-describedby='a11y-external-message'
+																>
+																	{%- render 'icon-tiktok' -%}
+																	<span class='list-menu__item list-menu__item--link focus-inset secondary_text'>
+																		{{- 'general.social.links.tiktok' | t -}}
+																	</span>
+																	<span class='visually-hidden'>
+																		{{- 'general.social.links.tiktok' | t -}}
+																	</span>
+																</a>
+															</li>
+														{%- endif -%}
+														{%- if settings.social_linkedin_link != blank -%}
+															<li class='list-social__item'>
+																<a
+																	href='{{ settings.social_linkedin_link }}'
+																	{% if settings.new_tab %}
+																		target='_blank'
+																	{% endif %}
+																	class='link link--text list-social__link'
+																	aria-describedby='a11y-external-message'
+																>
+																	{%- render 'icon-linkedin' -%}
+																	<span class='list-menu__item list-menu__item--link focus-inset secondary_text'>
+																		{{- 'general.social.links.linkedin' | t -}}
+																	</span>
+																	<span class='visually-hidden'>
+																		{{- 'general.social.links.linkedin' | t -}}
+																	</span>
+																</a>
+															</li>
+														{%- endif -%}
+														{%- if settings.social_tumblr_link != blank -%}
+															<li class='list-social__item'>
+																<a
+																	href='{{ settings.social_tumblr_link }}'
+																	{% if settings.new_tab %}
+																		target='_blank'
+																	{% endif %}
+																	class='link link--text list-social__link'
+																	aria-describedby='a11y-external-message'
+																>
+																	{%- render 'icon-tumblr' -%}
+																	<span class='list-menu__item list-menu__item--link focus-inset secondary_text'>
+																		{{- 'general.social.links.tumblr' | t -}}
+																	</span>
+																	<span class='visually-hidden'>
+																		{{- 'general.social.links.tumblr' | t -}}
+																	</span>
+																</a>
+															</li>
+														{%- endif -%}
+														{%- if settings.social_snapchat_link != blank -%}
+															<li class='list-social__item'>
+																<a
+																	href='{{ settings.social_snapchat_link }}'
+																	{% if settings.new_tab %}
+																		target='_blank'
+																	{% endif %}
+																	class='link link--text list-social__link'
+																	aria-describedby='a11y-external-message'
+																>
+																	{%- render 'icon-snapchat' -%}
+																	<span class='list-menu__item list-menu__item--link focus-inset secondary_text'>
+																		{{- 'general.social.links.snapchat' | t -}}
+																	</span>
+																	<span class='visually-hidden'>
+																		{{- 'general.social.links.snapchat' | t -}}
+																	</span>
+																</a>
+															</li>
+														{%- endif -%}
+														{%- if settings.social_youtube_link != blank -%}
+															<li class='list-social__item'>
+																<a
+																	href='{{ settings.social_youtube_link }}'
+																	{% if settings.new_tab %}
+																		target='_blank'
+																	{% endif %}
+																	class='link link--text list-social__link'
+																	aria-describedby='a11y-external-message'
+																>
+																	{%- render 'icon-youtube' -%}
+																	<span class='list-menu__item list-menu__item--link focus-inset secondary_text'>
+																		{{- 'general.social.links.youtube' | t -}}
+																	</span>
+																	<span class='visually-hidden'>
+																		{{- 'general.social.links.youtube' | t -}}
+																	</span>
+																</a>
+															</li>
+														{%- endif -%}
+														{%- if settings.social_vimeo_link != blank -%}
+															<li class='list-social__item'>
+																<a
+																	href='{{ settings.social_vimeo_link }}'
+																	{% if settings.new_tab %}
+																		target='_blank'
+																	{% endif %}
+																	class='link link--text list-social__link'
+																	aria-describedby='a11y-external-message'
+																>
+																	{%- render 'icon-vimeo' -%}
+																	<span class='list-menu__item list-menu__item--link focus-inset secondary_text'>
+																		{{- 'general.social.links.vimeo' | t -}}
+																	</span>
+																	<span class='visually-hidden'>
+																		{{- 'general.social.links.vimeo' | t -}}
+																	</span>
+																</a>
+															</li>
+														{%- endif -%}
+													</ul>
+												</details>
+											</div>
+										{%- endif -%}
+									{% endif %}
+								{% endfor %}
+							</div>
+						{% endif %}
+
+						{% if section.settings.enable_subscribe
+							and center_subscribe == false
+						%}
+							<div class='footer-block footer-block--subscribe newsletter__form'>
+								{% form 'customer', class: 'newsletter-form' %}
+									{%- if section.settings.subscribe_heading != blank -%}
+										<h3 class='newsletter__title h3 title--section title--section-m-none'>
+											{{ section.settings.subscribe_heading }}
+										</h3>
+									{%- endif -%}
+									{%- if section.settings.subscribe_text != blank -%}
+										<div class='newsletter__text secondary_text'>
+											{{ section.settings.subscribe_text }}
+										</div>
+									{%- endif -%}
+									<div class='newsletter-form__inner'>
+										<input
+											type='hidden'
+											name='contact[tags]'
+											value='newsletter'
+										>
+										<div class='newsletter-form__field-wrapper'>
+											<div class='field'>
+												<input
+													id='NewsletterForm--{{ section.id }}'
+													type='email'
+													name='contact[email]'
+													class='field__input field'
+													value='{{ form.email }}'
+													aria-required='true'
+													autocorrect='off'
+													autocapitalize='off'
+													autocomplete='email'
+													pattern='[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$'
+													{% if form.errors %}
+														autofocus
+														aria-invalid='true'
+														aria-describedby='Newsletter-error--{{ section.id }}'
+													{% elsif form.posted_successfully? %}
+														aria-describedby='Newsletter-success--{{ section.id }}'
+													{% endif %}
+													placeholder='{{ 'newsletter.label' | t }}'
+													required
+												>
+												<label
+													class='visually-hidden'
+													for='NewsletterForm--{{ section.id }}'
+												>
+													{{ 'newsletter.label' | t }}
+												</label>
+											</div>
+											{%- if form.errors -%}
+												<small
+													class='newsletter-form__message form__message'
+													id='Newsletter-error--{{ section.id }}'
+												>
+													{%- render 'icon-error' -%}
+													{{-
+														form.errors.translated_fields.email
+														| capitalize
+													}}
+													{{ form.errors.messages.email -}}
+												</small>
+											{%- endif -%}
+											<button
+												type='submit'
+												class='newsletter__button button button--tertiary'
+												name='commit'
+											>
+												{{ 'newsletter.button_label' | t }}
+											</button>
+										</div>
+									</div>
+									{%- if form.posted_successfully? -%}
+										<h3
+											class='newsletter-form__message newsletter-form__message--success form__message'
+											id='Newsletter-success--{{ section.id }}'
+											tabindex='-1'
+											autofocus
+										>
+											{{- 'newsletter.success' | t }}
+										</h3>
+									{%- endif -%}
+								{% endform %}
+							</div>
+						{% endif %}
+
+
+						{% if copyright_bottom == false %}
+							<div class='footer__copyright footer__copyright--{{ copyright_position }}'>
+								<span class='copyright__content secondary_text'>
+									{% if section.settings.enable_copyright_shopname %}
+										&copy;
+									{% endif %}
+									{% if section.settings.enable_copyright_date %}
+										{{ 'now' | date: '%Y' }}
+									{% endif %}
+									{% if section.settings.enable_copyright_shopname %}
+										{{ shop.name | link_to: routes.root_url }}.
+									{% endif %}
+								</span>
+
+								<span class='copyright__content secondary_text'>
+									Desenvolvido por <a href="https://sintext.com.br" target="_blank">Sintext</a> com tecnologia Shopify.
+								</span>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			{%- endif -%}
+		</div>
+
+		<div class='footer__content-bottom section-{{ section.id }}-padding{% if hide_last_block %} footer__content-bottom--desktop-hidden{% endif %}'>
+			<div class='container'>
+				<div class='footer__content-bottom-wrapper'>
+
+					<div class='footer__copyright footer__copyright--{{ copyright_position }}'>
+						<span class='copyright__content secondary_text'>
+							{% if section.settings.enable_copyright_shopname %}
+								&copy;
+							{% endif %}
+							{% if section.settings.enable_copyright_date %}
+								{{ 'now' | date: '%Y' }}
+							{% endif %}
+							{% if section.settings.enable_copyright_shopname %}
+								{{ shop.name | link_to: routes.root_url }}.
+							{% endif %}
+						</span>
+						<span class='copyright__content secondary_text'>
+							Desenvolvido por <a href="https://sintext.com.br" target="_blank">Sintext</a> com tecnologia Shopify.
+						</span>
+					</div>
+
+
+<!-- INICIO ICONES NO RODAPÉ --> 
+<div style="display: flex;align-items: end; gap: 20px;">
+
+
+<div class="footer__aside-item footer__aside-item--payment">
+<h2 class="footer-block__heading subtitle">Formas de Pagamento</h2>
+<div class="payment-list">
+<!-- ICONE Mastercard --> 
+<svg class="payment-list__item" viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg" role="img" width="38" height="24" aria-labelledby="pi-master"><title id="pi-master">Mastercard</title><path opacity=".07" d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z"></path><path fill="#fff" d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32"></path><circle fill="#EB001B" cx="15" cy="12" r="7"></circle><circle fill="#F79E1B" cx="23" cy="12" r="7"></circle><path fill="#FF5F00" d="M22 12c0-2.4-1.2-4.5-3-5.7-1.8 1.3-3 3.4-3 5.7s1.2 4.5 3 5.7c1.8-1.2 3-3.3 3-5.7z"></path></svg>
+<!-- FIM ICONE Mastercard --> 
+<!-- ICONE Visa --> 
+<svg class="payment-list__item" viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg" role="img" width="38" height="24" aria-labelledby="pi-visa"><title id="pi-visa">Visa</title><path opacity=".07" d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z"></path><path fill="#fff" d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32"></path><path d="M28.3 10.1H28c-.4 1-.7 1.5-1 3h1.9c-.3-1.5-.3-2.2-.6-3zm2.9 5.9h-1.7c-.1 0-.1 0-.2-.1l-.2-.9-.1-.2h-2.4c-.1 0-.2 0-.2.2l-.3.9c0 .1-.1.1-.1.1h-2.1l.2-.5L27 8.7c0-.5.3-.7.8-.7h1.5c.1 0 .2 0 .2.2l1.4 6.5c.1.4.2.7.2 1.1.1.1.1.1.1.2zm-13.4-.3l.4-1.8c.1 0 .2.1.2.1.7.3 1.4.5 2.1.4.2 0 .5-.1.7-.2.5-.2.5-.7.1-1.1-.2-.2-.5-.3-.8-.5-.4-.2-.8-.4-1.1-.7-1.2-1-.8-2.4-.1-3.1.6-.4.9-.8 1.7-.8 1.2 0 2.5 0 3.1.2h.1c-.1.6-.2 1.1-.4 1.7-.5-.2-1-.4-1.5-.4-.3 0-.6 0-.9.1-.2 0-.3.1-.4.2-.2.2-.2.5 0 .7l.5.4c.4.2.8.4 1.1.6.5.3 1 .8 1.1 1.4.2.9-.1 1.7-.9 2.3-.5.4-.7.6-1.4.6-1.4 0-2.5.1-3.4-.2-.1.2-.1.2-.2.1zm-3.5.3c.1-.7.1-.7.2-1 .5-2.2 1-4.5 1.4-6.7.1-.2.1-.3.3-.3H18c-.2 1.2-.4 2.1-.7 3.2-.3 1.5-.6 3-1 4.5 0 .2-.1.2-.3.2M5 8.2c0-.1.2-.2.3-.2h3.4c.5 0 .9.3 1 .8l.9 4.4c0 .1 0 .1.1.2 0-.1.1-.1.1-.1l2.1-5.1c-.1-.1 0-.2.1-.2h2.1c0 .1 0 .1-.1.2l-3.1 7.3c-.1.2-.1.3-.2.4-.1.1-.3 0-.5 0H9.7c-.1 0-.2 0-.2-.2L7.9 9.5c-.2-.2-.5-.5-.9-.6-.6-.3-1.7-.5-1.9-.5L5 8.2z" fill="#142688"></path></svg>
+<!-- FIM ICONE Visa --> 
+<!-- ICONE Elo --> 
+<svg class="payment-list__item" role="img" aria-labelledby="pi-elo" width="38" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38 24"><title id="pi-elo">Elo</title><g fill-rule="nonzero" fill="none"><path d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z" fill="#000" opacity=".07"></path><path d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32" fill="#FFF"></path><g fill="#000"><path d="M13.3 15.5c-.6.6-1.4.9-2.3.9-.6 0-1.2-.2-1.6-.5l-1.2 1.9c.8.6 1.8.9 2.8.9 1.5 0 2.9-.6 3.9-1.6l-1.6-1.6zm-2.1-7.7c-3 0-5.5 2.4-5.5 5.4 0 1.1.3 2.2.9 3.1l9.8-4.2c-.6-2.5-2.7-4.3-5.2-4.3zm-3.3 5.8v-.4c0-1.8 1.5-3.2 3.2-3.2 1 0 1.8.5 2.4 1.1l-5.6 2.5zm11.6-8.3v10.5l1.8.8-.9 2.1-1.8-.8c-.4-.2-.7-.4-.9-.7-.2-.3-.3-.7-.3-1.3V5.3h2.1zM26 10.2c.3-.1.7-.2 1-.2 1.5 0 2.8 1.1 3.1 2.6l2.2-.4c-.5-2.5-2.7-4.4-5.3-4.4-.6 0-1.2.1-1.7.3l.7 2.1zm-2.6 7.1l1.5-1.7c-.7-.6-1.1-1.4-1.1-2.4s.4-1.8 1.1-2.4l-1.5-1.7c-1.1 1-1.8 2.5-1.8 4.1 0 1.7.7 3.1 1.8 4.1zm6.7-3.4c-.3 1.5-1.6 2.6-3.1 2.6-.4 0-.7-.1-1-.2l-.7 2.1c.5.2 1.1.3 1.7.3 2.6 0 4.8-1.9 5.3-4.4l-2.2-.4z"></path></g></g></svg>
+<!-- FIM ICONE Elo --> 
+<!-- ICONE Hipercard --> 
+<svg class="payment-list__item" role="img" aria-labelledby="pi-hypercard" viewBox="0 0 38 24" width="38" height="24" xmlns="http://www.w3.org/2000/svg"><title id="pi-hypercard">Hypercard</title><g fill="none" fill-rule="evenodd"><path d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z" fill="#000" fill-rule="nonzero" opacity=".07"></path><path d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32" fill="#FFF" fill-rule="nonzero"></path><path d="M11.9 5.1H8.6c-1.4.1-2.6.6-2.9 1.8-.2.6-.3 1.3-.4 2-.7 3.3-1.3 6.7-2 9.9h25.4c2 0 3.3-.4 3.7-2 .2-.7.3-1.5.5-2.3.6-3.1 1.3-6.2 1.9-9.4H11.9z" fill="#B3131B" fill-rule="nonzero"></path><path d="M6.38 9.31h.605v1.827h2.3V9.31h.605v4.421h-.605v-2.067h-2.3v2.067h-.604v-4.42zm4.364 1.213h.551v3.208h-.55v-3.208zm0-1.213h.551v.614h-.55V9.31zm3.36 3.74c.168-.212.252-.528.252-.95 0-.257-.037-.477-.111-.662-.14-.355-.398-.533-.77-.533-.376 0-.633.188-.771.563a2.23 2.23 0 00-.112.765c0 .248.037.46.112.635.14.333.397.5.77.5a.773.773 0 00.63-.318zm-2.032-2.527h.526v.428c.109-.147.227-.26.355-.34.183-.12.398-.181.644-.181.366 0 .676.14.93.42.255.28.383.68.383 1.2 0 .701-.184 1.203-.551 1.504a1.25 1.25 0 01-.813.286c-.242 0-.446-.053-.61-.16a1.408 1.408 0 01-.323-.31v1.646h-.541v-4.493zm5.477.074c.215.107.378.246.49.417.109.162.181.352.217.569.032.148.048.385.048.71h-2.362c.01.327.087.59.232.787.144.197.368.296.67.296.284 0 .51-.093.678-.28a.944.944 0 00.205-.376h.532c-.014.119-.06.25-.14.396a1.432 1.432 0 01-.266.357c-.165.16-.368.268-.61.325a1.873 1.873 0 01-.443.048c-.402 0-.742-.146-1.02-.438-.28-.292-.419-.7-.419-1.227 0-.517.14-.938.421-1.26.281-.324.648-.485 1.102-.485.229 0 .45.054.665.16zm.199 1.265a1.403 1.403 0 00-.154-.562c-.148-.261-.396-.392-.743-.392a.824.824 0 00-.626.27c-.169.18-.258.408-.268.684h1.79zm1.237-1.354h.514v.557c.042-.108.146-.24.31-.396a.804.804 0 01.62-.23l.124.012v.572a.81.81 0 00-.178-.015c-.273 0-.482.088-.629.263a.92.92 0 00-.22.607v1.853h-.541v-3.223zm4.166.172c.228.176.365.48.411.912h-.526a.972.972 0 00-.22-.495c-.115-.132-.298-.198-.55-.198-.346 0-.593.169-.741.506-.097.219-.145.489-.145.81 0 .323.068.594.205.815.136.22.351.331.644.331.225 0 .403-.068.534-.206.132-.137.222-.325.273-.564h.526c-.06.427-.21.74-.451.937-.241.198-.549.297-.924.297-.422 0-.758-.154-1.008-.462-.251-.308-.377-.693-.377-1.154 0-.566.138-1.007.413-1.322a1.332 1.332 0 011.05-.472c.363 0 .659.088.886.265zm1.54 2.564c.114.09.25.135.406.135.19 0 .375-.044.554-.132a.745.745 0 00.451-.72v-.436a.927.927 0 01-.256.106 2.18 2.18 0 01-.307.06l-.328.042a1.255 1.255 0 00-.442.123c-.167.095-.25.245-.25.452 0 .156.057.28.172.37zm1.14-1.466c.125-.016.208-.068.25-.156a.476.476 0 00.036-.208c0-.185-.065-.318-.197-.402-.131-.083-.32-.125-.564-.125-.283 0-.484.077-.602.23a.752.752 0 00-.13.375h-.505c.01-.397.139-.673.387-.829a1.59 1.59 0 01.862-.233c.38 0 .687.072.924.217.235.144.352.369.352.674v1.857c0 .056.012.101.035.135.023.034.071.051.146.051a.824.824 0 00.177-.018v.4c-.084.025-.148.04-.192.046a1.408 1.408 0 01-.181.009c-.187 0-.322-.067-.406-.199a.767.767 0 01-.094-.298c-.11.145-.269.27-.475.376a1.47 1.47 0 01-.683.16c-.3 0-.544-.091-.733-.273a.905.905 0 01-.285-.681c0-.3.094-.531.28-.695.187-.165.432-.266.735-.304l.863-.109zm1.716-1.27h.514v.557c.043-.108.146-.24.31-.396a.804.804 0 01.62-.23l.124.012v.572a.81.81 0 00-.178-.015c-.273 0-.482.088-.629.263a.92.92 0 00-.22.607v1.853h-.541v-3.223zm2.6 2.516c.147.233.381.35.704.35a.745.745 0 00.619-.324c.161-.216.242-.525.242-.929 0-.407-.083-.708-.25-.904a.78.78 0 00-.617-.294.814.814 0 00-.663.313c-.17.21-.255.516-.255.921 0 .345.074.634.22.867zm1.216-2.417c.096.06.206.166.328.316V9.295h.52v4.436h-.487v-.448a1.172 1.172 0 01-.448.43c-.173.089-.37.133-.593.133-.36 0-.67-.151-.933-.453-.263-.302-.394-.704-.394-1.206 0-.469.12-.876.36-1.22.239-.344.582-.516 1.027-.516.247 0 .453.052.62.156z" fill="#FFF"></path></g></svg>
+<!-- FIM ICONE Hipercard --> 
+<!-- ICONE Amex --> 
+<svg class="payment-list__item" xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 38 24" width="38" height="24" aria-labelledby="pi-american_express"><title id="pi-american_express">American Express</title><g fill="none"><path fill="#000" d="M35,0 L3,0 C1.3,0 0,1.3 0,3 L0,21 C0,22.7 1.4,24 3,24 L35,24 C36.7,24 38,22.7 38,21 L38,3 C38,1.3 36.6,0 35,0 Z" opacity=".07"></path><path fill="#006FCF" d="M35,1 C36.1,1 37,1.9 37,3 L37,21 C37,22.1 36.1,23 35,23 L3,23 C1.9,23 1,22.1 1,21 L1,3 C1,1.9 1.9,1 3,1 L35,1"></path><path fill="#FFF" d="M8.971,10.268 L9.745,12.144 L8.203,12.144 L8.971,10.268 Z M25.046,10.346 L22.069,10.346 L22.069,11.173 L24.998,11.173 L24.998,12.412 L22.075,12.412 L22.075,13.334 L25.052,13.334 L25.052,14.073 L27.129,11.828 L25.052,9.488 L25.046,10.346 L25.046,10.346 Z M10.983,8.006 L14.978,8.006 L15.865,9.941 L16.687,8 L27.057,8 L28.135,9.19 L29.25,8 L34.013,8 L30.494,11.852 L33.977,15.68 L29.143,15.68 L28.065,14.49 L26.94,15.68 L10.03,15.68 L9.536,14.49 L8.406,14.49 L7.911,15.68 L4,15.68 L7.286,8 L10.716,8 L10.983,8.006 Z M19.646,9.084 L17.407,9.084 L15.907,12.62 L14.282,9.084 L12.06,9.084 L12.06,13.894 L10,9.084 L8.007,9.084 L5.625,14.596 L7.18,14.596 L7.674,13.406 L10.27,13.406 L10.764,14.596 L13.484,14.596 L13.484,10.661 L15.235,14.602 L16.425,14.602 L18.165,10.673 L18.165,14.603 L19.623,14.603 L19.647,9.083 L19.646,9.084 Z M28.986,11.852 L31.517,9.084 L29.695,9.084 L28.094,10.81 L26.546,9.084 L20.652,9.084 L20.652,14.602 L26.462,14.602 L28.076,12.864 L29.624,14.602 L31.499,14.602 L28.987,11.852 L28.986,11.852 Z"></path></g></svg>
+<!-- FIM ICONE Amex --> 
+<!-- ICONE Diners --> 
+<svg class="payment-list__item" viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg" role="img" width="38" height="24" aria-labelledby="pi-diners_club"><title id="pi-diners_club">Diners Club</title><path opacity=".07" d="M35 0H3C1.3 0 0 1.3 0 3v18c0 1.7 1.4 3 3 3h32c1.7 0 3-1.3 3-3V3c0-1.7-1.4-3-3-3z"></path><path fill="#fff" d="M35 1c1.1 0 2 .9 2 2v18c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V3c0-1.1.9-2 2-2h32"></path><path d="M12 12v3.7c0 .3-.2.3-.5.2-1.9-.8-3-3.3-2.3-5.4.4-1.1 1.2-2 2.3-2.4.4-.2.5-.1.5.2V12zm2 0V8.3c0-.3 0-.3.3-.2 2.1.8 3.2 3.3 2.4 5.4-.4 1.1-1.2 2-2.3 2.4-.4.2-.4.1-.4-.2V12zm7.2-7H13c3.8 0 6.8 3.1 6.8 7s-3 7-6.8 7h8.2c3.8 0 6.8-3.1 6.8-7s-3-7-6.8-7z" fill="#3086C8"></path></svg>
+<!-- FIM ICONE Diners --> 
+<!-- ICONE PIX -->     
+<svg class="payment-list__item" style="width: 68px; height: 24px; background: white;border: solid 1px #e1e3e4;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 952.77 338.7"><path d="M393.22,316.26V122a64.71,64.71,0,0,1,64.71-64.71l57.35.08A64.62,64.62,0,0,1,579.77,122v41.34a64.72,64.72,0,0,1-64.71,64.72H434" fill="none" stroke="#939598" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.26"/><path d="M595.8,57.28h24.88a26.56,26.56,0,0,1,26.56,26.56v145.1" fill="none" stroke="#939598" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.26"/><path d="M641.9,34.8,630.62,23.51a7.16,7.16,0,0,1,0-10.13L641.9,2.1a7.18,7.18,0,0,1,10.15,0l11.27,11.28a7.16,7.16,0,0,1,0,10.13L652,34.8a7.17,7.17,0,0,1-10.14,0" fill="#32bcad"/><path d="M695,57.15h24.67a47.85,47.85,0,0,1,33.84,14l57.71,57.71a19.13,19.13,0,0,0,27.07,0l57.5-57.49a47.81,47.81,0,0,1,33.83-14h20.06" fill="none" stroke="#939598" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.26"/><path d="M695,227.67h24.67a47.86,47.86,0,0,0,33.84-14l57.71-57.71a19.15,19.15,0,0,1,27.07,0l57.5,57.5a47.84,47.84,0,0,0,33.83,14h20.06" fill="none" stroke="#939598" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.26"/><path d="M246.13,264.53A46.07,46.07,0,0,1,213.35,251L166,203.62a9,9,0,0,0-12.44,0l-47.51,47.51A46.09,46.09,0,0,1,73.27,264.7H64l60,60a48,48,0,0,0,67.81,0l60.12-60.13Z" fill="#32bcad"/><path d="M73.28,97.09a46.08,46.08,0,0,1,32.78,13.57l47.51,47.52a8.81,8.81,0,0,0,12.44,0l47.34-47.34a46,46,0,0,1,32.78-13.58h5.7L191.71,37.14a47.94,47.94,0,0,0-67.81,0L64,97.09Z" fill="#32bcad"/><path d="M301.56,147l-36.33-36.33a7,7,0,0,1-2.58.52H246.13a32.62,32.62,0,0,0-22.93,9.5L175.86,168a22.74,22.74,0,0,1-32.13,0L96.21,120.51A32.62,32.62,0,0,0,73.28,111H53a7.12,7.12,0,0,1-2.44-.49L14,147a48,48,0,0,0,0,67.81l36.48,36.48a6.85,6.85,0,0,1,2.44-.49H73.28a32.63,32.63,0,0,0,22.93-9.51l47.51-47.51c8.59-8.58,23.56-8.58,32.14,0l47.34,47.33a32.62,32.62,0,0,0,22.93,9.5h16.52a6.9,6.9,0,0,1,2.58.52l36.33-36.33a47.94,47.94,0,0,0,0-67.81" fill="#32bcad"/><path d="M442.54,299.75a42.13,42.13,0,0,0-8.89,1.35v11.84a20.6,20.6,0,0,0,6.92,1.16c5.94,0,8.75-2,8.75-7.23,0-4.92-2.3-7.12-6.78-7.12m-10.89,22V298.32h1.63l.17,1a46.87,46.87,0,0,1,9.26-1.49,9.16,9.16,0,0,1,6.07,1.76c2,1.66,2.68,4.34,2.68,7.26s-1,5.94-3.8,7.53a14.59,14.59,0,0,1-6.89,1.53,24.82,24.82,0,0,1-7.12-1.09v6.89Z" fill="#939598"/><path d="M466.36,299.68c-5.93,0-8.58,1.86-8.58,7.09,0,5.05,2.61,7.33,8.58,7.33s8.55-1.84,8.55-7.06c0-5.05-2.61-7.36-8.55-7.36M474,314.1c-2,1.42-4.62,1.83-7.64,1.83s-5.73-.44-7.66-1.83c-2.17-1.53-3.06-4-3.06-7.19s.89-5.67,3.06-7.23c1.93-1.39,4.58-1.83,7.66-1.83s5.67.44,7.64,1.83c2.2,1.56,3.05,4.1,3.05,7.19s-.88,5.7-3.05,7.23" fill="#939598"/><path d="M502.1,315.45l-6.62-14.21h-.13l-6.52,14.21H487L480,298.32h2.2l5.87,14.38h.14l6.38-14.38h1.83l6.54,14.38h.14l5.73-14.38H511l-7.06,17.13Z" fill="#939598"/><path d="M523.75,299.64c-5.5,0-7.36,2.45-7.7,6h15.4c-.17-3.9-2.17-6-7.7-6m-.07,16.29c-3.29,0-5.43-.48-7.13-1.9-2-1.73-2.67-4.24-2.67-7.12s.91-5.67,3.19-7.33a11.38,11.38,0,0,1,6.68-1.73,12,12,0,0,1,6.85,1.66c2.47,1.66,2.95,4.58,2.95,7.9H516c.07,3.53,1.22,6.65,7.87,6.65a51.75,51.75,0,0,0,8.85-1v1.8a52.33,52.33,0,0,1-9,1.05" fill="#939598"/><path d="M539.3,315.45V298.32h1.62l.17,1c3.63-.92,5.33-1.49,8.52-1.49h.24v1.9h-.48c-2.68,0-4.31.37-8.07,1.35v14.35Z" fill="#939598"/><path d="M561.47,299.64c-5.49,0-7.36,2.45-7.7,6h15.4c-.17-3.9-2.17-6-7.7-6m-.07,16.29c-3.29,0-5.42-.48-7.12-1.9-2-1.73-2.68-4.24-2.68-7.12s.92-5.67,3.19-7.33a11.42,11.42,0,0,1,6.68-1.73,12,12,0,0,1,6.85,1.66c2.48,1.66,3,4.58,3,7.9H553.7c.07,3.53,1.22,6.65,7.87,6.65a51.76,51.76,0,0,0,8.86-1v1.8a52.44,52.44,0,0,1-9,1.05" fill="#939598"/><path d="M593.2,300.83a20.6,20.6,0,0,0-6.92-1.15c-5.94,0-8.75,2-8.75,7.23,0,4.95,2.31,7.12,6.78,7.12a44.06,44.06,0,0,0,8.89-1.33Zm.38,14.62-.18-1a46.06,46.06,0,0,1-9.26,1.5,9,9,0,0,1-6.07-1.77c-2-1.66-2.68-4.34-2.68-7.25,0-3.06,1-5.94,3.8-7.5a14.35,14.35,0,0,1,6.92-1.56,26.18,26.18,0,0,1,7.09,1.08V291.1h2v24.35Z" fill="#939598"/><path d="M624.55,299.75a42.13,42.13,0,0,0-8.89,1.35v11.81a20,20,0,0,0,6.92,1.19c5.94,0,8.75-2,8.75-7.23,0-4.92-2.3-7.12-6.78-7.12m5.12,14.65a14.57,14.57,0,0,1-6.88,1.53,24.35,24.35,0,0,1-7.67-1.29l-.1.81h-1.36V291.1h2v8.17a48.34,48.34,0,0,1,9.06-1.42,9.16,9.16,0,0,1,6.07,1.76c2,1.66,2.68,4.34,2.68,7.26s-1,5.94-3.8,7.53" fill="#939598"/><path d="M636.13,322v-1.86c1,.1,1.9.17,2.54.17,2.48,0,4-.72,5.36-3.53l.65-1.36-9-17.13H638l7.67,14.79h.13l7.29-14.79h2.28l-9.64,19.24c-1.76,3.49-3.66,4.64-7.16,4.64a19.48,19.48,0,0,1-2.47-.17" fill="#939598"/><path d="M683,305.68h-6.64v6H683c4.58,0,6.31-.51,6.31-3,0-2.68-2.38-3-6.35-3M681.76,296h-5.42v6.1h5.46c4.51,0,6.31-.54,6.31-3.08,0-2.72-2.28-3-6.35-3m10.32,17.88c-2.45,1.56-5.4,1.62-10.79,1.62H671.14V292.22h9.91c4.65,0,7.5.06,9.87,1.49a4.91,4.91,0,0,1,2.38,4.61c0,2.44-1,4.07-3.67,5.16v.13c3,.68,4.92,2.21,4.92,5.5a5,5,0,0,1-2.47,4.72" fill="#939598"/><path d="M714.84,308.26c-2-.17-4-.27-6.17-.27-3.49,0-4.72.71-4.72,2.31s1,2.3,3.7,2.3a34.52,34.52,0,0,0,7.19-1Zm1,7.19-.13-1a41.11,41.11,0,0,1-9.3,1.5,8.88,8.88,0,0,1-5.19-1.26,5.3,5.3,0,0,1,1-8.78c1.8-.85,4.21-.92,6.42-.92,1.79,0,4.2.1,6.2.24v-.31c0-2.68-1.76-3.56-6.58-3.56-1.86,0-4.14.1-6.31.3v-3.46c2.41-.2,5.13-.33,7.37-.33,3,0,6.07.23,8,1.59s2.34,3.33,2.34,5.87v10.14Z" fill="#939598"/><path d="M742,315.45V306c0-3.12-1.59-4.24-4.44-4.24a32.63,32.63,0,0,0-7,1.08v12.62h-4.78V298.32h3.9l.17,1.09a39.6,39.6,0,0,1,9.16-1.56,8.45,8.45,0,0,1,5.87,1.76c1.35,1.22,1.86,2.92,1.86,5.36v10.48Z" fill="#939598"/><path d="M760.26,315.93c-2.21,0-4.62-.31-6.38-1.8-2.1-1.7-2.71-4.37-2.71-7.26,0-2.71.88-5.67,3.49-7.33,2.14-1.39,4.78-1.69,7.53-1.69,2,0,3.9.13,6,.33v3.67c-1.73-.17-3.8-.3-5.46-.3-4.55,0-6.69,1.42-6.69,5.36,0,3.69,1.6,5.29,5.33,5.29a40.69,40.69,0,0,0,7.19-.88v3.52a42.64,42.64,0,0,1-8.34,1.09" fill="#939598"/><path d="M782.73,301.44c-4.55,0-6.55,1.43-6.55,5.33s2,5.56,6.55,5.56,6.48-1.39,6.48-5.29-1.93-5.6-6.48-5.6m8.21,12.69c-2.1,1.42-4.85,1.8-8.21,1.8s-6.17-.41-8.24-1.8c-2.38-1.56-3.23-4.14-3.23-7.22s.85-5.71,3.23-7.27c2.07-1.39,4.81-1.79,8.24-1.79s6.11.4,8.21,1.79c2.37,1.56,3.19,4.18,3.19,7.23s-.85,5.7-3.19,7.26" fill="#939598"/><path d="M821.74,315.93c-2.88,0-6-.48-8.34-2.41-2.78-2.31-3.63-5.87-3.63-9.7,0-3.43,1.09-7.5,4.71-9.87,2.82-1.83,6.31-2.21,9.84-2.21,2.58,0,5.23.17,8.11.41v4.17c-2.47-.2-5.53-.37-7.9-.37-6.62,0-9.43,2.51-9.43,7.87s2.61,7.9,7.49,7.9a52.84,52.84,0,0,0,10.35-1.39v4.14a58,58,0,0,1-11.2,1.46" fill="#939598"/><path d="M847,300.9c-4,0-5.5,1.43-5.81,4h11.54c-.14-2.78-1.77-4-5.73-4m-.72,15c-2.81,0-5.36-.34-7.26-1.9s-2.75-4.24-2.75-7.16c0-2.61.85-5.53,3.23-7.23,2.1-1.49,4.78-1.79,7.5-1.79,2.44,0,5.32.27,7.42,1.73,2.75,1.93,3,4.92,3,8.44H841.16c.1,2.62,1.49,4.31,6.31,4.31a61.81,61.81,0,0,0,9.13-.88v3.36a65.31,65.31,0,0,1-10.32,1.12" fill="#939598"/><path d="M878.72,315.45V306c0-3.12-1.59-4.24-4.44-4.24a32.63,32.63,0,0,0-7,1.08v12.62h-4.78V298.32h3.9l.17,1.09a39.6,39.6,0,0,1,9.16-1.56,8.45,8.45,0,0,1,5.87,1.76c1.35,1.22,1.86,2.92,1.86,5.36v10.48Z" fill="#939598"/><path d="M897.09,315.93c-2.31,0-4.41-.65-5.56-2.45a8.85,8.85,0,0,1-1.26-5.18v-6.42h-3.46v-3.56h3.46l.51-5.19H895v5.19h6.75v3.56H895v5.5a8.26,8.26,0,0,0,.47,3.26c.51,1.15,1.63,1.59,3.13,1.59a21.3,21.3,0,0,0,3.42-.34v3.43a27.57,27.57,0,0,1-4.95.61" fill="#939598"/><path d="M906.44,315.45V298.32h3.9l.17,1.09a29.76,29.76,0,0,1,8.48-1.56,5.23,5.23,0,0,1,.61,0V302c-.54,0-1.19,0-1.66,0a26.94,26.94,0,0,0-6.72.88v12.65Z" fill="#939598"/><path d="M937,308.26c-2-.17-4-.27-6.18-.27-3.49,0-4.71.71-4.71,2.31s1,2.3,3.69,2.3a34.61,34.61,0,0,0,7.2-1Zm1,7.19-.14-1a41.11,41.11,0,0,1-9.3,1.5,8.88,8.88,0,0,1-5.19-1.26,4.87,4.87,0,0,1-1.9-4.14,4.81,4.81,0,0,1,2.89-4.64c1.8-.85,4.2-.92,6.41-.92,1.8,0,4.21.1,6.21.24v-.31c0-2.68-1.77-3.56-6.58-3.56-1.87,0-4.14.1-6.31.3v-3.46c2.41-.2,5.12-.33,7.36-.33,3,0,6.07.23,8,1.59s2.34,3.33,2.34,5.87v10.14Z" fill="#939598"/><path d="M947.92,291.1h4.79v24.35h-4.79Z" fill="#939598"/></svg>
+<!-- FIM ICONE PIX --> 
+</div>
+</div>
+<!-- INICIO ICONE SEGURO --> 
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="120px" height="56px" viewBox="0 0 120 56"><path style="fill-rule:nonzero;fill:rgb(42.745098%,73.333333%,0%);fill-opacity:1;stroke-width:8;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:10;" d="M 410.155462 154.832938 C 410.155462 167.822963 399.190126 178.364607 385.657563 178.364607 L 39.163866 178.364607 C 25.631303 178.364607 14.652311 167.822963 14.652311 154.832938 L 14.652311 132.239816 C 14.652311 119.236189 25.631303 108.708147 39.163866 108.708147 L 385.657563 108.708147 C 399.190126 108.708147 410.155462 119.236189 410.155462 132.239816 Z M 410.155462 154.832938 " transform="matrix(0.286058,0,0,0.287179,0,0)"></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 20.5625 7.949219 C 22.117188 5.890625 25.5 5.699219 27.175781 7.710938 C 28.632812 9.183594 28.261719 11.394531 28.289062 13.269531 C 25.414062 13.269531 22.542969 13.269531 19.667969 13.269531 C 19.65625 11.484375 19.3125 9.433594 20.5625 7.949219 M 21.847656 10.988281 C 23.253906 10.992188 24.660156 10.996094 26.0625 10.980469 C 26.039062 10.09375 25.707031 9.105469 24.804688 8.769531 C 23.363281 8 21.671875 9.4375 21.847656 10.988281 Z M 21.847656 10.988281 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 38.804688 15.863281 C 40.429688 14.289062 42.9375 14.289062 44.972656 14.917969 C 45.429688 14.769531 45.890625 14.671875 46.367188 14.628906 C 51.167969 14.632812 55.976562 14.625 60.777344 14.632812 C 61.9375 14.589844 62.84375 15.503906 63.175781 16.566406 L 62.714844 16.933594 C 63.148438 16.933594 63.320312 16.472656 63.589844 16.203125 C 64.890625 14.550781 67.253906 14.242188 69.179688 14.726562 C 70.28125 15.125 71.382812 14.425781 72.519531 14.617188 C 74.21875 14.792969 76.230469 14.105469 77.628906 15.402344 C 79.597656 14.316406 81.960938 14.324219 84.070312 14.976562 C 85.496094 14.445312 87.21875 14.394531 88.585938 15.128906 C 90.113281 14.1875 91.925781 14.859375 93.585938 14.660156 C 95.824219 14.570312 98.351562 14.394531 100.171875 15.964844 C 102.921875 13.609375 107.953125 14.0625 109.65625 17.484375 C 110.824219 19.960938 110.703125 23.210938 108.933594 25.375 C 107.148438 27.519531 103.925781 27.738281 101.476562 26.734375 C 100.042969 27.460938 98.269531 27.378906 96.78125 26.851562 C 95.210938 27.375 93.25 27.558594 91.882812 26.4375 C 89.816406 27.605469 87.128906 27.632812 85.113281 26.34375 C 82.792969 27.496094 79.898438 27.707031 77.542969 26.527344 C 76.417969 27.492188 74.886719 27.167969 73.53125 27.214844 C 72.285156 27.175781 70.9375 27.421875 69.816406 26.734375 C 67.609375 27.621094 64.773438 27.578125 62.921875 25.953125 C 62.25 27.03125 60.972656 27.363281 59.773438 27.222656 C 58.050781 27.066406 56.117188 27.65625 54.59375 26.589844 C 53.144531 27.507812 51.054688 27.527344 49.613281 26.574219 C 48.214844 27.519531 46.25 27.433594 44.765625 26.734375 C 42.761719 27.566406 40.351562 27.523438 38.449219 26.4375 C 37.3125 25.75 37.359375 24.269531 37.410156 23.105469 C 37.390625 22.441406 37.699219 21.851562 38.003906 21.289062 C 37.238281 19.523438 37.359375 17.246094 38.804688 15.863281 M 40.796875 17.242188 C 39.644531 17.921875 39.496094 19.757812 40.488281 20.652344 C 41.265625 21.308594 42.289062 21.5625 43.074219 22.210938 C 43.359375 22.667969 43.234375 23.257812 42.691406 23.417969 C 41.679688 23.691406 40.679688 23.207031 39.742188 22.878906 C 39.746094 23.414062 39.753906 23.953125 39.757812 24.492188 C 41.074219 24.992188 42.671875 25.21875 43.925781 24.4375 C 45.144531 23.667969 45.203125 21.601562 43.9375 20.855469 C 43.152344 20.167969 41.660156 20.113281 41.433594 18.929688 C 41.957031 17.726562 43.394531 18.429688 44.300781 18.691406 C 44.472656 18.246094 44.644531 17.804688 44.816406 17.367188 C 43.558594 16.875 42.03125 16.46875 40.796875 17.242188 M 49.136719 16.90625 C 49.136719 17.386719 49.140625 17.863281 49.140625 18.34375 C 49.839844 18.347656 50.535156 18.34375 51.238281 18.347656 C 51.242188 20.515625 51.238281 22.683594 51.242188 24.847656 C 51.796875 24.847656 52.351562 24.847656 52.910156 24.847656 C 52.914062 22.683594 52.90625 20.515625 52.917969 18.347656 C 53.613281 18.34375 54.3125 18.347656 55.007812 18.34375 C 55.007812 17.863281 55.007812 17.386719 55.011719 16.90625 C 53.054688 16.910156 51.097656 16.910156 49.136719 16.90625 M 65.945312 17.179688 C 64.859375 17.753906 64.570312 19.324219 65.265625 20.3125 C 65.972656 21.273438 67.269531 21.445312 68.136719 22.214844 C 68.363281 22.640625 68.328125 23.257812 67.785156 23.394531 C 66.78125 23.734375 65.753906 23.195312 64.816406 22.875 C 64.816406 23.414062 64.8125 23.957031 64.8125 24.496094 C 66.082031 24.953125 67.5625 25.195312 68.804688 24.542969 C 70.171875 23.894531 70.339844 21.671875 69.035156 20.871094 C 68.15625 20.171875 66.699219 20.054688 66.394531 18.796875 C 67.207031 17.914062 68.375 18.34375 69.335938 18.679688 C 69.519531 18.242188 69.710938 17.808594 69.898438 17.371094 C 68.660156 16.898438 67.1875 16.488281 65.945312 17.179688 M 78.476562 17.644531 C 76.808594 18.96875 76.792969 21.585938 77.667969 23.371094 C 78.871094 25.421875 81.582031 25.066406 83.511719 24.519531 C 83.507812 23.136719 83.511719 21.753906 83.507812 20.371094 C 82.476562 20.371094 81.441406 20.371094 80.410156 20.371094 C 80.40625 20.847656 80.40625 21.324219 80.40625 21.804688 C 80.910156 21.804688 81.417969 21.804688 81.925781 21.808594 C 81.914062 22.359375 81.902344 22.90625 81.886719 23.457031 C 80.984375 23.515625 79.867188 23.628906 79.289062 22.757812 C 78.492188 21.460938 78.609375 19.371094 80.007812 18.539062 C 80.945312 17.976562 82.050781 18.347656 83.007812 18.640625 C 83.179688 18.191406 83.359375 17.738281 83.535156 17.289062 C 81.917969 16.65625 79.925781 16.546875 78.476562 17.644531 M 85.351562 16.90625 C 85.375 18.722656 85.300781 20.542969 85.378906 22.359375 C 85.515625 25.628906 91.039062 25.875 91.703125 22.796875 C 91.941406 20.851562 91.738281 18.871094 91.804688 16.910156 C 91.246094 16.910156 90.691406 16.910156 90.132812 16.90625 C 90.082031 18.757812 90.234375 20.625 90.058594 22.464844 C 89.820312 23.90625 87.316406 23.878906 87.09375 22.449219 C 86.933594 20.609375 87.074219 18.753906 87.03125 16.910156 C 86.46875 16.910156 85.910156 16.90625 85.351562 16.90625 M 103.183594 16.960938 C 101.863281 17.242188 100.917969 18.441406 100.742188 19.757812 C 100.566406 21.25 100.632812 23.015625 101.824219 24.09375 C 103.589844 25.550781 106.910156 25.191406 107.769531 22.863281 C 108.242188 21.40625 108.265625 19.679688 107.496094 18.320312 C 106.613281 16.890625 104.695312 16.570312 103.183594 16.960938 M 46.292969 16.90625 C 46.292969 19.554688 46.292969 22.203125 46.292969 24.847656 C 46.851562 24.847656 47.410156 24.847656 47.972656 24.847656 C 47.972656 22.203125 47.96875 19.554688 47.972656 16.910156 C 47.410156 16.910156 46.851562 16.910156 46.292969 16.90625 M 56.269531 16.910156 C 56.269531 19.554688 56.269531 22.203125 56.269531 24.851562 C 57.746094 24.851562 59.230469 24.851562 60.710938 24.851562 C 60.710938 24.371094 60.710938 23.894531 60.710938 23.414062 C 59.789062 23.414062 58.867188 23.414062 57.945312 23.414062 C 57.941406 22.765625 57.941406 22.121094 57.9375 21.476562 C 58.804688 21.46875 59.671875 21.464844 60.542969 21.46875 C 60.539062 20.988281 60.539062 20.511719 60.542969 20.035156 C 59.671875 20.035156 58.804688 20.035156 57.941406 20.035156 C 57.941406 19.472656 57.945312 18.90625 57.945312 18.347656 C 58.867188 18.347656 59.789062 18.34375 60.710938 18.34375 C 60.710938 17.867188 60.710938 17.390625 60.714844 16.910156 C 59.234375 16.90625 57.75 16.910156 56.269531 16.910156 M 71.355469 16.90625 C 71.355469 19.554688 71.355469 22.203125 71.355469 24.847656 C 72.835938 24.847656 74.320312 24.847656 75.800781 24.847656 C 75.796875 24.371094 75.796875 23.894531 75.796875 23.414062 C 74.875 23.414062 73.949219 23.414062 73.027344 23.414062 C 73.027344 22.761719 73.03125 22.113281 73.03125 21.464844 C 73.898438 21.46875 74.765625 21.46875 75.628906 21.46875 C 75.625 20.988281 75.625 20.511719 75.628906 20.035156 C 74.761719 20.035156 73.890625 20.035156 73.027344 20.035156 C 73.027344 19.472656 73.03125 18.90625 73.03125 18.347656 C 73.957031 18.347656 74.878906 18.347656 75.808594 18.339844 C 75.796875 17.859375 75.785156 17.375 75.777344 16.890625 C 74.300781 16.917969 72.828125 16.90625 71.355469 16.90625 M 93.730469 24.84375 C 94.289062 24.847656 94.847656 24.847656 95.414062 24.847656 C 95.410156 23.835938 95.414062 22.820312 95.414062 21.804688 C 95.617188 21.804688 96.039062 21.804688 96.25 21.808594 C 96.863281 22.820312 97.480469 23.828125 98.078125 24.847656 C 98.703125 24.847656 99.320312 24.847656 99.945312 24.847656 C 99.191406 23.710938 98.445312 22.578125 97.6875 21.449219 C 99.109375 20.796875 99.613281 18.78125 98.507812 17.617188 C 97.164062 16.546875 95.3125 17.011719 93.738281 16.90625 C 93.726562 19.554688 93.734375 22.199219 93.730469 24.84375 M 62.898438 21.164062 C 63.058594 21.375 63.058594 21.375 62.898438 21.164062 Z M 62.898438 21.164062 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 95.414062 18.3125 C 96.203125 18.347656 97.472656 18.292969 97.445312 19.417969 C 97.414062 20.492188 96.179688 20.460938 95.414062 20.492188 C 95.410156 19.765625 95.410156 19.039062 95.414062 18.3125 Z M 95.414062 18.3125 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 103.425781 18.480469 C 104.347656 17.976562 105.78125 18.269531 106.117188 19.371094 C 106.511719 20.507812 106.503906 21.894531 105.816406 22.921875 C 104.9375 23.921875 103.007812 23.625 102.609375 22.289062 C 102.25 21.050781 102.183594 19.238281 103.425781 18.480469 Z M 103.425781 18.480469 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(30.588235%,58.039216%,63.529412%);fill-opacity:1;" d="M 16.894531 7.628906 C 18.003906 4.855469 20.855469 2.984375 23.808594 2.933594 C 23.816406 3.488281 23.824219 4.046875 23.835938 4.601562 C 25.835938 4.652344 27.800781 5.621094 28.914062 7.324219 C 30.132812 9.042969 30.007812 11.253906 29.980469 13.261719 C 29.417969 13.265625 28.855469 13.269531 28.289062 13.269531 C 28.261719 11.394531 28.632812 9.183594 27.175781 7.710938 C 25.5 5.699219 22.117188 5.890625 20.5625 7.949219 C 19.3125 9.433594 19.65625 11.484375 19.667969 13.269531 C 18.550781 13.253906 17.429688 13.265625 16.308594 13.265625 C 16.339844 11.378906 16.074219 9.394531 16.894531 7.628906 Z M 16.894531 7.628906 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(30.588235%,58.039216%,63.529412%);fill-opacity:1;" d="M 62.898438 21.164062 C 63.058594 21.375 63.058594 21.375 62.898438 21.164062 Z M 62.898438 21.164062 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(73.72549%,54.117647%,0%);fill-opacity:1;" d="M 12.960938 14.382812 C 13.34375 12.898438 15.175781 13.34375 16.308594 13.265625 C 17.429688 13.265625 18.550781 13.253906 19.671875 13.269531 C 17.53125 15.476562 15.078125 17.34375 12.917969 19.523438 C 12.957031 17.808594 12.847656 16.089844 12.960938 14.382812 Z M 12.960938 14.382812 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(95.294118%,70.980392%,0%);fill-opacity:1;" d="M 19.667969 13.269531 C 22.542969 13.269531 25.414062 13.269531 28.289062 13.269531 C 28.855469 13.269531 29.417969 13.265625 29.984375 13.261719 C 31.296875 13.285156 32.625 13.15625 33.925781 13.394531 C 34.570312 13.683594 34.792969 14.390625 34.726562 15.054688 C 34.710938 19.21875 34.746094 23.386719 34.714844 27.550781 C 34.78125 28.457031 33.75 28.898438 32.992188 28.847656 C 26.953125 28.84375 20.910156 28.839844 14.871094 28.851562 C 14.304688 28.867188 13.765625 28.6875 13.234375 28.515625 C 13.007812 27.882812 12.859375 27.21875 12.894531 26.542969 C 12.917969 24.203125 12.894531 21.863281 12.917969 19.523438 C 15.078125 17.34375 17.53125 15.476562 19.667969 13.269531 M 21.457031 18.296875 C 20.429688 19.824219 21.207031 21.992188 22.878906 22.65625 C 22.890625 23.484375 22.890625 24.304688 22.890625 25.128906 C 23.535156 25.121094 24.183594 25.117188 24.828125 25.117188 C 24.832031 24.28125 24.839844 23.449219 24.855469 22.617188 C 26.269531 21.964844 27.085938 20.269531 26.453125 18.78125 C 25.761719 16.699219 22.550781 16.425781 21.457031 18.296875 Z M 21.457031 18.296875 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 40.796875 17.242188 C 42.03125 16.46875 43.558594 16.875 44.816406 17.367188 C 44.644531 17.804688 44.472656 18.246094 44.300781 18.691406 C 43.394531 18.429688 41.957031 17.726562 41.433594 18.929688 C 41.660156 20.113281 43.152344 20.167969 43.9375 20.855469 C 45.203125 21.601562 45.144531 23.667969 43.925781 24.4375 C 42.671875 25.21875 41.074219 24.992188 39.757812 24.492188 C 39.753906 23.953125 39.746094 23.414062 39.742188 22.878906 C 40.679688 23.207031 41.679688 23.691406 42.691406 23.417969 C 43.234375 23.257812 43.359375 22.667969 43.074219 22.210938 C 42.289062 21.5625 41.265625 21.308594 40.488281 20.652344 C 39.496094 19.757812 39.644531 17.921875 40.796875 17.242188 Z M 40.796875 17.242188 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 49.136719 16.90625 C 51.097656 16.910156 53.054688 16.910156 55.011719 16.90625 C 55.007812 17.386719 55.007812 17.863281 55.007812 18.34375 C 54.3125 18.347656 53.613281 18.34375 52.917969 18.347656 C 52.90625 20.515625 52.914062 22.683594 52.910156 24.847656 C 52.351562 24.847656 51.796875 24.847656 51.242188 24.847656 C 51.238281 22.683594 51.242188 20.515625 51.238281 18.347656 C 50.535156 18.34375 49.839844 18.347656 49.140625 18.34375 C 49.140625 17.863281 49.136719 17.386719 49.136719 16.90625 Z M 49.136719 16.90625 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 65.945312 17.179688 C 67.191406 16.488281 68.660156 16.898438 69.898438 17.371094 C 69.710938 17.808594 69.519531 18.242188 69.335938 18.679688 C 68.378906 18.34375 67.207031 17.914062 66.394531 18.796875 C 66.699219 20.054688 68.15625 20.171875 69.035156 20.871094 C 70.339844 21.671875 70.171875 23.894531 68.804688 24.542969 C 67.5625 25.195312 66.082031 24.953125 64.8125 24.496094 C 64.8125 23.957031 64.816406 23.414062 64.816406 22.875 C 65.753906 23.195312 66.78125 23.734375 67.785156 23.394531 C 68.328125 23.257812 68.363281 22.640625 68.136719 22.214844 C 67.269531 21.445312 65.972656 21.273438 65.265625 20.3125 C 64.570312 19.324219 64.859375 17.753906 65.945312 17.179688 Z M 65.945312 17.179688 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 78.476562 17.644531 C 79.925781 16.546875 81.917969 16.65625 83.535156 17.289062 C 83.359375 17.738281 83.179688 18.191406 83.007812 18.640625 C 82.050781 18.347656 80.945312 17.976562 80.007812 18.539062 C 78.609375 19.371094 78.492188 21.460938 79.289062 22.757812 C 79.867188 23.628906 80.984375 23.515625 81.886719 23.457031 C 81.902344 22.90625 81.914062 22.359375 81.925781 21.8125 C 81.417969 21.808594 80.910156 21.804688 80.40625 21.804688 C 80.40625 21.324219 80.40625 20.847656 80.410156 20.371094 C 81.441406 20.371094 82.476562 20.371094 83.507812 20.371094 C 83.511719 21.753906 83.507812 23.136719 83.511719 24.523438 C 81.582031 25.066406 78.871094 25.421875 77.667969 23.371094 C 76.792969 21.585938 76.808594 18.96875 78.476562 17.644531 Z M 78.476562 17.644531 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 85.351562 16.90625 C 85.910156 16.90625 86.46875 16.910156 87.03125 16.910156 C 87.074219 18.753906 86.933594 20.609375 87.09375 22.449219 C 87.316406 23.878906 89.820312 23.90625 90.058594 22.464844 C 90.234375 20.625 90.082031 18.757812 90.136719 16.90625 C 90.691406 16.910156 91.246094 16.910156 91.808594 16.910156 C 91.738281 18.871094 91.941406 20.851562 91.703125 22.796875 C 91.039062 25.875 85.515625 25.628906 85.378906 22.359375 C 85.300781 20.542969 85.375 18.722656 85.351562 16.90625 Z M 85.351562 16.90625 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 103.183594 16.960938 C 104.695312 16.570312 106.613281 16.890625 107.496094 18.320312 C 108.265625 19.679688 108.242188 21.40625 107.769531 22.863281 C 106.910156 25.191406 103.589844 25.550781 101.824219 24.09375 C 100.632812 23.015625 100.566406 21.25 100.742188 19.757812 C 100.917969 18.441406 101.863281 17.242188 103.183594 16.960938 M 103.425781 18.480469 C 102.183594 19.238281 102.25 21.046875 102.609375 22.289062 C 103.007812 23.625 104.9375 23.921875 105.816406 22.921875 C 106.503906 21.894531 106.511719 20.507812 106.117188 19.371094 C 105.78125 18.269531 104.347656 17.976562 103.425781 18.480469 Z M 103.425781 18.480469 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 46.292969 16.90625 C 46.851562 16.910156 47.410156 16.910156 47.972656 16.910156 C 47.96875 19.554688 47.972656 22.203125 47.972656 24.847656 C 47.410156 24.847656 46.851562 24.847656 46.292969 24.847656 C 46.292969 22.203125 46.292969 19.554688 46.292969 16.90625 Z M 46.292969 16.90625 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 56.269531 16.910156 C 57.75 16.910156 59.234375 16.90625 60.714844 16.910156 C 60.710938 17.390625 60.710938 17.867188 60.710938 18.34375 C 59.789062 18.34375 58.867188 18.347656 57.945312 18.347656 C 57.945312 18.90625 57.941406 19.472656 57.941406 20.035156 C 58.804688 20.035156 59.671875 20.035156 60.542969 20.035156 C 60.539062 20.511719 60.539062 20.988281 60.542969 21.46875 C 59.671875 21.464844 58.804688 21.46875 57.9375 21.476562 C 57.941406 22.121094 57.941406 22.765625 57.945312 23.414062 C 58.867188 23.414062 59.789062 23.414062 60.710938 23.414062 C 60.710938 23.894531 60.710938 24.371094 60.710938 24.851562 C 59.230469 24.851562 57.75 24.851562 56.269531 24.851562 C 56.269531 22.203125 56.269531 19.554688 56.269531 16.910156 Z M 56.269531 16.910156 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 71.355469 16.90625 C 72.828125 16.90625 74.300781 16.917969 75.777344 16.890625 C 75.785156 17.375 75.796875 17.859375 75.808594 18.339844 C 74.882812 18.347656 73.957031 18.347656 73.035156 18.347656 C 73.03125 18.90625 73.027344 19.472656 73.027344 20.035156 C 73.890625 20.035156 74.761719 20.035156 75.628906 20.035156 C 75.625 20.511719 75.625 20.988281 75.628906 21.46875 C 74.765625 21.46875 73.902344 21.46875 73.035156 21.464844 C 73.03125 22.113281 73.027344 22.761719 73.027344 23.414062 C 73.949219 23.414062 74.875 23.414062 75.796875 23.414062 C 75.796875 23.894531 75.796875 24.371094 75.800781 24.851562 C 74.320312 24.851562 72.835938 24.851562 71.359375 24.851562 C 71.355469 22.203125 71.355469 19.554688 71.355469 16.90625 Z M 71.355469 16.90625 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 93.730469 24.84375 C 93.734375 22.199219 93.726562 19.554688 93.734375 16.90625 C 95.3125 17.011719 97.160156 16.546875 98.507812 17.617188 C 99.613281 18.78125 99.109375 20.796875 97.683594 21.449219 C 98.445312 22.578125 99.191406 23.710938 99.945312 24.847656 C 99.320312 24.847656 98.699219 24.847656 98.078125 24.847656 C 97.480469 23.828125 96.863281 22.820312 96.25 21.808594 C 96.039062 21.804688 95.617188 21.804688 95.414062 21.804688 C 95.414062 22.820312 95.410156 23.835938 95.414062 24.847656 C 94.847656 24.851562 94.289062 24.851562 93.730469 24.84375 M 95.414062 18.3125 C 95.410156 19.039062 95.410156 19.765625 95.414062 20.492188 C 96.179688 20.460938 97.414062 20.492188 97.445312 19.417969 C 97.472656 18.292969 96.203125 18.347656 95.414062 18.3125 Z M 95.414062 18.3125 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(20%,19.215686%,20.784314%);fill-opacity:1;" d="M 21.457031 18.296875 C 22.550781 16.425781 25.761719 16.699219 26.453125 18.777344 C 27.085938 20.269531 26.269531 21.964844 24.855469 22.617188 C 24.839844 23.449219 24.832031 24.28125 24.828125 25.117188 C 24.183594 25.117188 23.535156 25.121094 22.890625 25.128906 C 22.890625 24.304688 22.890625 23.484375 22.878906 22.65625 C 21.207031 21.992188 20.429688 19.824219 21.457031 18.296875 Z M 21.457031 18.296875 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 11.214844 43.753906 C 11.75 44.050781 12.574219 44.347656 13.421875 44.347656 C 14.335938 44.347656 14.820312 43.9375 14.820312 43.320312 C 14.820312 42.726562 14.402344 42.390625 13.34375 41.980469 C 11.882812 41.429688 10.929688 40.558594 10.929688 39.175781 C 10.929688 37.554688 12.183594 36.316406 14.257812 36.316406 C 15.25 36.316406 15.980469 36.542969 16.5 36.796875 L 16.058594 38.527344 C 15.707031 38.34375 15.078125 38.078125 14.21875 38.078125 C 13.355469 38.078125 12.9375 38.5 12.9375 38.992188 C 12.9375 39.597656 13.433594 39.867188 14.570312 40.332031 C 16.125 40.953125 16.855469 41.824219 16.855469 43.164062 C 16.855469 44.753906 15.71875 46.109375 13.304688 46.109375 C 12.300781 46.109375 11.308594 45.828125 10.8125 45.53125 Z M 11.214844 43.753906 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 18.261719 43.753906 C 18.796875 44.050781 19.621094 44.347656 20.46875 44.347656 C 21.382812 44.347656 21.863281 43.9375 21.863281 43.320312 C 21.863281 42.726562 21.445312 42.390625 20.390625 41.980469 C 18.929688 41.429688 17.976562 40.558594 17.976562 39.175781 C 17.976562 37.554688 19.226562 36.316406 21.304688 36.316406 C 22.296875 36.316406 23.027344 36.542969 23.546875 36.796875 L 23.105469 38.527344 C 22.753906 38.34375 22.125 38.078125 21.265625 38.078125 C 20.402344 38.078125 19.984375 38.5 19.984375 38.992188 C 19.984375 39.597656 20.480469 39.867188 21.617188 40.332031 C 23.167969 40.953125 23.902344 41.824219 23.902344 43.164062 C 23.902344 44.753906 22.765625 46.109375 20.351562 46.109375 C 19.34375 46.109375 18.355469 45.828125 17.859375 45.53125 Z M 18.261719 43.753906 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 25.242188 36.472656 L 27.242188 36.472656 L 27.242188 44.164062 L 30.738281 44.164062 L 30.738281 45.96875 L 25.242188 45.96875 Z M 25.242188 36.472656 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 41.820312 45.945312 C 41.378906 46.171875 40.503906 46.394531 39.378906 46.394531 C 36.773438 46.394531 34.8125 44.703125 34.8125 41.589844 C 34.8125 38.617188 36.773438 36.605469 39.640625 36.605469 C 40.789062 36.605469 41.515625 36.859375 41.832031 37.027344 L 41.542969 38.027344 C 41.09375 37.800781 40.449219 37.632812 39.679688 37.632812 C 37.511719 37.632812 36.074219 39.054688 36.074219 41.550781 C 36.074219 43.875 37.375 45.367188 39.625 45.367188 C 40.351562 45.367188 41.09375 45.210938 41.570312 44.972656 Z M 41.820312 45.945312 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 48.097656 41.800781 L 44.507812 41.800781 L 44.507812 45.226562 L 48.511719 45.226562 L 48.511719 46.253906 L 43.3125 46.253906 L 43.3125 36.757812 L 48.304688 36.757812 L 48.304688 37.789062 L 44.507812 37.789062 L 44.507812 40.789062 L 48.097656 40.789062 Z M 48.097656 41.800781 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 50.058594 36.886719 C 50.664062 36.757812 51.527344 36.6875 52.351562 36.6875 C 53.625 36.6875 54.449219 36.929688 55.023438 37.464844 C 55.488281 37.886719 55.75 38.535156 55.75 39.265625 C 55.75 40.519531 54.984375 41.351562 54.007812 41.691406 L 54.007812 41.730469 C 54.722656 41.984375 55.148438 42.660156 55.367188 43.648438 C 55.667969 44.972656 55.886719 45.886719 56.078125 46.253906 L 54.84375 46.253906 C 54.695312 45.988281 54.488281 45.167969 54.230469 43.984375 C 53.953125 42.675781 53.460938 42.183594 52.378906 42.140625 L 51.253906 42.140625 L 51.253906 46.253906 L 50.0625 46.253906 L 50.0625 36.886719 Z M 51.253906 41.210938 L 52.472656 41.210938 C 53.75 41.210938 54.558594 40.492188 54.558594 39.40625 C 54.558594 38.183594 53.691406 37.648438 52.433594 37.632812 C 51.855469 37.632812 51.445312 37.6875 51.253906 37.746094 Z M 51.253906 41.210938 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 59.316406 37.800781 L 56.503906 37.800781 L 56.503906 36.757812 L 63.347656 36.757812 L 63.347656 37.800781 L 60.523438 37.800781 L 60.523438 46.253906 L 59.316406 46.253906 Z M 59.316406 37.800781 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 65.566406 36.757812 L 65.566406 46.253906 L 64.375 46.253906 L 64.375 36.757812 Z M 65.566406 36.757812 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 67.652344 36.757812 L 72.628906 36.757812 L 72.628906 37.789062 L 68.84375 37.789062 L 68.84375 40.941406 L 72.339844 40.941406 L 72.339844 41.957031 L 68.84375 41.957031 L 68.84375 46.253906 L 67.652344 46.253906 Z M 67.652344 36.757812 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 75.523438 36.757812 L 75.523438 46.253906 L 74.332031 46.253906 L 74.332031 36.757812 Z M 75.523438 36.757812 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 84.066406 45.945312 C 83.625 46.171875 82.75 46.394531 81.625 46.394531 C 79.019531 46.394531 77.058594 44.703125 77.058594 41.589844 C 77.058594 38.617188 79.019531 36.605469 81.886719 36.605469 C 83.035156 36.605469 83.761719 36.859375 84.078125 37.027344 L 83.789062 38.027344 C 83.339844 37.800781 82.695312 37.632812 81.925781 37.632812 C 79.757812 37.632812 78.320312 39.054688 78.320312 41.550781 C 78.320312 43.875 79.621094 45.367188 81.871094 45.367188 C 82.597656 45.367188 83.339844 45.210938 83.816406 44.972656 Z M 84.066406 45.945312 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 87.109375 43.269531 L 86.148438 46.253906 L 84.917969 46.253906 L 88.054688 36.757812 L 89.496094 36.757812 L 92.648438 46.253906 L 91.375 46.253906 L 90.386719 43.269531 Z M 90.140625 42.308594 L 89.234375 39.578125 C 89.027344 38.957031 88.890625 38.394531 88.753906 37.84375 L 88.726562 37.84375 C 88.589844 38.40625 88.4375 38.984375 88.261719 39.5625 L 87.355469 42.308594 Z M 90.140625 42.308594 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 94.007812 36.886719 C 94.734375 36.773438 95.597656 36.6875 96.542969 36.6875 C 98.257812 36.6875 99.476562 37.097656 100.285156 37.871094 C 101.109375 38.648438 101.589844 39.746094 101.589844 41.28125 C 101.589844 42.832031 101.121094 44.097656 100.257812 44.972656 C 99.394531 45.859375 97.96875 46.339844 96.171875 46.339844 C 95.324219 46.339844 94.609375 46.296875 94.007812 46.226562 Z M 95.199219 45.28125 C 95.5 45.339844 95.941406 45.351562 96.40625 45.351562 C 98.957031 45.351562 100.339844 43.886719 100.339844 41.324219 C 100.355469 39.082031 99.121094 37.660156 96.597656 37.660156 C 95.980469 37.660156 95.515625 37.71875 95.199219 37.789062 Z M 95.199219 45.28125 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 111.035156 41.40625 C 111.035156 44.675781 109.101562 46.410156 106.746094 46.410156 C 104.304688 46.410156 102.589844 44.464844 102.589844 41.589844 C 102.589844 38.578125 104.414062 36.605469 106.882812 36.605469 C 109.402344 36.605469 111.035156 38.589844 111.035156 41.40625 Z M 103.867188 41.5625 C 103.867188 43.59375 104.933594 45.410156 106.8125 45.410156 C 108.703125 45.410156 109.773438 43.621094 109.773438 41.464844 C 109.773438 39.578125 108.816406 37.605469 106.828125 37.605469 C 104.851562 37.605469 103.867188 39.476562 103.867188 41.5625 Z M 103.867188 41.5625 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 11.5 30.371094 C 11.097656 30.339844 10.695312 30.339844 10.296875 30.371094 Z M 11.5 30.371094 "></path><path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 11.726562 30.371094 L 35.953125 30.371094 C 36.488281 29.632812 37.042969 28.824219 36.984375 27.863281 C 36.984375 23.453125 36.996094 19.039062 36.980469 14.628906 C 36.925781 12.933594 35.476562 11.644531 33.90625 11.300781 C 34.007812 8.070312 32.503906 4.808594 29.898438 2.898438 C 26.625 0.382812 21.757812 0.285156 18.371094 2.640625 C 15.566406 4.503906 13.875 7.902344 14.003906 11.28125 C 12.292969 11.5 10.742188 12.902344 10.671875 14.699219 C 10.660156 19.078125 10.664062 23.460938 10.671875 27.847656 C 10.640625 28.808594 11.164062 29.640625 11.726562 30.371094 Z M 12.894531 26.828125 C 12.917969 24.492188 12.894531 22.148438 12.917969 19.808594 C 12.957031 18.097656 12.847656 16.378906 12.960938 14.667969 C 13.34375 13.1875 15.175781 13.632812 16.308594 13.554688 C 16.339844 11.667969 16.074219 9.679688 16.894531 7.914062 C 18.003906 5.140625 20.855469 3.273438 23.808594 3.21875 C 23.816406 3.773438 23.824219 4.332031 23.839844 4.890625 C 25.835938 4.941406 27.800781 5.910156 28.914062 7.613281 C 30.132812 9.332031 30.007812 11.542969 29.984375 13.550781 C 31.292969 13.574219 32.625 13.445312 33.925781 13.683594 C 34.570312 13.972656 34.792969 14.679688 34.726562 15.34375 C 34.710938 19.507812 34.746094 23.675781 34.714844 27.839844 C 34.78125 28.742188 33.75 29.1875 32.992188 29.132812 C 26.953125 29.128906 20.910156 29.128906 14.871094 29.136719 C 14.304688 29.15625 13.765625 28.976562 13.234375 28.804688 C 13.007812 28.171875 12.859375 27.503906 12.894531 26.828125 Z M 12.894531 26.828125 "></path></svg>
+<!-- FIM ICONE SEGURO --> 
+</div>
+<!-- ICONES NO RODAPÉ --> 
+
+					{%- if section.settings.enable_country_selector
+						or section.settings.enable_language_selector
+						or section.settings.payment_enable
+					-%}
+						<div class='footer__content-middle'>
+							<div class='container'>
+								<div class='footer__content-middle-container'>
+									<div class='footer__content-middle-main'>
+										{%- if section.settings.payment_enable -%}
+											<div class='footer__column footer__column--payment'>
+												<div class='footer__payment'>
+													<ul class='list list-payment' role='list'>
+														{%- for type in shop.enabled_payment_types -%}
+															<li class='list-payment__item'>
+																{{
+																	type
+																	| payment_type_svg_tag:
+																		class: 'icon icon--full-color'
+																}}
+															</li>
+														{%- endfor -%}
+													</ul>
+												</div>
+											</div>
+										{%- endif -%}
+										{%- if section.settings.enable_country_selector
+											or section.settings.enable_language_selector
+										-%}
+											<div class='footer__column footer__column--localization'>
+												{% render 'header-region', section: section %}
+											</div>
+										{%- endif -%}
+									</div>
+								</div>
+							</div>
+						</div>
+					{% endif %}
+
+					{%- if shop.features.follow_on_shop?
+						and section.settings.enable_follow_on_shop
+					-%}
+						<div class='footer__follow-on-shop copyright__content focus-inset'>
+							{% comment %} TODO: enable theme-check once `login_button` is accepted as valid filter {% endcomment %}
+							{% # theme-check-disable %}
+							{{ shop | login_button: action: 'follow' }}
+							{% # theme-check-enable %}
+						</div>
+					{%- endif -%}
+				</div>
+			</div>
+		</div>
+	</footer>
+{% endunless %}
+
+{% schema %}
+{
+	"name": "t:sections.footer.name",
+	"max_blocks": 9,
+	"blocks": [
+		{
+			"type": "link_list",
+			"name": "t:sections.footer.blocks.link_list.name",
+			"settings": [
+				{
+					"type": "text",
+					"id": "subheading",
+					"default": "t:sections.footer.blocks.link_list.settings.subheading.default",
+					"label": "t:sections.footer.blocks.link_list.settings.heading.label",
+					"info": "t:sections.footer.blocks.link_list.settings.heading.info"
+				},
+				{
+					"type": "link_list",
+					"id": "menu",
+					"default": "t:sections.footer.blocks.link_list.settings.link_list.default",
+					"label": "t:sections.footer.blocks.link_list.settings.menu.label",
+					"info": "t:sections.footer.blocks.link_list.settings.menu.info"
+				},
+				{
+					"type": "checkbox",
+					"id": "default_open",
+					"default": false,
+					"label": "t:sections.footer.blocks.link_list.settings.default_open.label"
+				}
+			]
+		},
+		{
+			"type": "policies",
+			"name": "t:sections.footer.settings.header__9.content",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "paragraph",
+					"content": "t:sections.footer.settings.header__9.info"
+				},
+				{
+					"type": "text",
+					"id": "subheading",
+					"default": "t:sections.footer.blocks.policies.settings.subheading.default",
+					"label": "t:sections.all.heading.label"
+				},
+				{
+					"type": "checkbox",
+					"id": "default_open",
+					"default": false,
+					"label": "t:sections.footer.blocks.link_list.settings.default_open.label"
+				}
+			]
+		},
+		{
+			"type": "contacts",
+			"name": "t:sections.footer.blocks.contacts.name",
+			"settings": [
+				{
+					"type": "text",
+					"id": "subheading",
+					"default": "t:sections.footer.blocks.contacts.settings.subheading.default",
+					"label": "t:sections.all.heading.label"
+				},
+				{
+					"type": "richtext",
+					"id": "contact_info",
+					"default": "t:sections.footer.blocks.contacts.settings.contact_info.default",
+					"label": "t:sections.footer.blocks.contacts.settings.contact_info.label"
+				},
+				{
+					"type": "checkbox",
+					"id": "default_open",
+					"default": false,
+					"label": "t:sections.footer.blocks.link_list.settings.default_open.label"
+				}
+			]
+		},
+		{
+			"type": "show_socials",
+			"name": "t:sections.footer.settings.show_social.label",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "text",
+					"id": "heading",
+					"default": "t:sections.footer.settings.show_social.label",
+					"label": "t:sections.all.heading.label"
+				},
+				{
+					"type": "checkbox",
+					"id": "show_social_icons",
+					"default": false,
+					"label": "t:sections.footer.settings.show_social.label"
+				},
+				{
+					"type": "checkbox",
+					"id": "default_open",
+					"default": false,
+					"label": "t:sections.footer.blocks.link_list.settings.default_open.label"
+				}
+			]
+		}
+	],
+	"settings": [
+		{
+			"type": "color_scheme",
+			"id": "color_scheme",
+			"default": "background-1",
+			"label": "t:sections.footer.settings.color_scheme.label"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_border",
+			"default": false,
+			"label": "t:sections.footer.settings.show_border.label"
+		},
+		{
+			"type": "header",
+			"content": "t:sections.footer.blocks.logo_info.name"
+		},
+		{
+			"type": "image_picker",
+			"id": "logo",
+			"label": "t:sections.footer.blocks.logo_info.settings.logo.label"
+		},
+		{
+			"type": "image_picker",
+			"id": "logo_2",
+			"label": "t:sections.footer.blocks.logo_info.settings.logo_2.label",
+			"info": "t:sections.footer.blocks.logo_info.settings.logo_2.info"
+		},
+		{
+			"type": "range",
+			"id": "logo_width",
+			"min": 50,
+			"max": 500,
+			"step": 5,
+			"default": 100,
+			"unit": "t:sections.footer.blocks.logo_info.settings.logo_width.unit",
+			"label": "t:sections.footer.blocks.logo_info.settings.logo_width.label"
+		},
+		{
+			"type": "select",
+			"id": "logo_layout",
+			"default": "left",
+			"info": "t:sections.footer.settings.logo_layout.info",
+			"label": "t:sections.footer.settings.logo_layout.label",
+			"options": [
+				{
+					"value": "left",
+					"label": "t:sections.footer.settings.logo_layout.option__1.label"
+				},
+				{
+					"value": "center",
+					"label": "t:sections.footer.settings.logo_layout.option__2.label"
+				}
+			]
+		},
+		{
+			"type": "inline_richtext",
+			"id": "description",
+			"default": "t:sections.footer.settings.description.default",
+			"label": "t:sections.all.text.label"
+		},
+		{
+			"type": "header",
+			"content": "t:sections.footer.settings.footer__buttons.content"
+		},
+		{
+			"type": "select",
+			"id": "language_button_type",
+			"label": "t:sections.footer.settings.language_button_type.label",
+			"options": [
+				{
+					"value": "icon",
+					"label": "t:sections.footer.settings.language_button_type.options__1.label"
+				},
+				{
+					"value": "text",
+					"label": "t:sections.footer.settings.language_button_type.options__2.label"
+				},
+				{
+					"value": "icon-and-text",
+					"label": "t:sections.footer.settings.language_button_type.options__3.label"
+				}
+			],
+			"default": "text"
+		},
+		{
+			"type": "select",
+			"id": "region_button_type",
+			"label": "t:sections.footer.settings.region_button_type.label",
+			"options": [
+				{
+					"value": "icon",
+					"label": "t:sections.footer.settings.region_button_type.options__1.label"
+				},
+				{
+					"value": "text",
+					"label": "t:sections.footer.settings.region_button_type.options__2.label"
+				},
+				{
+					"value": "icon-and-text",
+					"label": "t:sections.footer.settings.region_button_type.options__3.label"
+				}
+			],
+			"default": "text"
+		},
+		{
+			"type": "header",
+			"content": "t:sections.all.subscribe_form.label"
+		},
+		{
+			"type": "checkbox",
+			"id": "enable_subscribe",
+			"default": false,
+			"label": "t:sections.all.enable_subscribe.label"
+		},
+		{
+			"type": "text",
+			"id": "subscribe_heading",
+			"default": "t:sections.footer.settings.subscribe_heading.default",
+			"label": "t:sections.all.heading.label"
+		},
+		{
+			"type": "inline_richtext",
+			"id": "subscribe_text",
+			"label": "t:sections.all.description.label"
+		},
+		{
+			"type": "paragraph",
+			"content": "t:sections.footer.settings.subscribe_paragraph.content"
+		},
+		{
+			"type": "header",
+			"content": "t:sections.footer.settings.header__3.content",
+			"info": "t:sections.footer.settings.header__4.info"
+		},
+		{
+			"type": "checkbox",
+			"id": "enable_country_selector",
+			"default": false,
+			"label": "t:sections.footer.settings.enable_country_selector.label"
+		},
+		{
+			"type": "header",
+			"content": "t:sections.footer.settings.header__5.content",
+			"info": "t:sections.footer.settings.header__6.info"
+		},
+		{
+			"type": "checkbox",
+			"id": "enable_language_selector",
+			"default": true,
+			"label": "t:sections.footer.settings.enable_language_selector.label"
+		},
+		{
+			"type": "header",
+			"content": "t:sections.footer.settings.header__7.content"
+		},
+		{
+			"type": "checkbox",
+			"id": "payment_enable",
+			"default": false,
+			"label": "t:sections.footer.settings.payment_enable.label"
+		},
+		{
+			"type": "header",
+			"content": "t:sections.footer.settings.enable_follow_on_shop.header"
+		},
+		{
+			"type": "checkbox",
+			"id": "enable_follow_on_shop",
+			"default": true,
+			"label": "t:sections.footer.settings.enable_follow_on_shop.label"
+		},
+		{
+			"type": "header",
+			"content": "t:sections.footer.settings.header__10.content"
+		},
+		{
+			"type": "checkbox",
+			"id": "copyright_bottom",
+			"default": true,
+			"label": "t:sections.footer.settings.copyright_bottom.label"
+		},
+		{
+			"type": "checkbox",
+			"id": "enable_copyright_date",
+			"default": true,
+			"label": "t:sections.footer.settings.enable_copyright_date.label"
+		},
+		{
+			"type": "checkbox",
+			"id": "enable_copyright_shopname",
+			"default": true,
+			"label": "t:sections.footer.settings.enable_copyright_shopname.label"
+		},
+		{
+			"type": "header",
+			"content": "t:sections.all.section-padding.header.content"
+		},
+		{
+			"type": "select",
+			"id": "padding_top",
+			"options": [
+				{
+					"value": "no-indent",
+					"label": "t:sections.all.section-padding.options__1.label"
+				},
+				{
+					"value": "xs",
+					"label": "t:sections.all.section-padding.options__2.label"
+				},
+				{
+					"value": "s",
+					"label": "t:sections.all.section-padding.options__3.label"
+				},
+				{
+					"value": "m",
+					"label": "t:sections.all.section-padding.options__4.label"
+				},
+				{
+					"value": "l",
+					"label": "t:sections.all.section-padding.options__5.label"
+				},
+				{
+					"value": "xl",
+					"label": "t:sections.all.section-padding.options__6.label"
+				}
+			],
+			"default": "m",
+			"label": "t:sections.all.section-padding.padding_top.label"
+		},
+		{
+			"type": "select",
+			"id": "padding_bottom",
+			"options": [
+				{
+					"value": "no-indent",
+					"label": "t:sections.all.section-padding.options__1.label"
+				},
+				{
+					"value": "xs",
+					"label": "t:sections.all.section-padding.options__2.label"
+				},
+				{
+					"value": "s",
+					"label": "t:sections.all.section-padding.options__3.label"
+				},
+				{
+					"value": "m",
+					"label": "t:sections.all.section-padding.options__4.label"
+				},
+				{
+					"value": "l",
+					"label": "t:sections.all.section-padding.options__5.label"
+				},
+				{
+					"value": "xl",
+					"label": "t:sections.all.section-padding.options__6.label"
+				}
+			],
+			"default": "m",
+			"label": "t:sections.all.section-padding.padding_bottom.label"
+		}
+	],
+	"default": {
+		"blocks": [
+			{
+				"type": "link_list"
+			},
+			{
+				"type": "contacts"
+			}
+		]
+	}
+}
+{% endschema %}

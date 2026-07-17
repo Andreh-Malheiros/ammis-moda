@@ -1,0 +1,19 @@
+{
+  "sections": {
+    "main": {
+      "type": "revendedor-thank-you",
+      "settings": {
+        "color_scheme": "background-1",
+        "alignment": "center",
+        "heading": "Cadastro enviado",
+        "text": "<p>Recebemos suas informacoes. Nossa equipe analisara o cadastro e entrara em contato caso haja alinhamento com o perfil comercial da AMMIS.</p>",
+        "button_label": "Voltar para a loja",
+        "button_link": "shopify://shop",
+        "button_style": "secondary",
+        "margin_top": "m",
+        "margin_bottom": "m"
+      }
+    }
+  },
+  "order": ["main"]
+}

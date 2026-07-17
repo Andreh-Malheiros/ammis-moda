@@ -1,0 +1,146 @@
+<style>
+  :root {
+    --announcement-height: {{ section.settings.height_mobile }}px;
+  }
+
+  @media screen and (min-width: 765px) {
+    :root {
+      --announcement-height: {{ section.settings.height }}px;
+    }
+  }
+
+  {% if template.name == 'index' and section.settings.enable_bar %}
+    #shopify-section-{{ section.id }} {
+      position: sticky;
+      top: 0;
+      z-index: 13;
+    }
+
+    .shopify-section-header-sticky {
+      top: var(--announcement-height);
+    }
+
+    .ammis-announcement__content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      width: 100%;
+      text-align: center;
+      font-size: 1.2rem;
+      line-height: 1.4;
+    }
+
+    .ammis-announcement__separator {
+      opacity: 0.55;
+    }
+
+    @media screen and (max-width: 749px) {
+      .ammis-announcement__content {
+        gap: 0.6rem;
+        font-size: 1.1rem;
+      }
+
+      .ammis-announcement__separator {
+        display: none;
+      }
+
+      .ammis-announcement__content {
+        flex-direction: column;
+        justify-content: center;
+      }
+    }
+  {% else %}
+    :root {
+      --announcement-height: 0px;
+    }
+  {% endif %}
+</style>
+
+{% assign template_base = template | split: '.' | first %}
+
+{% if template.name == 'index' and section.settings.enable_bar %}
+  {% unless template_base == 'customers/login' or template_base == 'customers/register' %}
+    <div class="section-announcement-bar color-{{ section.settings.color_scheme }}">
+      <div class="container">
+        <div
+          class="announcement-bar background announcement-bar--center"
+          role="region"
+          aria-label="Condições comerciais"
+        >
+          <div class="announcement-bar__message ammis-announcement__content">
+            {% if section.settings.custom_text != blank %}
+              <div class="announcement-bar__text secondary_text">
+                {{ section.settings.custom_text }}
+              </div>
+            {% else %}
+              <span>
+                Frete grátis acima de
+                <strong>{{ settings.free_shipping_threshold | times: 100 | money_without_trailing_zeros }}</strong>
+              </span>
+              <span class="ammis-announcement__separator" aria-hidden="true">•</span>
+              <span>
+                Até <strong>{{ settings.max_installments }}x sem juros</strong>, com parcela mínima de
+                <strong>{{ settings.min_installment_value | times: 100 | money_without_trailing_zeros }}</strong>
+              </span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endunless %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Faixa de benefícios",
+  "class": "section-announcement",
+  "limit": 1,
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_bar",
+      "label": "Exibir faixa na página inicial",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "default": 40,
+      "label": "Altura no computador"
+    },
+    {
+      "type": "range",
+      "id": "height_mobile",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "default": 55,
+      "label": "Altura no celular"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Esquema de cores"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "custom_text",
+      "label": "Texto personalizado",
+      "info": "Deixe vazio para gerar automaticamente o texto com os valores configurados nas opções do carrinho."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Faixa de benefícios"
+    }
+  ]
+}
+{% endschema %}

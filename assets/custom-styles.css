@@ -1,0 +1,8 @@
+div.product__tax {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.price--on-sale .price-item--regular {
+  text-decoration: line-through !important;
+}

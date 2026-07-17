@@ -1,0 +1,390 @@
+{{ 'ammis-gallery.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'ammis-gallery.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign all_items = shop.metaobjects.ammis_gallery_item.values
+  assign item_count = all_items | size
+-%}
+
+<quick-add-modal id="GalleryQuickView" class="quick-add-modal color-background-1">
+  <div class="quick-add-modal__content" role="dialog" aria-modal="true" aria-label="Detalhes do produto">
+    <button id="GalleryQuickView-Close" type="button" class="quick-add-modal__toggle" aria-label="Fechar">
+      {% render 'icon-close' %}
+    </button>
+    <div id="QuickAddInfo-gallery" class="quick-add-modal__content-wrapper"></div>
+  </div>
+</quick-add-modal>
+
+<section class="ammis-por-voce section-{{ section.id }}">
+  {%- comment -%} 1. HERO EDITORIAL {%- endcomment -%}
+  <div class="ammis-hero" style="background-color: {{ section.settings.hero_bg_color }};">
+    <div class="ammis-hero__content">
+      <div class="ammis-hero__logo-wrapper">
+        {%- if section.settings.hero_logo != blank -%}
+          {{
+            section.settings.hero_logo
+            | image_url: width: 400
+            | image_tag: class: 'ammis-hero__logo', alt: shop.name, loading: 'eager'
+          }}
+        {%- else -%}
+          <h1 class="ammis-hero__title">{{ section.settings.title }}</h1>
+        {%- endif -%}
+      </div>
+      <p class="ammis-hero__subtitle">{{ section.settings.subtitle }}</p>
+    </div>
+    <div class="ammis-hero__image-wrapper">
+      {%- if section.settings.hero_image != blank -%}
+        {{
+          section.settings.hero_image
+          | image_url: width: 1500
+          | image_tag: class: 'ammis-hero__image', loading: 'eager'
+        }}
+      {%- else -%}
+        {{ 'collection-1' | placeholder_svg_tag: 'ammis-hero__image placeholder-svg' }}
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="container">
+    {%- comment -%} CONTAGEM EDITORIAL {%- endcomment -%}
+    {%- if item_count > 0 -%}
+      <div class="ammis-gallery-meta">{{ item_count }} looks &middot; Curado pela equipe Ammis</div>
+    {%- endif -%}
+
+    {%- if item_count == 0 -%}
+      <div class="ammis-por-voce__empty" style="padding: 10rem 0; text-align: center;">
+        <p class="secondary_text">
+          Nenhum item publicado ainda. Adicione entradas no Metaobject <strong>ammis_gallery_item</strong> para começar.
+        </p>
+      </div>
+    {%- else -%}
+      {%- comment -%} GRID DE CARDS {%- endcomment -%}
+      <div class="ammis-gallery-main-grid" style="gap: 1.4rem 2rem;">
+        {%- for item in all_items -%}
+          {% render 'ammis-gallery-item', item: item %}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} 2. BLOCO UGC (RODAPÉ) - Ajuste Ponto 12 {%- endcomment -%}
+  {%- if item_count > 0 -%}
+    <div
+      class="ammis-ugc-block"
+      style="background-color: #000 !important; color: #fff !important; text-align: center; padding: 8rem 2rem; margin-top: 6rem; border: none;"
+    >
+      <h2
+        class="ammis-ugc__title"
+        style="font-family: var(--font-heading-family), sans-serif; font-weight: 300; color: #fff !important; margin: 0 0 1rem 0; text-transform: none; line-height: 1.2;"
+      >
+        <span style="display: block; font-size: clamp(1.6rem, 2vw, 2.2rem); letter-spacing: 4px; text-transform: uppercase; opacity: 0.7;">
+          Você também usa
+        </span>
+        <span style="display: block; font-size: clamp(4.8rem, 8vw, 9rem); letter-spacing: 2px; text-transform: uppercase;">
+          AMMIS?
+        </span>
+      </h2>
+      <p
+        class="ammis-ugc__text"
+        style="font-size: 1.4rem; color: rgba(255,255,255,0.8) !important; margin: 0 0 3rem 0; font-family: var(--font-heading-family), sans-serif;"
+      >
+        Marque @_ammis_ nas suas fotos e apareça aqui.
+      </p>
+      <a
+        href="https://www.instagram.com/_ammis_/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="ammis-ugc__link"
+        style="display: inline-flex; align-items: center; color: #fff !important; text-decoration: underline; text-underline-offset: 6px; font-size: 1.3rem; letter-spacing: 1px; text-transform: uppercase;"
+      >
+        Ver nosso Instagram <span class="ammis-ugc__arrow" style="margin-left: 8px;">&rarr;</span>
+      </a>
+    </div>
+  {%- endif -%}
+</section>
+
+{%- comment -%} ESTILOS CSS INJETADOS PARA OS NOVOS BLOCOS {%- endcomment -%}
+<style>
+    /* Estilos do Hero Editorial */
+    .ammis-hero {
+      display: flex;
+      flex-direction: column;
+      min-height: 50vh;
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+    .ammis-hero__content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+    .ammis-hero__title {
+  font-family: var(--font-heading-family), sans-serif;
+      font-size: clamp(4rem, 6vw, 7.2rem);
+      font-weight: 300;
+      margin: 0 0 1rem 0;
+      line-height: 1.1;
+      color: #000;
+      text-transform: none;
+    }
+    .ammis-hero__subtitle {
+  font-family: var(--font-heading-family), sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #333;
+      margin: 0;
+    }
+    .ammis-hero__image-wrapper {
+      flex: 1;
+      position: relative;
+      min-height: 300px;
+    }
+    .ammis-hero__image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .ammis-hero__logo-wrapper {
+    margin-bottom: 1.6rem;
+  }
+
+  .ammis-hero__logo {
+    width: auto;
+    max-width: 280px;
+    height: auto;
+    display: block;
+  }
+
+  @media (max-width: 767px) {
+    .ammis-hero__logo {
+      max-width: 180px;
+      margin: 0 auto;
+    }
+  }
+
+    /* Contagem Editorial */
+    .ammis-gallery-meta {
+      text-align: right;
+      font-size: 1.2rem;
+      color: #666;
+      padding: 1rem 0 3rem 0;
+      max-width: 1400px;
+      margin: 0 auto;
+      font-family: var(--font-body-family);
+    }
+
+    /* Bloco UGC (Rodapé Preto) */
+    .ammis-ugc-block {
+      background-color: #000;
+      color: #fff;
+      text-align: center;
+      padding: 8rem 2rem;
+      margin-top: 6rem;
+    }
+    .ammis-ugc__title {
+  font-family: var(--font-heading-family), sans-serif;
+      font-size: clamp(3.2rem, 4vw, 4.8rem);
+      font-weight: 300;
+      color: #fff;
+      margin: 0 0 1rem 0;
+      text-transform: none;
+    }
+    .ammis-ugc__text {
+      font-size: 1.4rem;
+      color: rgba(255,255,255,0.8);
+      margin: 0 0 3rem 0;
+      font-family: var(--font-body-family);
+    }
+    .ammis-ugc__link {
+      display: inline-flex;
+      align-items: center;
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 6px;
+      font-size: 1.3rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: opacity 0.3s;
+    }
+    .ammis-ugc__link:hover {
+      opacity: 0.7;
+    }
+    .ammis-ugc__arrow {
+      display: inline-block;
+      margin-left: 8px;
+      animation: arrowOscillate 1.5s ease-in-out infinite;
+    }
+
+    /* Keyframe Seta Animada */
+    @keyframes arrowOscillate {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(6px); }
+    }
+
+    /* Responsivo Desktop */
+    @media (min-width: 768px) {
+      .ammis-hero {
+        flex-direction: row;
+        height: 55vh;
+      }
+      .ammis-hero__content {
+        text-align: left;
+        padding: 6rem 10%;
+      }
+    }
+
+    /* Refinamento Seguro do Grid (Flexbox Editorial) */
+    .ammis-gallery-main-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem 1.4rem; /* 20px vertical, 14px horizontal */
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Preparação para a Animação de Revelação */
+    .ammis-card {
+      width: 100%;
+      max-width: 420px;
+      opacity: 0; /* Inicia invisível */
+      transform: translateY(16px); /* Inicia levemente abaixo */
+      transition: opacity 450ms ease-out, transform 450ms ease-out;
+    }
+
+    /* Classe ativada via JavaScript ao rolar a tela */
+    .ammis-card.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+</style>
+
+{%- comment -%} SCRIPT DE ADIÇÃO AO CARRINHO (MANTIDO) {%- endcomment -%}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const forms = document.querySelectorAll('.ammis-drawer-form');
+    forms.forEach((form) => {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const btn = form.querySelector('button[name="add"]');
+        if (!btn) return;
+
+        const originalText = btn.innerText;
+        btn.innerText = 'Adicionando...';
+        btn.disabled = true;
+        btn.style.opacity = '0.7';
+
+        const rootUrl =
+          window.Shopify && window.Shopify.routes && window.Shopify.routes.root ? window.Shopify.routes.root : '/';
+
+        fetch(rootUrl + 'cart/add.js', {
+          method: 'POST',
+          body: new FormData(form),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            btn.innerText = 'Adicionado ✔';
+            btn.style.backgroundColor = '#108043';
+            btn.style.color = '#ffffff';
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          })
+          .catch((error) => {
+            console.error('Erro na adição AJAX:', error);
+            btn.innerText = 'Erro ao adicionar';
+            setTimeout(() => {
+              btn.innerText = originalText;
+              btn.disabled = false;
+              btn.style.opacity = '1';
+            }, 2000);
+          });
+      });
+    });
+  });
+</script>
+
+<script>
+  // Script para a Animação Editorial de Entrada (Fade-in no Scroll)
+  document.addEventListener('DOMContentLoaded', function () {
+    const cards = document.querySelectorAll('.ammis-card');
+
+    // Configura o observador de tela
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Calcula um pequeno atraso (stagger de 70ms) para efeito cascata na mesma linha
+            const cardIndex = Array.from(cards).indexOf(entry.target);
+            const delay = (cardIndex % 3) * 70;
+
+            setTimeout(() => {
+              entry.target.classList.add('is-visible');
+            }, delay);
+
+            // Para de observar após a primeira animação para não repetir ao subir a tela
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.1, // Dispara quando 10% do card aparecer na tela
+      }
+    );
+
+    cards.forEach((card) => {
+      observer.observe(card);
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Ammis por Você",
+  "tag": "section",
+  "class": "ammis-por-voce-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Configurações do Hero Editorial"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título Principal",
+      "default": "Ammis por Você"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtítulo",
+      "default": "Vista-se. Inspire-se. Seja vista."
+    },
+    {
+      "type": "color",
+      "id": "hero_bg_color",
+      "label": "Cor de Fundo (Esquerda)",
+      "default": "#FAF8F5"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_logo",
+      "label": "Logo no Hero (substitui o título de texto)"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Imagem da Campanha (Direita)"
+    }
+  ],
+  "presets": [{ "name": "Ammis por Você" }]
+}
+{% endschema %}
