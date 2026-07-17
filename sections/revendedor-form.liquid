@@ -162,9 +162,10 @@
           <fieldset class="revendedor-form__group">
             <legend class="revendedor-form__legend h3">{{ section.settings.address_group_title | escape }}</legend>
             <div class="revendedor-form__grid">
-              <div class="field revendedor-form__field" data-field-wrapper>
-                <input class="field__input focus-inset" id="{{ form_id }}-postal_code" name="postal_code" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="20" required placeholder="00000-000" aria-describedby="{{ form_id }}-postal_code-error" data-postal-code>
+              <div class="field revendedor-form__field" data-field-wrapper data-postal-code-wrapper>
+                <input class="field__input focus-inset" id="{{ form_id }}-postal_code" name="postal_code" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="20" required placeholder="00000-000" aria-describedby="{{ form_id }}-postal_code-status {{ form_id }}-postal_code-error" data-postal-code>
                 <label class="field__label secondary_text" for="{{ form_id }}-postal_code">CEP</label>
+                <small class="revendedor-form__field-status" id="{{ form_id }}-postal_code-status" aria-live="polite" data-postal-code-status></small>
                 <small class="revendedor-form__field-error form__message" id="{{ form_id }}-postal_code-error" data-error-for="postal_code"></small>
               </div>
 
@@ -205,9 +206,16 @@
                 <small class="revendedor-form__field-error form__message" id="{{ form_id }}-state-error" data-error-for="state"></small>
               </div>
 
-              <div class="field revendedor-form__field" data-field-wrapper>
-                <input class="field__input focus-inset" id="{{ form_id }}-city" name="city" type="text" autocomplete="address-level2" maxlength="100" required placeholder="Cidade" aria-describedby="{{ form_id }}-city-error">
-                <label class="field__label secondary_text" for="{{ form_id }}-city">Cidade</label>
+              <div class="field revendedor-form__field" data-field-wrapper data-city-wrapper>
+                <div class="select" data-city-select-wrap>
+                  <select class="field__input focus-inset" id="{{ form_id }}-city" name="city" autocomplete="address-level2" required disabled aria-describedby="{{ form_id }}-city-status {{ form_id }}-city-error" data-city-select>
+                    <option value="">Selecione um estado</option>
+                  </select>
+                  {% render 'icon-caret' %}
+                </div>
+                <input class="field__input focus-inset" id="{{ form_id }}-city_text" name="city" type="text" autocomplete="address-level2" maxlength="100" required placeholder="Cidade" aria-describedby="{{ form_id }}-city-status {{ form_id }}-city-error" data-city-text hidden disabled>
+                <label class="field__label secondary_text" for="{{ form_id }}-city" data-city-label>Cidade</label>
+                <small class="revendedor-form__field-status" id="{{ form_id }}-city-status" aria-live="polite" data-city-status></small>
                 <small class="revendedor-form__field-error form__message" id="{{ form_id }}-city-error" data-error-for="city"></small>
               </div>
             </div>

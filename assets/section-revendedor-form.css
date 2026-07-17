@@ -120,6 +120,44 @@
   margin-right: 0.3rem;
 }
 
+.revendedor-form__field-status {
+  display: block;
+  min-height: 1.8rem;
+  margin-top: 0.6rem;
+  font-size: 1.25rem;
+  line-height: 1.45;
+  color: rgba(var(--color-foreground), 0.66);
+}
+
+.revendedor-form__field-status:not(:empty)::before {
+  content: "";
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-right: 0.6rem;
+  border-radius: 50%;
+  vertical-align: 0.1rem;
+  background: currentColor;
+}
+
+.revendedor-form__field-status[data-status="success"] {
+  color: rgba(var(--color-foreground), 0.78);
+}
+
+.revendedor-form__field-status[data-status="warning"] {
+  color: rgb(var(--color-error));
+}
+
+.revendedor-form__field-status[data-status="loading"]::before {
+  animation: revendedor-status-pulse 1s ease-in-out infinite;
+}
+
+.revendedor-form__field .field__input:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+  background-color: rgba(var(--color-foreground), 0.035);
+}
+
 .revendedor-form [aria-invalid="true"] {
   border-color: rgb(var(--color-error)) !important;
 }
@@ -287,5 +325,16 @@
 
   .revendedor-form__actions .button {
     width: 100%;
+  }
+}
+
+@keyframes revendedor-status-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+
+  50% {
+    opacity: 1;
   }
 }

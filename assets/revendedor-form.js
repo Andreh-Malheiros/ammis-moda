@@ -1,6 +1,12 @@
 (function () {
   const SECTION_SELECTOR = '[data-revendedor-form-section]';
   const FORM_SELECTOR = '[data-revendedor-form]';
+  const VIA_CEP_URL = 'https://viacep.com.br/ws/{cep}/json/';
+  const IBGE_CITIES_URL = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados/{uf}/municipios';
+  const REQUEST_TIMEOUT = 8000;
+
+  const cityCache = new Map();
+  const cepCache = new Map();
 
   const messages = {
     required: 'Preencha este campo.',
@@ -11,6 +17,14 @@
     phone: 'Informe um telefone valido.',
     whatsapp: 'Informe um celular com WhatsApp valido.',
     postalCode: 'Informe um CEP valido.',
+    postalCodeNotFound: 'Nao foi possivel localizar este CEP. Preencha o endereco manualmente.',
+    postalCodeError: 'Nao foi possivel consultar o CEP agora. Preencha o endereco manualmente.',
+    postalCodeLoading: 'Consultando CEP...',
+    postalCodeFound: 'CEP localizado. Confira os dados do endereco.',
+    cityLoading: 'Carregando cidades...',
+    cityLoaded: 'Cidades carregadas.',
+    cityError: 'Nao foi possivel carregar as cidades. Digite a cidade manualmente.',
+    cityManual: 'Digite a cidade manualmente.',
     state: 'Informe o estado.',
     storeType: 'Selecione o tipo da loja.',
     consent: 'Aceite a Politica de Privacidade para continuar.',
@@ -43,6 +57,47 @@
 
   function trimSpaces(value) {
     return (value || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function normalizeText(value) {
+    return trimSpaces(value)
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+  }
+
+  function setStatus(element, message, status) {
+    if (!element) return;
+    element.textContent = message || '';
+    if (status) {
+      element.dataset.status = status;
+    } else {
+      delete element.dataset.status;
+    }
+  }
+
+  function getPostalStatus(form) {
+    return form.querySelector('[data-postal-code-status]');
+  }
+
+  function getCityStatus(form) {
+    return form.querySelector('[data-city-status]');
+  }
+
+  function abortController(controller) {
+    if (controller) controller.abort();
+  }
+
+  function fetchJson(url, controller) {
+    const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+    return fetch(url, { signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) throw new Error('Request failed');
+        return response.json();
+      })
+      .finally(() => {
+        window.clearTimeout(timeout);
+      });
   }
 
   function isBrazil(form) {
@@ -371,14 +426,279 @@
     if (phone && isBrazil(form)) phone.value = maskBrazilPhone(phone.value, checkbox.checked);
   }
 
+  function createOption(value, text) {
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = text;
+    return option;
+  }
+
+  function setCitySelectOptions(select, cities, placeholder) {
+    if (!select) return;
+    select.textContent = '';
+    select.appendChild(createOption('', placeholder || 'Selecione'));
+    cities.forEach((city) => {
+      select.appendChild(createOption(city.name, city.name));
+    });
+  }
+
+  function setCityMode(form, mode, message, status) {
+    const citySelectWrap = form.querySelector('[data-city-select-wrap]');
+    const citySelect = form.querySelector('[data-city-select]');
+    const cityText = form.querySelector('[data-city-text]');
+    const label = form.querySelector('[data-city-label]');
+
+    if (!citySelectWrap || !citySelect || !cityText) return;
+
+    if (mode === 'select') {
+      citySelectWrap.hidden = false;
+      citySelect.disabled = false;
+      citySelect.required = true;
+      cityText.hidden = true;
+      cityText.disabled = true;
+      cityText.required = false;
+      if (label) label.setAttribute('for', citySelect.id);
+    } else if (mode === 'manual') {
+      citySelectWrap.hidden = true;
+      citySelect.disabled = true;
+      citySelect.required = false;
+      cityText.hidden = false;
+      cityText.disabled = false;
+      cityText.required = true;
+      if (label) label.setAttribute('for', cityText.id);
+    } else {
+      citySelectWrap.hidden = false;
+      citySelect.disabled = true;
+      citySelect.required = true;
+      cityText.hidden = true;
+      cityText.disabled = true;
+      cityText.required = false;
+      if (label) label.setAttribute('for', citySelect.id);
+    }
+
+    setStatus(getCityStatus(form), message, status);
+  }
+
+  function resetCitySelect(form, placeholder) {
+    const citySelect = form.querySelector('[data-city-select]');
+    if (!citySelect) return;
+    setCitySelectOptions(citySelect, [], placeholder || 'Selecione um estado');
+    citySelect.value = '';
+    setCityMode(form, 'disabled', '', '');
+  }
+
+  function parseCities(payload) {
+    if (!Array.isArray(payload)) return [];
+    const seen = new Set();
+    return payload
+      .map((item) => {
+        if (!item || typeof item.nome !== 'string') return null;
+        return { name: trimSpaces(item.nome) };
+      })
+      .filter((city) => {
+        if (!city || !city.name) return false;
+        const key = normalizeText(city.name);
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+  }
+
+  function loadCities(form, uf, options) {
+    const state = trimSpaces(uf).toUpperCase();
+    const citySelect = form.querySelector('[data-city-select]');
+    const expectedRequest = Symbol('cities');
+    const shouldClear = !options || options.clear !== false;
+    const targetCity = options && options.targetCity ? trimSpaces(options.targetCity) : '';
+
+    if (!state || state.length !== 2) {
+      resetCitySelect(form);
+      return Promise.resolve([]);
+    }
+
+    form.revendedorCityRequestId = expectedRequest;
+    abortController(form.revendedorCitiesController);
+
+    if (shouldClear && citySelect) citySelect.value = '';
+
+    if (cityCache.has(state)) {
+      const cachedCities = cityCache.get(state);
+      setCitySelectOptions(citySelect, cachedCities, 'Selecione a cidade');
+      setCityMode(form, 'select', messages.cityLoaded, 'success');
+      selectCity(form, targetCity);
+      return Promise.resolve(cachedCities);
+    }
+
+    const controller = new AbortController();
+    form.revendedorCitiesController = controller;
+    setCityMode(form, 'disabled', messages.cityLoading, 'loading');
+    if (citySelect) {
+      setCitySelectOptions(citySelect, [], 'Carregando cidades...');
+    }
+
+    return fetchJson(IBGE_CITIES_URL.replace('{uf}', encodeURIComponent(state)), controller)
+      .then((payload) => {
+        if (form.revendedorCityRequestId !== expectedRequest || !isBrazil(form)) return [];
+        const cities = parseCities(payload);
+        if (!cities.length) throw new Error('Invalid cities');
+        cityCache.set(state, cities);
+        setCitySelectOptions(citySelect, cities, 'Selecione a cidade');
+        setCityMode(form, 'select', messages.cityLoaded, 'success');
+        selectCity(form, targetCity);
+        return cities;
+      })
+      .catch((error) => {
+        if (error.name === 'AbortError') return [];
+        if (form.revendedorCityRequestId !== expectedRequest || !isBrazil(form)) return [];
+        setCityMode(form, 'manual', messages.cityError, 'warning');
+        selectCity(form, targetCity);
+        return [];
+      });
+  }
+
+  function selectCity(form, cityName) {
+    const city = trimSpaces(cityName);
+    const citySelect = form.querySelector('[data-city-select]');
+    const cityText = form.querySelector('[data-city-text]');
+    if (!city) return;
+
+    if (citySelect && !citySelect.disabled) {
+      const normalizedCity = normalizeText(city);
+      const match = Array.from(citySelect.options).find((option) => normalizeText(option.textContent) === normalizedCity);
+      if (match) {
+        citySelect.value = match.value;
+        clearFieldError(form, 'city');
+        return;
+      }
+      citySelect.appendChild(createOption(city, city));
+      citySelect.value = city;
+      clearFieldError(form, 'city');
+      return;
+    }
+
+    if (cityText && !cityText.disabled) {
+      cityText.value = city;
+      clearFieldError(form, 'city');
+    }
+  }
+
+  function parseCep(payload) {
+    if (!payload || typeof payload !== 'object' || payload.erro) return null;
+    const uf = typeof payload.uf === 'string' ? trimSpaces(payload.uf).toUpperCase() : '';
+    const city = typeof payload.localidade === 'string' ? trimSpaces(payload.localidade) : '';
+    if (!uf || uf.length !== 2 || !city) return null;
+    return {
+      postalCode: typeof payload.cep === 'string' ? payload.cep : '',
+      addressLine: typeof payload.logradouro === 'string' ? trimSpaces(payload.logradouro) : '',
+      neighborhood: typeof payload.bairro === 'string' ? trimSpaces(payload.bairro) : '',
+      state: uf,
+      city: city
+    };
+  }
+
+  function applyCepResult(form, result) {
+    const addressLine = getField(form, 'address_line');
+    const neighborhood = getField(form, 'neighborhood');
+    const state = form.querySelector('[data-state-select]');
+    const number = getField(form, 'address_number');
+
+    if (addressLine && result.addressLine) {
+      addressLine.value = result.addressLine;
+      clearFieldError(form, 'address_line');
+    }
+
+    if (neighborhood && result.neighborhood) {
+      neighborhood.value = result.neighborhood;
+      clearFieldError(form, 'neighborhood');
+    }
+
+    if (state && result.state) {
+      state.value = result.state;
+      clearFieldError(form, 'state');
+      loadCities(form, result.state, { targetCity: result.city, clear: true });
+    }
+
+    if (number && document.activeElement !== number) {
+      number.focus({ preventScroll: true });
+    }
+  }
+
+  function lookupCep(form, force) {
+    const postal = form.querySelector('[data-postal-code]');
+    if (!postal || !isBrazil(form)) return;
+
+    const digits = onlyDigits(postal.value);
+    if (digits.length !== 8) {
+      if (force) setStatus(getPostalStatus(form), '', '');
+      return;
+    }
+
+    if (!force && form.revendedorLastCepRequested === digits) return;
+    form.revendedorLastCepRequested = digits;
+
+    abortController(form.revendedorCepController);
+
+    if (cepCache.has(digits)) {
+      const cachedResult = cepCache.get(digits);
+      if (cachedResult) {
+        setStatus(getPostalStatus(form), messages.postalCodeFound, 'success');
+        applyCepResult(form, cachedResult);
+      } else {
+        setStatus(getPostalStatus(form), messages.postalCodeNotFound, 'warning');
+      }
+      return;
+    }
+
+    const controller = new AbortController();
+    const requestId = Symbol('cep');
+    form.revendedorCepController = controller;
+    form.revendedorCepRequestId = requestId;
+    postal.setAttribute('aria-busy', 'true');
+    setStatus(getPostalStatus(form), messages.postalCodeLoading, 'loading');
+
+    fetchJson(VIA_CEP_URL.replace('{cep}', digits), controller)
+      .then((payload) => {
+        if (form.revendedorCepRequestId !== requestId || !isBrazil(form) || onlyDigits(postal.value) !== digits) return;
+        const result = parseCep(payload);
+        cepCache.set(digits, result);
+        if (!result) {
+          setStatus(getPostalStatus(form), messages.postalCodeNotFound, 'warning');
+          return;
+        }
+        setStatus(getPostalStatus(form), messages.postalCodeFound, 'success');
+        applyCepResult(form, result);
+      })
+      .catch((error) => {
+        if (error.name === 'AbortError') return;
+        if (form.revendedorCepRequestId !== requestId || !isBrazil(form)) return;
+        setStatus(getPostalStatus(form), messages.postalCodeError, 'warning');
+      })
+      .finally(() => {
+        if (form.revendedorCepRequestId === requestId) {
+          postal.removeAttribute('aria-busy');
+        }
+      });
+  }
+
   function updateCountryState(form) {
     const brazil = isBrazil(form);
     const stateSelect = form.querySelector('[data-state-select]');
     const stateSelectWrap = form.querySelector('[data-state-select-wrap]');
     const stateText = form.querySelector('[data-state-text]');
+    const citySelect = form.querySelector('[data-city-select]');
+    const cityText = form.querySelector('[data-city-text]');
     const postal = form.querySelector('[data-postal-code]');
     const phone = form.querySelector('[data-phone]');
     const whatsapp = form.querySelector('[data-whatsapp]');
+
+    if (!brazil) {
+      abortController(form.revendedorCepController);
+      abortController(form.revendedorCitiesController);
+      form.revendedorLastCepRequested = '';
+      setStatus(getPostalStatus(form), '', '');
+      setStatus(getCityStatus(form), '', '');
+    }
 
     if (stateSelect && stateSelectWrap && stateText) {
       stateSelect.disabled = !brazil;
@@ -390,6 +710,19 @@
       const label = form.querySelector('[data-state-label]');
       if (label) label.setAttribute('for', brazil ? stateSelect.id : stateText.id);
       clearFieldError(form, 'state');
+    }
+
+    if (brazil) {
+      if (cityText) cityText.value = '';
+      if (stateSelect && stateSelect.value) {
+        loadCities(form, stateSelect.value, { clear: false });
+      } else {
+        resetCitySelect(form);
+      }
+    } else {
+      if (citySelect && citySelect.value && cityText && !cityText.value) cityText.value = citySelect.value;
+      setCityMode(form, 'manual', '', '');
+      clearFieldError(form, 'city');
     }
 
     if (postal) {
@@ -414,7 +747,16 @@
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
       if (target.matches('[data-mask="cnpj"]')) target.value = maskCnpj(target.value);
-      if (target.matches('[data-postal-code]') && isBrazil(form)) target.value = maskPostalCode(target.value);
+      if (target.matches('[data-postal-code]') && isBrazil(form)) {
+        target.value = maskPostalCode(target.value);
+        form.revendedorLastCepRequested = form.revendedorLastCepRequested === onlyDigits(target.value) ? form.revendedorLastCepRequested : '';
+        if (onlyDigits(target.value).length === 8) {
+          lookupCep(form, false);
+        } else {
+          abortController(form.revendedorCepController);
+          setStatus(getPostalStatus(form), '', '');
+        }
+      }
       if (target.matches('[data-phone]') && isBrazil(form)) target.value = maskBrazilPhone(target.value, form.querySelector('[data-landline]')?.checked);
       if (target.matches('[data-whatsapp]') && isBrazil(form)) target.value = maskBrazilPhone(target.value, false);
       if (target.matches('[data-counter-input]')) updateCounters(form);
@@ -430,6 +772,9 @@
         updateCountryState(form);
         updateLandlineState(form);
       }
+      if (target.matches('[data-state-select]') && isBrazil(form)) {
+        loadCities(form, target.value, { clear: true });
+      }
       if (target.name) clearFieldError(form, target.name);
     }, { signal: signal });
 
@@ -441,6 +786,10 @@
       if (target.name === 'cnpj') {
         target.value = maskCnpj(target.value);
         if (target.value && !validateCnpj(target.value)) setFieldError(form, 'cnpj', messages.cnpj);
+      }
+      if (target.matches('[data-postal-code]') && isBrazil(form)) {
+        target.value = maskPostalCode(target.value);
+        lookupCep(form, true);
       }
       if (target.type === 'text' || target.type === 'email' || target.tagName === 'TEXTAREA') {
         target.value = trimSpaces(target.value);
