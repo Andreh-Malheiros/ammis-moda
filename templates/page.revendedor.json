@@ -287,7 +287,7 @@
     "mid_cta": {
       "type": "revendedor-content",
       "custom_css": [
-        "p{color: white !important;}"
+        "p {color: white !important;}"
       ],
       "settings": {
         "enable_section": true,
@@ -336,7 +336,7 @@
         "button_label": "Enviar cadastro",
         "submitting_button_label": "Enviando cadastro...",
         "button_style": "primary",
-        "success_message": "",
+        "success_message": "Cadastro enviado com sucesso.",
         "error_summary_title": "Revise os campos abaixo:",
         "policy_link": "https://ammismoda.com.br/policies/privacy-policy",
         "endpoint_url": "https://script.google.com/macros/s/AKfycbzsJP42ghPpMSn3x-hMIsEEfnWNZ2yhK4BT3Rk5Y0QOum8Svqp-pgsKGLwXD4hoWehS/exec",
