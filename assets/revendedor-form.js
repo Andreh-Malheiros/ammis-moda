@@ -4,6 +4,7 @@
   const VIA_CEP_URL = 'https://viacep.com.br/ws/{cep}/json/';
   const IBGE_CITIES_URL = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados/{uf}/municipios';
   const REQUEST_TIMEOUT = 8000;
+  const SUBMIT_TIMEOUT = 15000;
 
   const cityCache = new Map();
   const cepCache = new Map();
@@ -30,6 +31,28 @@
     consent: 'Aceite a Politica de Privacidade para continuar.',
     addressNumber: 'Informe um numero valido.'
   };
+
+  const payloadFields = [
+    'company_legal_name',
+    'cnpj',
+    'instagram',
+    'website',
+    'other_brands',
+    'store_description',
+    'responsible_name',
+    'email',
+    'phone_country',
+    'phone',
+    'whatsapp_phone',
+    'postal_code',
+    'address_line',
+    'address_number',
+    'address_complement',
+    'neighborhood',
+    'state',
+    'city',
+    'store_type'
+  ];
 
   const labels = {
     company_legal_name: 'Razao social',
@@ -98,6 +121,78 @@
       .finally(() => {
         window.clearTimeout(timeout);
       });
+  }
+
+  function getSetting(form, name, fallback) {
+    return form.dataset[name] || fallback || '';
+  }
+
+  function getSafeServerMessage(value, fallback) {
+    if (typeof value !== 'string') return fallback;
+    const message = trimSpaces(value);
+    if (!message || message.length > 180 || /<[^>]*>/.test(message)) return fallback;
+    return message;
+  }
+
+  function getPageOrigin() {
+    try {
+      const url = new URL(window.location.href);
+      url.hash = '';
+      return url.href;
+    } catch (error) {
+      return window.location.href.split('#')[0];
+    }
+  }
+
+  function getUtmValue(name) {
+    try {
+      return new URLSearchParams(window.location.search).get(name) || '';
+    } catch (error) {
+      return '';
+    }
+  }
+
+  function parseSubmissionResponse(status, responseText) {
+    const text = trimSpaces(responseText);
+    if (!text) {
+      return {
+        ok: false,
+        type: 'invalid',
+        message: ''
+      };
+    }
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (error) {
+      return {
+        ok: false,
+        type: 'invalid',
+        message: ''
+      };
+    }
+
+    if (!status.ok) {
+      return {
+        ok: false,
+        type: 'server',
+        message: data && data.message
+      };
+    }
+
+    if (data && data.success === true && data.code === 'CREATED') {
+      return {
+        ok: true,
+        data: data
+      };
+    }
+
+    return {
+      ok: false,
+      type: data && data.success === false ? 'server' : 'invalid',
+      message: data && data.message
+    };
   }
 
   function isBrazil(form) {
@@ -200,6 +295,36 @@
   function getField(form, name) {
     const fields = Array.from(form.querySelectorAll('[name="' + name + '"]'));
     return fields.find((field) => !field.disabled && !field.hidden && field.offsetParent !== null) || fields[0];
+  }
+
+  function getActiveFieldValue(form, name) {
+    const field = getField(form, name);
+    if (!field) return '';
+    if (field.type === 'radio') {
+      const checked = form.querySelector('[name="' + name + '"]:checked');
+      return checked ? checked.value : '';
+    }
+    return trimSpaces(field.value || '');
+  }
+
+  function buildPayload(form) {
+    const payload = {};
+    payloadFields.forEach((name) => {
+      payload[name] = getActiveFieldValue(form, name);
+    });
+
+    payload.no_instagram = Boolean(form.querySelector('[name="no_instagram"]')?.checked);
+    payload.is_landline = Boolean(form.querySelector('[name="is_landline"]')?.checked);
+    payload.privacy_consent = Boolean(form.querySelector('[name="privacy_consent"]')?.checked);
+    payload.page_origin = getPageOrigin();
+    payload.user_agent = navigator.userAgent || '';
+    payload.utm_source = getUtmValue('utm_source');
+    payload.utm_medium = getUtmValue('utm_medium');
+    payload.utm_campaign = getUtmValue('utm_campaign');
+    payload.utm_content = getUtmValue('utm_content');
+    payload.utm_term = getUtmValue('utm_term');
+
+    return payload;
   }
 
   function getErrorElement(form, name) {
@@ -368,14 +493,38 @@
     summary.hidden = false;
   }
 
-  function showSuccess(form) {
-    const summary = form.querySelector('[data-error-summary]');
-    const success = form.querySelector('[data-success-message]');
-    if (summary) summary.hidden = true;
-    if (success) {
-      success.hidden = false;
-      success.focus({ preventScroll: true });
-      success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  function clearSubmitError(form) {
+    const submitError = form.querySelector('[data-submit-error]');
+    if (!submitError) return;
+    submitError.textContent = '';
+    submitError.hidden = true;
+  }
+
+  function showSubmitError(form, message) {
+    const submitError = form.querySelector('[data-submit-error]');
+    if (!submitError) return;
+    submitError.textContent = message;
+    submitError.hidden = false;
+    submitError.focus({ preventScroll: true });
+  }
+
+  function setSubmittingState(form, isSubmitting) {
+    const button = form.querySelector('[data-submit-button]');
+    const buttonText = button ? button.querySelector('span') : null;
+    const normalLabel = getSetting(form, 'buttonLabel', 'Enviar cadastro');
+    const submittingLabel = getSetting(form, 'submittingLabel', 'Enviando cadastro...');
+
+    form.revendedorSubmitting = isSubmitting;
+    form.setAttribute('aria-busy', isSubmitting ? 'true' : 'false');
+
+    if (button) {
+      button.disabled = isSubmitting;
+      button.setAttribute('aria-disabled', isSubmitting ? 'true' : 'false');
+      button.classList.toggle('is-loading', isSubmitting);
+    }
+
+    if (buttonText) {
+      buttonText.textContent = isSubmitting ? submittingLabel : normalLabel;
     }
   }
 
@@ -389,6 +538,68 @@
       target.focus({ preventScroll: true });
       target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
+  }
+
+  function submitForm(form) {
+    const endpointUrl = getSetting(form, 'endpointUrl', '');
+    const confirmationUrl = getSetting(form, 'confirmationUrl', '');
+    const failureMessage = getSetting(form, 'submitFailureMessage', 'Nao foi possivel enviar o cadastro. Confira sua conexao e tente novamente.');
+    const communicationErrorMessage = getSetting(form, 'communicationErrorMessage', failureMessage);
+    const invalidResponseMessage = getSetting(form, 'invalidResponseMessage', 'O cadastro nao pode ser confirmado. Tente novamente em alguns instantes.');
+    const timeoutMessage = getSetting(form, 'timeoutMessage', 'O envio demorou mais que o esperado. Tente novamente.');
+
+    if (form.revendedorSubmitting) return;
+
+    if (!endpointUrl || !confirmationUrl) {
+      showSubmitError(form, communicationErrorMessage);
+      return;
+    }
+
+    const payload = buildPayload(form);
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), SUBMIT_TIMEOUT);
+    const requestId = Symbol('submit');
+
+    abortController(form.revendedorSubmitController);
+    form.revendedorSubmitController = controller;
+    form.revendedorSubmitRequestId = requestId;
+
+    clearSubmitError(form);
+    setSubmittingState(form, true);
+
+    fetch(endpointUrl, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'
+      },
+      redirect: 'follow',
+      signal: controller.signal
+    })
+      .then((response) => {
+        return response.text().then((text) => parseSubmissionResponse(response, text));
+      })
+      .then((result) => {
+        if (form.revendedorSubmitRequestId !== requestId || !form.isConnected) return;
+        if (result.ok) {
+          window.location.assign(confirmationUrl);
+          return;
+        }
+
+        const message = result.type === 'invalid'
+          ? invalidResponseMessage
+          : getSafeServerMessage(result.message, failureMessage);
+        setSubmittingState(form, false);
+        showSubmitError(form, message);
+      })
+      .catch((error) => {
+        if (form.revendedorSubmitRequestId !== requestId || !form.isConnected) return;
+        setSubmittingState(form, false);
+        showSubmitError(form, error.name === 'AbortError' ? timeoutMessage : communicationErrorMessage);
+      })
+      .finally(() => {
+        window.clearTimeout(timeout);
+      });
   }
 
   function updateInstagramState(form) {
@@ -813,12 +1024,14 @@
 
     form.addEventListener('submit', (event) => {
       event.preventDefault();
+      if (form.revendedorSubmitting) return;
       const errors = validateForm(form);
       renderSummary(form, errors);
       if (errors.length) {
+        clearSubmitError(form);
         focusFirstError(form, errors);
       } else {
-        showSuccess(form);
+        submitForm(form);
       }
     }, { signal: controller.signal });
   }
@@ -842,6 +1055,12 @@
   document.addEventListener('shopify:section:unload', function (event) {
     event.target.querySelectorAll(SECTION_SELECTOR).forEach((section) => {
       if (section.revendedorFormController) section.revendedorFormController.abort();
+      const form = section.querySelector(FORM_SELECTOR);
+      if (form) {
+        abortController(form.revendedorCepController);
+        abortController(form.revendedorCitiesController);
+        abortController(form.revendedorSubmitController);
+      }
     });
   });
 })();

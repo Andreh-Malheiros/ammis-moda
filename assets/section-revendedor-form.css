@@ -290,6 +290,13 @@
   background: rgba(var(--color-foreground), 0.035);
 }
 
+.revendedor-form__submit-error {
+  padding: 1.6rem 1.8rem;
+  border: 0.1rem solid rgb(var(--color-error));
+  color: rgb(var(--color-error));
+  background: rgb(var(--color-background));
+}
+
 .revendedor-form__actions {
   display: flex;
   justify-content: flex-start;
@@ -297,6 +304,22 @@
 
 .revendedor-form__actions .button {
   min-width: 18rem;
+}
+
+.revendedor-form__actions .button[aria-disabled="true"] {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.revendedor-form__actions .button.is-loading span::after {
+  content: "";
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-left: 0.8rem;
+  border-radius: 50%;
+  background: currentColor;
+  animation: revendedor-status-pulse 1s ease-in-out infinite;
 }
 
 .revendedor-form [hidden] {

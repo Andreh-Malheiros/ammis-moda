@@ -11,6 +11,7 @@
     assign heading_id = form_id | append: '-heading'
     assign summary_id = form_id | append: '-summary'
     assign success_id = form_id | append: '-success'
+    assign submit_error_id = form_id | append: '-submit-error'
   -%}
 
   <section
@@ -35,7 +36,22 @@
           {%- endif -%}
         </div>
 
-        <form id="{{ form_id }}" class="revendedor-form__form" action="#cadastro-revendedor" method="post" novalidate onsubmit="return false;" data-revendedor-form>
+        <form
+          id="{{ form_id }}"
+          class="revendedor-form__form"
+          action="#cadastro-revendedor"
+          method="post"
+          novalidate
+          data-revendedor-form
+          data-endpoint-url="{{ section.settings.endpoint_url | escape }}"
+          data-confirmation-url="{{ section.settings.confirmation_url | escape }}"
+          data-button-label="{{ section.settings.button_label | escape }}"
+          data-submitting-label="{{ section.settings.submitting_button_label | escape }}"
+          data-submit-failure-message="{{ section.settings.submit_failure_message | escape }}"
+          data-communication-error-message="{{ section.settings.communication_error_message | escape }}"
+          data-invalid-response-message="{{ section.settings.invalid_response_message | escape }}"
+          data-timeout-message="{{ section.settings.timeout_message | escape }}"
+        >
           <div id="{{ summary_id }}" class="revendedor-form__summary" role="alert" tabindex="-1" hidden data-error-summary>
             <p class="revendedor-form__summary-title">{{ section.settings.error_summary_title | escape }}</p>
             <ul data-error-list></ul>
@@ -44,6 +60,8 @@
           <div id="{{ success_id }}" class="revendedor-form__success form__message" role="status" tabindex="-1" hidden data-success-message>
             {{ section.settings.success_message | escape }}
           </div>
+
+          <div id="{{ submit_error_id }}" class="revendedor-form__submit-error form__message" role="alert" tabindex="-1" hidden data-submit-error></div>
 
           <fieldset class="revendedor-form__group">
             <legend class="revendedor-form__legend h3">{{ section.settings.company_group_title | escape }}</legend>
@@ -401,8 +419,14 @@
     {
       "type": "text",
       "id": "button_label",
-      "default": "Validar cadastro",
+      "default": "Enviar cadastro",
       "label": "Texto do botao"
+    },
+    {
+      "type": "text",
+      "id": "submitting_button_label",
+      "default": "Enviando cadastro...",
+      "label": "Texto do botao durante o envio"
     },
     {
       "type": "select",
@@ -427,8 +451,8 @@
     {
       "type": "text",
       "id": "success_message",
-      "default": "Cadastro validado. A integracao de envio sera habilitada na proxima etapa.",
-      "label": "Mensagem de validacao local"
+      "default": "",
+      "label": "Mensagem de sucesso local"
     },
     {
       "type": "text",
@@ -441,6 +465,42 @@
       "id": "policy_link",
       "default": "https://ammismoda.com.br/policies/privacy-policy",
       "label": "Link da Politica de Privacidade"
+    },
+    {
+      "type": "text",
+      "id": "endpoint_url",
+      "default": "https://script.google.com/macros/s/AKfycbzsJP42ghPpMSn3x-hMIsEEfnWNZ2yhK4BT3Rk5Y0QOum8Svqp-pgsKGLwXD4hoWehS/exec",
+      "label": "URL do endpoint"
+    },
+    {
+      "type": "text",
+      "id": "confirmation_url",
+      "default": "https://ammismoda.com.br/pages/cadastro-revendedor-enviado",
+      "label": "URL da pagina de confirmacao"
+    },
+    {
+      "type": "text",
+      "id": "submit_failure_message",
+      "default": "Nao foi possivel enviar o cadastro. Confira sua conexao e tente novamente.",
+      "label": "Mensagem de falha no envio"
+    },
+    {
+      "type": "text",
+      "id": "communication_error_message",
+      "default": "Nao foi possivel enviar o cadastro. Confira sua conexao e tente novamente.",
+      "label": "Mensagem de erro de comunicacao"
+    },
+    {
+      "type": "text",
+      "id": "invalid_response_message",
+      "default": "O cadastro nao pode ser confirmado. Tente novamente em alguns instantes.",
+      "label": "Mensagem de resposta invalida"
+    },
+    {
+      "type": "text",
+      "id": "timeout_message",
+      "default": "O envio demorou mais que o esperado. Tente novamente.",
+      "label": "Mensagem de timeout"
     },
     {
       "type": "header",
