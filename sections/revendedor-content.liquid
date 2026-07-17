@@ -4,6 +4,10 @@
   {%- liquid
     assign media_count = 0
     if section.settings.show_media
+      if section.settings.image != blank
+        assign media_count = media_count | plus: 1
+      endif
+
       for block in section.blocks
         if block.type == 'image' and block.settings.image != blank
           assign media_count = media_count | plus: 1
@@ -58,6 +62,20 @@
             </div>
           {%- endif -%}
 
+          {%- assign visible_features = section.blocks | where: 'type', 'feature' -%}
+          {%- if visible_features.size > 0 -%}
+            <ul class="revendedor-content__features" role="list">
+              {%- for block in visible_features -%}
+                {%- if block.settings.show_item and block.settings.text != blank -%}
+                  <li class="revendedor-content__feature" {{ block.shopify_attributes }}>
+                    <span class="revendedor-content__feature-mark" aria-hidden="true"></span>
+                    <span>{{ block.settings.text | escape }}</span>
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+
           {%- if section.settings.secondary_text != blank -%}
             <div class="revendedor-content__note rte">
               {{ section.settings.secondary_text }}
@@ -89,6 +107,21 @@
 
         {%- if media_count > 0 -%}
           <div class="revendedor-content__media-grid" aria-label="{{ section.settings.media_label | escape }}">
+            {%- if section.settings.image != blank -%}
+              <figure class="revendedor-content__figure revendedor-content__figure--{{ section.settings.image_ratio }}">
+                {{
+                  section.settings.image
+                  | image_url: width: 1600
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '360, 550, 750, 990, 1200, 1600',
+                    sizes: '(min-width: 990px) 38vw, 100vw',
+                    class: 'revendedor-content__image',
+                    alt: section.settings.image_alt
+                }}
+              </figure>
+            {%- endif -%}
+
             {%- for block in section.blocks -%}
               {%- if block.type == 'image' and block.settings.image != blank -%}
                 <figure class="revendedor-content__figure revendedor-content__figure--{{ block.settings.image_ratio }}" {{ block.shopify_attributes }}>
@@ -253,14 +286,45 @@
       "label": "Descricao acessivel das imagens"
     },
     {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Imagem principal"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Texto alternativo da imagem principal"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "portrait",
+          "label": "Vertical"
+        },
+        {
+          "value": "landscape",
+          "label": "Horizontal"
+        },
+        {
+          "value": "square",
+          "label": "Quadrada"
+        }
+      ],
+      "default": "portrait",
+      "label": "Proporcao da imagem principal"
+    },
+    {
       "type": "text",
       "id": "button_label",
       "label": "Texto do botao principal"
     },
     {
-      "type": "url",
+      "type": "text",
       "id": "button_link",
-      "label": "Link do botao principal"
+      "label": "Link ou ancora do botao principal",
+      "info": "Exemplos: #cadastro-revendedor, /pages/revendedor ou uma URL completa"
     },
     {
       "type": "select",
@@ -292,9 +356,10 @@
       "label": "Texto do botao secundario"
     },
     {
-      "type": "url",
+      "type": "text",
       "id": "secondary_button_link",
-      "label": "Link do botao secundario"
+      "label": "Link ou ancora do botao secundario",
+      "info": "Exemplos: #oportunidade-revenda, /pages/revendedor ou uma URL completa"
     },
     {
       "type": "select",
@@ -390,6 +455,25 @@
     }
   ],
   "blocks": [
+    {
+      "type": "feature",
+      "name": "Destaque curto",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_item",
+          "default": true,
+          "label": "Exibir destaque"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Destaque da parceria",
+          "label": "Texto"
+        }
+      ]
+    },
     {
       "type": "image",
       "name": "Imagem editorial",

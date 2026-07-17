@@ -854,3 +854,152 @@
     transform: none;
   }
 }
+
+/* ============================================================
+   Oportunidade de revenda
+   ============================================================ */
+
+#oportunidade-revenda {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(var(--color-foreground), 0.022),
+      rgba(var(--color-foreground), 0.008)
+    );
+}
+
+#oportunidade-revenda .revendedor-content__grid {
+  overflow: hidden;
+  border: 0.1rem solid rgba(var(--color-border), 1);
+  background: rgb(var(--color-background));
+  box-shadow: 0 2.4rem 7rem rgba(0, 0, 0, 0.07);
+}
+
+#oportunidade-revenda .revendedor-content__copy {
+  max-width: none;
+  padding: clamp(3.6rem, 5vw, 6.4rem);
+}
+
+#oportunidade-revenda .revendedor-content__heading {
+  max-width: 15em;
+  font-size: clamp(3rem, 3.7vw, 4.8rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+#oportunidade-revenda .revendedor-content__text {
+  max-width: 60rem;
+  font-size: 1.7rem;
+}
+
+.revendedor-content__features {
+  display: grid;
+  gap: 1.2rem;
+  margin: 2.6rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.revendedor-content__feature {
+  display: grid;
+  grid-template-columns: 1.2rem minmax(0, 1fr);
+  gap: 1.2rem;
+  align-items: start;
+  font-size: 1.5rem;
+  line-height: 1.55;
+  color: rgba(var(--color-foreground), 0.78);
+}
+
+.revendedor-content__feature-mark {
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-top: 0.7rem;
+  background: rgb(var(--color-foreground));
+}
+
+#oportunidade-revenda .revendedor-content__note {
+  margin-top: 2.8rem;
+  padding-top: 2.4rem;
+}
+
+#oportunidade-revenda .revendedor-content__media-grid {
+  height: 100%;
+  min-height: 100%;
+  gap: 0;
+}
+
+#oportunidade-revenda .revendedor-content__figure {
+  min-height: 58rem;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+#oportunidade-revenda .revendedor-content__image {
+  transition: transform 700ms ease;
+}
+
+#oportunidade-revenda:hover .revendedor-content__image {
+  transform: scale(1.025);
+}
+
+#oportunidade-revenda .revendedor-button-group {
+  margin-top: 3rem;
+}
+
+@media screen and (min-width: 990px) {
+  #oportunidade-revenda .revendedor-content__grid {
+    grid-template-columns: minmax(38rem, 0.92fr) minmax(0, 1.08fr);
+    gap: 0;
+  }
+
+  #oportunidade-revenda .revendedor-content__copy {
+    order: 2;
+  }
+
+  #oportunidade-revenda .revendedor-content__media-grid {
+    order: 1;
+  }
+
+  #oportunidade-revenda .revendedor-content__figure {
+    height: 100%;
+  }
+}
+
+@media screen and (max-width: 989px) {
+  #oportunidade-revenda .revendedor-content__grid {
+    gap: 0;
+  }
+
+  #oportunidade-revenda .revendedor-content__figure {
+    min-height: auto;
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  #oportunidade-revenda .revendedor-content__copy {
+    padding: 3.2rem 2.4rem;
+  }
+
+  #oportunidade-revenda .revendedor-content__heading {
+    font-size: 3rem;
+  }
+
+  #oportunidade-revenda .revendedor-content__text {
+    font-size: 1.55rem;
+  }
+
+  #oportunidade-revenda .revendedor-content__figure {
+    aspect-ratio: 1 / 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #oportunidade-revenda .revendedor-content__image {
+    transition: none;
+  }
+
+  #oportunidade-revenda:hover .revendedor-content__image {
+    transform: none;
+  }
+}

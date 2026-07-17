@@ -36,40 +36,58 @@
     "opportunity": {
       "type": "revendedor-content",
       "blocks": {
-        "opportunity_image": {
-          "type": "image",
+        "feature_1": {
+          "type": "feature",
           "settings": {
-            "image": "shopify://shop_images/FOTOSITE_14.jpg",
-            "image_alt": "Detalhe editorial AMMIS para apresentacao comercial",
-            "image_ratio": "square"
+            "show_item": true,
+            "text": "Lojas físicas, e-commerces ou operações híbridas"
+          }
+        },
+        "feature_2": {
+          "type": "feature",
+          "settings": {
+            "show_item": true,
+            "text": "Análise comercial realizada individualmente"
+          }
+        },
+        "feature_3": {
+          "type": "feature",
+          "settings": {
+            "show_item": true,
+            "text": "Relacionamento direto com a equipe responsável"
           }
         }
       },
       "block_order": [
-        "opportunity_image"
+        "feature_1",
+        "feature_2",
+        "feature_3"
       ],
       "settings": {
         "enable_section": true,
         "anchor_id": "oportunidade-revenda",
         "color_scheme": "background-1",
-        "style": "compact",
+        "style": "standard",
         "layout": "media-left",
         "alignment": "left",
         "eyebrow": "OPORTUNIDADE DE REVENDA",
         "heading": "Uma parceria para lojas que valorizam identidade e curadoria",
         "heading_size": "h2",
-        "text": "<p><br/>A AMMIS busca lojistas que compartilham atenção aos detalhes, cuidado na seleção de produtos e compromisso com uma experiência de compra alinhada a um posicionamento contemporâneo.<br/><br/></p>",
+        "text": "<p>A AMMIS busca lojistas que compartilham atenção aos detalhes, cuidado na seleção de produtos e compromisso com uma experiência de compra alinhada a um posicionamento contemporâneo.</p>",
         "secondary_text": "<p>Cada cadastro é analisado individualmente, considerando o perfil da loja, sua atuação comercial e a compatibilidade com o universo da marca.</p>",
         "show_media": true,
         "media_label": "Imagem editorial da oportunidade comercial AMMIS",
         "button_label": "Apresentar minha loja",
-        "button_link": "shopify://pages/revendedor",
+        "button_link": "#cadastro-revendedor",
         "button_style": "primary",
         "secondary_button_label": "",
         "secondary_button_link": "",
         "secondary_button_style": "simple",
-        "margin_top": "m",
-        "margin_bottom": "l"
+        "margin_top": "l",
+        "margin_bottom": "l",
+        "image": "",
+        "image_alt": "Imagem editorial AMMIS para apresentação da parceria comercial",
+        "image_ratio": "portrait"
       }
     },
     "benefits": {
