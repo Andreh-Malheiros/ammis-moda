@@ -18,8 +18,8 @@
         "secondary_button_label": "Continuar comprando",
         "secondary_button_link": "/",
         "secondary_button_style": "simple",
-        "margin_top": "xl",
-        "margin_bottom": "xl"
+        "margin_top": "m",
+        "margin_bottom": "m"
       }
     }
   },

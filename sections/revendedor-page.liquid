@@ -9,6 +9,19 @@
     }
   {%- endstyle -%}
 
+  {%- liquid
+    assign show_primary_button = false
+    assign show_secondary_button = false
+
+    if section.settings.primary_button_label != blank and section.settings.primary_button_link != blank
+      assign show_primary_button = true
+    endif
+
+    if section.settings.secondary_button_label != blank and section.settings.secondary_button_link != blank
+      assign show_secondary_button = true
+    endif
+  -%}
+
   <section class="revendedor-hero{% if section.settings.mobile_image != blank %} revendedor-hero--has-mobile-image{% endif %} color-{{ section.settings.color_scheme }} background" aria-labelledby="RevendedorHero-{{ section.id }}">
     <div class="revendedor-hero__media">
       {%- if section.settings.image != blank -%}
@@ -57,28 +70,20 @@
           </div>
         {%- endif -%}
 
-        {%- if section.settings.primary_button_label != blank or section.settings.secondary_button_label != blank -%}
+        {%- if show_primary_button or show_secondary_button -%}
           <div class="revendedor-button-group">
-            {%- if section.settings.primary_button_label != blank -%}
+            {%- if show_primary_button -%}
               <a
-                {% if section.settings.primary_button_link != blank %}
-                  href="{{ section.settings.primary_button_link }}"
-                {% else %}
-                  aria-disabled="true"
-                {% endif %}
+                href="{{ section.settings.primary_button_link }}"
                 class="button button--{{ section.settings.primary_button_style }} focus-inset"
               >
                 <span>{{ section.settings.primary_button_label | escape }}</span>
               </a>
             {%- endif -%}
 
-            {%- if section.settings.secondary_button_label != blank -%}
+            {%- if show_secondary_button -%}
               <a
-                {% if section.settings.secondary_button_link != blank %}
-                  href="{{ section.settings.secondary_button_link }}"
-                {% else %}
-                  aria-disabled="true"
-                {% endif %}
+                href="{{ section.settings.secondary_button_link }}"
                 class="button button--{{ section.settings.secondary_button_style }} focus-inset"
               >
                 <span>{{ section.settings.secondary_button_label | escape }}</span>

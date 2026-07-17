@@ -58,8 +58,8 @@
         "secondary_button_label": "",
         "secondary_button_link": "",
         "secondary_button_style": "simple",
-        "margin_top": "xl",
-        "margin_bottom": "l"
+        "margin_top": "m",
+        "margin_bottom": "m"
       }
     },
     "benefits": {
@@ -143,7 +143,7 @@
         "alignment": "center",
         "columns_desktop": 3,
         "margin_top": "m",
-        "margin_bottom": "l"
+        "margin_bottom": "m"
       }
     },
     "brand_universe": {
@@ -196,7 +196,7 @@
         "secondary_button_link": "",
         "secondary_button_style": "simple",
         "margin_top": "m",
-        "margin_bottom": "l"
+        "margin_bottom": "m"
       }
     },
     "steps": {
@@ -244,7 +244,7 @@
         "heading_size": "h2",
         "alignment": "center",
         "margin_top": "m",
-        "margin_bottom": "l"
+        "margin_bottom": "m"
       }
     },
     "mid_cta": {
@@ -295,7 +295,7 @@
         "secondary_button_label": "",
         "secondary_button_link": "",
         "secondary_button_style": "simple",
-        "margin_top": "l",
+        "margin_top": "m",
         "margin_bottom": "s"
       }
     },
@@ -322,7 +322,7 @@
         "secondary_button_link": "",
         "secondary_button_style": "simple",
         "margin_top": "s",
-        "margin_bottom": "l"
+        "margin_bottom": "m"
       }
     },
     "faq": {
@@ -402,7 +402,7 @@
         "heading_size": "h2",
         "text": "",
         "margin_top": "m",
-        "margin_bottom": "l"
+        "margin_bottom": "m"
       }
     },
     "final_cta": {
@@ -428,7 +428,7 @@
         "secondary_button_link": "",
         "secondary_button_style": "simple",
         "margin_top": "m",
-        "margin_bottom": "xl"
+        "margin_bottom": "m"
       }
     }
   },

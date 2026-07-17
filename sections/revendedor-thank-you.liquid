@@ -1,11 +1,29 @@
 {{ 'section-revendedor-page.css' | asset_url | stylesheet_tag }}
 
 {%- if section.settings.enable_section -%}
+  {%- liquid
+    assign section_layout = section.settings.layout
+    if section.settings.image == blank
+      assign section_layout = 'text-only'
+    endif
+
+    assign show_primary_button = false
+    assign show_secondary_button = false
+
+    if section.settings.button_label != blank and section.settings.button_link != blank
+      assign show_primary_button = true
+    endif
+
+    if section.settings.secondary_button_label != blank and section.settings.secondary_button_link != blank
+      assign show_secondary_button = true
+    endif
+  -%}
+
   {%- style -%}
     {% render 'section-margin' %}
   {%- endstyle -%}
 
-  <section class="revendedor-content revendedor-content--{{ section.settings.layout }} revendedor-content--highlight color-{{ section.settings.color_scheme }} background" aria-labelledby="RevendedorThankYou-{{ section.id }}">
+  <section class="revendedor-content revendedor-content--{{ section_layout }} revendedor-content--confirmation color-{{ section.settings.color_scheme }} background" aria-labelledby="RevendedorThankYou-{{ section.id }}">
     <div class="container">
       <div class="revendedor-content__grid">
         <div class="revendedor-content__copy revendedor-content__copy--{{ section.settings.alignment }}">
@@ -25,28 +43,20 @@
             </div>
           {%- endif -%}
 
-          {%- if section.settings.button_label != blank or section.settings.secondary_button_label != blank -%}
+          {%- if show_primary_button or show_secondary_button -%}
             <div class="revendedor-button-group">
-              {%- if section.settings.button_label != blank -%}
+              {%- if show_primary_button -%}
                 <a
-                  {% if section.settings.button_link != blank %}
-                    href="{{ section.settings.button_link }}"
-                  {% else %}
-                    aria-disabled="true"
-                  {% endif %}
+                  href="{{ section.settings.button_link }}"
                   class="button button--{{ section.settings.button_style }} focus-inset"
                 >
                   <span>{{ section.settings.button_label | escape }}</span>
                 </a>
               {%- endif -%}
 
-              {%- if section.settings.secondary_button_label != blank -%}
+              {%- if show_secondary_button -%}
                 <a
-                  {% if section.settings.secondary_button_link != blank %}
-                    href="{{ section.settings.secondary_button_link }}"
-                  {% else %}
-                    aria-disabled="true"
-                  {% endif %}
+                  href="{{ section.settings.secondary_button_link }}"
                   class="button button--{{ section.settings.secondary_button_style }} focus-inset"
                 >
                   <span>{{ section.settings.secondary_button_label | escape }}</span>
