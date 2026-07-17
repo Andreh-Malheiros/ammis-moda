@@ -17,7 +17,7 @@
         "eyebrow": "PARCERIA COMERCIAL AMMIS",
         "heading": "Leve o universo AMMIS para a sua loja",
         "text": "<p>Faca parte de uma selecao de lojistas conectados a identidade, ao estilo e ao posicionamento da AMMIS. Preencha seu cadastro e apresente sua loja a nossa equipe comercial.</p>",
-        "image": "shopify://shop_images/BLACK_FRIDAY_25_-_banner_site_1.png",
+        "image": "shopify://shop_images/banner-example.png",
         "image_alt": "Campanha AMMIS para apresentacao da parceria comercial",
         "mobile_image_alt": "Campanha AMMIS para apresentacao da parceria comercial",
         "overlay_opacity": 35,
@@ -67,8 +67,8 @@
         "secondary_button_label": "",
         "secondary_button_link": "",
         "secondary_button_style": "simple",
-        "margin_top": "m",
-        "margin_bottom": "m"
+        "margin_top": "xl",
+        "margin_bottom": "l"
       }
     },
     "benefits": {
@@ -153,7 +153,7 @@
         "alignment": "center",
         "columns_desktop": 3,
         "margin_top": "m",
-        "margin_bottom": "m"
+        "margin_bottom": "l"
       }
     },
     "brand_universe": {
@@ -207,7 +207,7 @@
         "secondary_button_link": "",
         "secondary_button_style": "simple",
         "margin_top": "m",
-        "margin_bottom": "m"
+        "margin_bottom": "l"
       }
     },
     "steps": {
@@ -260,7 +260,7 @@
         "heading_size": "h2",
         "alignment": "center",
         "margin_top": "m",
-        "margin_bottom": "m"
+        "margin_bottom": "l"
       }
     },
     "mid_cta": {
@@ -311,7 +311,7 @@
         "secondary_button_label": "",
         "secondary_button_link": "",
         "secondary_button_style": "simple",
-        "margin_top": "m",
+        "margin_top": "l",
         "margin_bottom": "s"
       }
     },
@@ -338,7 +338,7 @@
         "secondary_button_link": "",
         "secondary_button_style": "simple",
         "margin_top": "s",
-        "margin_bottom": "m"
+        "margin_bottom": "l"
       }
     },
     "faq": {
@@ -427,7 +427,7 @@
         "heading_size": "h2",
         "text": "",
         "margin_top": "m",
-        "margin_bottom": "m"
+        "margin_bottom": "l"
       }
     },
     "final_cta": {
@@ -453,7 +453,7 @@
         "secondary_button_link": "",
         "secondary_button_style": "simple",
         "margin_top": "m",
-        "margin_bottom": "m"
+        "margin_bottom": "xl"
       }
     }
   },
