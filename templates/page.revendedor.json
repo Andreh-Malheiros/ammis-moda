@@ -460,7 +460,7 @@
         "color_scheme": "background-1",
         "eyebrow": "FAQ",
         "heading": "Perguntas frequentes",
-        "heading_size": "h2",
+        "heading_size": "h1",
         "text": "",
         "margin_top": "m",
         "margin_bottom": "l"
@@ -468,6 +468,9 @@
     },
     "final_cta": {
       "type": "revendedor-content",
+      "custom_css": [
+        "p{color: white;}"
+      ],
       "settings": {
         "enable_section": true,
         "anchor_id": "",
