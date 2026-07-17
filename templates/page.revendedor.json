@@ -39,8 +39,9 @@
         "opportunity_image": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/FOTOSITE_14.jpg",
             "image_alt": "Detalhe editorial AMMIS para apresentacao comercial",
-            "image_ratio": "portrait"
+            "image_ratio": "square"
           }
         }
       },
@@ -51,23 +52,23 @@
         "enable_section": true,
         "anchor_id": "oportunidade-revenda",
         "color_scheme": "background-1",
-        "style": "standard",
-        "layout": "media-right",
+        "style": "compact",
+        "layout": "media-left",
         "alignment": "left",
         "eyebrow": "OPORTUNIDADE DE REVENDA",
-        "heading": "Uma parceria construida para marcas que valorizam identidade",
+        "heading": "Uma parceria para lojas que valorizam identidade e curadoria",
         "heading_size": "h2",
-        "text": "<p>A AMMIS busca lojas que compartilham atencao aos detalhes, curadoria de produto e uma experiencia de compra alinhada a um posicionamento contemporaneo. O cadastro e o primeiro passo para apresentar sua operacao e iniciar uma possivel relacao comercial com a marca.</p>",
-        "secondary_text": "<p>Cada solicitacao e analisada individualmente pela equipe comercial, considerando as informacoes da loja, o perfil de atuacao e a compatibilidade com o universo AMMIS.</p>",
+        "text": "<p><br/>A AMMIS busca lojistas que compartilham atenção aos detalhes, cuidado na seleção de produtos e compromisso com uma experiência de compra alinhada a um posicionamento contemporâneo.<br/><br/></p>",
+        "secondary_text": "<p>Cada cadastro é analisado individualmente, considerando o perfil da loja, sua atuação comercial e a compatibilidade com o universo da marca.</p>",
         "show_media": true,
         "media_label": "Imagem editorial da oportunidade comercial AMMIS",
-        "button_label": "",
-        "button_link": "",
-        "button_style": "secondary",
+        "button_label": "Apresentar minha loja",
+        "button_link": "shopify://pages/revendedor",
+        "button_style": "primary",
         "secondary_button_label": "",
         "secondary_button_link": "",
         "secondary_button_style": "simple",
-        "margin_top": "xl",
+        "margin_top": "m",
         "margin_bottom": "l"
       }
     },
