@@ -1,0 +1,724 @@
+<script src="{{ 'home-sticky-video.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign section_id = 'HomeStickyVideo-' | append: section.id
+  assign video = section.settings.video
+  assign poster_image = section.settings.poster_image
+  assign poster_url = ''
+
+  if poster_image != blank
+    assign poster_url = poster_image | image_url: width: 900
+  elsif video.preview_image != blank
+    assign poster_url = video.preview_image | image_url: width: 900
+  endif
+
+  assign destination_url = ''
+  case section.settings.destination_type
+    when 'product'
+      if section.settings.destination_product != blank
+        assign destination_url = section.settings.destination_product.url
+      endif
+    when 'collection'
+      if section.settings.destination_collection != blank
+        assign destination_url = section.settings.destination_collection.url
+      endif
+    when 'page'
+      if section.settings.destination_page != blank
+        assign destination_url = section.settings.destination_page.url
+      endif
+    when 'custom'
+      if section.settings.destination_url != blank
+        assign destination_url = section.settings.destination_url
+      endif
+  endcase
+
+  assign shadow_alpha = section.settings.shadow_intensity | divided_by: 100.0
+-%}
+
+{%- if section.settings.enable_widget and video != blank -%}
+  <home-sticky-video
+    id="{{ section_id }}"
+    class="home-sticky-video home-sticky-video--{{ section.settings.position_side }}"
+    data-section-id="{{ section.id }}"
+    data-destination-url="{{ destination_url | escape }}"
+    data-copy-message="{{ section.settings.copy_message | escape }}"
+    data-save-favorite="{{ section.settings.save_favorite }}"
+    style="
+      --hsv-circle-desktop: {{ section.settings.circle_size_desktop }}px;
+      --hsv-circle-mobile: {{ section.settings.circle_size_mobile }}px;
+      --hsv-expanded-desktop: {{ section.settings.expanded_width_desktop }}px;
+      --hsv-expanded-mobile: {{ section.settings.expanded_width_mobile }}px;
+      --hsv-offset-x-desktop: {{ section.settings.offset_x_desktop }}px;
+      --hsv-offset-y-desktop: {{ section.settings.offset_y_desktop }}px;
+      --hsv-offset-x-mobile: {{ section.settings.offset_x_mobile }}px;
+      --hsv-offset-y-mobile: {{ section.settings.offset_y_mobile }}px;
+      --hsv-radius: {{ section.settings.expanded_radius }}px;
+      --hsv-border-width: {{ section.settings.border_width }}px;
+      --hsv-border-color: {{ section.settings.border_color }};
+      --hsv-button-bg: {{ section.settings.button_background }};
+      --hsv-icon-color: {{ section.settings.icon_color }};
+      --hsv-cta-bg: {{ section.settings.cta_background }};
+      --hsv-cta-color: {{ section.settings.cta_text_color }};
+      --hsv-shadow-alpha: {{ shadow_alpha }};
+      --hsv-z-index: {{ section.settings.z_index }};
+    "
+  >
+    <button
+      class="home-sticky-video__trigger"
+      type="button"
+      aria-label="{{ section.settings.accessible_description | default: 'Expandir vídeo AMMIS' | escape }}"
+      aria-expanded="false"
+      aria-controls="{{ section_id }}-panel"
+      data-sticky-video-trigger
+    >
+      {{
+        video
+        | video_tag:
+          class: 'home-sticky-video__video home-sticky-video__video--collapsed',
+          autoplay: true,
+          loop: true,
+          muted: true,
+          controls: false,
+          playsinline: true,
+          preload: 'metadata',
+          poster: poster_url
+      }}
+    </button>
+
+    <div
+      id="{{ section_id }}-panel"
+      class="home-sticky-video__panel"
+      role="region"
+      aria-label="{{ section.settings.accessible_description | default: 'Vídeo AMMIS' | escape }}"
+      hidden
+      data-sticky-video-panel
+    >
+      {{
+        video
+        | video_tag:
+          class: 'home-sticky-video__video home-sticky-video__video--expanded',
+          autoplay: true,
+          loop: true,
+          muted: true,
+          controls: false,
+          playsinline: true,
+          preload: 'metadata',
+          poster: poster_url
+      }}
+
+      <div class="home-sticky-video__actions" aria-label="Controles do vídeo">
+        <button class="home-sticky-video__control" type="button" aria-label="Fechar vídeo" data-sticky-video-close>
+          <span aria-hidden="true">{% render 'icon-close' %}</span>
+        </button>
+
+        {%- if section.settings.show_sound -%}
+          <button class="home-sticky-video__control" type="button" aria-label="Ativar som" aria-pressed="false" data-sticky-video-sound>
+            <span class="home-sticky-video__icon home-sticky-video__icon--sound-off" aria-hidden="true">{% render 'icon-sound-off' %}</span>
+            <span class="home-sticky-video__icon home-sticky-video__icon--sound-on" aria-hidden="true" hidden>{% render 'icon-sound-on' %}</span>
+          </button>
+        {%- endif -%}
+
+        {%- if section.settings.show_share -%}
+          <button class="home-sticky-video__control" type="button" aria-label="Compartilhar" data-sticky-video-share>
+            <span aria-hidden="true">{% render 'icon-share' %}</span>
+          </button>
+        {%- endif -%}
+
+        {%- if section.settings.show_favorite -%}
+          <button class="home-sticky-video__control" type="button" aria-label="Favoritar vídeo" aria-pressed="false" data-sticky-video-favorite>
+            <svg class="home-sticky-video__heart" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+              <path d="M12 20.6 4.7 13.4C2.8 11.5 2.8 8.5 4.6 6.7c1.8-1.8 4.7-1.8 6.5 0l.9.9.9-.9c1.8-1.8 4.7-1.8 6.5 0 1.8 1.8 1.8 4.8-.1 6.7L12 20.6Z" />
+            </svg>
+          </button>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.show_cta and section.settings.cta_text != blank and destination_url != blank -%}
+        <a
+          class="home-sticky-video__cta home-sticky-video__cta--{{ section.settings.cta_position }}"
+          href="{{ destination_url }}"
+          {% if section.settings.cta_new_tab %}
+            target="_blank" rel="noopener noreferrer"
+          {% endif %}
+          data-sticky-video-cta
+        >
+          {{ section.settings.cta_text | escape }}
+        </a>
+      {%- endif -%}
+
+      <p class="home-sticky-video__feedback" aria-live="polite" hidden data-sticky-video-feedback>
+        {{ section.settings.copy_message | default: 'Link copiado' | escape }}
+      </p>
+    </div>
+  </home-sticky-video>
+{%- elsif request.design_mode and section.settings.enable_widget and video == blank -%}
+  <div class="home-sticky-video-placeholder">
+    Selecione um vídeo nas configurações desta seção.
+  </div>
+{%- endif -%}
+
+<style>
+  #shopify-section-{{ section.id }} .home-sticky-video {
+    position: fixed;
+    bottom: calc(var(--hsv-offset-y-desktop) + env(safe-area-inset-bottom, 0px));
+    z-index: var(--hsv-z-index);
+    display: block;
+    color: var(--hsv-icon-color);
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video--left {
+    left: var(--hsv-offset-x-desktop);
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video--right {
+    right: var(--hsv-offset-x-desktop);
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__trigger {
+    width: var(--hsv-circle-desktop);
+    height: var(--hsv-circle-desktop);
+    display: block;
+    padding: 0;
+    border: var(--hsv-border-width) solid var(--hsv-border-color);
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    background: rgb(var(--color-background));
+    box-shadow: 0 12px 32px rgba(0, 0, 0, var(--hsv-shadow-alpha));
+    transition: transform var(--duration-default), opacity var(--duration-default);
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video[data-expanded="true"] .home-sticky-video__trigger {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.92);
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__panel {
+    position: relative;
+    width: min(var(--hsv-expanded-desktop), calc(100vw - (2 * var(--hsv-offset-x-desktop))));
+    max-height: min(calc(100dvh - (2 * var(--hsv-offset-y-desktop)) - env(safe-area-inset-bottom, 0px)), 720px);
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    border: var(--hsv-border-width) solid var(--hsv-border-color);
+    border-radius: var(--hsv-radius);
+    background: #000;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, var(--hsv-shadow-alpha));
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+    transition: transform var(--duration-default), opacity var(--duration-default);
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video[data-expanded="true"] .home-sticky-video__panel {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #000;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__video::-webkit-media-controls {
+    display: none !important;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 2;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__control {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    color: var(--hsv-icon-color);
+    background: var(--hsv-button-bg);
+    cursor: pointer;
+    transition: transform var(--duration-short), background var(--duration-short);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__control svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__control svg path,
+  #shopify-section-{{ section.id }} .home-sticky-video__control svg circle,
+  #shopify-section-{{ section.id }} .home-sticky-video__control svg rect {
+    stroke: currentColor;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__heart path {
+    fill: transparent;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    transition: fill var(--duration-short);
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__control[aria-pressed="true"] .home-sticky-video__heart path {
+    fill: currentColor;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__trigger:focus-visible,
+  #shopify-section-{{ section.id }} .home-sticky-video__control:focus-visible,
+  #shopify-section-{{ section.id }} .home-sticky-video__cta:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__control:hover {
+    transform: scale(1.04);
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__cta {
+    position: absolute;
+    bottom: 14px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    max-width: calc(100% - 28px);
+    padding: 0 18px;
+    border-radius: 4px;
+    color: var(--hsv-cta-color);
+    background: var(--hsv-cta-bg);
+    font-size: 1.3rem;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    word-break: break-word;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__cta--bottom-left {
+    left: 14px;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__cta--bottom-center {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__cta--bottom-right {
+    right: 14px;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__feedback {
+    position: absolute;
+    left: 50%;
+    bottom: 68px;
+    z-index: 3;
+    margin: 0;
+    padding: 8px 12px;
+    border-radius: 4px;
+    color: var(--hsv-cta-color);
+    background: var(--hsv-cta-bg);
+    font-size: 1.2rem;
+    line-height: 1.2;
+    transform: translateX(-50%);
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video-placeholder {
+    margin: 24px;
+    padding: 16px;
+    border: 1px dashed rgba(var(--color-foreground), 0.25);
+    color: rgb(var(--color-foreground-secondary));
+    background: rgba(var(--color-foreground), 0.03);
+    font-size: 1.3rem;
+    text-align: center;
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .home-sticky-video {
+      bottom: calc(var(--hsv-offset-y-mobile) + env(safe-area-inset-bottom, 0px));
+    }
+
+    #shopify-section-{{ section.id }} .home-sticky-video--left {
+      left: var(--hsv-offset-x-mobile);
+    }
+
+    #shopify-section-{{ section.id }} .home-sticky-video--right {
+      right: var(--hsv-offset-x-mobile);
+    }
+
+    #shopify-section-{{ section.id }} .home-sticky-video__trigger {
+      width: var(--hsv-circle-mobile);
+      height: var(--hsv-circle-mobile);
+    }
+
+    #shopify-section-{{ section.id }} .home-sticky-video__panel {
+      width: min(var(--hsv-expanded-mobile), 340px, calc(100vw - (2 * var(--hsv-offset-x-mobile))));
+      max-height: calc(100dvh - (2 * var(--hsv-offset-y-mobile)) - env(safe-area-inset-bottom, 0px));
+    }
+
+    #shopify-section-{{ section.id }} .home-sticky-video__control {
+      width: 38px;
+      height: 38px;
+    }
+  }
+
+  @supports not (height: 100dvh) {
+    #shopify-section-{{ section.id }} .home-sticky-video__panel {
+      max-height: calc(100vh - (2 * var(--hsv-offset-y-desktop)));
+    }
+
+    @media screen and (max-width: 749px) {
+      #shopify-section-{{ section.id }} .home-sticky-video__panel {
+        max-height: calc(100vh - (2 * var(--hsv-offset-y-mobile)));
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #shopify-section-{{ section.id }} .home-sticky-video__trigger,
+    #shopify-section-{{ section.id }} .home-sticky-video__panel,
+    #shopify-section-{{ section.id }} .home-sticky-video__control {
+      transition: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Vídeo flutuante AMMIS",
+  "enabled_on": {
+    "templates": ["index"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Conteúdo"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_widget",
+      "label": "Ativar widget",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "Formato recomendado do vídeo: vertical 9:16."
+    },
+    {
+      "type": "paragraph",
+      "content": "Dimensão recomendada: 1080 × 1920 px."
+    },
+    {
+      "type": "paragraph",
+      "content": "O vídeo será recortado com preenchimento total. Mantenha textos e elementos importantes afastados das bordas."
+    },
+    {
+      "type": "paragraph",
+      "content": "Para melhor desempenho, use um arquivo otimizado e de curta duração."
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Vídeo"
+    },
+    {
+      "type": "image_picker",
+      "id": "poster_image",
+      "label": "Imagem de capa"
+    },
+    {
+      "type": "text",
+      "id": "accessible_description",
+      "label": "Descrição acessível do vídeo",
+      "default": "Vídeo da AMMIS"
+    },
+    {
+      "type": "select",
+      "id": "destination_type",
+      "label": "Tipo de destino",
+      "default": "none",
+      "options": [
+        { "value": "none", "label": "Nenhum" },
+        { "value": "product", "label": "Produto" },
+        { "value": "collection", "label": "Coleção" },
+        { "value": "page", "label": "Página" },
+        { "value": "custom", "label": "Link personalizado" }
+      ]
+    },
+    {
+      "type": "product",
+      "id": "destination_product",
+      "label": "Produto"
+    },
+    {
+      "type": "collection",
+      "id": "destination_collection",
+      "label": "Coleção"
+    },
+    {
+      "type": "page",
+      "id": "destination_page",
+      "label": "Página"
+    },
+    {
+      "type": "url",
+      "id": "destination_url",
+      "label": "Link personalizado"
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Exibir CTA",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Texto do CTA",
+      "default": "Ver agora"
+    },
+    {
+      "type": "checkbox",
+      "id": "cta_new_tab",
+      "label": "Abrir CTA em nova aba",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "cta_position",
+      "label": "Posição do CTA",
+      "default": "bottom-center",
+      "options": [
+        { "value": "bottom-left", "label": "Inferior esquerda" },
+        { "value": "bottom-center", "label": "Inferior centro" },
+        { "value": "bottom-right", "label": "Inferior direita" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Controles"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_favorite",
+      "label": "Exibir botão de favorito",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share",
+      "label": "Exibir botão de compartilhar",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sound",
+      "label": "Exibir botão de som",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "copy_message",
+      "label": "Mensagem após copiar link",
+      "default": "Link copiado"
+    },
+    {
+      "type": "checkbox",
+      "id": "save_favorite",
+      "label": "Salvar favorito no navegador",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Posição"
+    },
+    {
+      "type": "select",
+      "id": "position_side",
+      "label": "Lado do widget",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Inferior esquerdo" },
+        { "value": "right", "label": "Inferior direito" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "offset_x_desktop",
+      "label": "Distância lateral desktop",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "offset_y_desktop",
+      "label": "Distância inferior desktop",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "offset_x_mobile",
+      "label": "Distância lateral mobile",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "offset_y_mobile",
+      "label": "Distância inferior mobile",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "z_index",
+      "label": "Z-index",
+      "min": 100,
+      "max": 999,
+      "step": 1,
+      "default": 990
+    },
+    {
+      "type": "header",
+      "content": "Dimensões"
+    },
+    {
+      "type": "range",
+      "id": "circle_size_desktop",
+      "label": "Tamanho do círculo desktop",
+      "min": 64,
+      "max": 140,
+      "step": 2,
+      "unit": "px",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "circle_size_mobile",
+      "label": "Tamanho do círculo mobile",
+      "min": 56,
+      "max": 110,
+      "step": 2,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "expanded_width_desktop",
+      "label": "Largura expandida desktop",
+      "min": 280,
+      "max": 460,
+      "step": 4,
+      "unit": "px",
+      "default": 340
+    },
+    {
+      "type": "range",
+      "id": "expanded_width_mobile",
+      "label": "Largura expandida mobile",
+      "min": 260,
+      "max": 380,
+      "step": 4,
+      "unit": "px",
+      "default": 340
+    },
+    {
+      "type": "range",
+      "id": "expanded_radius",
+      "label": "Raio do player expandido",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Espessura da borda",
+      "min": 0,
+      "max": 6,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Aparência"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Cor da borda",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Fundo dos botões",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Cor dos ícones",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "cta_background",
+      "label": "Fundo do CTA",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "Texto do CTA",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "shadow_intensity",
+      "label": "Intensidade da sombra",
+      "min": 0,
+      "max": 45,
+      "step": 1,
+      "unit": "%",
+      "default": 22
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vídeo flutuante AMMIS"
+    }
+  ]
+}
+{% endschema %}
