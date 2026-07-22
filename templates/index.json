@@ -1,1 +1,478 @@
-{"sections":{"slideshow_97kWbf":{"type":"slideshow","blocks":{"slideshow_item_Hw484i":{"type":"slideshow-item","settings":{"image":"shopify:\/\/shop_images\/BANNER_SITE_DESKTOP_1.png","mobile_image":"shopify:\/\/shop_images\/BANNER_SITE_MOBIILE.jpg","overlay_opacity":0,"show_video":false,"video_url":"https:\/\/www.youtube.com\/watch?v=_9VUPq3SxOc","description_video":"","heading":"","description":"","tab_subheading":"","tab_heading":"","button_label":"","button_link":"shopify:\/\/collections\/arcadia-60-off","button_style":"tertiary","enable_fullscreen_link":true}},"slideshow_item_F6EnkM":{"type":"slideshow-item","settings":{"image":"shopify:\/\/shop_images\/BANNER_SITE_DESKTOP_4_dc392bab-d8b6-4bf6-98d2-4371c4f328ca.jpg","mobile_image":"shopify:\/\/shop_images\/BANNER_SITE_MOBIILE_1.jpg","overlay_opacity":0,"show_video":false,"video_url":"https:\/\/www.youtube.com\/watch?v=_9VUPq3SxOc","description_video":"","heading":"","description":"","tab_subheading":"","tab_heading":"","button_label":"","button_link":"shopify:\/\/collections\/euro-summer","button_style":"tertiary","enable_fullscreen_link":true}}},"block_order":["slideshow_item_Hw484i","slideshow_item_F6EnkM"],"name":"t:sections.slideshow.name","settings":{"header_overlay":true,"text_color_scheme":"background-2","layout":"layout_5","aspect_ratio":"full","heading_size":"h1","tabs_size":"h1","is_autoplay":true,"is_hover_stop_autoplay":false,"slideshow_speed":2.2,"slideshow_delay":6,"slide_effects":"slide","margin_top":"no-indent","margin_bottom":"no-indent"}},"product_slider_myRt9j":{"type":"product-slider","blocks":{"product_slide_3Wwhf8":{"type":"product_slide","settings":{"product":"casaco-biela","image":"{{ block.settings.product.featured_image }}","color_scheme":"","overlay_opacity":0,"description":""}},"product_slide_kraGFd":{"type":"product_slide","settings":{"product":"casaco-suica","image":"{{ block.settings.product.featured_image }}","color_scheme":"background-2","overlay_opacity":0,"description":""}},"product_slide_rrxjNH":{"type":"product_slide","settings":{"product":"vestido-madri","image":"{{ block.settings.product.featured_image }}","color_scheme":"background-2","overlay_opacity":0.1,"description":""}},"product_slide_jDfYeN":{"type":"product_slide","settings":{"product":"blusa-turquia","image":"{{ block.settings.product.featured_image }}","color_scheme":"","overlay_opacity":0,"description":""}}},"block_order":["product_slide_3Wwhf8","product_slide_kraGFd","product_slide_rrxjNH","product_slide_jDfYeN"],"settings":{"image_size":"adapt","section_height":"fullscreen","mobile_section_height":"560px","subheading":"","heading":"","heading_size":"h3","description":"","button_label":"","button_link":"","button_style":"simple","is_autoplay":true,"is_hover_stop_autoplay":true,"navigation_position":"cursor","slideshow_speed":1.1,"slideshow_delay":3,"slide_effects":"fade","is_sync_slide":true,"enable_animation":true,"product_card_position":"right","image_ratio":"portrait","image_fit":"cover","show_vendor":false,"show_color_count":false,"show_size_count":false,"show_collection":false,"show_desc":false,"margin_top":"no-indent","margin_bottom":"no-indent"}},"ammis_category_grid_8b4PmG":{"type":"ammis-category-grid","blocks":{"category_DAADkA":{"type":"category","settings":{"image":"shopify:\/\/shop_images\/FOTO_SITE_9.jpg","title":"Casaco & Jaqueta","text":"Peças que transformam seu inverno em estilo.","link":"shopify:\/\/collections\/casaco","cta_label":"VER PEÇAS"}},"category_DK37Aa":{"type":"category","settings":{"image":"shopify:\/\/shop_images\/blazer_alfaiataria.jpg","title":"alfaiataria","text":"O luxo da alfaiataria feita por verdadeiros alfaiates.","link":"shopify:\/\/collections\/alfaiataria","cta_label":"VER PEÇAS"}},"category_VbUHmz":{"type":"category","settings":{"image":"shopify:\/\/shop_images\/FOTO_SITE_-_2026-06-03T170522.538.jpg","title":"Novidades","text":"Os lançamentos mais recentes da curadoria AMMIS.","link":"shopify:\/\/collections\/arcadia26","cta_label":"VER PEÇAS"}}},"block_order":["category_DAADkA","category_DK37Aa","category_VbUHmz"],"name":"AMMIS - Categorias","settings":{"heading":"EXPLORE POR CATEGORIAS","subheading":"<p>Peças selecionadas por silhueta, ocasião e presença.<\/p>","heading_alignment":"center","color_scheme":"background-1","full_width":true,"max_width":1500,"columns_desktop":"4","columns_mobile":"2","content_position":"bottom","card_text_alignment":"center","overlay_opacity":35,"card_ratio_desktop":125,"card_ratio_mobile":150,"title_size":28,"subtitle_size":14,"card_title_size":20,"card_text_size":13,"gap_desktop":18,"gap_mobile":0,"padding_top":64,"padding_bottom":64}},"product-slider":{"type":"product-slider","blocks":{"product_slide_98whPb":{"type":"product_slide","settings":{"product":"","color_scheme":"background-2","overlay_opacity":0.1,"description":"Highlight products, promos, or seasonal picks to engage visitors."}},"product_slide_exQpXN":{"type":"product_slide","settings":{"product":"","color_scheme":"background-2","overlay_opacity":0.1,"description":"Highlight products, promos, or seasonal picks to engage visitors."}},"product_slide_wfPMYp":{"type":"product_slide","settings":{"product":"vestido-malaga","image":"shopify:\/\/shop_images\/FOTOSITE-2026-03-18T172949.381.jpg","color_scheme":"background-2","overlay_opacity":0.1,"description":""}},"product_slide1":{"type":"product_slide","settings":{"product":"jaqueta-amalfi","image":"shopify:\/\/shop_images\/FOTO_SITE_6_144e62bc-689e-49f0-8dae-f8e063ab4d2e.jpg","color_scheme":"background-2","overlay_opacity":0.2,"description":""}},"product_slide_AJbhh9":{"type":"product_slide","settings":{"product":"blazer-metz","image":"shopify:\/\/shop_images\/FOTOSITE-2026-04-16T152545.861.jpg","color_scheme":"background-2","overlay_opacity":0.1,"description":""}},"product_slide":{"type":"product_slide","disabled":true,"settings":{"product":"calca-portimao","image":"shopify:\/\/shop_images\/alfaiataria.jpg","color_scheme":"background-2","overlay_opacity":0.3,"description":"Modelagem ampla e reta de comprimento midi, com decote em V e detalhes em richilieu."}}},"block_order":["product_slide_98whPb","product_slide_exQpXN","product_slide_wfPMYp","product_slide1","product_slide_AJbhh9","product_slide"],"disabled":true,"settings":{"image_size":"adapt","section_height":"fullscreen","mobile_section_height":"560px","subheading":"","heading":"","heading_size":"h3","description":"","button_label":"","button_link":"","button_style":"simple","is_autoplay":true,"is_hover_stop_autoplay":true,"navigation_position":"cursor","slideshow_speed":1.1,"slideshow_delay":1.3,"slide_effects":"fade","is_sync_slide":true,"enable_animation":true,"product_card_position":"left","image_ratio":"portrait","image_fit":"cover","show_vendor":false,"show_color_count":true,"show_size_count":false,"show_collection":false,"show_desc":false,"margin_top":"no-indent","margin_bottom":"m"}},"slideshow_Jf4tqd":{"type":"slideshow","blocks":{"slideshow_item_EyXBTP":{"type":"slideshow-item","settings":{"image":"shopify:\/\/shop_images\/BANNER_SITE_DESKTOP_5__jpg.jpg","mobile_image":"shopify:\/\/shop_images\/IMG_0935.jpg","overlay_opacity":0.4,"show_video":false,"video_url":"","description_video":"","heading":"","description":"","tab_subheading":"","tab_heading":"","button_label":"","button_link":"https:\/\/chat.whatsapp.com\/HKwff9dqnO705f25zgql28?mode=hqrt3","button_style":"primary","enable_fullscreen_link":true}}},"block_order":["slideshow_item_EyXBTP"],"name":"t:sections.slideshow.name","settings":{"header_overlay":true,"text_color_scheme":"background-2","layout":"layout_1","aspect_ratio":"large","heading_size":"h1","tabs_size":"h3","is_autoplay":true,"is_hover_stop_autoplay":false,"slideshow_speed":1.1,"slideshow_delay":3,"slide_effects":"fade","margin_top":"no-indent","margin_bottom":"no-indent"}},"popular_products_Wgftz6":{"type":"popular-products","name":"t:sections.popular-products.presets.name","settings":{"subheading":"","heading":"PEÇAS EM DESTAQUE","description":"","heading_size":"h1","product_list":["calca-dijon","casaco-maia","vestido-portugal","vestido-roma"],"products_to_show":4,"image_ratio":"portrait","image_fit":"contain","show_vendor":true,"show_color_count":false,"show_size_count":false,"show_collection":false,"show_desc":false,"columns_mobile":"2","button_label":"VER TODAS","button_link":"shopify:\/\/collections\/all","button_style":"simple","margin_top":"m","margin_bottom":"s"}},"ammis_instagram_showcase_bFzVET":{"type":"ammis-instagram-showcase","blocks":{"post_6hXKLe":{"type":"post","settings":{"image":"shopify:\/\/shop_images\/6f2c984c-e13d-4fcf-b8f1-1bf5dba409a2.jpg","image_alt":"Mulher usando look AMMIS em tom vinho em ambiente externo.","title":"PRESENÇA AMMIS","text":"Looks autorais para momentos de sofisticação natural.","cta_text":"VER POST","link":"https:\/\/www.instagram.com\/p\/DYW-q2wEctj\/?img_index=1"}},"post_FFWP66":{"type":"post","settings":{"image":"shopify:\/\/shop_images\/0a0f6c97-bce6-424d-922d-8eaca9087e27.jpg","image_alt":"Bastidor da AMMIS com mulheres em loja usando peças da marca.","title":"BASTIDORES","text":"Por dentro da curadoria, dos encontros e do universo AMMIS.","cta_text":"ACOMPANHAR","link":"https:\/\/www.instagram.com\/p\/DWWnb_gEf6k\/?img_index=1"}},"post_eJx78H":{"type":"post","settings":{"image":"shopify:\/\/shop_images\/44505b43-c184-406f-a0e9-b55d8bbb2a5b.jpg","image_alt":"Detalhe de look AMMIS em jeans com sobreposição e acessórios.","title":"DETALHES QUE ELEVAM","text":"A alfaiataria, a gravata, os tons neutros com aquela estética clássica e elegante que a gente ama.","cta_text":"VER DETALHES","link":"https:\/\/www.instagram.com\/p\/DRpfLMPkUGr\/?img_index=4"}}},"block_order":["post_6hXKLe","post_FFWP66","post_eJx78H"],"name":"AMMIS - Instagram","settings":{"color_scheme":"","heading":"@_AMMIS_","profile_text":"","show_instagram_icon":false,"description":"<p>Acompanhe lançamentos, editoriais e bastidores da AMMIS.<\/p>","header_alignment":"center","button_text":"Ver perfil","button_link":"https:\/\/www.instagram.com\/_ammis_","container_width":900,"columns_desktop":"3","columns_mobile":"2","grid_gap":10,"card_radius":8,"image_ratio_desktop":130,"image_ratio_mobile":125,"overlay_position":"center","text_alignment":"center","overlay_opacity":50,"show_overlay_mobile":true,"heading_size":24,"heading_letter_spacing":0.1,"heading_transform":"uppercase","card_title_size":19,"text_size":14,"padding_top":16,"padding_bottom":20}}},"order":["slideshow_97kWbf","product_slider_myRt9j","ammis_category_grid_8b4PmG","product-slider","slideshow_Jf4tqd","popular_products_Wgftz6","ammis_instagram_showcase_bFzVET"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "slideshow_97kWbf": {
+      "type": "slideshow",
+      "blocks": {
+        "slideshow_item_Hw484i": {
+          "type": "slideshow-item",
+          "settings": {
+            "image": "shopify://shop_images/BANNER_SITE_DESKTOP_1.png",
+            "mobile_image": "shopify://shop_images/BANNER_SITE_MOBIILE.jpg",
+            "overlay_opacity": 0,
+            "show_video": false,
+            "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+            "description_video": "",
+            "heading": "",
+            "description": "",
+            "tab_subheading": "",
+            "tab_heading": "",
+            "button_label": "",
+            "button_link": "shopify://collections/arcadia-60-off",
+            "button_style": "tertiary",
+            "enable_fullscreen_link": true
+          }
+        },
+        "slideshow_item_F6EnkM": {
+          "type": "slideshow-item",
+          "settings": {
+            "image": "shopify://shop_images/BANNER_SITE_DESKTOP_4_dc392bab-d8b6-4bf6-98d2-4371c4f328ca.jpg",
+            "mobile_image": "shopify://shop_images/BANNER_SITE_MOBIILE_1.jpg",
+            "overlay_opacity": 0,
+            "show_video": false,
+            "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+            "description_video": "",
+            "heading": "",
+            "description": "",
+            "tab_subheading": "",
+            "tab_heading": "",
+            "button_label": "",
+            "button_link": "shopify://collections/euro-summer",
+            "button_style": "tertiary",
+            "enable_fullscreen_link": true
+          }
+        }
+      },
+      "block_order": [
+        "slideshow_item_Hw484i",
+        "slideshow_item_F6EnkM"
+      ],
+      "name": "t:sections.slideshow.name",
+      "settings": {
+        "header_overlay": true,
+        "text_color_scheme": "background-2",
+        "layout": "layout_5",
+        "aspect_ratio": "full",
+        "heading_size": "h1",
+        "tabs_size": "h1",
+        "is_autoplay": true,
+        "is_hover_stop_autoplay": false,
+        "slideshow_speed": 2.2,
+        "slideshow_delay": 6,
+        "slide_effects": "slide",
+        "margin_top": "no-indent",
+        "margin_bottom": "no-indent"
+      }
+    },
+    "product_slider_myRt9j": {
+      "type": "product-slider",
+      "blocks": {
+        "product_slide_3Wwhf8": {
+          "type": "product_slide",
+          "settings": {
+            "product": "casaco-biela",
+            "image": "{{ block.settings.product.featured_image }}",
+            "color_scheme": "",
+            "overlay_opacity": 0,
+            "description": ""
+          }
+        },
+        "product_slide_kraGFd": {
+          "type": "product_slide",
+          "settings": {
+            "product": "casaco-suica",
+            "image": "{{ block.settings.product.featured_image }}",
+            "color_scheme": "background-2",
+            "overlay_opacity": 0,
+            "description": ""
+          }
+        },
+        "product_slide_rrxjNH": {
+          "type": "product_slide",
+          "settings": {
+            "product": "vestido-madri",
+            "image": "{{ block.settings.product.featured_image }}",
+            "color_scheme": "background-2",
+            "overlay_opacity": 0.1,
+            "description": ""
+          }
+        },
+        "product_slide_jDfYeN": {
+          "type": "product_slide",
+          "settings": {
+            "product": "blusa-turquia",
+            "image": "{{ block.settings.product.featured_image }}",
+            "color_scheme": "",
+            "overlay_opacity": 0,
+            "description": ""
+          }
+        }
+      },
+      "block_order": [
+        "product_slide_3Wwhf8",
+        "product_slide_kraGFd",
+        "product_slide_rrxjNH",
+        "product_slide_jDfYeN"
+      ],
+      "settings": {
+        "image_size": "adapt",
+        "section_height": "fullscreen",
+        "mobile_section_height": "560px",
+        "subheading": "",
+        "heading": "",
+        "heading_size": "h3",
+        "description": "",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "simple",
+        "is_autoplay": true,
+        "is_hover_stop_autoplay": true,
+        "navigation_position": "cursor",
+        "slideshow_speed": 1.1,
+        "slideshow_delay": 3,
+        "slide_effects": "fade",
+        "is_sync_slide": true,
+        "enable_animation": true,
+        "product_card_position": "right",
+        "image_ratio": "portrait",
+        "image_fit": "cover",
+        "show_vendor": false,
+        "show_color_count": false,
+        "show_size_count": false,
+        "show_collection": false,
+        "show_desc": false,
+        "margin_top": "no-indent",
+        "margin_bottom": "no-indent"
+      }
+    },
+    "ammis_category_grid_8b4PmG": {
+      "type": "ammis-category-grid",
+      "blocks": {
+        "category_DAADkA": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/FOTO_SITE_9.jpg",
+            "title": "Casaco & Jaqueta",
+            "text": "Peças que transformam seu inverno em estilo.",
+            "link": "shopify://collections/casaco",
+            "cta_label": "VER PEÇAS"
+          }
+        },
+        "category_DK37Aa": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/blazer_alfaiataria.jpg",
+            "title": "alfaiataria",
+            "text": "O luxo da alfaiataria feita por verdadeiros alfaiates.",
+            "link": "shopify://collections/alfaiataria",
+            "cta_label": "VER PEÇAS"
+          }
+        },
+        "category_VbUHmz": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/FOTO_SITE_-_2026-06-03T170522.538.jpg",
+            "title": "Novidades",
+            "text": "Os lançamentos mais recentes da curadoria AMMIS.",
+            "link": "shopify://collections/arcadia26",
+            "cta_label": "VER PEÇAS"
+          }
+        }
+      },
+      "block_order": [
+        "category_DAADkA",
+        "category_DK37Aa",
+        "category_VbUHmz"
+      ],
+      "name": "AMMIS - Categorias",
+      "settings": {
+        "heading": "EXPLORE POR CATEGORIAS",
+        "subheading": "<p>Peças selecionadas por silhueta, ocasião e presença.</p>",
+        "heading_alignment": "center",
+        "color_scheme": "background-1",
+        "full_width": true,
+        "max_width": 1500,
+        "columns_desktop": "4",
+        "columns_mobile": "2",
+        "content_position": "bottom",
+        "card_text_alignment": "center",
+        "overlay_opacity": 35,
+        "card_ratio_desktop": 125,
+        "card_ratio_mobile": 150,
+        "title_size": 28,
+        "subtitle_size": 14,
+        "card_title_size": 20,
+        "card_text_size": 13,
+        "gap_desktop": 18,
+        "gap_mobile": 0,
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
+    "product-slider": {
+      "type": "product-slider",
+      "blocks": {
+        "product_slide_98whPb": {
+          "type": "product_slide",
+          "settings": {
+            "product": "",
+            "color_scheme": "background-2",
+            "overlay_opacity": 0.1,
+            "description": "Highlight products, promos, or seasonal picks to engage visitors."
+          }
+        },
+        "product_slide_exQpXN": {
+          "type": "product_slide",
+          "settings": {
+            "product": "",
+            "color_scheme": "background-2",
+            "overlay_opacity": 0.1,
+            "description": "Highlight products, promos, or seasonal picks to engage visitors."
+          }
+        },
+        "product_slide_wfPMYp": {
+          "type": "product_slide",
+          "settings": {
+            "product": "vestido-malaga",
+            "image": "shopify://shop_images/FOTOSITE-2026-03-18T172949.381.jpg",
+            "color_scheme": "background-2",
+            "overlay_opacity": 0.1,
+            "description": ""
+          }
+        },
+        "product_slide1": {
+          "type": "product_slide",
+          "settings": {
+            "product": "jaqueta-amalfi",
+            "image": "shopify://shop_images/FOTO_SITE_6_144e62bc-689e-49f0-8dae-f8e063ab4d2e.jpg",
+            "color_scheme": "background-2",
+            "overlay_opacity": 0.2,
+            "description": ""
+          }
+        },
+        "product_slide_AJbhh9": {
+          "type": "product_slide",
+          "settings": {
+            "product": "blazer-metz",
+            "image": "shopify://shop_images/FOTOSITE-2026-04-16T152545.861.jpg",
+            "color_scheme": "background-2",
+            "overlay_opacity": 0.1,
+            "description": ""
+          }
+        },
+        "product_slide": {
+          "type": "product_slide",
+          "disabled": true,
+          "settings": {
+            "product": "calca-portimao",
+            "image": "shopify://shop_images/alfaiataria.jpg",
+            "color_scheme": "background-2",
+            "overlay_opacity": 0.3,
+            "description": "Modelagem ampla e reta de comprimento midi, com decote em V e detalhes em richilieu."
+          }
+        }
+      },
+      "block_order": [
+        "product_slide_98whPb",
+        "product_slide_exQpXN",
+        "product_slide_wfPMYp",
+        "product_slide1",
+        "product_slide_AJbhh9",
+        "product_slide"
+      ],
+      "disabled": true,
+      "settings": {
+        "image_size": "adapt",
+        "section_height": "fullscreen",
+        "mobile_section_height": "560px",
+        "subheading": "",
+        "heading": "",
+        "heading_size": "h3",
+        "description": "",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "simple",
+        "is_autoplay": true,
+        "is_hover_stop_autoplay": true,
+        "navigation_position": "cursor",
+        "slideshow_speed": 1.1,
+        "slideshow_delay": 1.3,
+        "slide_effects": "fade",
+        "is_sync_slide": true,
+        "enable_animation": true,
+        "product_card_position": "left",
+        "image_ratio": "portrait",
+        "image_fit": "cover",
+        "show_vendor": false,
+        "show_color_count": true,
+        "show_size_count": false,
+        "show_collection": false,
+        "show_desc": false,
+        "margin_top": "no-indent",
+        "margin_bottom": "m"
+      }
+    },
+    "slideshow_Jf4tqd": {
+      "type": "slideshow",
+      "blocks": {
+        "slideshow_item_EyXBTP": {
+          "type": "slideshow-item",
+          "settings": {
+            "image": "shopify://shop_images/BANNER_SITE_DESKTOP_5__jpg.jpg",
+            "mobile_image": "shopify://shop_images/IMG_0935.jpg",
+            "overlay_opacity": 0.4,
+            "show_video": false,
+            "video_url": "",
+            "description_video": "",
+            "heading": "",
+            "description": "",
+            "tab_subheading": "",
+            "tab_heading": "",
+            "button_label": "",
+            "button_link": "https://chat.whatsapp.com/HKwff9dqnO705f25zgql28?mode=hqrt3",
+            "button_style": "primary",
+            "enable_fullscreen_link": true
+          }
+        }
+      },
+      "block_order": [
+        "slideshow_item_EyXBTP"
+      ],
+      "name": "t:sections.slideshow.name",
+      "settings": {
+        "header_overlay": true,
+        "text_color_scheme": "background-2",
+        "layout": "layout_1",
+        "aspect_ratio": "large",
+        "heading_size": "h1",
+        "tabs_size": "h3",
+        "is_autoplay": true,
+        "is_hover_stop_autoplay": false,
+        "slideshow_speed": 1.1,
+        "slideshow_delay": 3,
+        "slide_effects": "fade",
+        "margin_top": "no-indent",
+        "margin_bottom": "no-indent"
+      }
+    },
+    "popular_products_Wgftz6": {
+      "type": "popular-products",
+      "name": "t:sections.popular-products.presets.name",
+      "settings": {
+        "subheading": "",
+        "heading": "PEÇAS EM DESTAQUE",
+        "description": "",
+        "heading_size": "h1",
+        "product_list": [
+          "calca-dijon",
+          "casaco-maia",
+          "vestido-portugal",
+          "vestido-roma"
+        ],
+        "products_to_show": 4,
+        "image_ratio": "portrait",
+        "image_fit": "contain",
+        "show_vendor": true,
+        "show_color_count": false,
+        "show_size_count": false,
+        "show_collection": false,
+        "show_desc": false,
+        "columns_mobile": "2",
+        "button_label": "VER TODAS",
+        "button_link": "shopify://collections/all",
+        "button_style": "simple",
+        "margin_top": "m",
+        "margin_bottom": "s"
+      }
+    },
+    "ammis_instagram_showcase_bFzVET": {
+      "type": "ammis-instagram-showcase",
+      "blocks": {
+        "post_6hXKLe": {
+          "type": "post",
+          "settings": {
+            "image": "shopify://shop_images/6f2c984c-e13d-4fcf-b8f1-1bf5dba409a2.jpg",
+            "image_alt": "Mulher usando look AMMIS em tom vinho em ambiente externo.",
+            "title": "PRESENÇA AMMIS",
+            "text": "Looks autorais para momentos de sofisticação natural.",
+            "cta_text": "VER POST",
+            "link": "https://www.instagram.com/p/DYW-q2wEctj/?img_index=1"
+          }
+        },
+        "post_FFWP66": {
+          "type": "post",
+          "settings": {
+            "image": "shopify://shop_images/0a0f6c97-bce6-424d-922d-8eaca9087e27.jpg",
+            "image_alt": "Bastidor da AMMIS com mulheres em loja usando peças da marca.",
+            "title": "BASTIDORES",
+            "text": "Por dentro da curadoria, dos encontros e do universo AMMIS.",
+            "cta_text": "ACOMPANHAR",
+            "link": "https://www.instagram.com/p/DWWnb_gEf6k/?img_index=1"
+          }
+        },
+        "post_eJx78H": {
+          "type": "post",
+          "settings": {
+            "image": "shopify://shop_images/44505b43-c184-406f-a0e9-b55d8bbb2a5b.jpg",
+            "image_alt": "Detalhe de look AMMIS em jeans com sobreposição e acessórios.",
+            "title": "DETALHES QUE ELEVAM",
+            "text": "A alfaiataria, a gravata, os tons neutros com aquela estética clássica e elegante que a gente ama.",
+            "cta_text": "VER DETALHES",
+            "link": "https://www.instagram.com/p/DRpfLMPkUGr/?img_index=4"
+          }
+        }
+      },
+      "block_order": [
+        "post_6hXKLe",
+        "post_FFWP66",
+        "post_eJx78H"
+      ],
+      "name": "AMMIS - Instagram",
+      "settings": {
+        "color_scheme": "",
+        "heading": "@_AMMIS_",
+        "profile_text": "",
+        "show_instagram_icon": false,
+        "description": "<p>Acompanhe lançamentos, editoriais e bastidores da AMMIS.</p>",
+        "header_alignment": "center",
+        "button_text": "Ver perfil",
+        "button_link": "https://www.instagram.com/_ammis_",
+        "container_width": 900,
+        "columns_desktop": "3",
+        "columns_mobile": "2",
+        "grid_gap": 10,
+        "card_radius": 8,
+        "image_ratio_desktop": 130,
+        "image_ratio_mobile": 125,
+        "overlay_position": "center",
+        "text_alignment": "center",
+        "overlay_opacity": 50,
+        "show_overlay_mobile": true,
+        "heading_size": 24,
+        "heading_letter_spacing": 0.1,
+        "heading_transform": "uppercase",
+        "card_title_size": 19,
+        "text_size": 14,
+        "padding_top": 16,
+        "padding_bottom": 20
+      }
+    }
+  },
+  "order": [
+    "slideshow_97kWbf",
+    "product_slider_myRt9j",
+    "ammis_category_grid_8b4PmG",
+    "product-slider",
+    "slideshow_Jf4tqd",
+    "popular_products_Wgftz6",
+    "ammis_instagram_showcase_bFzVET"
+  ]
+}
