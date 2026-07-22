@@ -3,8 +3,17 @@
 {%- liquid
   assign section_id = 'HomeStickyVideo-' | append: section.id
   assign video = section.settings.video
+  assign use_fallback_video = false
+  assign has_video_source = false
   assign poster_image = section.settings.poster_image
   assign poster_url = ''
+
+  if video != blank
+    assign has_video_source = true
+  elsif section.settings.enable_fallback_video_url and section.settings.fallback_video_url != blank
+    assign use_fallback_video = true
+    assign has_video_source = true
+  endif
 
   if poster_image != blank
     assign poster_url = poster_image | image_url: width: 900
@@ -33,9 +42,10 @@
   endcase
 
   assign shadow_alpha = section.settings.shadow_intensity | divided_by: 100.0
+  assign backdrop_alpha = section.settings.backdrop_opacity | divided_by: 100.0
 -%}
 
-{%- if section.settings.enable_widget and video != blank -%}
+{%- if section.settings.enable_widget and has_video_source -%}
   <home-sticky-video
     id="{{ section_id }}"
     class="home-sticky-video home-sticky-video--{{ section.settings.position_side }}"
@@ -43,6 +53,8 @@
     data-destination-url="{{ destination_url | escape }}"
     data-copy-message="{{ section.settings.copy_message | escape }}"
     data-save-favorite="{{ section.settings.save_favorite }}"
+    data-close-on-backdrop="{{ section.settings.close_on_backdrop }}"
+    data-close-on-escape="{{ section.settings.close_on_escape }}"
     style="
       --hsv-circle-desktop: {{ section.settings.circle_size_desktop }}px;
       --hsv-circle-mobile: {{ section.settings.circle_size_mobile }}px;
@@ -60,9 +72,99 @@
       --hsv-cta-bg: {{ section.settings.cta_background }};
       --hsv-cta-color: {{ section.settings.cta_text_color }};
       --hsv-shadow-alpha: {{ shadow_alpha }};
+      --hsv-backdrop-alpha: {{ backdrop_alpha }};
       --hsv-z-index: {{ section.settings.z_index }};
     "
   >
+    <div class="home-sticky-video__backdrop" hidden aria-hidden="true" data-sticky-video-backdrop></div>
+
+    <div
+      id="{{ section_id }}-panel"
+      class="home-sticky-video__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+      aria-label="{{ section.settings.accessible_description | default: 'Vídeo AMMIS' | escape }}"
+      tabindex="-1"
+      data-sticky-video-panel
+    >
+      <div class="home-sticky-video__media">
+        {%- if video != blank -%}
+          {{
+            video
+            | video_tag:
+              class: 'home-sticky-video__video',
+              autoplay: true,
+              loop: true,
+              muted: true,
+              controls: false,
+              playsinline: true,
+              preload: 'metadata',
+              poster: poster_url
+          }}
+        {%- elsif use_fallback_video -%}
+          <video
+            class="home-sticky-video__video"
+            src="{{ section.settings.fallback_video_url | escape }}"
+            {% if poster_url != blank %}
+              poster="{{ poster_url }}"
+            {% endif %}
+            autoplay
+            loop
+            muted
+            playsinline
+            preload="metadata"
+          ></video>
+        {%- endif -%}
+      </div>
+
+      <button class="home-sticky-video__close" type="button" aria-label="Fechar vídeo" data-sticky-video-close>
+        <span aria-hidden="true">{% render 'icon-close' %}</span>
+      </button>
+
+      <div class="home-sticky-video__bottom">
+        {%- if section.settings.show_cta and section.settings.cta_text != blank and destination_url != blank -%}
+          <a
+            class="home-sticky-video__cta home-sticky-video__cta--{{ section.settings.cta_position }}"
+            href="{{ destination_url }}"
+            {% if section.settings.cta_new_tab %}
+              target="_blank" rel="noopener noreferrer"
+            {% endif %}
+            data-sticky-video-cta
+          >
+            {{ section.settings.cta_text | escape }}
+          </a>
+        {%- endif -%}
+
+        <div class="home-sticky-video__controls" aria-label="Controles do vídeo">
+          {%- if section.settings.show_sound -%}
+            <button class="home-sticky-video__control" type="button" aria-label="Ativar som" aria-pressed="false" data-sticky-video-sound>
+              <span class="home-sticky-video__icon home-sticky-video__icon--sound-off" aria-hidden="true">{% render 'icon-sound-off' %}</span>
+              <span class="home-sticky-video__icon home-sticky-video__icon--sound-on" aria-hidden="true" hidden>{% render 'icon-sound-on' %}</span>
+            </button>
+          {%- endif -%}
+
+          {%- if section.settings.show_share -%}
+            <button class="home-sticky-video__control" type="button" aria-label="Compartilhar" data-sticky-video-share>
+              <span aria-hidden="true">{% render 'icon-share' %}</span>
+            </button>
+          {%- endif -%}
+
+          {%- if section.settings.show_favorite -%}
+            <button class="home-sticky-video__control" type="button" aria-label="Favoritar vídeo" aria-pressed="false" data-sticky-video-favorite>
+              <svg class="home-sticky-video__heart" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                <path d="M12 20.6 4.7 13.4C2.8 11.5 2.8 8.5 4.6 6.7c1.8-1.8 4.7-1.8 6.5 0l.9.9.9-.9c1.8-1.8 4.7-1.8 6.5 0 1.8 1.8 1.8 4.8-.1 6.7L12 20.6Z" />
+              </svg>
+            </button>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <p class="home-sticky-video__feedback" aria-live="polite" hidden data-sticky-video-feedback>
+        {{ section.settings.copy_message | default: 'Link copiado' | escape }}
+      </p>
+    </div>
+
     <button
       class="home-sticky-video__trigger"
       type="button"
@@ -70,88 +172,9 @@
       aria-expanded="false"
       aria-controls="{{ section_id }}-panel"
       data-sticky-video-trigger
-    >
-      {{
-        video
-        | video_tag:
-          class: 'home-sticky-video__video home-sticky-video__video--collapsed',
-          autoplay: true,
-          loop: true,
-          muted: true,
-          controls: false,
-          playsinline: true,
-          preload: 'metadata',
-          poster: poster_url
-      }}
-    </button>
-
-    <div
-      id="{{ section_id }}-panel"
-      class="home-sticky-video__panel"
-      role="region"
-      aria-label="{{ section.settings.accessible_description | default: 'Vídeo AMMIS' | escape }}"
-      hidden
-      data-sticky-video-panel
-    >
-      {{
-        video
-        | video_tag:
-          class: 'home-sticky-video__video home-sticky-video__video--expanded',
-          autoplay: true,
-          loop: true,
-          muted: true,
-          controls: false,
-          playsinline: true,
-          preload: 'metadata',
-          poster: poster_url
-      }}
-
-      <div class="home-sticky-video__actions" aria-label="Controles do vídeo">
-        <button class="home-sticky-video__control" type="button" aria-label="Fechar vídeo" data-sticky-video-close>
-          <span aria-hidden="true">{% render 'icon-close' %}</span>
-        </button>
-
-        {%- if section.settings.show_sound -%}
-          <button class="home-sticky-video__control" type="button" aria-label="Ativar som" aria-pressed="false" data-sticky-video-sound>
-            <span class="home-sticky-video__icon home-sticky-video__icon--sound-off" aria-hidden="true">{% render 'icon-sound-off' %}</span>
-            <span class="home-sticky-video__icon home-sticky-video__icon--sound-on" aria-hidden="true" hidden>{% render 'icon-sound-on' %}</span>
-          </button>
-        {%- endif -%}
-
-        {%- if section.settings.show_share -%}
-          <button class="home-sticky-video__control" type="button" aria-label="Compartilhar" data-sticky-video-share>
-            <span aria-hidden="true">{% render 'icon-share' %}</span>
-          </button>
-        {%- endif -%}
-
-        {%- if section.settings.show_favorite -%}
-          <button class="home-sticky-video__control" type="button" aria-label="Favoritar vídeo" aria-pressed="false" data-sticky-video-favorite>
-            <svg class="home-sticky-video__heart" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-              <path d="M12 20.6 4.7 13.4C2.8 11.5 2.8 8.5 4.6 6.7c1.8-1.8 4.7-1.8 6.5 0l.9.9.9-.9c1.8-1.8 4.7-1.8 6.5 0 1.8 1.8 1.8 4.8-.1 6.7L12 20.6Z" />
-            </svg>
-          </button>
-        {%- endif -%}
-      </div>
-
-      {%- if section.settings.show_cta and section.settings.cta_text != blank and destination_url != blank -%}
-        <a
-          class="home-sticky-video__cta home-sticky-video__cta--{{ section.settings.cta_position }}"
-          href="{{ destination_url }}"
-          {% if section.settings.cta_new_tab %}
-            target="_blank" rel="noopener noreferrer"
-          {% endif %}
-          data-sticky-video-cta
-        >
-          {{ section.settings.cta_text | escape }}
-        </a>
-      {%- endif -%}
-
-      <p class="home-sticky-video__feedback" aria-live="polite" hidden data-sticky-video-feedback>
-        {{ section.settings.copy_message | default: 'Link copiado' | escape }}
-      </p>
-    </div>
+    ></button>
   </home-sticky-video>
-{%- elsif request.design_mode and section.settings.enable_widget and video == blank -%}
+{%- elsif request.design_mode and section.settings.enable_widget -%}
   <div class="home-sticky-video-placeholder">
     Selecione um vídeo nas configurações desta seção.
   </div>
@@ -163,7 +186,10 @@
     bottom: calc(var(--hsv-offset-y-desktop) + env(safe-area-inset-bottom, 0px));
     z-index: var(--hsv-z-index);
     display: block;
+    width: var(--hsv-circle-desktop);
+    height: var(--hsv-circle-desktop);
     color: var(--hsv-icon-color);
+    pointer-events: none;
   }
 
   #shopify-section-{{ section.id }} .home-sticky-video--left {
@@ -174,50 +200,55 @@
     right: var(--hsv-offset-x-desktop);
   }
 
-  #shopify-section-{{ section.id }} .home-sticky-video__trigger {
-    width: var(--hsv-circle-desktop);
-    height: var(--hsv-circle-desktop);
-    display: block;
-    padding: 0;
-    border: var(--hsv-border-width) solid var(--hsv-border-color);
-    border-radius: 50%;
-    overflow: hidden;
-    cursor: pointer;
-    background: rgb(var(--color-background));
-    box-shadow: 0 12px 32px rgba(0, 0, 0, var(--hsv-shadow-alpha));
-    transition: transform var(--duration-default), opacity var(--duration-default);
+  #shopify-section-{{ section.id }} .home-sticky-video[data-expanded="true"] {
+    inset: 0;
+    width: auto;
+    height: auto;
+    display: grid;
+    place-items: center;
   }
 
-  #shopify-section-{{ section.id }} .home-sticky-video[data-expanded="true"] .home-sticky-video__trigger {
-    opacity: 0;
-    pointer-events: none;
-    transform: scale(0.92);
+  #shopify-section-{{ section.id }} .home-sticky-video__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: rgba(0, 0, 0, var(--hsv-backdrop-alpha));
+    pointer-events: auto;
   }
 
   #shopify-section-{{ section.id }} .home-sticky-video__panel {
     position: relative;
-    width: min(var(--hsv-expanded-desktop), calc(100vw - (2 * var(--hsv-offset-x-desktop))));
-    max-height: min(calc(100dvh - (2 * var(--hsv-offset-y-desktop)) - env(safe-area-inset-bottom, 0px)), 720px);
-    aspect-ratio: 9 / 16;
+    z-index: 1;
+    width: var(--hsv-circle-desktop);
+    height: var(--hsv-circle-desktop);
+    max-width: calc(100vw - (2 * var(--hsv-offset-x-desktop)));
+    max-height: calc(100dvh - (2 * var(--hsv-offset-y-desktop)) - env(safe-area-inset-bottom, 0px));
     overflow: hidden;
     border: var(--hsv-border-width) solid var(--hsv-border-color);
-    border-radius: var(--hsv-radius);
+    border-radius: 50%;
     background: #000;
-    box-shadow: 0 18px 48px rgba(0, 0, 0, var(--hsv-shadow-alpha));
-    opacity: 0;
-    transform: translateY(8px) scale(0.98);
-    transition: transform var(--duration-default), opacity var(--duration-default);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, var(--hsv-shadow-alpha));
+    pointer-events: auto;
+    transition: width var(--duration-default), height var(--duration-default), border-radius var(--duration-default), transform var(--duration-default), opacity var(--duration-default);
   }
 
   #shopify-section-{{ section.id }} .home-sticky-video[data-expanded="true"] .home-sticky-video__panel {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+    width: min(var(--hsv-expanded-desktop), calc(100vw - (2 * var(--hsv-offset-x-desktop))));
+    height: auto;
+    aspect-ratio: 9 / 16;
+    max-height: min(calc(100dvh - 48px - env(safe-area-inset-bottom, 0px)), 760px);
+    border-radius: var(--hsv-radius);
+    box-shadow: 0 18px 56px rgba(0, 0, 0, var(--hsv-shadow-alpha));
   }
 
+  #shopify-section-{{ section.id }} .home-sticky-video__media,
   #shopify-section-{{ section.id }} .home-sticky-video__video {
     display: block;
     width: 100%;
     height: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__video {
     object-fit: cover;
     background: #000;
   }
@@ -226,19 +257,32 @@
     display: none !important;
   }
 
-  #shopify-section-{{ section.id }} .home-sticky-video__actions {
+  #shopify-section-{{ section.id }} .home-sticky-video__trigger {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    inset: 0;
     z-index: 2;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: var(--hsv-border-width) solid transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    background: transparent;
+    pointer-events: auto;
+    transition: opacity var(--duration-default), transform var(--duration-default);
   }
 
+  #shopify-section-{{ section.id }} .home-sticky-video[data-expanded="true"] .home-sticky-video__trigger {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.92);
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__close,
   #shopify-section-{{ section.id }} .home-sticky-video__control {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -252,16 +296,61 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  #shopify-section-{{ section.id }} .home-sticky-video__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 4;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video[data-expanded="true"] .home-sticky-video__close {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__close svg,
   #shopify-section-{{ section.id }} .home-sticky-video__control svg {
     width: 18px;
     height: 18px;
     display: block;
   }
 
+  #shopify-section-{{ section.id }} .home-sticky-video__close svg path,
+  #shopify-section-{{ section.id }} .home-sticky-video__close svg circle,
+  #shopify-section-{{ section.id }} .home-sticky-video__close svg rect,
   #shopify-section-{{ section.id }} .home-sticky-video__control svg path,
   #shopify-section-{{ section.id }} .home-sticky-video__control svg circle,
   #shopify-section-{{ section.id }} .home-sticky-video__control svg rect {
     stroke: currentColor;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__bottom {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+    padding: 72px 14px 14px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.68), rgba(0, 0, 0, 0));
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video[data-expanded="true"] .home-sticky-video__bottom {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #shopify-section-{{ section.id }} .home-sticky-video__controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
   }
 
   #shopify-section-{{ section.id }} .home-sticky-video__heart path {
@@ -276,25 +365,24 @@
   }
 
   #shopify-section-{{ section.id }} .home-sticky-video__trigger:focus-visible,
+  #shopify-section-{{ section.id }} .home-sticky-video__close:focus-visible,
   #shopify-section-{{ section.id }} .home-sticky-video__control:focus-visible,
   #shopify-section-{{ section.id }} .home-sticky-video__cta:focus-visible {
     outline: 2px solid currentColor;
     outline-offset: 3px;
   }
 
+  #shopify-section-{{ section.id }} .home-sticky-video__close:hover,
   #shopify-section-{{ section.id }} .home-sticky-video__control:hover {
     transform: scale(1.04);
   }
 
   #shopify-section-{{ section.id }} .home-sticky-video__cta {
-    position: absolute;
-    bottom: 14px;
-    z-index: 2;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-height: 42px;
-    max-width: calc(100% - 28px);
+    max-width: 100%;
     padding: 0 18px;
     border-radius: 4px;
     color: var(--hsv-cta-color);
@@ -307,23 +395,22 @@
   }
 
   #shopify-section-{{ section.id }} .home-sticky-video__cta--bottom-left {
-    left: 14px;
+    align-self: flex-start;
   }
 
   #shopify-section-{{ section.id }} .home-sticky-video__cta--bottom-center {
-    left: 50%;
-    transform: translateX(-50%);
+    align-self: center;
   }
 
   #shopify-section-{{ section.id }} .home-sticky-video__cta--bottom-right {
-    right: 14px;
+    align-self: flex-end;
   }
 
   #shopify-section-{{ section.id }} .home-sticky-video__feedback {
     position: absolute;
     left: 50%;
-    bottom: 68px;
-    z-index: 3;
+    bottom: 92px;
+    z-index: 5;
     margin: 0;
     padding: 8px 12px;
     border-radius: 4px;
@@ -347,6 +434,8 @@
   @media screen and (max-width: 749px) {
     #shopify-section-{{ section.id }} .home-sticky-video {
       bottom: calc(var(--hsv-offset-y-mobile) + env(safe-area-inset-bottom, 0px));
+      width: var(--hsv-circle-mobile);
+      height: var(--hsv-circle-mobile);
     }
 
     #shopify-section-{{ section.id }} .home-sticky-video--left {
@@ -357,19 +446,47 @@
       right: var(--hsv-offset-x-mobile);
     }
 
-    #shopify-section-{{ section.id }} .home-sticky-video__trigger {
-      width: var(--hsv-circle-mobile);
-      height: var(--hsv-circle-mobile);
+    #shopify-section-{{ section.id }} .home-sticky-video[data-expanded="true"] {
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      display: block;
     }
 
     #shopify-section-{{ section.id }} .home-sticky-video__panel {
-      width: min(var(--hsv-expanded-mobile), 340px, calc(100vw - (2 * var(--hsv-offset-x-mobile))));
+      width: var(--hsv-circle-mobile);
+      height: var(--hsv-circle-mobile);
+      max-width: calc(100vw - (2 * var(--hsv-offset-x-mobile)));
       max-height: calc(100dvh - (2 * var(--hsv-offset-y-mobile)) - env(safe-area-inset-bottom, 0px));
     }
 
+    #shopify-section-{{ section.id }} .home-sticky-video[data-expanded="true"] .home-sticky-video__panel {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      max-width: none;
+      max-height: none;
+      aspect-ratio: auto;
+      border-width: 0;
+      border-radius: 0;
+    }
+
+    #shopify-section-{{ section.id }} .home-sticky-video__close {
+      top: calc(12px + env(safe-area-inset-top, 0px));
+      right: calc(12px + env(safe-area-inset-right, 0px));
+    }
+
+    #shopify-section-{{ section.id }} .home-sticky-video__bottom {
+      padding-right: calc(14px + env(safe-area-inset-right, 0px));
+      padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+      padding-left: calc(14px + env(safe-area-inset-left, 0px));
+    }
+
+    #shopify-section-{{ section.id }} .home-sticky-video__close,
     #shopify-section-{{ section.id }} .home-sticky-video__control {
-      width: 38px;
-      height: 38px;
+      width: 44px;
+      height: 44px;
     }
   }
 
@@ -379,8 +496,9 @@
     }
 
     @media screen and (max-width: 749px) {
-      #shopify-section-{{ section.id }} .home-sticky-video__panel {
-        max-height: calc(100vh - (2 * var(--hsv-offset-y-mobile)));
+      #shopify-section-{{ section.id }} .home-sticky-video[data-expanded="true"],
+      #shopify-section-{{ section.id }} .home-sticky-video[data-expanded="true"] .home-sticky-video__panel {
+        height: 100vh;
       }
     }
   }
@@ -388,6 +506,7 @@
   @media (prefers-reduced-motion: reduce) {
     #shopify-section-{{ section.id }} .home-sticky-video__trigger,
     #shopify-section-{{ section.id }} .home-sticky-video__panel,
+    #shopify-section-{{ section.id }} .home-sticky-video__close,
     #shopify-section-{{ section.id }} .home-sticky-video__control {
       transition: none;
     }
@@ -413,24 +532,39 @@
     },
     {
       "type": "paragraph",
-      "content": "Formato recomendado do vídeo: vertical 9:16."
+      "content": "A Shopify aceita upload de MOV, MP4 e WEBM em Conteúdo > Arquivos. O arquivo precisa terminar de ser processado pela Shopify antes de aparecer como vídeo selecionável."
     },
     {
       "type": "paragraph",
-      "content": "Dimensão recomendada: 1080 × 1920 px."
+      "content": "A Shopify converte e entrega o vídeo em formatos compatíveis, como MP4 ou HLS. Caso um MOV não seja aceito, exporte como MP4 com codec H.264 e áudio AAC."
     },
     {
       "type": "paragraph",
-      "content": "O vídeo será recortado com preenchimento total. Mantenha textos e elementos importantes afastados das bordas."
+      "content": "Formato visual recomendado: vertical 9:16. Dimensão recomendada: 1080 × 1920 px."
     },
     {
       "type": "paragraph",
-      "content": "Para melhor desempenho, use um arquivo otimizado e de curta duração."
+      "content": "O vídeo será recortado com preenchimento total. Mantenha textos e elementos importantes afastados das bordas. Para melhor desempenho, use um arquivo otimizado e de curta duração."
     },
     {
       "type": "video",
       "id": "video",
       "label": "Vídeo"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_fallback_video_url",
+      "label": "Usar URL alternativa de vídeo",
+      "default": false
+    },
+    {
+      "type": "url",
+      "id": "fallback_video_url",
+      "label": "URL alternativa do vídeo"
+    },
+    {
+      "type": "paragraph",
+      "content": "Use preferencialmente uma URL direta para arquivo MP4 compatível com navegadores. O vídeo selecionado no campo principal tem prioridade."
     },
     {
       "type": "image_picker",
@@ -541,6 +675,32 @@
       "type": "checkbox",
       "id": "save_favorite",
       "label": "Salvar favorito no navegador",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Modal"
+    },
+    {
+      "type": "range",
+      "id": "backdrop_opacity",
+      "label": "Opacidade do fundo",
+      "min": 20,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "default": 70
+    },
+    {
+      "type": "checkbox",
+      "id": "close_on_backdrop",
+      "label": "Fechar ao clicar fora do vídeo",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "close_on_escape",
+      "label": "Fechar com a tecla Esc",
       "default": true
     },
     {
