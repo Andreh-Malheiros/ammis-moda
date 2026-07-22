@@ -2,16 +2,21 @@ if (!customElements.get("home-sticky-video")) {
   customElements.define(
     "home-sticky-video",
     class HomeStickyVideo extends HTMLElement {
+      static scrollLocks = 0;
+      static scrollState = null;
+
       constructor() {
         super();
         this.isExpanded = false;
         this.feedbackTimer = null;
         this.onTriggerClick = this.expand.bind(this);
         this.onTriggerKeydown = this.handleTriggerKeydown.bind(this);
-        this.onCloseClick = this.close.bind(this);
+        this.onCloseClick = this.closeFromControl.bind(this);
         this.onSoundClick = this.toggleSound.bind(this);
         this.onShareClick = this.share.bind(this);
         this.onFavoriteClick = this.toggleFavorite.bind(this);
+        this.onBackdropClick = this.closeFromBackdrop.bind(this);
+        this.onDocumentKeydown = this.handleDocumentKeydown.bind(this);
         this.stopEvent = this.stopPropagation.bind(this);
       }
 
@@ -21,9 +26,9 @@ if (!customElements.get("home-sticky-video")) {
         this.sectionId = this.dataset.sectionId || this.id || "default";
         this.storageKey = `ammis-sticky-video-favorite-${this.sectionId}`;
         this.trigger = this.querySelector("[data-sticky-video-trigger]");
+        this.backdrop = this.querySelector("[data-sticky-video-backdrop]");
         this.panel = this.querySelector("[data-sticky-video-panel]");
-        this.collapsedVideo = this.querySelector(".home-sticky-video__video--collapsed");
-        this.expandedVideo = this.querySelector(".home-sticky-video__video--expanded");
+        this.video = this.querySelector(".home-sticky-video__video");
         this.closeButton = this.querySelector("[data-sticky-video-close]");
         this.soundButton = this.querySelector("[data-sticky-video-sound]");
         this.shareButton = this.querySelector("[data-sticky-video-share]");
@@ -31,6 +36,8 @@ if (!customElements.get("home-sticky-video")) {
         this.cta = this.querySelector("[data-sticky-video-cta]");
         this.feedback = this.querySelector("[data-sticky-video-feedback]");
         this.saveFavorite = this.dataset.saveFavorite === "true";
+        this.closeOnBackdrop = this.dataset.closeOnBackdrop === "true";
+        this.closeOnEscape = this.dataset.closeOnEscape === "true";
 
         this.trigger?.addEventListener("click", this.onTriggerClick);
         this.trigger?.addEventListener("keydown", this.onTriggerKeydown);
@@ -38,6 +45,8 @@ if (!customElements.get("home-sticky-video")) {
         this.soundButton?.addEventListener("click", this.onSoundClick);
         this.shareButton?.addEventListener("click", this.onShareClick);
         this.favoriteButton?.addEventListener("click", this.onFavoriteClick);
+        this.backdrop?.addEventListener("click", this.onBackdropClick);
+        this.panel?.addEventListener("click", this.stopEvent);
         this.cta?.addEventListener("click", this.stopEvent);
 
         this.querySelectorAll(".home-sticky-video__control").forEach((button) => {
@@ -46,7 +55,7 @@ if (!customElements.get("home-sticky-video")) {
 
         this.setMuted(true);
         this.restoreFavorite();
-        this.playVideo(this.collapsedVideo);
+        this.playVideo();
         this.initialized = true;
       }
 
@@ -57,11 +66,18 @@ if (!customElements.get("home-sticky-video")) {
         this.soundButton?.removeEventListener("click", this.onSoundClick);
         this.shareButton?.removeEventListener("click", this.onShareClick);
         this.favoriteButton?.removeEventListener("click", this.onFavoriteClick);
+        this.backdrop?.removeEventListener("click", this.onBackdropClick);
+        this.panel?.removeEventListener("click", this.stopEvent);
         this.cta?.removeEventListener("click", this.stopEvent);
+        document.removeEventListener("keydown", this.onDocumentKeydown);
 
         this.querySelectorAll(".home-sticky-video__control").forEach((button) => {
           button.removeEventListener("click", this.stopEvent);
         });
+
+        if (this.isExpanded) {
+          this.close({ returnFocus: false });
+        }
 
         window.clearTimeout(this.feedbackTimer);
         this.initialized = false;
@@ -78,58 +94,105 @@ if (!customElements.get("home-sticky-video")) {
 
         this.isExpanded = true;
         this.dataset.expanded = "true";
-        this.panel.hidden = false;
+        this.previousActiveElement = document.activeElement;
+        this.backdrop.hidden = false;
+        this.panel.setAttribute("aria-hidden", "false");
         this.trigger?.setAttribute("aria-expanded", "true");
         this.setMuted(true);
-        this.pauseVideo(this.collapsedVideo);
-        this.playVideo(this.expandedVideo);
+        this.lockScroll();
+        document.addEventListener("keydown", this.onDocumentKeydown);
+        this.playVideo();
         this.closeButton?.focus({ preventScroll: true });
       }
 
-      close(event) {
-        event?.preventDefault();
-        event?.stopPropagation();
+      closeFromControl(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.close({ returnFocus: true });
+      }
+
+      closeFromBackdrop(event) {
+        if (!this.closeOnBackdrop || event.target !== this.backdrop) return;
+        this.close({ returnFocus: false });
+      }
+
+      close(options = {}) {
         if (!this.isExpanded) return;
 
         this.isExpanded = false;
         this.dataset.expanded = "false";
         this.trigger?.setAttribute("aria-expanded", "false");
+        this.panel?.setAttribute("aria-hidden", "true");
+        this.backdrop.hidden = true;
         this.setMuted(true);
-        this.pauseVideo(this.expandedVideo);
-        this.playVideo(this.collapsedVideo);
+        this.playVideo();
+        this.unlockScroll();
+        document.removeEventListener("keydown", this.onDocumentKeydown);
 
-        if (this.panel) {
-          this.panel.hidden = true;
+        if (options.returnFocus !== false) {
+          const focusTarget = this.previousActiveElement === this.trigger ? this.trigger : this.trigger;
+          focusTarget?.focus({ preventScroll: true });
+        }
+      }
+
+      handleDocumentKeydown(event) {
+        if (!this.isExpanded) return;
+
+        if (event.key === "Escape" && this.closeOnEscape) {
+          event.preventDefault();
+          this.close({ returnFocus: true });
+          return;
         }
 
-        this.trigger?.focus({ preventScroll: true });
+        if (event.key === "Tab") {
+          this.trapFocus(event);
+        }
+      }
+
+      trapFocus(event) {
+        const focusable = this.getFocusableElements();
+        if (!focusable.length) {
+          event.preventDefault();
+          this.panel?.focus({ preventScroll: true });
+          return;
+        }
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus({ preventScroll: true });
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus({ preventScroll: true });
+        }
+      }
+
+      getFocusableElements() {
+        if (!this.panel) return [];
+
+        return Array.from(
+          this.panel.querySelectorAll(
+            'a[href], button:not([disabled]), video[controls], [tabindex]:not([tabindex="-1"])'
+          )
+        ).filter((element) => element.offsetParent !== null);
       }
 
       toggleSound(event) {
         event.preventDefault();
         event.stopPropagation();
-        if (!this.soundButton || !this.expandedVideo) return;
+        if (!this.soundButton || !this.video) return;
 
-        const shouldUnmute = this.expandedVideo.muted;
+        const shouldUnmute = this.video.muted;
         this.setMuted(!shouldUnmute);
-        this.playVideo(this.expandedVideo);
+        this.playVideo();
       }
 
       setMuted(isMuted) {
-        [this.collapsedVideo, this.expandedVideo].forEach((video) => {
-          if (!video) return;
-          video.muted = true;
-          video.defaultMuted = true;
-        });
-
-        if (this.expandedVideo) {
-          this.expandedVideo.muted = isMuted;
-          this.expandedVideo.defaultMuted = isMuted;
-        }
-
-        if (this.collapsedVideo) {
-          this.collapsedVideo.muted = true;
-          this.collapsedVideo.defaultMuted = true;
+        if (this.video) {
+          this.video.muted = isMuted;
+          this.video.defaultMuted = isMuted;
         }
 
         if (this.soundButton) {
@@ -252,18 +315,57 @@ if (!customElements.get("home-sticky-video")) {
         }, 2200);
       }
 
-      playVideo(video) {
-        if (!video) return;
+      playVideo() {
+        if (!this.video) return;
 
-        const playPromise = video.play();
+        const playPromise = this.video.play();
         if (playPromise?.catch) {
           playPromise.catch(() => {});
         }
       }
 
-      pauseVideo(video) {
-        if (!video) return;
-        video.pause();
+      lockScroll() {
+        if (HomeStickyVideo.scrollLocks === 0) {
+          const body = document.body;
+          const html = document.documentElement;
+          const scrollY = window.scrollY || window.pageYOffset;
+
+          HomeStickyVideo.scrollState = {
+            scrollY,
+            bodyPosition: body.style.position,
+            bodyTop: body.style.top,
+            bodyWidth: body.style.width,
+            bodyOverflow: body.style.overflow,
+            htmlOverflow: html.style.overflow,
+          };
+
+          html.style.overflow = "hidden";
+          body.style.overflow = "hidden";
+          body.style.position = "fixed";
+          body.style.top = `-${scrollY}px`;
+          body.style.width = "100%";
+        }
+
+        HomeStickyVideo.scrollLocks += 1;
+      }
+
+      unlockScroll() {
+        if (HomeStickyVideo.scrollLocks <= 0) return;
+
+        HomeStickyVideo.scrollLocks -= 1;
+        if (HomeStickyVideo.scrollLocks > 0 || !HomeStickyVideo.scrollState) return;
+
+        const body = document.body;
+        const html = document.documentElement;
+        const state = HomeStickyVideo.scrollState;
+
+        body.style.position = state.bodyPosition;
+        body.style.top = state.bodyTop;
+        body.style.width = state.bodyWidth;
+        body.style.overflow = state.bodyOverflow;
+        html.style.overflow = state.htmlOverflow;
+        window.scrollTo(0, state.scrollY);
+        HomeStickyVideo.scrollState = null;
       }
 
       stopPropagation(event) {
