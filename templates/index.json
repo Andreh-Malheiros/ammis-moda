@@ -123,7 +123,7 @@
         "product_slide_jDfYeN"
       ],
       "settings": {
-        "image_size": "adapt",
+        "image_size": "2/1",
         "section_height": "fullscreen",
         "mobile_section_height": "560px",
         "subheading": "",
@@ -160,10 +160,10 @@
           "type": "category",
           "settings": {
             "image": "shopify://shop_images/FOTO_SITE_6_8b3fc1d9-4bab-48a8-b0d2-063fbd694b20.jpg",
-            "title": "Casaco & Jaqueta",
+            "title": "Casacos & Jaquetas",
             "text": "Peças que transformam seu inverno em estilo.",
             "link": "shopify://collections/casaco",
-            "cta_label": "SHOP NOW"
+            "cta_label": "VER PEÇAS"
           }
         },
         "category_DK37Aa": {
@@ -172,8 +172,8 @@
             "image": "shopify://shop_images/blazer_alfaiataria.jpg",
             "title": "alfaiataria",
             "text": "O luxo da alfaiataria feita por verdadeiros alfaiates.",
-            "link": "shopify://collections/blazer",
-            "cta_label": "SHOP NOW"
+            "link": "shopify://collections/alfaiataria",
+            "cta_label": "VER PEÇAS"
           }
         },
         "category_VbUHmz": {
@@ -182,8 +182,8 @@
             "image": "shopify://shop_images/fotos_site_1080_x_1350_px_18.jpg",
             "title": "Novidades",
             "text": "Os lançamentos mais recentes da curadoria AMMIS.",
-            "link": "shopify://collections/euro-summer",
-            "cta_label": "SHOP NOW"
+            "link": "shopify://collections/arcadia26",
+            "cta_label": "VER PEÇAS"
           }
         }
       },
@@ -197,7 +197,7 @@
         "heading": "EXPLORE POR CATEGORIAS",
         "subheading": "<p>Peças selecionadas por silhueta, ocasião e presença.</p>",
         "heading_alignment": "center",
-        "color_scheme": "background-1",
+        "color_scheme": "background-2",
         "full_width": true,
         "max_width": 1500,
         "columns_desktop": "4",
