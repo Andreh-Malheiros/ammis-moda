@@ -123,7 +123,7 @@
         "product_slide_jDfYeN"
       ],
       "settings": {
-        "image_size": "2/1",
+        "image_size": "adapt",
         "section_height": "fullscreen",
         "mobile_section_height": "560px",
         "subheading": "",
@@ -468,11 +468,11 @@
   },
   "order": [
     "slideshow_97kWbf",
+    "popular_products_Wgftz6",
     "product_slider_myRt9j",
     "ammis_category_grid_8b4PmG",
     "product-slider",
     "slideshow_Jf4tqd",
-    "popular_products_Wgftz6",
     "ammis_instagram_showcase_bFzVET"
   ]
 }
