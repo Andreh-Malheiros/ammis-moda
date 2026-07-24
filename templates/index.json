@@ -72,6 +72,36 @@
         "margin_bottom": "no-indent"
       }
     },
+    "popular_products_Wgftz6": {
+      "type": "popular-products",
+      "name": "t:sections.popular-products.presets.name",
+      "settings": {
+        "subheading": "",
+        "heading": "PEÇAS EM DESTAQUE",
+        "description": "",
+        "heading_size": "h1",
+        "product_list": [
+          "camisa-patacho",
+          "body-carneiros",
+          "chemise-caraiva",
+          "blusa-litoral"
+        ],
+        "products_to_show": 4,
+        "image_ratio": "portrait",
+        "image_fit": "contain",
+        "show_vendor": true,
+        "show_color_count": false,
+        "show_size_count": false,
+        "show_collection": false,
+        "show_desc": false,
+        "columns_mobile": "2",
+        "button_label": "VER TODAS",
+        "button_link": "shopify://collections/all",
+        "button_style": "simple",
+        "margin_top": "m",
+        "margin_bottom": "s"
+      }
+    },
     "product_slider_myRt9j": {
       "type": "product-slider",
       "blocks": {
@@ -163,7 +193,7 @@
             "title": "Casacos & Jaquetas",
             "text": "Peças que transformam seu inverno em estilo.",
             "link": "shopify://collections/casaco",
-            "cta_label": "VER PEÇAS"
+            "cta_label": "shop now"
           }
         },
         "category_DK37Aa": {
@@ -173,7 +203,7 @@
             "title": "alfaiataria",
             "text": "O luxo da alfaiataria feita por verdadeiros alfaiates.",
             "link": "shopify://collections/alfaiataria",
-            "cta_label": "VER PEÇAS"
+            "cta_label": "shop now"
           }
         },
         "category_VbUHmz": {
@@ -204,11 +234,11 @@
         "columns_mobile": "2",
         "content_position": "bottom",
         "card_text_alignment": "center",
-        "overlay_opacity": 35,
+        "overlay_opacity": 0,
         "card_ratio_desktop": 125,
         "card_ratio_mobile": 150,
-        "title_size": 28,
-        "subtitle_size": 14,
+        "title_size": 35,
+        "subtitle_size": 16,
         "card_title_size": 20,
         "card_text_size": 13,
         "gap_desktop": 18,
@@ -361,36 +391,6 @@
         "slide_effects": "fade",
         "margin_top": "no-indent",
         "margin_bottom": "no-indent"
-      }
-    },
-    "popular_products_Wgftz6": {
-      "type": "popular-products",
-      "name": "t:sections.popular-products.presets.name",
-      "settings": {
-        "subheading": "",
-        "heading": "PEÇAS EM DESTAQUE",
-        "description": "",
-        "heading_size": "h1",
-        "product_list": [
-          "camisa-patacho",
-          "body-carneiros",
-          "chemise-caraiva",
-          "blusa-litoral"
-        ],
-        "products_to_show": 4,
-        "image_ratio": "portrait",
-        "image_fit": "contain",
-        "show_vendor": true,
-        "show_color_count": false,
-        "show_size_count": false,
-        "show_collection": false,
-        "show_desc": false,
-        "columns_mobile": "2",
-        "button_label": "VER TODAS",
-        "button_link": "shopify://collections/all",
-        "button_style": "simple",
-        "margin_top": "m",
-        "margin_bottom": "s"
       }
     },
     "ammis_instagram_showcase_bFzVET": {
