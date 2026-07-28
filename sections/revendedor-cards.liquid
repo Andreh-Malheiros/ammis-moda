@@ -3,58 +3,915 @@
 {%- if section.settings.enable_section -%}
   {%- style -%}
     {% render 'section-margin' %}
+
+    #shopify-section-{{ section.id }} {
+      --revendedor-accent: rgb(var(--color-foreground));
+      --revendedor-surface: rgb(var(--color-background));
+      --revendedor-border: rgba(var(--color-foreground), 0.16);
+      --revendedor-muted: rgba(var(--color-foreground), 0.62);
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase {
+      position: relative;
+      overflow: hidden;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__container {
+      width: 100%;
+      max-width: var(--page-width, 144rem);
+      margin: 0 auto;
+      padding-right: 0;
+      padding-left: max(
+        2rem,
+        calc((100vw - var(--page-width, 144rem)) / 2 + 5rem)
+      );
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__layout {
+      display: grid;
+      grid-template-columns: minmax(26rem, 0.72fr) minmax(0, 1.8fr);
+      min-height: 66rem;
+      border-top: 1px solid var(--revendedor-border);
+      border-bottom: 1px solid var(--revendedor-border);
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__intro {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0;
+      padding: 5.6rem 4.8rem 4.8rem 0;
+      background: var(--revendedor-surface);
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__intro::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 1px;
+      height: 100%;
+      background: var(--revendedor-border);
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__heading {
+      max-width: 42rem;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__eyebrow {
+      margin: 0 0 2.2rem;
+      color: var(--revendedor-muted);
+      font-size: 1.2rem;
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__title {
+      max-width: 38rem;
+      margin: 0;
+      font-size: clamp(3.4rem, 4vw, 6.4rem);
+      font-weight: 400;
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+      text-wrap: balance;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__text {
+      max-width: 36rem;
+      margin-top: 2.8rem;
+      color: var(--revendedor-muted);
+      font-size: 1.5rem;
+      line-height: 1.65;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__text > *:first-child {
+      margin-top: 0;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__text > *:last-child {
+      margin-bottom: 0;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__footer {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2.4rem;
+      margin-top: 5rem;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__counter {
+      display: flex;
+      align-items: baseline;
+      gap: 0.7rem;
+      white-space: nowrap;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__current {
+      min-width: 2.6rem;
+      font-size: 2.8rem;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__separator,
+    #shopify-section-{{ section.id }} .revendedor-showcase__total {
+      color: var(--revendedor-muted);
+      font-size: 1.2rem;
+      line-height: 1;
+      letter-spacing: 0.08em;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__controls {
+      display: flex;
+      gap: 0.8rem;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__button {
+      position: relative;
+      display: grid;
+      width: 4.8rem;
+      height: 4.8rem;
+      padding: 0;
+      place-items: center;
+      color: rgb(var(--color-foreground));
+      background: transparent;
+      border: 1px solid var(--revendedor-border);
+      border-radius: 0;
+      cursor: pointer;
+      transition:
+        color 180ms ease,
+        background-color 180ms ease,
+        border-color 180ms ease,
+        opacity 180ms ease;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__button:hover:not(:disabled) {
+      color: rgb(var(--color-background));
+      background: rgb(var(--color-foreground));
+      border-color: rgb(var(--color-foreground));
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__button:focus-visible {
+      outline: 2px solid rgb(var(--color-foreground));
+      outline-offset: 3px;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__button:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__button svg {
+      width: 1.8rem;
+      height: 1.8rem;
+      pointer-events: none;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__viewport {
+      position: relative;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      min-height: 66rem;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__track::-webkit-scrollbar {
+      display: none;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__card {
+      position: relative;
+      display: flex;
+      flex: 0 0 min(52rem, 68%);
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 38rem;
+      min-height: 66rem;
+      padding: 5.6rem 4.8rem 4.8rem;
+      overflow: hidden;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      border-right: 1px solid var(--revendedor-border);
+      background: var(--revendedor-surface);
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: rgb(var(--color-foreground));
+      transition: width 500ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__card.is-active::before {
+      width: 100%;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__card-number {
+      position: relative;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 5.2rem;
+      height: 5.2rem;
+      margin-bottom: 4.8rem;
+      color: rgb(var(--color-background));
+      background: rgb(var(--color-foreground));
+      font-size: 1.2rem;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: 0.05em;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__media {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      margin: 0;
+      opacity: 0;
+      transition: opacity 500ms ease;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__card:hover .revendedor-showcase__media,
+    #shopify-section-{{ section.id }} .revendedor-showcase__card:focus-within .revendedor-showcase__media {
+      opacity: 0.12;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(1);
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__content {
+      position: relative;
+      z-index: 2;
+      max-width: 39rem;
+      margin-top: auto;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__card-heading {
+      max-width: 37rem;
+      margin: 0;
+      font-size: clamp(2.4rem, 2.2vw, 3.8rem);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+      text-wrap: balance;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__card-text {
+      max-width: 38rem;
+      margin-top: 2.4rem;
+      color: var(--revendedor-muted);
+      font-size: 1.5rem;
+      line-height: 1.65;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__card-text > *:first-child {
+      margin-top: 0;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__card-text > *:last-child {
+      margin-bottom: 0;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__progress {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 4;
+      height: 2px;
+      background: var(--revendedor-border);
+      pointer-events: none;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-showcase__progress-bar {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: rgb(var(--color-foreground));
+      transform-origin: left center;
+      transition: width 250ms ease;
+    }
+
+    @media screen and (max-width: 1199px) {
+      #shopify-section-{{ section.id }} .revendedor-showcase__container {
+        padding-left: 3.2rem;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__layout {
+        grid-template-columns: minmax(28rem, 0.8fr) minmax(0, 1.6fr);
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__intro {
+        padding-right: 3.2rem;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__card {
+        flex-basis: 72%;
+        padding-right: 3.6rem;
+        padding-left: 3.6rem;
+      }
+    }
+
+    @media screen and (max-width: 989px) {
+      #shopify-section-{{ section.id }} .revendedor-showcase__container {
+        padding: 0;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__layout {
+        display: block;
+        min-height: auto;
+        border-top: 0;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__intro {
+        position: relative;
+        display: block;
+        padding: 4.8rem 2rem 3.2rem;
+        border-top: 1px solid var(--revendedor-border);
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__intro::after {
+        display: none;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__heading {
+        max-width: 64rem;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__title {
+        max-width: 58rem;
+        font-size: clamp(3.2rem, 8vw, 5.2rem);
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__text {
+        max-width: 55rem;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__footer {
+        align-items: center;
+        margin-top: 3.2rem;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__track {
+        min-height: 52rem;
+        padding-left: 2rem;
+        scroll-padding-left: 2rem;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__card {
+        flex-basis: min(82vw, 48rem);
+        min-width: min(82vw, 48rem);
+        min-height: 52rem;
+        padding: 3.2rem 2.8rem 3.6rem;
+        border-left: 1px solid var(--revendedor-border);
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__card:last-child {
+        margin-right: 2rem;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__card-number {
+        margin-bottom: 4rem;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__card-heading {
+        font-size: clamp(2.5rem, 6vw, 3.4rem);
+      }
+    }
+
+    @media screen and (max-width: 749px) {
+      #shopify-section-{{ section.id }} .revendedor-showcase__intro {
+        padding-top: 3.8rem;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__eyebrow {
+        margin-bottom: 1.6rem;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__title {
+        line-height: 1.02;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__footer {
+        gap: 1.6rem;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__button {
+        width: 4.4rem;
+        height: 4.4rem;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__track {
+        min-height: 50rem;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__card {
+        flex-basis: calc(100vw - 4rem);
+        min-width: calc(100vw - 4rem);
+        min-height: 50rem;
+        padding: 3rem 2.4rem 3.2rem;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__card-number {
+        width: 4.8rem;
+        height: 4.8rem;
+        margin-bottom: 3.2rem;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__card-text {
+        font-size: 1.45rem;
+        line-height: 1.6;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #shopify-section-{{ section.id }} .revendedor-showcase__track {
+        scroll-behavior: auto;
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-showcase__card::before,
+      #shopify-section-{{ section.id }} .revendedor-showcase__media,
+      #shopify-section-{{ section.id }} .revendedor-showcase__progress-bar,
+      #shopify-section-{{ section.id }} .revendedor-showcase__button {
+        transition: none;
+      }
+    }
   {%- endstyle -%}
 
-  <section class="revendedor-cards color-{{ section.settings.color_scheme }} background" aria-labelledby="RevendedorCards-{{ section.id }}">
-    <div class="container">
-      <div class="revendedor-section-heading revendedor-section-heading--{{ section.settings.alignment }}">
-        {%- if section.settings.eyebrow != blank -%}
-          <p class="revendedor-eyebrow">{{ section.settings.eyebrow | escape }}</p>
-        {%- endif -%}
-        {%- if section.settings.heading != blank -%}
-          <h2 id="RevendedorCards-{{ section.id }}" class="title--section title--section-m-none {{ section.settings.heading_size }}">
-            {{ section.settings.heading | escape }}
-          </h2>
-        {%- endif -%}
-        {%- if section.settings.text != blank -%}
-          <div class="revendedor-section-heading__text rte">{{ section.settings.text }}</div>
-        {%- endif -%}
-      </div>
+  {%- liquid
+    assign visible_benefits = 0
 
-      <div class="revendedor-card-grid revendedor-card-grid--{{ section.settings.columns_desktop }}">
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'benefit' and block.settings.show_item -%}
-            <article class="revendedor-card" {{ block.shopify_attributes }}>
-              {%- if block.settings.image != blank -%}
-                <div class="revendedor-card__media">
-                  {{
-                    block.settings.image
-                    | image_url: width: 720
-                    | image_tag:
-                      loading: 'lazy',
-                      widths: '240, 360, 533, 720',
-                      sizes: '(min-width: 990px) 25vw, 100vw',
-                      class: 'revendedor-card__image',
-                      alt: block.settings.image_alt
-                  }}
+    for block in section.blocks
+      if block.type == 'benefit' and block.settings.show_item
+        assign visible_benefits = visible_benefits | plus: 1
+      endif
+    endfor
+  -%}
+
+  <section
+    id="RevendedorShowcase-{{ section.id }}"
+    class="revendedor-showcase color-{{ section.settings.color_scheme }} background"
+    aria-labelledby="RevendedorShowcaseHeading-{{ section.id }}"
+    data-revendedor-showcase
+  >
+    <div class="revendedor-showcase__container">
+      <div class="revendedor-showcase__layout">
+        <header class="revendedor-showcase__intro">
+          <div class="revendedor-showcase__heading">
+            {%- if section.settings.eyebrow != blank -%}
+              <p class="revendedor-showcase__eyebrow">
+                {{ section.settings.eyebrow | escape }}
+              </p>
+            {%- endif -%}
+
+            {%- if section.settings.heading != blank -%}
+              <h2
+                id="RevendedorShowcaseHeading-{{ section.id }}"
+                class="revendedor-showcase__title {{ section.settings.heading_size }}"
+              >
+                {{ section.settings.heading | escape }}
+              </h2>
+            {%- endif -%}
+
+            {%- if section.settings.text != blank -%}
+              <div class="revendedor-showcase__text rte">
+                {{ section.settings.text }}
+              </div>
+            {%- endif -%}
+          </div>
+
+          {%- if visible_benefits > 0 -%}
+            <div class="revendedor-showcase__footer">
+              <div
+                class="revendedor-showcase__counter"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                <span class="revendedor-showcase__current" data-current-slide>
+                  01
+                </span>
+
+                <span class="revendedor-showcase__separator" aria-hidden="true">
+                  /
+                </span>
+
+                <span class="revendedor-showcase__total">
+                  {{ visible_benefits | prepend: '0' | slice: -2, 2 }}
+                </span>
+              </div>
+
+              {%- if visible_benefits > 1 -%}
+                <div
+                  class="revendedor-showcase__controls"
+                  aria-label="Navegação dos benefícios"
+                >
+                  <button
+                    type="button"
+                    class="revendedor-showcase__button"
+                    data-previous-slide
+                    aria-label="Ver benefício anterior"
+                    disabled
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M15 5L8 12L15 19"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="revendedor-showcase__button"
+                    data-next-slide
+                    aria-label="Ver próximo benefício"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M9 5L16 12L9 19"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
                 </div>
-              {%- elsif block.settings.icon_text != blank -%}
-                <span class="revendedor-card__icon" aria-hidden="true">{{ block.settings.icon_text | escape }}</span>
               {%- endif -%}
-
-              {%- if block.settings.heading != blank -%}
-                <h3 class="revendedor-card__heading h3">{{ block.settings.heading | escape }}</h3>
-              {%- endif -%}
-
-              {%- if block.settings.text != blank -%}
-                <div class="revendedor-card__text rte">{{ block.settings.text }}</div>
-              {%- endif -%}
-            </article>
+            </div>
           {%- endif -%}
-        {%- endfor -%}
+        </header>
+
+        <div class="revendedor-showcase__viewport">
+          <div
+            class="revendedor-showcase__track"
+            data-slider-track
+            role="region"
+            aria-label="Benefícios de fazer parte do universo AMMIS"
+            tabindex="0"
+          >
+            {%- assign benefit_index = 0 -%}
+
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'benefit' and block.settings.show_item -%}
+                {%- assign benefit_index = benefit_index | plus: 1 -%}
+                {%- assign benefit_number = benefit_index | prepend: '0' | slice: -2, 2 -%}
+
+                <article
+                  class="revendedor-showcase__card{% if benefit_index == 1 %} is-active{% endif %}"
+                  data-slide
+                  data-slide-index="{{ benefit_index | minus: 1 }}"
+                  aria-label="Benefício {{ benefit_index }} de {{ visible_benefits }}"
+                  {{ block.shopify_attributes }}
+                >
+                  {%- if block.settings.image != blank -%}
+                    <div class="revendedor-showcase__media" aria-hidden="true">
+                      {{
+                        block.settings.image
+                        | image_url: width: 1000
+                        | image_tag:
+                          loading: 'lazy',
+                          widths: '360, 533, 720, 900, 1000',
+                          sizes: '(min-width: 990px) 40vw, 82vw',
+                          class: 'revendedor-showcase__image',
+                          alt: ''
+                      }}
+                    </div>
+                  {%- endif -%}
+
+                  <div>
+                    <span class="revendedor-showcase__card-number" aria-hidden="true">
+                      {%- if block.settings.icon_text != blank -%}
+                        {{ block.settings.icon_text | escape }}
+                      {%- else -%}
+                        {{ benefit_number }}
+                      {%- endif -%}
+                    </span>
+                  </div>
+
+                  <div class="revendedor-showcase__content">
+                    {%- if block.settings.heading != blank -%}
+                      <h3 class="revendedor-showcase__card-heading">
+                        {{ block.settings.heading | escape }}
+                      </h3>
+                    {%- endif -%}
+
+                    {%- if block.settings.text != blank -%}
+                      <div class="revendedor-showcase__card-text rte">
+                        {{ block.settings.text }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </article>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          {%- if visible_benefits > 1 -%}
+            <div
+              class="revendedor-showcase__progress"
+              aria-hidden="true"
+            >
+              <span
+                class="revendedor-showcase__progress-bar"
+                data-progress-bar
+              ></span>
+            </div>
+          {%- endif -%}
+        </div>
       </div>
     </div>
   </section>
+
+  <script>
+    (() => {
+      const sectionId = 'RevendedorShowcase-{{ section.id }}';
+
+      class RevendedorShowcase {
+        constructor(section) {
+          this.section = section;
+          this.track = section.querySelector('[data-slider-track]');
+          this.slides = Array.from(section.querySelectorAll('[data-slide]'));
+          this.previousButton = section.querySelector('[data-previous-slide]');
+          this.nextButton = section.querySelector('[data-next-slide]');
+          this.currentElement = section.querySelector('[data-current-slide]');
+          this.progressBar = section.querySelector('[data-progress-bar]');
+
+          this.currentIndex = 0;
+          this.scrollFrame = null;
+          this.resizeFrame = null;
+
+          if (!this.track || this.slides.length === 0) return;
+
+          this.handleScroll = this.handleScroll.bind(this);
+          this.handleResize = this.handleResize.bind(this);
+          this.handleKeydown = this.handleKeydown.bind(this);
+          this.goToPrevious = this.goToPrevious.bind(this);
+          this.goToNext = this.goToNext.bind(this);
+
+          this.bindEvents();
+          this.updateState(0);
+        }
+
+        bindEvents() {
+          this.track.addEventListener('scroll', this.handleScroll, {
+            passive: true
+          });
+
+          this.track.addEventListener('keydown', this.handleKeydown);
+
+          window.addEventListener('resize', this.handleResize, {
+            passive: true
+          });
+
+          if (this.previousButton) {
+            this.previousButton.addEventListener(
+              'click',
+              this.goToPrevious
+            );
+          }
+
+          if (this.nextButton) {
+            this.nextButton.addEventListener(
+              'click',
+              this.goToNext
+            );
+          }
+        }
+
+        handleScroll() {
+          if (this.scrollFrame) {
+            cancelAnimationFrame(this.scrollFrame);
+          }
+
+          this.scrollFrame = requestAnimationFrame(() => {
+            const trackLeft = this.track.getBoundingClientRect().left;
+
+            let closestIndex = 0;
+            let closestDistance = Infinity;
+
+            this.slides.forEach((slide, index) => {
+              const slideLeft = slide.getBoundingClientRect().left;
+              const distance = Math.abs(slideLeft - trackLeft);
+
+              if (distance < closestDistance) {
+                closestDistance = distance;
+                closestIndex = index;
+              }
+            });
+
+            this.updateState(closestIndex);
+          });
+        }
+
+        handleResize() {
+          if (this.resizeFrame) {
+            cancelAnimationFrame(this.resizeFrame);
+          }
+
+          this.resizeFrame = requestAnimationFrame(() => {
+            this.scrollToSlide(this.currentIndex, 'auto');
+          });
+        }
+
+        handleKeydown(event) {
+          if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            this.goToPrevious();
+          }
+
+          if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            this.goToNext();
+          }
+
+          if (event.key === 'Home') {
+            event.preventDefault();
+            this.scrollToSlide(0);
+          }
+
+          if (event.key === 'End') {
+            event.preventDefault();
+            this.scrollToSlide(this.slides.length - 1);
+          }
+        }
+
+        goToPrevious() {
+          this.scrollToSlide(this.currentIndex - 1);
+        }
+
+        goToNext() {
+          this.scrollToSlide(this.currentIndex + 1);
+        }
+
+        scrollToSlide(index, behavior = 'smooth') {
+          const nextIndex = Math.max(
+            0,
+            Math.min(index, this.slides.length - 1)
+          );
+
+          const targetSlide = this.slides[nextIndex];
+
+          if (!targetSlide) return;
+
+          this.track.scrollTo({
+            left: targetSlide.offsetLeft,
+            behavior
+          });
+
+          this.updateState(nextIndex);
+        }
+
+        updateState(index) {
+          this.currentIndex = index;
+
+          this.slides.forEach((slide, slideIndex) => {
+            const isActive = slideIndex === index;
+
+            slide.classList.toggle('is-active', isActive);
+            slide.setAttribute(
+              'aria-current',
+              isActive ? 'true' : 'false'
+            );
+          });
+
+          if (this.currentElement) {
+            this.currentElement.textContent = String(index + 1).padStart(
+              2,
+              '0'
+            );
+          }
+
+          if (this.previousButton) {
+            this.previousButton.disabled = index === 0;
+          }
+
+          if (this.nextButton) {
+            this.nextButton.disabled =
+              index === this.slides.length - 1;
+          }
+
+          if (this.progressBar) {
+            const progress =
+              this.slides.length > 1
+                ? ((index + 1) / this.slides.length) * 100
+                : 100;
+
+            this.progressBar.style.width = `${progress}%`;
+          }
+        }
+
+        destroy() {
+          this.track.removeEventListener(
+            'scroll',
+            this.handleScroll
+          );
+
+          this.track.removeEventListener(
+            'keydown',
+            this.handleKeydown
+          );
+
+          window.removeEventListener(
+            'resize',
+            this.handleResize
+          );
+
+          if (this.previousButton) {
+            this.previousButton.removeEventListener(
+              'click',
+              this.goToPrevious
+            );
+          }
+
+          if (this.nextButton) {
+            this.nextButton.removeEventListener(
+              'click',
+              this.goToNext
+            );
+          }
+        }
+      }
+
+      const initializeSection = () => {
+        const section = document.getElementById(sectionId);
+
+        if (!section || section.dataset.showcaseInitialized === 'true') {
+          return;
+        }
+
+        section.dataset.showcaseInitialized = 'true';
+        section.revendedorShowcase = new RevendedorShowcase(section);
+      };
+
+      initializeSection();
+
+      document.addEventListener('shopify:section:load', (event) => {
+        if (event.target.querySelector(`#${sectionId}`)) {
+          initializeSection();
+        }
+      });
+
+      document.addEventListener('shopify:section:unload', (event) => {
+        const section = event.target.querySelector(`#${sectionId}`);
+
+        if (section?.revendedorShowcase) {
+          section.revendedorShowcase.destroy();
+        }
+      });
+
+      document.addEventListener('shopify:block:select', (event) => {
+        const selectedBlock = event.target.closest(
+          `#${sectionId} [data-slide]`
+        );
+
+        if (!selectedBlock) return;
+
+        const section = document.getElementById(sectionId);
+        const slideIndex = Number(selectedBlock.dataset.slideIndex);
+
+        section?.revendedorShowcase?.scrollToSlide(slideIndex);
+      });
+    })();
+  </script>
 {%- endif -%}
 
 {% schema %}
