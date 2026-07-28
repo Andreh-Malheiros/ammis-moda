@@ -205,7 +205,7 @@
     }
 
     #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) {
-      color: white;
+      color: var(--revendedor-background);
       background: var(--revendedor-foreground);
     }
 
@@ -413,13 +413,13 @@
     #shopify-section-{{ section.id }} .revendedor-benefit__text {
       max-width: 47rem;
       margin-top: 1.8rem;
-      color: var(--revendedor-foreground);
+      color: var(--revendedor-text-muted);
       font-size: 1.5rem;
       line-height: 1.65;
     }
 
     #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__text {
-      color: white;
+      color: rgba(var(--color-background), 0.76);
     }
 
     #shopify-section-{{ section.id }} .revendedor-benefit__text > *:first-child {
