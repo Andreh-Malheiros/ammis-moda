@@ -23,11 +23,11 @@
             "description_video": "",
             "heading": "",
             "description": "",
-            "tab_subheading": "New Collection",
-            "tab_heading": "Highlight Your Best",
+            "tab_subheading": "",
+            "tab_heading": "",
             "button_label": "SHOP NOW",
             "button_link": "https://ammismoda.com.br/collections/leather-selection",
-            "button_style": "tertiary",
+            "button_style": "simple",
             "enable_fullscreen_link": true
           }
         },
