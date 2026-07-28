@@ -163,6 +163,51 @@
         "type": "shopify://apps/discounty/blocks/sdk/d65eb522-0d94-499f-9831-d4b3301f5340",
         "disabled": true,
         "settings": {}
+      },
+      "9474353549209701101": {
+        "type": "shopify://apps/smart-size-recommender/blocks/smartsize-recommender-embed/b756010c-643b-4084-bf2f-97a8df367547",
+        "disabled": false,
+        "settings": {
+          "smartrecom_accent_color": "#000000",
+          "default_unit": "store_locale",
+          "show_support_link": false,
+          "smartrecom_support_link__label": "Ficou em dúvida? Fale com a gente — vamos te ajudar a escolher o tamanho certo.",
+          "smartrecom_support_link_url": "mailto:support@your-store.com",
+          "smartrecom_recommendation_text": "Seu tamanho é [[recommendedSize]]"
+        }
+      },
+      "10736359279748399689": {
+        "type": "shopify://apps/smartsize/blocks/smartsize-recommender-embed/465a43e0-6a1a-4d30-b82e-fe6118568705",
+        "disabled": false,
+        "settings": {
+          "smartrecom_button_label": "FIND MY SIZE",
+          "smartrecom_recommendation_text": "Your size is [[recommendedSize]]",
+          "button_style": "link",
+          "smartrecom_button_icon": "sizenone",
+          "smartrecom_button_text_color": "#000000",
+          "smartrecom_button_background_color": "",
+          "button_corner_radius_px": 5,
+          "button_margin_top_px": 0,
+          "button_margin_right_px": 0,
+          "button_margin_bottom_px": 0,
+          "button_margin_left_px": 0
+        }
+      },
+      "5958882876626866175": {
+        "type": "shopify://apps/smartsize/blocks/smartsize-sizechart-embed/465a43e0-6a1a-4d30-b82e-fe6118568705",
+        "disabled": false,
+        "settings": {
+          "button_label": "SIZE GUIDE",
+          "button_style": "link",
+          "button_icon": "sizenone",
+          "button_color": "#000000",
+          "button_background_color": "",
+          "button_corner_radius_px": 5,
+          "button_margin_top_px": 0,
+          "button_margin_right_px": 0,
+          "button_margin_bottom_px": 0,
+          "button_margin_left_px": 0
+        }
       }
     },
     "color_schemes": {
