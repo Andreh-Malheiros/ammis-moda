@@ -1,31 +1,30 @@
 .revendedor-form {
   position: relative;
+  overflow: clip;
 }
 
 .revendedor-form__shell {
-  max-width: 104rem;
+  width: min(100%, 112rem);
   margin-inline: auto;
-  padding: clamp(3.2rem, 5vw, 6.4rem);
-  border: 0.1rem solid rgba(var(--color-border), 1);
-  background: linear-gradient(
-    135deg,
-    rgba(var(--color-foreground), 0.052),
-    rgba(var(--color-foreground), 0.014)
-  );
+  padding: clamp(3.2rem, 5vw, 6rem);
+  border: 0.1rem solid rgba(var(--color-border), 0.78);
+  background: rgb(var(--color-background));
 }
 
 .revendedor-form__header {
-  max-width: 72rem;
-  margin-bottom: 3.2rem;
+  max-width: 76rem;
+  margin-bottom: clamp(3rem, 4vw, 4.8rem);
 }
 
 .revendedor-form__header--center {
-  text-align: center;
   margin-inline: auto;
+  text-align: center;
 }
 
 .revendedor-form__heading {
-  letter-spacing: -0.02em;
+  margin: 0;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
 }
 
 .revendedor-form__heading:not(:last-child) {
@@ -33,26 +32,268 @@
 }
 
 .revendedor-form__intro {
-  font-size: 1.6rem;
-  line-height: 1.7;
-  color: rgba(var(--color-foreground), 0.8);
+  max-width: 68rem;
+  color: rgba(var(--color-foreground), 0.7);
+  font-size: 1.55rem;
+  line-height: 1.72;
+}
+
+.revendedor-form__header--center .revendedor-form__intro {
+  margin-inline: auto;
 }
 
 .revendedor-form__intro p {
   margin: 0;
 }
 
-.revendedor-form__form {
+/* Progresso */
+
+.revendedor-form__progress {
+  margin-bottom: clamp(3rem, 4vw, 4.6rem);
+}
+
+.revendedor-form__progress-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.revendedor-form__progress-status,
+.revendedor-form__progress-hint {
+  margin: 0;
+}
+
+.revendedor-form__progress-status {
+  color: rgb(var(--color-foreground));
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.revendedor-form__progress-hint {
+  color: rgba(var(--color-foreground), 0.52);
+  font-size: 1.25rem;
+  line-height: 1.45;
+}
+
+.revendedor-form__progress-list {
   display: grid;
-  gap: 2.4rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.revendedor-form__progress-item {
+  min-width: 0;
+}
+
+.revendedor-form__progress-button {
+  display: grid;
+  grid-template-columns: 3.6rem minmax(0, 1fr);
+  gap: 1.1rem;
+  align-items: center;
+  width: 100%;
+  min-height: 6.4rem;
+  padding: 1.1rem 1.2rem;
+  border: 0;
+  color: rgba(var(--color-foreground), 0.48);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    color 240ms ease,
+    background-color 240ms ease;
+}
+
+.revendedor-form__progress-button:disabled {
+  cursor: default;
+}
+
+.revendedor-form__progress-button:not(:disabled):hover,
+.revendedor-form__progress-button:focus-visible,
+.revendedor-form__progress-button.is-active {
+  color: rgb(var(--color-foreground));
+  background: rgba(var(--color-foreground), 0.035);
+}
+
+.revendedor-form__progress-button:focus-visible {
+  outline: 0.2rem solid rgba(var(--color-foreground), 0.45);
+  outline-offset: 0.2rem;
+}
+
+.revendedor-form__progress-number {
+  display: inline-flex;
+  width: 3.6rem;
+  height: 3.6rem;
+  align-items: center;
+  justify-content: center;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.24);
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  transition:
+    color 240ms ease,
+    background-color 240ms ease,
+    border-color 240ms ease;
+}
+
+.revendedor-form__progress-button.is-active .revendedor-form__progress-number,
+.revendedor-form__progress-button.is-complete .revendedor-form__progress-number {
+  color: rgb(var(--color-background));
+  background: rgb(var(--color-foreground));
+  border-color: rgb(var(--color-foreground));
+}
+
+.revendedor-form__progress-button.is-complete .revendedor-form__progress-number::before {
+  content: "✓";
+}
+
+.revendedor-form__progress-button.is-complete .revendedor-form__progress-number {
+  font-size: 0;
+}
+
+.revendedor-form__progress-button.is-complete .revendedor-form__progress-number::before {
+  font-size: 1.2rem;
+}
+
+.revendedor-form__progress-copy {
+  display: grid;
+  min-width: 0;
+  gap: 0.25rem;
+}
+
+.revendedor-form__progress-copy strong,
+.revendedor-form__progress-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.revendedor-form__progress-copy strong {
+  font-size: 1.18rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.revendedor-form__progress-copy small {
+  color: rgba(var(--color-foreground), 0.48);
+  font-size: 1.05rem;
+  line-height: 1.3;
+}
+
+.revendedor-form__progress-track {
+  position: relative;
+  height: 0.2rem;
+  margin-top: 1.5rem;
+  overflow: hidden;
+  background: rgba(var(--color-foreground), 0.12);
+}
+
+.revendedor-form__progress-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: rgb(var(--color-foreground));
+  transition: width 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Mensagens */
+
+.revendedor-form__summary,
+.revendedor-form__success,
+.revendedor-form__submit-error {
+  margin-bottom: 2.2rem;
+  padding: 1.6rem 1.8rem;
+  border: 0.1rem solid currentColor;
+  background: rgb(var(--color-background));
+}
+
+.revendedor-form__summary {
+  color: rgb(var(--color-error));
+}
+
+.revendedor-form__summary-title {
+  margin: 0 0 0.8rem;
+  font-weight: 600;
+}
+
+.revendedor-form__summary ul {
+  margin: 0;
+  padding-left: 1.8rem;
+}
+
+.revendedor-form__summary li + li {
+  margin-top: 0.4rem;
+}
+
+.revendedor-form__success {
+  color: rgb(var(--color-foreground));
+  background: rgba(var(--color-foreground), 0.035);
+}
+
+.revendedor-form__submit-error {
+  color: rgb(var(--color-error));
+}
+
+/* Etapas */
+
+.revendedor-form__form {
+  position: relative;
+}
+
+.revendedor-form__step {
+  animation: revendedor-step-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.revendedor-form__step.is-leaving {
+  animation: revendedor-step-exit 180ms ease both;
+  pointer-events: none;
+}
+
+.revendedor-form__step[data-direction="back"] {
+  animation-name: revendedor-step-enter-back;
+}
+
+.revendedor-form__step-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.6rem;
+}
+
+.revendedor-form__step-heading span {
+  color: rgba(var(--color-foreground), 0.5);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.revendedor-form__step-heading p {
+  margin: 0;
+  color: rgba(var(--color-foreground), 0.58);
+  font-size: 1.28rem;
+  line-height: 1.5;
+  text-align: right;
 }
 
 .revendedor-form__group {
   min-width: 0;
   margin: 0;
-  padding: 2.4rem;
-  border: 0.1rem solid rgba(var(--color-border), 1);
+  padding: clamp(2.2rem, 3vw, 3.4rem);
+  border: 0.1rem solid rgba(var(--color-border), 0.82);
   background: rgb(var(--color-background));
+}
+
+.revendedor-form__group + .revendedor-form__group {
+  margin-top: 1.6rem;
 }
 
 .revendedor-form__group--consent {
@@ -63,13 +304,14 @@
   margin: 0;
   padding: 0 0.8rem;
   color: rgb(var(--color-foreground-title));
+  letter-spacing: -0.02em;
 }
 
 .revendedor-form__grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.8rem 1.6rem;
-  margin-top: 2rem;
+  margin-top: 2.2rem;
 }
 
 .revendedor-form__field,
@@ -79,18 +321,27 @@
 
 .revendedor-form__field .field__label {
   margin-bottom: 0.7rem;
-  font-size: 1.35rem;
+  font-size: 1.34rem;
   line-height: 1.35;
 }
 
 .revendedor-form__field .field__input {
-  min-height: 4.8rem;
-  font-size: 1.5rem;
+  min-height: 5rem;
+  font-size: 1.48rem;
   background-color: rgb(var(--color-background));
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background-color 220ms ease;
+}
+
+.revendedor-form__field .field__input:focus {
+  border-color: rgba(var(--color-foreground), 0.52);
+  box-shadow: 0 0 0 0.3rem rgba(var(--color-foreground), 0.06);
 }
 
 .revendedor-form__field textarea.field__input {
-  min-height: 11rem;
+  min-height: 12rem;
   resize: vertical;
 }
 
@@ -105,9 +356,9 @@
 .revendedor-form__field-error {
   display: none;
   margin-top: 0.7rem;
+  color: rgb(var(--color-error));
   font-size: 1.25rem;
   line-height: 1.45;
-  color: rgb(var(--color-error));
 }
 
 .revendedor-form__field-error:not(:empty) {
@@ -124,9 +375,9 @@
   display: block;
   min-height: 1.8rem;
   margin-top: 0.6rem;
+  color: rgba(var(--color-foreground), 0.66);
   font-size: 1.25rem;
   line-height: 1.45;
-  color: rgba(var(--color-foreground), 0.66);
 }
 
 .revendedor-form__field-status:not(:empty)::before {
@@ -165,8 +416,8 @@
 .revendedor-form__counter {
   align-self: flex-end;
   margin-top: 0.5rem;
-  font-size: 1.2rem;
   color: rgba(var(--color-foreground), 0.62);
+  font-size: 1.2rem;
 }
 
 .revendedor-form__stack {
@@ -196,7 +447,7 @@
   border: 0;
 }
 
-.revendedor-form__choice input[type=checkbox]:focus-visible + label::before {
+.revendedor-form__choice input[type="checkbox"]:focus-visible + label::before {
   outline: 0.2rem solid rgba(var(--color-foreground), 0.45);
   outline-offset: 0.3rem;
 }
@@ -242,15 +493,16 @@
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  min-height: 4.6rem;
+  min-height: 4.8rem;
   padding: 1rem 1.4rem;
   border: 0.1rem solid rgba(var(--color-border), 1);
   color: rgb(var(--color-foreground));
   background: rgba(var(--color-foreground), 0.018);
   cursor: pointer;
   transition:
-    border-color var(--duration-default),
-    background-color var(--duration-default);
+    border-color 220ms ease,
+    background-color 220ms ease,
+    transform 220ms ease;
 }
 
 .revendedor-form__radio label::before {
@@ -261,11 +513,10 @@
   border-radius: 50%;
   box-shadow: inset 0 0 0 0.35rem rgb(var(--color-background));
   background: rgb(var(--color-background));
-  transition: background-color var(--duration-default);
 }
 
 .revendedor-form__radio input:checked + label {
-  border-color: rgba(var(--color-foreground), 0.42);
+  border-color: rgba(var(--color-foreground), 0.5);
   background: rgba(var(--color-foreground), 0.05);
 }
 
@@ -278,50 +529,39 @@
   outline-offset: 0.3rem;
 }
 
-.revendedor-form__summary,
-.revendedor-form__success {
-  padding: 1.6rem 1.8rem;
-  border: 0.1rem solid currentColor;
-  background: rgb(var(--color-background));
-}
+/* Navegação */
 
-.revendedor-form__summary {
-  color: rgb(var(--color-error));
-}
-
-.revendedor-form__summary-title {
-  margin: 0 0 0.8rem;
-  font-weight: 600;
-}
-
-.revendedor-form__summary ul {
-  margin: 0;
-  padding-left: 1.8rem;
-}
-
-.revendedor-form__summary li + li {
-  margin-top: 0.4rem;
-}
-
-.revendedor-form__success {
-  color: rgb(var(--color-foreground));
-  background: rgba(var(--color-foreground), 0.035);
-}
-
-.revendedor-form__submit-error {
-  padding: 1.6rem 1.8rem;
-  border: 0.1rem solid rgb(var(--color-error));
-  color: rgb(var(--color-error));
-  background: rgb(var(--color-background));
-}
-
-.revendedor-form__actions {
+.revendedor-form__step-actions {
   display: flex;
-  justify-content: flex-start;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  margin-top: 2.2rem;
 }
 
-.revendedor-form__actions .button {
-  min-width: 18rem;
+.revendedor-form__step-actions--end {
+  justify-content: flex-end;
+}
+
+.revendedor-form__step-actions .button {
+  min-width: 17rem;
+  min-height: 5.2rem;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.revendedor-form__button-arrow {
+  font-size: 1.6rem;
+  line-height: 1;
+  transition: transform 220ms ease;
+}
+
+.revendedor-form__step-actions .button:hover .revendedor-form__button-arrow:last-child {
+  transform: translateX(0.3rem);
+}
+
+.revendedor-form__step-actions .button:hover .revendedor-form__button-arrow:first-child {
+  transform: translateX(-0.3rem);
 }
 
 .revendedor-form__actions .button[aria-disabled="true"] {
@@ -358,14 +598,164 @@
   }
 }
 
-@media screen and (max-width: 749px) {
-  .revendedor-form__shell,
-  .revendedor-form__group {
-    padding: 2.4rem;
+@media screen and (max-width: 989px) {
+  .revendedor-form__progress-copy small {
+    display: none;
   }
 
-  .revendedor-form__actions .button {
+  .revendedor-form__progress-button {
+    grid-template-columns: 3.4rem minmax(0, 1fr);
+    gap: 0.8rem;
+    padding-inline: 0.8rem;
+  }
+
+  .revendedor-form__progress-number {
+    width: 3.4rem;
+    height: 3.4rem;
+  }
+
+  .revendedor-form__progress-copy strong {
+    font-size: 1.08rem;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .revendedor-form__shell {
+    width: calc(100% + 2.8rem);
+    margin-left: -1.4rem;
+    padding: 3.2rem 1.8rem;
+    border-right: 0;
+    border-left: 0;
+  }
+
+  .revendedor-form__header {
+    margin-bottom: 3rem;
+  }
+
+  .revendedor-form__progress-head {
+    display: block;
+    margin-bottom: 1.6rem;
+  }
+
+  .revendedor-form__progress-hint {
+    margin-top: 0.6rem;
+  }
+
+  .revendedor-form__progress-list {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .revendedor-form__progress-item {
+    flex: 1;
+  }
+
+  .revendedor-form__progress-button {
+    display: flex;
+    min-height: 4.6rem;
+    justify-content: center;
+    padding: 0.5rem;
+    background: transparent !important;
+  }
+
+  .revendedor-form__progress-number {
+    width: 3.8rem;
+    height: 3.8rem;
+  }
+
+  .revendedor-form__progress-copy {
+    display: none;
+  }
+
+  .revendedor-form__progress-track {
+    margin-top: 1rem;
+  }
+
+  .revendedor-form__step-heading {
+    display: block;
+    margin-bottom: 1.4rem;
+  }
+
+  .revendedor-form__step-heading p {
+    margin-top: 0.5rem;
+    text-align: left;
+  }
+
+  .revendedor-form__group {
+    padding: 2.2rem 1.6rem;
+  }
+
+  .revendedor-form__legend {
+    padding-inline: 0.5rem;
+    font-size: 2rem;
+  }
+
+  .revendedor-form__step-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .revendedor-form__step-actions .button {
     width: 100%;
+    min-width: 0;
+  }
+
+  .revendedor-form__step-actions .button--secondary {
+    order: 2;
+  }
+
+  .revendedor-form__step-actions .button--primary,
+  .revendedor-form__actions [data-submit-button] {
+    order: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .revendedor-form__step,
+  .revendedor-form__step.is-leaving,
+  .revendedor-form__progress-fill,
+  .revendedor-form__progress-button,
+  .revendedor-form__progress-number,
+  .revendedor-form__button-arrow {
+    animation: none;
+    transition: none;
+  }
+}
+
+@keyframes revendedor-step-enter {
+  from {
+    opacity: 0;
+    transform: translateX(2.4rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes revendedor-step-enter-back {
+  from {
+    opacity: 0;
+    transform: translateX(-2.4rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes revendedor-step-exit {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(-1.6rem);
   }
 }
 
