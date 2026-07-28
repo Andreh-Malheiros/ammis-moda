@@ -562,84 +562,21 @@
       {%- endif -%}
 
       {%- if cart != empty -%}
-        {% assign active_coupon = cart.attributes.Cupom_Aplicado | upcase %}
-        {% assign discount_percentage = 0 %}
-        {% assign is_free_shipping = false %}
-        {% assign discount_amount = 0 %}
+        {%- assign active_coupon = '' -%}
+        {%- assign active_coupon_savings = 0 -%}
 
-        {% assign eligible_total_arcadia = 0 %}
-        {% assign eligible_total_clubeammis = 0 %}
+        {%- for discount_application in cart.discount_applications -%}
+          {%- if discount_application.type == 'discount_code' -%}
+            {%- assign active_coupon = discount_application.title -%}
+            {%- assign active_coupon_savings = active_coupon_savings
+              | plus: discount_application.total_allocated_amount
+            -%}
+          {%- endif -%}
+        {%- endfor -%}
 
-        {% for item in cart.items %}
-          {% assign in_arcadia = false %}
-          {% assign in_clubeammis = false %}
-
-          {% for collection in item.product.collections %}
-            {% assign handle = collection.handle | downcase %}
-            {% if handle == 'arcadia26' %}
-              {% assign in_arcadia = true %}
-            {% endif %}
-            {% if handle == 'couro' or handle == 'alfaiataria' or handle == 'aqva' %}
-              {% assign in_clubeammis = true %}
-            {% endif %}
-          {% endfor %}
-
-          {% if in_arcadia %}
-            {% assign eligible_total_arcadia = eligible_total_arcadia | plus: item.final_line_price %}
-          {% endif %}
-          {% if in_clubeammis %}
-            {% assign eligible_total_clubeammis = eligible_total_clubeammis | plus: item.final_line_price %}
-          {% endif %}
-        {% endfor %}
-
-        <div
-          id="Cart-Totals-Data"
-          data-raw-total="{{ cart.total_price }}"
-          data-arcadia="{{ eligible_total_arcadia }}"
-          data-clubeammis="{{ eligible_total_clubeammis }}"
-          style="display:none;"
-        ></div>
-
-        {% assign active_coupon_invalid = false %}
-        {% assign active_coupon_error_msg = '' %}
-
-        {% if active_coupon == 'PRIMEIRACOMPRA' or active_coupon == 'GIFT CARD' or active_coupon == 'GIFTCARD' or active_coupon == 'ANIV10' %}
-          {% if eligible_total_arcadia > 0 %}
-            {% assign discount_percentage = 15 %}
-            {% assign discount_multiplier = discount_percentage | divided_by: 100.0 %}
-            {% assign discount_amount = eligible_total_arcadia | times: discount_multiplier | round %}
-          {% else %}
-            {% assign active_coupon_invalid = true %}
-            {% assign active_coupon_error_msg = 'Cupom válido apenas para a coleção Arcádia.' %}
-          {% endif %}
-        {% elsif active_coupon == 'BDAY' %}
-          {% assign discount_percentage = 10 %}
-          {% assign discount_multiplier = discount_percentage | divided_by: 100.0 %}
-          {% assign discount_amount = cart.total_price | times: discount_multiplier | round %}
-        {% elsif active_coupon == 'CLUBEAMMIS' %}
-          {% if eligible_total_clubeammis > 0 %}
-            {% assign discount_percentage = 10 %}
-            {% assign discount_multiplier = discount_percentage | divided_by: 100.0 %}
-            {% assign discount_amount = eligible_total_clubeammis | times: discount_multiplier | round %}
-          {% else %}
-            {% assign active_coupon_invalid = true %}
-            {% assign active_coupon_error_msg = 'Cupom válido apenas para coleções Couro, Alfaiataria e Aqva.' %}
-          {% endif %}
-          {% comment %}
-            {% elsif active_coupon == 'FRETEGRÁTIS' or active_coupon == 'FRETEGRATIS' %}
-            {% if cart.total_price >= 200000 %}
-              {% assign is_free_shipping = true %}
-            {% else %}
-              {% assign active_coupon_invalid = true %}
-              {% assign active_coupon_error_msg = 'Valor mínimo de R$ 2.000,00 não atingido.' %}
-            {% endif %}
-          {% endcomment %}
-        {% elsif active_coupon != blank %}
-          {% assign active_coupon_invalid = true %}
-          {% assign active_coupon_error_msg = 'Cupom inválido.' %}
-        {% endif %}
-
-        {% assign final_total = cart.total_price | minus: discount_amount %}
+        {%- assign cart_original_total = cart.original_total_price -%}
+        {%- assign cart_final_total = cart.total_price -%}
+        {%- assign cart_total_savings = cart.total_discount -%}
 
         <div class="drawer__footer">
           <div class="cart-drawer__footer" {{ block.shopify_attributes }}>
@@ -700,18 +637,13 @@
                 </div>
                 <p
                   id="discount-message-area"
-                  class="accordion-message {% if active_coupon == blank %}hidden{% elsif active_coupon_invalid %}error{% else %}success{% endif %}"
+                  class="accordion-message {% if active_coupon == blank %}hidden{% else %}success{% endif %}"
                 >
-                  {% if is_free_shipping %}
-                    <strong>Frete Grátis</strong> ativado.
-                  {% elsif discount_percentage > 0 %}
-                    {% if active_coupon == 'BDAY' %}
-                      <strong>{{ discount_percentage }}% OFF</strong> ativado para todo o pedido.
-                    {% else %}
-                      <strong>{{ discount_percentage }}% OFF</strong> ativado para itens elegíveis.
+                  {% if active_coupon != blank %}
+                    <strong>{{ active_coupon | escape }}</strong> aplicado com sucesso.
+                    {% if active_coupon_savings > 0 %}
+                      Economia de <strong>{{ active_coupon_savings | money_with_currency }}</strong>.
                     {% endif %}
-                  {% elsif active_coupon_invalid %}
-                    {{ active_coupon_error_msg }}
                   {% endif %}
                 </p>
               </details>
@@ -753,17 +685,17 @@
               <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 0.8rem;">
                 <span class="subtitle" style="font-size: 1rem;">Subtotal</span>
                 <span class="secondary_text" id="CartDrawer-OriginalTotal">
-                  {{- cart.total_price | money_with_currency -}}
+                  {{- cart_original_total | money_with_currency -}}
                 </span>
               </div>
 
               <div
                 id="CartDrawer-DiscountRow"
-                style="display: {% if discount_percentage > 0 %}flex{% else %}none{% endif %}; justify-content: space-between; width: 100%; margin-bottom: 0.8rem; color: #2e7d32;"
+                style="display: {% if cart_total_savings > 0 %}flex{% else %}none{% endif %}; justify-content: space-between; width: 100%; margin-bottom: 0.8rem; color: #2e7d32;"
               >
                 <span class="subtitle" style="font-size: 1rem;">Desconto</span>
-                <span id="CartDrawer-DiscountValue" style="font-weight: 600;"
-                  >- {{ discount_amount | money_with_currency -}}
+                <span id="CartDrawer-DiscountValue" style="font-weight: 600;">
+                  - {{ cart_total_savings | money_with_currency }}
                 </span>
               </div>
 
@@ -774,13 +706,13 @@
                   id="CartDrawer-FinalTotal"
                   style="margin: 0; font-size: 1.3rem; font-weight: 600; color: rgba(var(--color-foreground), 1);"
                 >
-                  {{ final_total | money_with_currency }}
+                  {{ cart_final_total | money_with_currency }}
                 </p>
               </div>
 
               {% assign max_installments = settings.max_installments %}
               {% assign min_installment_value = settings.min_installment_value | times: 100 %}
-              {% assign calculated_installments = final_total | divided_by: min_installment_value %}
+              {% assign calculated_installments = cart_final_total | divided_by: min_installment_value %}
 
               {% if calculated_installments > max_installments %}
                 {% assign final_installment_count = max_installments %}
@@ -790,7 +722,7 @@
 
               <div style="text-align: right; width: 100%; margin-top: 0.5rem;">
                 {% if final_installment_count >= 1 %}
-                  {% assign installment_value = final_total | divided_by: final_installment_count %}
+                  {% assign installment_value = cart_final_total | divided_by: final_installment_count %}
                   <p
                     class="installment-text"
                     id="CartDrawer-InstallmentDisplay"
@@ -809,11 +741,7 @@
               </div>
 
               <small class="tax-note secondary_text" style="display: block; text-align: right; margin-top: 1.5rem;">
-                {% if is_free_shipping %}
-                  Frete: <strong style="color:#2e7d32;">Grátis</strong> (Aplicado via cupom)
-                {% else %}
-                  Impostos e frete calculados no checkout.
-                {% endif %}
+                Impostos e frete calculados no checkout.
               </small>
             </div>
 
@@ -1093,168 +1021,170 @@
         }
       }
 
-      // --- LÓGICA DO CUPOM DE DESCONTO ---
-      if (e.target && e.target.id === 'CartDrawer-ApplyDiscount') {
-        e.preventDefault();
-        const discountInput = document.getElementById('CartDrawer-Discount');
-        const applyBtn = document.getElementById('CartDrawer-ApplyDiscount');
-        const removeBtn = document.getElementById('CartDrawer-RemoveDiscount');
-        const icon = document.getElementById('CartDrawer-DiscountIcon');
-        const msgArea = document.getElementById('discount-message-area');
-        const taxNote = document.querySelector('.tax-note');
+      // --- LÓGICA NATIVA DE CUPOM DA SHOPIFY ---
+      const normalizeDiscountCode = (value) =>
+        String(value || '')
+          .trim()
+          .toLocaleUpperCase('pt-BR');
 
-        const originalTotalDisplay = document.getElementById('CartDrawer-OriginalTotal');
-        const discountRow = document.getElementById('CartDrawer-DiscountRow');
-        const discountValueDisplay = document.getElementById('CartDrawer-DiscountValue');
-        const finalTotalDisplay = document.getElementById('CartDrawer-FinalTotal');
+      const getAppliedDiscountTitles = (cart) => {
+        const titles = new Set();
 
-        // Resgate dos subtotais estruturados no Liquid
-        const totalsDataEl = document.getElementById('Cart-Totals-Data');
-        const rawTotal = totalsDataEl ? parseInt(totalsDataEl.dataset.rawTotal, 10) : 0;
-        const arcadiaTotal = totalsDataEl ? parseInt(totalsDataEl.dataset.arcadia, 10) : 0;
-        const clubeammisTotal = totalsDataEl ? parseInt(totalsDataEl.dataset.clubeammis, 10) : 0;
-
-        const validCoupons = {
-          PRIMEIRACOMPRA: {
-            type: 'percent',
-            val: 15,
-            eligibleTotal: arcadiaTotal,
-            errorMsg: 'Cupom válido apenas para a coleção Arcádia.',
-          },
-          GIFTCARD: {
-            type: 'percent',
-            val: 15,
-            eligibleTotal: arcadiaTotal,
-            errorMsg: 'Cupom válido apenas para a coleção Arcádia.',
-          },
-          
-          BDAY: {
-            type: 'percent',
-            val: 10,
-            eligibleTotal: rawTotal,
-            appliesToEntireOrder: true,
-            errorMsg: '',
-          },
-          ANIV10: {
-            type: 'percent',
-            val: 15,
-            eligibleTotal: arcadiaTotal,
-            errorMsg: 'Cupom válido apenas para a coleção Arcádia.',
-          },
-          CLUBEAMMIS: {
-            type: 'percent',
-            val: 10,
-            eligibleTotal: clubeammisTotal,
-            errorMsg: 'Cupom válido apenas para coleções Couro, Alfaiataria e Aqva.',
-          },
-          FRETEGRÁTIS: {
-            type: 'shipping_min',
-            val: 200000,
-            eligibleTotal: rawTotal,
-            errorMsg: 'Valor mínimo de R$ 2.000,00 não atingido.',
-          },
-          FRETEGRATIS: {
-            type: 'shipping_min',
-            val: 200000,
-            eligibleTotal: rawTotal,
-            errorMsg: 'Valor mínimo de R$ 2.000,00 não atingido.',
-          },
+        const registerTitle = (title) => {
+          const normalized = normalizeDiscountCode(title);
+          if (normalized) titles.add(normalized);
         };
 
-        if (discountInput && discountInput.value.trim() !== '') {
-          let code = discountInput.value.trim().toUpperCase();
+        (cart.discount_applications || []).forEach((application) => registerTitle(application.title));
+        (cart.cart_level_discount_applications || []).forEach((application) => registerTitle(application.title));
 
-          if (validCoupons.hasOwnProperty(code)) {
-            let coupon = validCoupons[code];
+        (cart.items || []).forEach((item) => {
+          (item.discounts || []).forEach((discount) => registerTitle(discount.title));
 
-            // Validação de elegibilidade (seja por falta de itens na coleção ou valor mínimo de frete)
-            if (
-              (coupon.type === 'percent' && coupon.eligibleTotal <= 0) ||
-              (coupon.type === 'shipping_min' && rawTotal < coupon.val)
-            ) {
-              msgArea.classList.remove('hidden', 'success');
-              msgArea.classList.add('error');
-              msgArea.innerHTML = coupon.errorMsg;
-              return;
-            }
+          (item.discount_allocations || []).forEach((allocation) => {
+            registerTitle(allocation.discount_application && allocation.discount_application.title);
+          });
 
-            discountInput.disabled = true;
-            discountInput.value = code;
-            icon.classList.remove('hidden');
-            applyBtn.classList.add('hidden');
-            removeBtn.classList.remove('hidden');
-            msgArea.classList.remove('hidden', 'error');
-            msgArea.classList.add('success');
+          (item.line_level_discount_allocations || []).forEach((allocation) => {
+            registerTitle(allocation.discount_application && allocation.discount_application.title);
+          });
+        });
 
-            if (coupon.type === 'percent') {
-              let discountAmount = Math.round(coupon.eligibleTotal * (coupon.val / 100));
-              let finalTotal = rawTotal - discountAmount;
+        return titles;
+      };
 
-              msgArea.innerHTML = coupon.appliesToEntireOrder
-                ? ` <strong>${coupon.val}% OFF</strong> ativado para todo o pedido.`
-                : ` <strong>${coupon.val}% OFF</strong> ativado para itens elegíveis.`;
-              if (discountRow) {
-                discountRow.style.display = 'flex';
-                discountValueDisplay.innerHTML = `- ${formatMoney(discountAmount)}`;
-              }
-              if (finalTotalDisplay) finalTotalDisplay.innerHTML = formatMoney(finalTotal);
-              if (taxNote) taxNote.innerHTML = 'Impostos e frete calculados no checkout.';
+      const renderUpdatedCartSections = (cartState) => {
+        const cartDrawer = document.querySelector('cart-drawer');
 
-              updateInstallmentsUI(finalTotal);
-            } else if (coupon.type === 'shipping_min') {
-              msgArea.innerHTML = ' <strong>Frete Grátis</strong> ativado.';
-              if (discountRow) discountRow.style.display = 'none';
-              if (finalTotalDisplay) finalTotalDisplay.innerHTML = formatMoney(rawTotal);
-              if (taxNote)
-                taxNote.innerHTML = ' Frete: <strong style="color:#2e7d32;">Grátis</strong> (Aplicado via cupom)';
+        if (cartDrawer && typeof cartDrawer.renderContents === 'function' && cartState.sections) {
+          cartDrawer.renderContents({
+            id: null,
+            sections: cartState.sections,
+          });
+          return;
+        }
 
-              updateInstallmentsUI(rawTotal);
-            }
+        window.location.reload();
+      };
 
-            fetch(window.Shopify.routes.root + 'cart/update.js', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ attributes: { Cupom_Aplicado: code } }),
-            });
-          } else {
-            msgArea.classList.remove('hidden', 'success');
-            msgArea.classList.add('error');
-            msgArea.innerHTML = 'Cupom inválido ou expirado.';
+      const showDiscountError = (code, message) => {
+        window.setTimeout(() => {
+          const accordion = document.getElementById('CartDrawer-DiscountAccordion');
+          const input = document.getElementById('CartDrawer-Discount');
+          const messageArea = document.getElementById('discount-message-area');
+
+          if (accordion) accordion.open = true;
+
+          if (input) {
+            input.disabled = false;
+            input.value = code;
+          }
+
+          if (messageArea) {
+            messageArea.classList.remove('hidden', 'success');
+            messageArea.classList.add('error');
+            messageArea.textContent = message;
+          }
+        }, 80);
+      };
+
+      const updateShopifyDiscount = async (code) => {
+        const routesRoot =
+          window.Shopify && window.Shopify.routes && window.Shopify.routes.root
+            ? window.Shopify.routes.root
+            : '/';
+
+        const response = await fetch(routesRoot + 'cart/update.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          body: JSON.stringify({
+            discount: code,
+            sections: ['cart-drawer', 'cart-icon-bubble'],
+            sections_url: window.location.pathname,
+          }),
+        });
+
+        const cartState = await response.json();
+
+        if (!response.ok) {
+          const description =
+            cartState && (cartState.description || cartState.message)
+              ? cartState.description || cartState.message
+              : 'Não foi possível atualizar o cupom.';
+          throw new Error(description);
+        }
+
+        return cartState;
+      };
+
+      if (e.target && e.target.id === 'CartDrawer-ApplyDiscount') {
+        e.preventDefault();
+
+        const discountInput = document.getElementById('CartDrawer-Discount');
+        const applyButton = document.getElementById('CartDrawer-ApplyDiscount');
+        const code = normalizeDiscountCode(discountInput ? discountInput.value : '');
+
+        if (!code) {
+          showDiscountError('', 'Digite um cupom de desconto.');
+          return;
+        }
+
+        if (applyButton) {
+          applyButton.disabled = true;
+          applyButton.textContent = 'Aplicando...';
+        }
+
+        try {
+          const cartState = await updateShopifyDiscount(code);
+          const appliedTitles = getAppliedDiscountTitles(cartState);
+          const wasApplied = appliedTitles.has(code);
+
+          renderUpdatedCartSections(cartState);
+
+          if (!wasApplied) {
+            showDiscountError(
+              code,
+              'Cupom inválido, expirado ou não aplicável aos produtos e condições atuais do carrinho.'
+            );
+          }
+        } catch (error) {
+          console.error('[AMMIS] Erro ao aplicar cupom:', error);
+          showDiscountError(code, error.message || 'Não foi possível aplicar o cupom.');
+        } finally {
+          const currentApplyButton = document.getElementById('CartDrawer-ApplyDiscount');
+          if (currentApplyButton) {
+            currentApplyButton.disabled = false;
+            currentApplyButton.textContent = 'Aplicar';
           }
         }
       }
+
       if (e.target && e.target.id === 'CartDrawer-RemoveDiscount') {
         e.preventDefault();
-        const discountInput = document.getElementById('CartDrawer-Discount');
-        const applyBtn = document.getElementById('CartDrawer-ApplyDiscount');
-        const removeBtn = document.getElementById('CartDrawer-RemoveDiscount');
-        const icon = document.getElementById('CartDrawer-DiscountIcon');
-        const msgArea = document.getElementById('discount-message-area');
-        const taxNote = document.querySelector('.tax-note');
 
-        const discountRow = document.getElementById('CartDrawer-DiscountRow');
-        const finalTotalDisplay = document.getElementById('CartDrawer-FinalTotal');
-        const totalsDataEl = document.getElementById('Cart-Totals-Data');
-        const rawTotal = totalsDataEl ? parseInt(totalsDataEl.dataset.rawTotal, 10) : 0;
+        const removeButton = document.getElementById('CartDrawer-RemoveDiscount');
 
-        discountInput.disabled = false;
-        discountInput.value = '';
-        icon.classList.add('hidden');
-        removeBtn.classList.add('hidden');
-        applyBtn.classList.remove('hidden');
-        msgArea.classList.add('hidden');
+        if (removeButton) {
+          removeButton.disabled = true;
+          removeButton.textContent = 'Removendo...';
+        }
 
-        if (discountRow) discountRow.style.display = 'none';
-        if (finalTotalDisplay) finalTotalDisplay.innerHTML = formatMoney(rawTotal);
-        if (taxNote) taxNote.innerHTML = 'Impostos e frete calculados no checkout.';
-
-        updateInstallmentsUI(rawTotal);
-
-        fetch(window.Shopify.routes.root + 'cart/update.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ attributes: { Cupom_Aplicado: '' } }),
-        });
+        try {
+          const cartState = await updateShopifyDiscount('');
+          renderUpdatedCartSections(cartState);
+        } catch (error) {
+          console.error('[AMMIS] Erro ao remover cupom:', error);
+          showDiscountError('', error.message || 'Não foi possível remover o cupom.');
+        } finally {
+          const currentRemoveButton = document.getElementById('CartDrawer-RemoveDiscount');
+          if (currentRemoveButton) {
+            currentRemoveButton.disabled = false;
+            currentRemoveButton.textContent = 'Remover';
+          }
+        }
       }
     });
   });
