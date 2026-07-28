@@ -312,6 +312,19 @@
     },
     "mid_cta": {
       "type": "revendedor-content",
+      "blocks": {
+        "image_bxJpAC": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/FOTO_SITE_1080_x_1350_px_50.jpg",
+            "image_alt": "",
+            "image_ratio": "portrait"
+          }
+        }
+      },
+      "block_order": [
+        "image_bxJpAC"
+      ],
       "custom_css": [
         "p {color: white !important;}"
       ],
@@ -320,9 +333,9 @@
         "anchor_id": "",
         "color_scheme": "background-1",
         "style": "highlight",
-        "layout": "text-only",
-        "alignment": "center",
-        "eyebrow": "",
+        "layout": "media-right",
+        "alignment": "left",
+        "eyebrow": "dasda",
         "heading": "Sua loja combina com o universo AMMIS?",
         "heading_size": "h2",
         "text": "<p>Apresente sua operacao a nossa equipe e de o primeiro passo para uma possivel parceria comercial.</p>",
