@@ -15,8 +15,8 @@
         "enable_section": true,
         "color_scheme": "background-2",
         "eyebrow": "PARCERIA COMERCIAL AMMIS",
-        "heading": "Leve o universo AMMIS para a sua loja",
-        "text": "<p>Faca parte de uma selecao de lojistas conectados a identidade, ao estilo e ao posicionamento da AMMIS. Preencha seu cadastro e apresente sua loja a nossa equipe comercial.</p>",
+        "heading": "Torne-se um revendedor AMMIS.",
+        "text": "<p>Acreditamos em parcerias construídas com propósito. Buscamos multimarcas que compartilhem da nossa identidade, valorizem o design autoral e ofereçam uma experiência alinhada ao universo AMMIS. </p><p>Preencha seu cadastro e apresente sua loja. Nossa equipe comercial avaliará as informações e entrará em contato caso o perfil esteja alinhado<br/>ao posicionamento da marca.</p>",
         "image": "shopify://shop_images/banner-example.png",
         "image_alt": "Campanha AMMIS para apresentacao da parceria comercial",
         "mobile_image_alt": "Campanha AMMIS para apresentacao da parceria comercial",
@@ -40,28 +40,36 @@
           "type": "feature",
           "settings": {
             "show_item": true,
-            "text": "Lojas físicas, e-commerces ou operações híbridas"
+            "text": "Parcerias construídas com relacionamento próximo e atendimento personalizado."
           }
         },
         "feature_2": {
           "type": "feature",
           "settings": {
             "show_item": true,
-            "text": "Análise comercial realizada individualmente"
+            "text": "Venda para lojas físicas, e-commerce e operações híbridas."
           }
         },
         "feature_3": {
           "type": "feature",
           "settings": {
             "show_item": true,
-            "text": "Relacionamento direto com a equipe responsável"
+            "text": "Acompanhamento direto da equipe comercial AMMIS."
+          }
+        },
+        "feature_YUcmNh": {
+          "type": "feature",
+          "settings": {
+            "show_item": true,
+            "text": "Processo de credenciamento realizado de forma criteriosa e individual."
           }
         }
       },
       "block_order": [
         "feature_1",
         "feature_2",
-        "feature_3"
+        "feature_3",
+        "feature_YUcmNh"
       ],
       "settings": {
         "enable_section": true,
@@ -71,10 +79,10 @@
         "layout": "media-left",
         "alignment": "left",
         "eyebrow": "OPORTUNIDADE DE REVENDA",
-        "heading": "Uma parceria para lojas que valorizam identidade e curadoria",
-        "heading_size": "h3",
-        "text": "<p>A AMMIS busca lojistas que compartilham atenção aos detalhes, cuidado na seleção de produtos e compromisso com uma experiência de compra alinhada a um posicionamento contemporâneo.</p>",
-        "secondary_text": "<p>Cada cadastro é analisado individualmente, considerando o perfil da loja, sua atuação comercial e a compatibilidade com o universo da marca.</p>",
+        "heading": "Faça parte do universo AMMIS",
+        "heading_size": "h1",
+        "text": "<p>Mais do que ampliar nossa presença, buscamos parceiros que representem a essência da marca.<br/><br/>Com mais de 15 anos de mercado, cada loja que integra a nossa rede é escolhida por compartilhar a mesma visão sobre qualidade, curadoria, experiência e elegância. A AMMIS é atemporal, singular e feita para mulheres contemporâneas e autênticas.<br/><br/>Se você acredita que sua operação dialoga com esse universo, será um prazer conhecer sua história.</p><p></p><p><strong>O que oferecemos:</strong></p>",
+        "secondary_text": "<p>Cada cadastro é analisado considerando o perfil da loja, seu posicionamento e a afinidade com a identidade da AMMIS.</p>",
         "show_media": true,
         "media_label": "Imagem editorial da oportunidade comercial AMMIS",
         "image": "shopify://shop_images/FOTO_SITE_27_541f729a-1bd3-45f9-9340-6cdc7abe1e2c.jpg",
@@ -86,8 +94,8 @@
         "secondary_button_label": "",
         "secondary_button_link": "",
         "secondary_button_style": "simple",
-        "margin_top": "l",
-        "margin_bottom": "s"
+        "margin_top": "s",
+        "margin_bottom": "xs"
       }
     },
     "benefits": {
@@ -99,8 +107,8 @@
             "show_item": true,
             "icon_text": "01",
             "image_alt": "",
-            "heading": "Identidade que fortalece o mix",
-            "text": "<p>Produtos inseridos em um universo visual consistente, permitindo composicoes alinhadas a lojas que valorizam estilo, curadoria e apresentacao.</p>"
+            "heading": "UMA MARCA COM IDENTIDADE CLARA",
+            "text": "<p>Cada coleção é desenvolvida a partir de um conceito consistente, criando um universo visual coeso que fortalece a exposição da loja e facilita<br/>uma curadoria alinhada ao cliente contemporâneo.</p>"
           }
         },
         "benefit_2": {
@@ -109,8 +117,8 @@
             "show_item": true,
             "icon_text": "02",
             "image_alt": "",
-            "heading": "Colecoes com presenca comercial",
-            "text": "<p>Uma proposta de moda construida para gerar desejo, ampliar possibilidades de exposicao e contribuir para uma experiencia de compra mais completa.</p>"
+            "heading": "CURADORIA QUE AGREGA VALOR",
+            "text": "<p>Mais do que produtos, oferecemos coleções capazes de enriquecer o mix da loja, fortalecer seu posicionamento e criar uma experiência de<br/>compra sofisticada e consistente.</p>"
           }
         },
         "benefit_3": {
@@ -119,8 +127,8 @@
             "show_item": true,
             "icon_text": "03",
             "image_alt": "",
-            "heading": "Relacionamento proximo",
-            "text": "<p>Contato comercial direcionado para entender o perfil da loja, esclarecer duvidas e conduzir os proximos passos da parceria.</p>"
+            "heading": "QUALIDADE EM CADA DETALHE",
+            "text": "<p>Materiais selecionados, modelagens refinadas e acabamento cuidadoso traduzem o compromisso da AMMIS com produtos que unem design,<br/>durabilidade e valor percebido.</p>"
           }
         },
         "benefit_4": {
@@ -129,8 +137,8 @@
             "show_item": true,
             "icon_text": "04",
             "image_alt": "",
-            "heading": "Curadoria alinhada a marca",
-            "text": "<p>Uma selecao pensada para lojistas que procuram trabalhar com produtos conectados a uma identidade contemporanea e reconhecivel.</p>"
+            "heading": "RELACIONAMENTO PRÓXIMO",
+            "text": "<p>Nossa equipe comercial acompanha cada parceiro de forma personalizada, oferecendo suporte contínuo, orientação comercial e um<br/>atendimento próximo em todas as etapas da parceria.</p>"
           }
         },
         "benefit_5": {
@@ -139,8 +147,8 @@
             "show_item": true,
             "icon_text": "05",
             "image_alt": "",
-            "heading": "Possibilidade de ampliar o portfolio",
-            "text": "<p>Uma oportunidade para complementar o mix da loja com produtos que conversem com o posicionamento e o publico do estabelecimento.</p>"
+            "heading": "PARCERIAS CONSTRUÍDAS COM CRITÉRIO",
+            "text": "<p>Cada novo parceiro é selecionado individualmente, considerando o perfil da operação, o posicionamento da loja e sua afinidade com o<br/>universo da AMMIS. Acreditamos que as melhores parcerias nascem quando existe propósito em comum.</p>"
           }
         },
         "benefit_6": {
@@ -149,8 +157,8 @@
             "show_item": true,
             "icon_text": "06",
             "image_alt": "",
-            "heading": "Parceria analisada individualmente",
-            "text": "<p>Cada cadastro e avaliado de forma cuidadosa, buscando compatibilidade entre a AMMIS e a proposta comercial da loja.</p>"
+            "heading": "COLEÇÕES PENSADAS PARA VENDER",
+            "text": "<p>Design autoral, equilíbrio entre peças comerciais e itens de desejo, além de uma construção de mix que amplia as possibilidades de venda e<br/>composição dentro da loja.</p>"
           }
         }
       },
@@ -166,12 +174,12 @@
         "enable_section": true,
         "color_scheme": "background-1",
         "eyebrow": "PARA LOJISTAS",
-        "heading": "Por que levar a AMMIS para a sua loja?",
-        "heading_size": "h2",
+        "heading": "POR QUE FAZER PARTE O UNIVERSO AMMIS?",
+        "heading_size": "h1",
         "text": "",
         "alignment": "center",
         "columns_desktop": 3,
-        "margin_top": "m",
+        "margin_top": "xs",
         "margin_bottom": "l"
       }
     },
@@ -377,99 +385,10 @@
         "margin_bottom": "l"
       }
     },
-    "faq": {
-      "type": "revendedor-faq",
-      "blocks": {
-        "faq_1": {
-          "type": "question",
-          "settings": {
-            "show_item": true,
-            "question": "Quem pode se cadastrar?",
-            "answer": "<p>Lojistas com operacao fisica, online ou em ambos os formatos podem apresentar sua empresa para analise da equipe comercial.</p>"
-          }
-        },
-        "faq_2": {
-          "type": "question",
-          "settings": {
-            "show_item": true,
-            "question": "Preciso ter loja fisica?",
-            "answer": "<p>Nao. O cadastro podera ser realizado por lojas fisicas, e-commerces ou operacoes que atuem nos dois formatos.</p>"
-          }
-        },
-        "faq_3": {
-          "type": "question",
-          "settings": {
-            "show_item": true,
-            "question": "O cadastro garante aprovacao?",
-            "answer": "<p>Nao. O envio das informacoes inicia uma analise comercial e nao representa aprovacao automatica.</p>"
-          }
-        },
-        "faq_4": {
-          "type": "question",
-          "settings": {
-            "show_item": true,
-            "question": "Como funciona a analise?",
-            "answer": "<p>A equipe avalia os dados empresariais, o perfil da loja e a compatibilidade da operacao com o posicionamento da AMMIS.</p>"
-          }
-        },
-        "faq_5": {
-          "type": "question",
-          "settings": {
-            "show_item": true,
-            "question": "Quando receberei retorno?",
-            "answer": "<p>Quando houver alinhamento comercial, a equipe responsavel entrara em contato pelos dados informados no cadastro.</p>"
-          }
-        },
-        "faq_6": {
-          "type": "question",
-          "settings": {
-            "show_item": true,
-            "question": "Posso atualizar minhas informacoes depois?",
-            "answer": "<p>Caso precise corrigir ou complementar informacoes, sera possivel falar diretamente com o setor comercial.</p>"
-          }
-        },
-        "faq_7": {
-          "type": "question",
-          "settings": {
-            "show_item": true,
-            "question": "Posso me cadastrar sem Instagram?",
-            "answer": "<p>Sim. O formulario permitira informar que a loja ainda nao possui perfil no Instagram.</p>"
-          }
-        },
-        "faq_8": {
-          "type": "question",
-          "settings": {
-            "show_item": true,
-            "question": "Lojas de outros estados podem se cadastrar?",
-            "answer": "<p>Sim. O formulario estara disponivel para lojas interessadas em apresentar sua operacao a equipe comercial.</p>"
-          }
-        }
-      },
-      "block_order": [
-        "faq_1",
-        "faq_2",
-        "faq_3",
-        "faq_4",
-        "faq_5",
-        "faq_6",
-        "faq_7",
-        "faq_8"
-      ],
-      "settings": {
-        "enable_section": true,
-        "color_scheme": "background-1",
-        "eyebrow": "FAQ",
-        "heading": "Perguntas frequentes",
-        "heading_size": "h1",
-        "text": "",
-        "margin_top": "m",
-        "margin_bottom": "l"
-      }
-    },
     "final_cta": {
       "type": "revendedor-content",
       "custom_css": [
-        "p{color: white;}"
+        "p {color: white;}"
       ],
       "settings": {
         "enable_section": true,
@@ -507,7 +426,6 @@
     "mid_cta",
     "form_intro",
     "commercial_contact",
-    "faq",
     "final_cta"
   ]
 }
