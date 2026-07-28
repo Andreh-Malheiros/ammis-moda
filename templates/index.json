@@ -15,9 +15,8 @@
         "slideshow_item_KTNKJ6": {
           "type": "slideshow-item",
           "settings": {
-            "image": "shopify://shop_images/1_864337a7-178a-41a8-acad-982212401da4.jpg",
-            "mobile_image": "shopify://shop_images/2_9f5e3dff-b9c5-4559-9416-dbc2c37ffa95.jpg",
-            "overlay_opacity": 0.2,
+            "image": "shopify://shop_images/LEATHER_SELECTION.jpg",
+            "overlay_opacity": 0,
             "show_video": false,
             "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
             "description_video": "",
