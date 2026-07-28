@@ -188,8 +188,8 @@
         "text": "",
         "alignment": "center",
         "columns_desktop": 3,
-        "margin_top": "xs",
-        "margin_bottom": "l"
+        "margin_top": "s",
+        "margin_bottom": "no-indent"
       }
     },
     "brand_universe": {
@@ -304,10 +304,10 @@
         "color_scheme": "background-1",
         "eyebrow": "PROCESSO",
         "heading": "Como funciona o cadastro",
-        "heading_size": "h2",
+        "heading_size": "h3",
         "alignment": "center",
         "margin_top": "no-indent",
-        "margin_bottom": "xs"
+        "margin_bottom": "no-indent"
       }
     },
     "mid_cta": {
