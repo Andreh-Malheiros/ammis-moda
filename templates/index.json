@@ -14,6 +14,7 @@
       "blocks": {
         "slideshow_item_KTNKJ6": {
           "type": "slideshow-item",
+          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/1_1.png",
             "mobile_image": "shopify://shop_images/2_1_99938b6b-996d-44bd-82ef-b28ba5c3c785.jpg",
