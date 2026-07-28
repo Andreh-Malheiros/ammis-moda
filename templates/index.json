@@ -16,8 +16,8 @@
           "type": "slideshow-item",
           "disabled": true,
           "settings": {
-            "image": "shopify://shop_images/1_2.jpg",
-            "mobile_image": "shopify://shop_images/2_3.png",
+            "image": "shopify://shop_images/1_5.png",
+            "mobile_image": "shopify://shop_images/2_4.png",
             "overlay_opacity": 0,
             "show_video": false,
             "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
