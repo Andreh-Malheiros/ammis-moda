@@ -306,8 +306,8 @@
         "heading": "Como funciona o cadastro",
         "heading_size": "h2",
         "alignment": "center",
-        "margin_top": "m",
-        "margin_bottom": "l"
+        "margin_top": "no-indent",
+        "margin_bottom": "xs"
       }
     },
     "mid_cta": {
