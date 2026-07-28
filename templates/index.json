@@ -12,6 +12,25 @@
     "slideshow_97kWbf": {
       "type": "slideshow",
       "blocks": {
+        "slideshow_item_F6EnkM": {
+          "type": "slideshow-item",
+          "settings": {
+            "image": "shopify://shop_images/BANNER_SITE_DESKTOP_4_dc392bab-d8b6-4bf6-98d2-4371c4f328ca.jpg",
+            "mobile_image": "shopify://shop_images/BANNER_SITE_MOBIILE_1.jpg",
+            "overlay_opacity": 0,
+            "show_video": false,
+            "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+            "description_video": "",
+            "heading": "",
+            "description": "",
+            "tab_subheading": "",
+            "tab_heading": "",
+            "button_label": "",
+            "button_link": "shopify://collections/euro-summer",
+            "button_style": "tertiary",
+            "enable_fullscreen_link": true
+          }
+        },
         "slideshow_item_KTNKJ6": {
           "type": "slideshow-item",
           "settings": {
@@ -49,31 +68,12 @@
             "button_style": "tertiary",
             "enable_fullscreen_link": true
           }
-        },
-        "slideshow_item_F6EnkM": {
-          "type": "slideshow-item",
-          "settings": {
-            "image": "shopify://shop_images/BANNER_SITE_DESKTOP_4_dc392bab-d8b6-4bf6-98d2-4371c4f328ca.jpg",
-            "mobile_image": "shopify://shop_images/BANNER_SITE_MOBIILE_1.jpg",
-            "overlay_opacity": 0,
-            "show_video": false,
-            "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
-            "description_video": "",
-            "heading": "",
-            "description": "",
-            "tab_subheading": "",
-            "tab_heading": "",
-            "button_label": "",
-            "button_link": "shopify://collections/euro-summer",
-            "button_style": "tertiary",
-            "enable_fullscreen_link": true
-          }
         }
       },
       "block_order": [
+        "slideshow_item_F6EnkM",
         "slideshow_item_KTNKJ6",
-        "slideshow_item_Hw484i",
-        "slideshow_item_F6EnkM"
+        "slideshow_item_Hw484i"
       ],
       "name": "t:sections.slideshow.name",
       "settings": {
