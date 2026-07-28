@@ -17,9 +17,9 @@
     }
 
     #shopify-section-{{ section.id }} .revendedor-benefits {
-      position: relative;
-      overflow: hidden;
-    }
+  position: relative;
+  overflow: visible;
+}
 
     #shopify-section-{{ section.id }} .revendedor-benefits__container {
       width: 100%;
@@ -36,16 +36,18 @@
       gap: clamp(4rem, 6vw, 9rem);
       align-items: start;
       padding: clamp(5rem, 7vw, 9rem) 0;
+      overflow: visible;
     }
 
     /* Cabeçalho lateral */
 
     #shopify-section-{{ section.id }} .revendedor-benefits__intro {
-      position: sticky;
-      top: calc(var(--header-height, 0px) + 3rem);
-      align-self: start;
-      max-width: 43rem;
-    }
+  position: sticky;
+  top: calc(var(--header-height, 8rem) + 2.4rem);
+  align-self: start;
+  max-width: 43rem;
+  z-index: 2;
+}
 
     #shopify-section-{{ section.id }} .revendedor-benefits__intro-inner {
       position: relative;
