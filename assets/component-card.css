@@ -688,7 +688,7 @@
 }
 
 .cart-shipping__title {
-  font-family: 'Swiss 721', sans-serif; /* Assumindo que Swiss 721 está configurada */
+  font-family: var(--font-heading-card-family);
   font-weight: 500;
   font-size: 1.3rem;
   text-transform: uppercase;
@@ -771,7 +771,7 @@
 
 .circular-progress-value {
   position: relative;
-  font-family: 'Open Sans', sans-serif;
+  font-family: var(--font-body-family);
   font-size: 1.1rem;
   font-weight: 600;
   color: #000000;
@@ -788,7 +788,7 @@
 
 .banner-text {
   margin: 0;
-  font-family: 'Open Sans', sans-serif;
+  font-family: var(--font-body-family);
   font-size: 1.2rem;
   color: #000000;
   font-weight: 400;
@@ -826,7 +826,7 @@
 
 .circular-progress-value {
   position: relative;
-  font-family: 'Open Sans', sans-serif;
+  font-family: var(--font-body-family);
   font-size: 1.1rem;
   font-weight: 600;
   color: #000000;
@@ -844,7 +844,7 @@
 
 .banner-text {
   margin: 0;
-  font-family: 'Open Sans', sans-serif;
+  font-family: var(--font-body-family);
   font-size: 1.2rem;
   color: #000000;
   font-weight: 400;

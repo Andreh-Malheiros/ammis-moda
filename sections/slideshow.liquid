@@ -8,7 +8,6 @@
 <script src="{{ 'slideshow.js' | asset_url }}" defer="defer"></script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&display=swap');
       {% render 'section-margin' %}
       .section-{{ section.id }} .slideshow__image, .section-{{ section.id }} .slideshow__overlay {
           transition-duration: {{ section.settings.slideshow_speed | plus: section.settings.slideshow_delay }}s !important;
@@ -93,7 +92,7 @@
     .section-{{ section.id }} .swiper-slide[data-tab="1"] .slideshow__item-heading
     /* , .section-{{ section.id }} .swiper-slide[data-tab="2"] .slideshow__item-heading */ 
     {
-        font-family: 'Cormorant Garamond', "Didot", serif !important;
+        font-family: var(--font-heading-family) !important;
         font-weight: 300 !important;
         -webkit-font-smoothing: antialiased !important;
         -moz-osx-font-smoothing: grayscale !important;
