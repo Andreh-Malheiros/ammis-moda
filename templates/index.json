@@ -16,6 +16,7 @@
           "type": "slideshow-item",
           "settings": {
             "image": "shopify://shop_images/LEATHER_SELECTION.jpg",
+            "mobile_image": "shopify://shop_images/LEATHER_SELECTION_2.jpg",
             "overlay_opacity": 0,
             "show_video": false,
             "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
