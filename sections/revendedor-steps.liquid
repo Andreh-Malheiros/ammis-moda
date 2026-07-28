@@ -20,16 +20,17 @@
       --steps-background: rgb(var(--color-background));
       --steps-foreground: rgb(var(--color-foreground));
       --steps-muted: rgba(var(--color-foreground), 0.62);
-      --steps-muted-light: rgba(var(--color-foreground), 0.36);
+      --steps-muted-light: rgba(var(--color-foreground), 0.34);
       --steps-border: rgba(var(--color-foreground), 0.14);
       --steps-border-strong: rgba(var(--color-foreground), 0.3);
-      --steps-surface: rgba(var(--color-foreground), 0.025);
+      --steps-surface: rgba(var(--color-foreground), 0.032);
+      --steps-surface-active: rgba(var(--color-foreground), 0.048);
       --steps-dark: #171717;
       --steps-light: #ffffff;
     }
 
     /*
-      Estrutura geral
+      Estrutura
     */
 
     #shopify-section-{{ section.id }} .revendedor-timeline {
@@ -47,7 +48,7 @@
 
     #shopify-section-{{ section.id }} .revendedor-timeline__inner {
       position: relative;
-      padding: clamp(5rem, 7vw, 9rem) 0;
+      padding: clamp(5rem, 6.5vw, 8.2rem) 0;
     }
 
     /*
@@ -56,7 +57,7 @@
 
     #shopify-section-{{ section.id }} .revendedor-timeline__header {
       max-width: 72rem;
-      margin-bottom: clamp(4.5rem, 6vw, 7rem);
+      margin-bottom: clamp(3.8rem, 4.8vw, 5.6rem);
     }
 
     #shopify-section-{{ section.id }} .revendedor-timeline__header--center {
@@ -110,12 +111,119 @@
     }
 
     /*
-      Timeline horizontal — desktop
+      Área interativa da timeline
+    */
+
+    #shopify-section-{{ section.id }} .revendedor-timeline__stage {
+      --step-count: {{ safe_step_count }};
+      --active-index: 0;
+
+      position: relative;
+      isolation: isolate;
+    }
+
+    /*
+      Superfície móvel ativa — somente desktop
+    */
+
+    #shopify-section-{{ section.id }} .revendedor-timeline__active-field {
+      position: absolute;
+      top: -1.6rem;
+      bottom: -2.2rem;
+      left: 0;
+      z-index: 0;
+      width: calc(100% / var(--step-count));
+      overflow: hidden;
+      background: var(--steps-surface-active);
+      border-top: 1px solid var(--steps-border);
+      border-bottom: 1px solid var(--steps-border);
+      opacity: 0;
+      transform:
+        translateX(calc(var(--active-index) * 100%))
+        scaleY(0.96);
+      transform-origin: center;
+      pointer-events: none;
+      transition:
+        transform 560ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 420ms ease;
+    }
+
+    #shopify-section-{{ section.id }} .is-visible .revendedor-timeline__active-field {
+      opacity: 1;
+      transform:
+        translateX(calc(var(--active-index) * 100%))
+        scaleY(1);
+      transition-delay: 520ms;
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-timeline__active-field::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 1px;
+      background: var(--steps-border);
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-timeline__active-field::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--steps-border);
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-timeline__active-number {
+      position: absolute;
+      right: clamp(1.5rem, 2.2vw, 3.2rem);
+      bottom: -1.1rem;
+      margin: 0;
+      color: rgba(var(--color-foreground), 0.055);
+      font-size: clamp(8rem, 9vw, 15rem);
+      font-weight: 400;
+      line-height: 0.8;
+      letter-spacing: -0.08em;
+      user-select: none;
+      pointer-events: none;
+      transition:
+        opacity 280ms ease,
+        transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-timeline__active-bridge {
+      position: absolute;
+      top: -3.8rem;
+      left: 2.8rem;
+      width: 1px;
+      height: 3.8rem;
+      overflow: hidden;
+      background: var(--steps-border);
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-timeline__active-bridge::after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: var(--steps-dark);
+      transform: scaleY(0);
+      transform-origin: bottom center;
+      transition: transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #shopify-section-{{ section.id }} .is-visible .revendedor-timeline__active-bridge::after {
+      transform: scaleY(1);
+      transition-delay: 760ms;
+    }
+
+    /*
+      Linha do tempo
     */
 
     #shopify-section-{{ section.id }} .revendedor-timeline__list {
-      --step-count: {{ safe_step_count }};
-
       display: grid;
       grid-template-columns: repeat(var(--step-count), minmax(0, 1fr));
       width: 100%;
@@ -126,9 +234,10 @@
 
     #shopify-section-{{ section.id }} .revendedor-timeline__step {
       position: relative;
+      z-index: 2;
       min-width: 0;
       padding-right: clamp(1.8rem, 2.5vw, 3.6rem);
-      cursor: default;
+      cursor: pointer;
       outline: none;
     }
 
@@ -137,7 +246,7 @@
     }
 
     /*
-      Marco e conexão
+      Marcadores
     */
 
     #shopify-section-{{ section.id }} .revendedor-timeline__marker-row {
@@ -169,7 +278,7 @@
         color 320ms ease,
         background-color 320ms ease,
         border-color 320ms ease,
-        transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+        transform 460ms cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     #shopify-section-{{ section.id }} .revendedor-timeline__connector {
@@ -203,7 +312,7 @@
     }
 
     /*
-      Conteúdo da etapa
+      Conteúdo
     */
 
     #shopify-section-{{ section.id }} .revendedor-timeline__content {
@@ -211,7 +320,7 @@
       max-width: 34rem;
       padding-top: 2.5rem;
       transition:
-        transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 460ms cubic-bezier(0.22, 1, 0.36, 1),
         opacity 320ms ease;
     }
 
@@ -236,6 +345,9 @@
       line-height: 1.18;
       letter-spacing: -0.025em;
       text-wrap: balance;
+      transition:
+        color 320ms ease,
+        transform 460ms cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     #shopify-section-{{ section.id }} .revendedor-timeline__step-text {
@@ -244,6 +356,7 @@
       color: var(--steps-muted);
       font-size: 1.4rem;
       line-height: 1.62;
+      transition: color 320ms ease;
     }
 
     #shopify-section-{{ section.id }} .revendedor-timeline__step-text p {
@@ -266,19 +379,28 @@
       color: var(--steps-light);
       background: var(--steps-dark);
       border-color: var(--steps-dark);
-      transform: scale(1.08);
+      transform: scale(1.1);
     }
 
     #shopify-section-{{ section.id }} .revendedor-timeline__step.is-active .revendedor-timeline__content {
-      transform: translateY(-0.5rem);
+      opacity: 1;
+      transform: translateY(-0.7rem);
     }
 
     #shopify-section-{{ section.id }} .revendedor-timeline__step.is-active .revendedor-timeline__step-label {
       color: var(--steps-foreground);
     }
 
+    #shopify-section-{{ section.id }} .revendedor-timeline__step.is-active .revendedor-timeline__step-heading {
+      transform: translateX(0.3rem);
+    }
+
+    #shopify-section-{{ section.id }} .revendedor-timeline__step.is-active .revendedor-timeline__step-text {
+      color: rgba(var(--color-foreground), 0.76);
+    }
+
     #shopify-section-{{ section.id }} .revendedor-timeline__step:not(.is-active) .revendedor-timeline__content {
-      opacity: 0.74;
+      opacity: 0.64;
     }
 
     #shopify-section-{{ section.id }} .revendedor-timeline__step:hover .revendedor-timeline__content,
@@ -292,7 +414,25 @@
     }
 
     /*
-      Indicador inferior
+      Entrada inicial
+    */
+
+    #shopify-section-{{ section.id }} [data-timeline-reveal] {
+      opacity: 0;
+      transform: translateY(2rem);
+      transition:
+        opacity 750ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 750ms cubic-bezier(0.22, 1, 0.36, 1);
+      transition-delay: var(--timeline-delay, 0ms);
+    }
+
+    #shopify-section-{{ section.id }} .is-visible [data-timeline-reveal] {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /*
+      Rodapé
     */
 
     #shopify-section-{{ section.id }} .revendedor-timeline__footer {
@@ -300,7 +440,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 2rem;
-      margin-top: clamp(4rem, 5vw, 6rem);
+      margin-top: clamp(3.2rem, 4vw, 4.8rem);
       padding-top: 1.8rem;
       border-top: 1px solid var(--steps-border);
     }
@@ -332,24 +472,6 @@
     }
 
     /*
-      Animação de entrada
-    */
-
-    #shopify-section-{{ section.id }} [data-timeline-reveal] {
-      opacity: 0;
-      transform: translateY(2rem);
-      transition:
-        opacity 750ms cubic-bezier(0.22, 1, 0.36, 1),
-        transform 750ms cubic-bezier(0.22, 1, 0.36, 1);
-      transition-delay: var(--timeline-delay, 0ms);
-    }
-
-    #shopify-section-{{ section.id }} .is-visible [data-timeline-reveal] {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /*
       Desktop intermediário
     */
 
@@ -370,13 +492,22 @@
       #shopify-section-{{ section.id }} .revendedor-timeline__step-text {
         font-size: 1.34rem;
       }
+
+      #shopify-section-{{ section.id }} .revendedor-timeline__active-number {
+        font-size: clamp(7rem, 8vw, 11rem);
+      }
     }
 
     /*
-      Timeline vertical — tablet e mobile
+      Tablet e mobile:
+      mantém a timeline vertical anterior
     */
 
     @media screen and (max-width: 989px) {
+      #shopify-section-{{ section.id }} .revendedor-timeline__active-field {
+        display: none;
+      }
+
       #shopify-section-{{ section.id }} .revendedor-timeline__container {
         padding-right: 2.4rem;
         padding-left: 2.4rem;
@@ -404,6 +535,7 @@
         gap: 2rem;
         min-height: 16rem;
         padding: 0 0 3.6rem;
+        cursor: default;
       }
 
       #shopify-section-{{ section.id }} .revendedor-timeline__step:last-child {
@@ -461,6 +593,10 @@
 
       #shopify-section-{{ section.id }} .revendedor-timeline__step.is-active .revendedor-timeline__content {
         transform: translateX(0.5rem);
+      }
+
+      #shopify-section-{{ section.id }} .revendedor-timeline__step.is-active .revendedor-timeline__step-heading {
+        transform: none;
       }
 
       #shopify-section-{{ section.id }} .revendedor-timeline__footer {
@@ -579,10 +715,15 @@
         transition: none;
       }
 
+      #shopify-section-{{ section.id }} .revendedor-timeline__active-field,
+      #shopify-section-{{ section.id }} .revendedor-timeline__active-number,
+      #shopify-section-{{ section.id }} .revendedor-timeline__active-bridge::after,
       #shopify-section-{{ section.id }} .revendedor-timeline__marker,
       #shopify-section-{{ section.id }} .revendedor-timeline__content,
       #shopify-section-{{ section.id }} .revendedor-timeline__connector-fill,
-      #shopify-section-{{ section.id }} .revendedor-timeline__step-label {
+      #shopify-section-{{ section.id }} .revendedor-timeline__step-label,
+      #shopify-section-{{ section.id }} .revendedor-timeline__step-heading,
+      #shopify-section-{{ section.id }} .revendedor-timeline__step-text {
         transition: none;
       }
     }
@@ -622,65 +763,94 @@
         </header>
 
         {%- if visible_steps > 0 -%}
-          <ol
-            class="revendedor-timeline__list"
-            aria-label="Etapas do processo de cadastro"
-            style="--step-count: {{ safe_step_count }};"
+          <div
+            class="revendedor-timeline__stage"
+            data-timeline-stage
+            style="
+              --step-count: {{ safe_step_count }};
+              --active-index: 0;
+            "
           >
-            {%- assign visible_step_index = 0 -%}
+            <div
+              class="revendedor-timeline__active-field"
+              aria-hidden="true"
+            >
+              <span class="revendedor-timeline__active-bridge"></span>
 
-            {%- for block in section.blocks -%}
-              {%- if block.type == 'step' and block.settings.show_item -%}
-                {%- assign visible_step_index = visible_step_index | plus: 1 -%}
-                {%- assign step_number = visible_step_index | prepend: '0' | slice: -2, 2 -%}
-                {%- assign step_delay = visible_step_index | times: 90 -%}
+              <span
+                class="revendedor-timeline__active-number"
+                data-active-number
+              >
+                01
+              </span>
+            </div>
 
-                <li
-                  class="revendedor-timeline__step{% if visible_step_index == 1 %} is-active{% endif %}"
-                  tabindex="0"
-                  data-timeline-step
-                  data-step-index="{{ visible_step_index | minus: 1 }}"
-                  aria-label="Etapa {{ visible_step_index }} de {{ visible_steps }}"
-                  {% if visible_step_index == 1 %}
-                    aria-current="step"
-                  {% endif %}
-                  {{ block.shopify_attributes }}
-                  data-timeline-reveal
-                  style="--timeline-delay: {{ step_delay }}ms;"
-                >
-                  <div class="revendedor-timeline__marker-row">
-                    <span class="revendedor-timeline__marker" aria-hidden="true">
-                      {{ step_number }}
-                    </span>
+            <ol
+              class="revendedor-timeline__list"
+              aria-label="Etapas do processo de cadastro"
+            >
+              {%- assign visible_step_index = 0 -%}
 
-                    {%- unless visible_step_index == visible_steps -%}
-                      <span class="revendedor-timeline__connector" aria-hidden="true">
-                        <span class="revendedor-timeline__connector-fill"></span>
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'step' and block.settings.show_item -%}
+                  {%- assign visible_step_index = visible_step_index | plus: 1 -%}
+                  {%- assign step_number = visible_step_index | prepend: '0' | slice: -2, 2 -%}
+                  {%- assign step_delay = visible_step_index | times: 90 -%}
+
+                  <li
+                    class="revendedor-timeline__step{% if visible_step_index == 1 %} is-active{% endif %}"
+                    tabindex="0"
+                    data-timeline-step
+                    data-step-index="{{ visible_step_index | minus: 1 }}"
+                    data-step-number="{{ step_number }}"
+                    aria-label="Etapa {{ visible_step_index }} de {{ visible_steps }}"
+                    {% if visible_step_index == 1 %}
+                      aria-current="step"
+                    {% endif %}
+                    {{ block.shopify_attributes }}
+                    data-timeline-reveal
+                    style="--timeline-delay: {{ step_delay }}ms;"
+                  >
+                    <div class="revendedor-timeline__marker-row">
+                      <span
+                        class="revendedor-timeline__marker"
+                        aria-hidden="true"
+                      >
+                        {{ step_number }}
                       </span>
-                    {%- endunless -%}
-                  </div>
 
-                  <div class="revendedor-timeline__content">
-                    <span class="revendedor-timeline__step-label">
-                      Etapa {{ step_number }}
-                    </span>
+                      {%- unless visible_step_index == visible_steps -%}
+                        <span
+                          class="revendedor-timeline__connector"
+                          aria-hidden="true"
+                        >
+                          <span class="revendedor-timeline__connector-fill"></span>
+                        </span>
+                      {%- endunless -%}
+                    </div>
 
-                    {%- if block.settings.heading != blank -%}
-                      <h3 class="revendedor-timeline__step-heading">
-                        {{ block.settings.heading | escape }}
-                      </h3>
-                    {%- endif -%}
+                    <div class="revendedor-timeline__content">
+                      <span class="revendedor-timeline__step-label">
+                        Etapa {{ step_number }}
+                      </span>
 
-                    {%- if block.settings.text != blank -%}
-                      <div class="revendedor-timeline__step-text rte">
-                        {{ block.settings.text }}
-                      </div>
-                    {%- endif -%}
-                  </div>
-                </li>
-              {%- endif -%}
-            {%- endfor -%}
-          </ol>
+                      {%- if block.settings.heading != blank -%}
+                        <h3 class="revendedor-timeline__step-heading">
+                          {{ block.settings.heading | escape }}
+                        </h3>
+                      {%- endif -%}
+
+                      {%- if block.settings.text != blank -%}
+                        <div class="revendedor-timeline__step-text rte">
+                          {{ block.settings.text }}
+                        </div>
+                      {%- endif -%}
+                    </div>
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ol>
+          </div>
 
           <footer
             class="revendedor-timeline__footer"
@@ -692,7 +862,10 @@
               aria-live="polite"
               aria-atomic="true"
             >
-              <span class="revendedor-timeline__status-current" data-current-step>
+              <span
+                class="revendedor-timeline__status-current"
+                data-current-step
+              >
                 01
               </span>
 
@@ -720,15 +893,19 @@
       class RevendedorTimeline {
         constructor(section) {
           this.section = section;
+          this.stage = section.querySelector('[data-timeline-stage]');
           this.steps = Array.from(
             section.querySelectorAll('[data-timeline-step]')
           );
           this.currentStep = section.querySelector('[data-current-step]');
+          this.activeNumber = section.querySelector('[data-active-number]');
+
           this.activeIndex = 0;
           this.mobileObserver = null;
           this.sectionObserver = null;
+          this.resizeTimer = null;
 
-          if (this.steps.length === 0) return;
+          if (!this.stage || this.steps.length === 0) return;
 
           this.handleResize = this.handleResize.bind(this);
           this.handleBlockSelect = this.handleBlockSelect.bind(this);
@@ -756,12 +933,18 @@
             });
 
             step.addEventListener('keydown', (event) => {
-              if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+              if (
+                event.key === 'ArrowRight' ||
+                event.key === 'ArrowDown'
+              ) {
                 event.preventDefault();
                 this.focusStep(index + 1);
               }
 
-              if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+              if (
+                event.key === 'ArrowLeft' ||
+                event.key === 'ArrowUp'
+              ) {
                 event.preventDefault();
                 this.focusStep(index - 1);
               }
@@ -811,7 +994,7 @@
               });
             },
             {
-              threshold: 0.12,
+              threshold: 0.14,
               rootMargin: '0px 0px -8% 0px'
             }
           );
@@ -838,7 +1021,8 @@
                 .filter((entry) => entry.isIntersecting)
                 .sort(
                   (first, second) =>
-                    second.intersectionRatio - first.intersectionRatio
+                    second.intersectionRatio -
+                    first.intersectionRatio
                 );
 
               if (visibleEntries.length === 0) return;
@@ -865,7 +1049,7 @@
 
           this.resizeTimer = window.setTimeout(() => {
             this.initializeMobileObserver();
-          }, 120);
+          }, 140);
         }
 
         handleBlockSelect(event) {
@@ -903,6 +1087,11 @@
 
           this.activeIndex = nextIndex;
 
+          this.stage.style.setProperty(
+            '--active-index',
+            String(nextIndex)
+          );
+
           this.steps.forEach((step, stepIndex) => {
             const isActive = stepIndex === nextIndex;
             const isComplete = stepIndex < nextIndex;
@@ -917,10 +1106,22 @@
             }
           });
 
+          const formattedNumber = String(nextIndex + 1).padStart(
+            2,
+            '0'
+          );
+
           if (this.currentStep) {
-            this.currentStep.textContent = String(
-              nextIndex + 1
-            ).padStart(2, '0');
+            this.currentStep.textContent = formattedNumber;
+          }
+
+          if (this.activeNumber) {
+            this.activeNumber.style.opacity = '0';
+
+            window.setTimeout(() => {
+              this.activeNumber.textContent = formattedNumber;
+              this.activeNumber.style.opacity = '';
+            }, 140);
           }
         }
 
@@ -959,7 +1160,9 @@
       initializeTimeline();
 
       document.addEventListener('shopify:section:load', (event) => {
-        const loadedSection = event.target.querySelector(`#${sectionId}`);
+        const loadedSection = event.target.querySelector(
+          `#${sectionId}`
+        );
 
         if (loadedSection) {
           loadedSection.dataset.timelineInitialized = 'false';
@@ -968,7 +1171,9 @@
       });
 
       document.addEventListener('shopify:section:unload', (event) => {
-        const unloadedSection = event.target.querySelector(`#${sectionId}`);
+        const unloadedSection = event.target.querySelector(
+          `#${sectionId}`
+        );
 
         if (unloadedSection?.timelineInstance) {
           unloadedSection.timelineInstance.destroy();
