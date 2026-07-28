@@ -159,11 +159,6 @@
         "disabled": false,
         "settings": {}
       },
-      "14826766009936288847": {
-        "type": "shopify://apps/discounty/blocks/sdk/d65eb522-0d94-499f-9831-d4b3301f5340",
-        "disabled": true,
-        "settings": {}
-      },
       "9474353549209701101": {
         "type": "shopify://apps/smart-size-recommender/blocks/smartsize-recommender-embed/b756010c-643b-4084-bf2f-97a8df367547",
         "disabled": false,
@@ -208,6 +203,11 @@
           "button_margin_bottom_px": 0,
           "button_margin_left_px": 0
         }
+      },
+      "14826766009936288847": {
+        "type": "shopify://apps/discounty/blocks/sdk/d65eb522-0d94-499f-9831-d4b3301f5340",
+        "disabled": false,
+        "settings": {}
       }
     },
     "color_schemes": {
