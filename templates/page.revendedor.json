@@ -378,10 +378,10 @@
         "show_features_heading": false,
         "features_heading": "O que oferecemos:",
         "secondary_text": "",
-        "show_transition_indicator": false,
+        "show_transition_indicator": true,
         "transition_eyebrow": "Proximo passo",
-        "transition_heading": "formulario",
-        "transition_text": "<p>DESCA</p>",
+        "transition_heading": "Formulario",
+        "transition_text": "",
         "show_media": true,
         "media_display_mode": "crop",
         "image_max_height": 440,
@@ -395,12 +395,12 @@
         "mobile_image_position": "center top",
         "button_label": "Iniciar cadastro",
         "button_link": "#cadastro-revendedor",
-        "button_style": "primary",
+        "button_style": "tertiary",
         "secondary_button_label": "",
         "secondary_button_link": "",
         "secondary_button_style": "simple",
-        "margin_top": "m",
-        "margin_bottom": "m"
+        "margin_top": "xs",
+        "margin_bottom": "xs"
       }
     },
     "form_intro": {
