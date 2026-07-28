@@ -183,13 +183,13 @@
       },
       "5958882876626866175": {
         "type": "shopify://apps/smartsize/blocks/smartsize-sizechart-embed/465a43e0-6a1a-4d30-b82e-fe6118568705",
-        "disabled": false,
+        "disabled": true,
         "settings": {
           "button_label": "SIZE GUIDE",
           "button_style": "button",
           "button_icon": "ruler_black",
           "button_color": "#000000",
-          "button_background_color": "#FFFFFF",
+          "button_background_color": "#ffffff",
           "button_corner_radius_px": 5,
           "button_margin_top_px": 0,
           "button_margin_right_px": 0,
