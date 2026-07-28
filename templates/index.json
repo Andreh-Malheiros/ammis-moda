@@ -12,6 +12,25 @@
     "slideshow_97kWbf": {
       "type": "slideshow",
       "blocks": {
+        "slideshow_item_KTNKJ6": {
+          "type": "slideshow-item",
+          "settings": {
+            "image": "shopify://shop_images/1_864337a7-178a-41a8-acad-982212401da4.jpg",
+            "mobile_image": "shopify://shop_images/2_9f5e3dff-b9c5-4559-9416-dbc2c37ffa95.jpg",
+            "overlay_opacity": 0.2,
+            "show_video": false,
+            "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+            "description_video": "",
+            "heading": "",
+            "description": "",
+            "tab_subheading": "New Collection",
+            "tab_heading": "Highlight Your Best",
+            "button_label": "SHOP NOW",
+            "button_link": "https://ammismoda.com.br/collections/leather-selection",
+            "button_style": "tertiary",
+            "enable_fullscreen_link": true
+          }
+        },
         "slideshow_item_Hw484i": {
           "type": "slideshow-item",
           "settings": {
@@ -52,6 +71,7 @@
         }
       },
       "block_order": [
+        "slideshow_item_KTNKJ6",
         "slideshow_item_Hw484i",
         "slideshow_item_F6EnkM"
       ],
