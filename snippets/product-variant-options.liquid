@@ -1,11 +1,9 @@
 {% comment %}
-  Renders product variant options.
-
+  Renders product variant options
   Accepts:
   - product: {Object} product object.
   - option: {Object} current product_option object.
   - block: {Object} block object.
-
   Usage:
   {% render 'product-variant-options',
     product: product,
@@ -13,7 +11,6 @@
     block: block
   %}
 {% endcomment %}
-
 {%- liquid
   assign variants_available_arr = product.variants | map: 'available'
   assign variants_option1_arr = product.variants | map: 'option1'
@@ -21,31 +18,31 @@
   assign variants_option3_arr = product.variants | map: 'option3'
 
   assign product_form_id = 'product-form-' | append: section.id
-  assign current_option_index = option.position | minus: 1
 -%}
 
 {%- for value in option.values -%}
   {%- liquid
-    assign value_exists = false
-    assign value_has_available_variant = false
+    assign option_disabled = true
 
-    for variant in product.variants
-      assign variant_option_value = variant.options[current_option_index]
-
-      if variant_option_value == value
-        assign value_exists = true
-
-        if variant.available
-          assign value_has_available_variant = true
-          break
-        endif
-      endif
+    for option1_name in variants_option1_arr
+      case option.position
+        when 1
+          if variants_option1_arr[forloop.index0] == value and variants_available_arr[forloop.index0] == true
+            assign option_disabled = false
+            break
+          endif
+        when 2
+          if variants_option2_arr[forloop.index0] == value and variants_available_arr[forloop.index0] == true
+            assign option_disabled = false
+            break
+          endif
+        when 3
+          if variants_option3_arr[forloop.index0] == value and variants_available_arr[forloop.index0] == true
+            assign option_disabled = false
+            break
+          endif
+      endcase
     endfor
-
-    assign option_disabled = false
-    if value_exists and value_has_available_variant == false
-      assign option_disabled = true
-    endif
   -%}
 
   {% liquid
@@ -91,11 +88,9 @@
 
     {% liquid
       assign variant_link = product.url
-      assign variant_id = blank
 
       for variant in product.variants
         assign flag = false
-
         if variant.available
           for option_variant in variant.options
             if option_variant == value
@@ -105,7 +100,7 @@
           endfor
         endif
 
-        if flag
+        if flag == true
           assign variant_link = variant.url
           assign variant_id = variant.id
           break
@@ -118,13 +113,10 @@
       id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}-{{ product.id }}"
       name="{{ option.name }}-{{ section.id }}-{{ product.id }}"
       value="{{ value | escape }}"
-      data-option-position="{{ option.position }}"
-      data-option-name="{{ option.name | escape }}"
-      data-option-value="{{ value | escape }}"
       {% if variant_link %}
         data-variant-link="{{ variant_link }}"
       {% endif %}
-      {% if variant_id != blank %}
+      {% if variant_id %}
         data-variant-id="{{ variant_id }}"
       {% endif %}
       {% if no_form_id != true %}
@@ -134,23 +126,17 @@
         checked
       {% endif %}
       {% if option_disabled and no_form_id != true %}
-        class="disabled ammis-variant--sold-out ammis-variant--blocked-sold-out"
-        disabled
-        aria-disabled="true"
-        data-ammis-variant-state="sold-out-blocked"
-      {% else %}
-        data-ammis-variant-state="available"
+        class="disabled"
       {% endif %}
     >
-
     <label
       for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}-{{ product.id }}"
       class="color-swatch focus-inset link-hover-line secondary_text {% if notify_me %} notify_me{% endif %}"
       style="--swatch-color: {{ color_value_custom | remove: '-' }}; border-radius: {{ settings.swatch_border_radius }}px"
-      title="{{ value }}"
+      title="{{- value -}}"
     >
-      {{ value }}
-      <span class="visually-hidden">{{ value }}</span>
+      {{ value -}}
+      <span class="visually-hidden">{{ value -}}</span>
     </label>
   {% else %}
     {% if block.settings.picker_type == 'button' and modal != true %}
@@ -159,9 +145,6 @@
         id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
         name="{{ option.name }}"
         value="{{ value | escape }}"
-        data-option-position="{{ option.position }}"
-        data-option-name="{{ option.name | escape }}"
-        data-option-value="{{ value | escape }}"
         {% if no_form_id != true %}
           form="{{ product_form_id }}"
         {% endif %}
@@ -169,39 +152,32 @@
           checked
         {% endif %}
         {% if option_disabled %}
-          class="disabled ammis-variant--sold-out ammis-variant--blocked-sold-out"
-          disabled
-          aria-disabled="true"
-          data-ammis-variant-state="sold-out-blocked"
-        {% else %}
-          data-ammis-variant-state="available"
+          class="disabled"
         {% endif %}
       >
-
       {%- if option_name == option_name_first and settings.swatch_type == 'variant_image' -%}
         <label
-          data-{{ option.name }}="{{ value }}"
+          data-{{ option.name }}="{{value}}"
           style="
-            background-image: url(
-              {%- liquid
-                assign option_index = option.position | minus: 1
-
-                for variant in product.variants
-                  if variant.options[option_index] == value
-                    if variant.image != blank
-                      echo variant.image | image_url: width: 250
-                    else
-                      echo 'data:image/svg+xml,%3Csvg%20width%3D%2250%22%20height%3D%2267%22%20viewBox%3D%220%200%2050%2067%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%2250%22%20height%3D%2267%22%20fill%3D%22%23F5F5F5%22%2F%3E%3Cg%20opacity%3D%220.3%22%3E%3Cpath%20d%3D%22M17.5%2036.8333L23.3333%2034.3333L26.6667%2035.8483M29.0658%2041.1008L30.8333%2039.3333M30.8333%2039.3333L32.6008%2037.5658M30.8333%2039.3333L29.0658%2037.5658M30.8333%2039.3333L32.6008%2041.1008M28.3333%2031.8333C27.8913%2031.8333%2027.4674%2031.6577%2027.1548%2031.3452C26.8423%2031.0326%2026.6667%2030.6087%2026.6667%2030.1667C26.6667%2029.7246%2026.8423%2029.3007%2027.1548%2028.9882C27.4674%2028.6756%2027.8913%2028.5%2028.3333%2028.5C28.7754%2028.5%2029.1993%2028.6756%2029.5118%2028.9882C29.8244%2029.3007%2030%2029.7246%2030%2030.1667C30%2030.6087%2029.8244%2031.0326%2029.5118%2031.3452C29.1993%2031.6577%2028.7754%2031.8333%2028.3333%2031.8333Z%22%20stroke%3D%22black%22%20stroke-width%3D%221.1%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M25.8333%2041H18C17.8674%2041%2017.7402%2040.9473%2017.6464%2040.8536C17.5527%2040.7598%2017.5%2040.6326%2017.5%2026.5C17.5%2026.3674%2017.5527%2026.2402%2017.6464%2026.1464C17.7402%2026.0527%2017.8674%2026%2018%2026H32C32.1326%2026%2032.2598%2026.0527%2032.3536%2026.1464C32.4473%2026.2402%2032.5%2026.3674%2032.5%2026.5V34.3333%22%20stroke%3D%22black%22%20stroke-width%3D%221.1%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E'
-                    endif
-                    break
-                  endif
-                endfor
-              -%}
-            );
+                        background-image:url(
+                            {%- liquid
+                                assign optionIndex = option.position | minus: 1
+                                for variant in product.variants
+                                        if variant.options[optionIndex] == value
+                                            if variant.image != blank
+                                                echo variant.image | image_url: width: 250
+                                            else
+            						echo 'data:image/svg+xml,%3Csvg%20width%3D%2250%22%20height%3D%2267%22%20viewBox%3D%220%200%2050%2067%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%2250%22%20height%3D%2267%22%20fill%3D%22%23F5F5F5%22%2F%3E%3Cg%20opacity%3D%220.3%22%3E%3Cpath%20d%3D%22M17.5%2036.8333L23.3333%2034.3333L26.6667%2035.8483M29.0658%2041.1008L30.8333%2039.3333M30.8333%2039.3333L32.6008%2037.5658M30.8333%2039.3333L29.0658%2037.5658M30.8333%2039.3333L32.6008%2041.1008M28.3333%2031.8333C27.8913%2031.8333%2027.4674%2031.6577%2027.1548%2031.3452C26.8423%2031.0326%2026.6667%2030.6087%2026.6667%2030.1667C26.6667%2029.7246%2026.8423%2029.3007%2027.1548%2028.9882C27.4674%2028.6756%2027.8913%2028.5%2028.3333%2028.5C28.7754%2028.5%2029.1993%2028.6756%2029.5118%2028.9882C29.8244%2029.3007%2030%2029.7246%2030%2030.1667C30%2030.6087%2029.8244%2031.0326%2029.5118%2031.3452C29.1993%2031.6577%2028.7754%2031.8333%2028.3333%2031.8333Z%22%20stroke%3D%22black%22%20stroke-width%3D%221.1%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M25.8333%2041H18C17.8674%2041%2017.7402%2040.9473%2017.6464%2040.8536C17.5527%2040.7598%2017.5%2040.6326%2017.5%2040.5V26.5C17.5%2026.3674%2017.5527%2026.2402%2017.6464%2026.1464C17.7402%2026.0527%2017.8674%2026%2018%2026H32C32.1326%2026%2032.2598%2026.0527%2032.3536%2026.1464C32.4473%2026.2402%2032.5%2026.3674%2032.5%2026.5V34.3333%22%20stroke%3D%22black%22%20stroke-width%3D%221.1%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E'
+            					endif
+            					break
+            				endif
+            		endfor
+            -%}
+            	);
           "
           class="variant-swatch bg_size-{{ section.settings.image_ratio }} {% if notify_me %} notify_me{% endif %}"
           for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
-          title="{{ value }}"
+          title="{{- value -}}"
         >
           <span class="visually-hidden">{{ 'products.product.variant_sold_out_or_unavailable' | t }}</span>
         </label>
@@ -210,10 +186,10 @@
           for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
           class="focus-inset link-hover-line secondary_text custom-size-pill {% if notify_me %} notify_me{% endif %}"
         >
-          {{ value }}
+          {{ value -}}
           <span class="visually-hidden">{{ 'products.product.variant_sold_out_or_unavailable' | t }}</span>
         </label>
-      {%- endif %}
+      {%- endif -%}
     {% elsif block.settings.picker_type == 'dropdown' or modal == true %}
       <li>
         <input
@@ -221,9 +197,6 @@
           id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
           name="{{ option.name }}"
           value="{{ value | escape }}"
-          data-option-position="{{ option.position }}"
-          data-option-name="{{ option.name | escape }}"
-          data-option-value="{{ value | escape }}"
           {% if no_form_id != true %}
             form="{{ product_form_id }}"
           {% endif %}
@@ -234,28 +207,25 @@
             class="disabled"
           {% endif %}
         >
-
         <label
           for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
           class="pills-variant-labels secondary_text {% if notify_me %} notify_me{% endif %}"
         >
-          <span class="select-labels">{{ value }}</span>
+          <span class="select-labels">
+            {{- value -}}
+          </span>
         </label>
       </li>
     {% endif %}
   {% endif %}
-{%- endfor %}
+{%- endfor -%}
 
 {% if option_name == option_name_first and settings.swatch_type == 'variant_image' %}
   <script>
-    document.querySelectorAll('input + label[data-{{ option.name | downcase }}]').forEach((element) => {
-      element.addEventListener('click', () => {
-        const selectedLabel = document.querySelector('#selected-{{ option.name }}');
-
-        if (selectedLabel) {
-          selectedLabel.textContent =
-            ' ' + element.getAttribute('data-{{ option.name | downcase }}');
-        }
+    document.querySelectorAll('input+label[data-{{ option.name | downcase }}]').forEach((el) => {
+      el.addEventListener('click', () => {
+        document.querySelector('#selected-{{option.name}}').textContent =
+          ' ' + el.getAttribute('data-{{ option.name | downcase }}');
       });
     });
   </script>
