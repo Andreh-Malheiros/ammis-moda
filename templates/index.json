@@ -128,7 +128,7 @@
         "product_slide_3Wwhf8": {
           "type": "product_slide",
           "settings": {
-            "product": "casaco-biela",
+            "product": "vestido-pisa",
             "image": "{{ block.settings.product.featured_image }}",
             "color_scheme": "",
             "overlay_opacity": 0,
