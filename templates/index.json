@@ -138,7 +138,7 @@
         "product_slide_kraGFd": {
           "type": "product_slide",
           "settings": {
-            "product": "casaco-suica",
+            "product": "saia-noruega",
             "image": "{{ block.settings.product.featured_image }}",
             "color_scheme": "background-2",
             "overlay_opacity": 0,
