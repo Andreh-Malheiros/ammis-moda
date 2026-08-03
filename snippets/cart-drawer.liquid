@@ -9,6 +9,11 @@
   .cart-remove-button-svg:hover { color: rgba(var(--color-foreground), 1); }
   .cart-remove-button-svg svg { width: 16px; height: 16px; }
   .cart-item__bottom { display: flex !important; align-items: center !important; justify-content: space-between !important; width: 100% !important; margin-top: 1rem; }
+  .cart-item__applied-discounts { display: flex; flex-direction: column; align-items: flex-start; gap: 0.45rem; margin-top: 0.8rem; }
+  .cart-item__discount-badge { display: inline-flex; align-items: center; gap: 0.55rem; max-width: 100%; padding: 0.55rem 0.8rem; border: 1px solid rgba(46, 125, 50, 0.22); border-radius: 4px; background: rgba(46, 125, 50, 0.07); color: #2e7d32; font-size: 0.95rem; line-height: 1.25; font-weight: 600; }
+  .cart-item__discount-badge svg { width: 14px; height: 14px; flex: 0 0 14px; fill: currentColor; }
+  .cart-item__discount-badge-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cart-item__discount-badge-value { white-space: nowrap; font-weight: 700; }
 </style>
 
 <cart-drawer class="drawer{% if cart == empty %} is-empty{% endif %}">
@@ -255,6 +260,32 @@
                                       {%- endif -%}
                                     {%- endfor -%}
                                   </dl>
+                                {%- endif -%}
+
+                                {%- if item.original_line_price > item.final_line_price -%}
+                                  <div class="cart-item__applied-discounts" aria-label="Descontos aplicados ao produto">
+                                    {%- if item.line_level_discount_allocations != blank -%}
+                                      {%- for discount_allocation in item.line_level_discount_allocations -%}
+                                        <div class="cart-item__discount-badge">
+                                          {%- render 'icon-discount' -%}
+                                          <span class="cart-item__discount-badge-title">
+                                            {{ discount_allocation.discount_application.title | default: 'Desconto aplicado' | escape }}
+                                          </span>
+                                          <span class="cart-item__discount-badge-value">
+                                            -{{ discount_allocation.amount | money }}
+                                          </span>
+                                        </div>
+                                      {%- endfor -%}
+                                    {%- else -%}
+                                      <div class="cart-item__discount-badge">
+                                        {%- render 'icon-discount' -%}
+                                        <span class="cart-item__discount-badge-title">Desconto aplicado</span>
+                                        <span class="cart-item__discount-badge-value">
+                                          -{{ item.original_line_price | minus: item.final_line_price | money }}
+                                        </span>
+                                      </div>
+                                    {%- endif -%}
+                                  </div>
                                 {%- endif -%}
                               </div>
 
@@ -562,121 +593,12 @@
       {%- endif -%}
 
       {%- if cart != empty -%}
-        {%- assign active_coupon = '' -%}
-        {%- assign active_coupon_savings = 0 -%}
-
-        {%- for discount_application in cart.discount_applications -%}
-          {%- if discount_application.type == 'discount_code' -%}
-            {%- assign active_coupon = discount_application.title -%}
-            {%- assign active_coupon_savings = active_coupon_savings
-              | plus: discount_application.total_allocated_amount
-            -%}
-          {%- endif -%}
-        {%- endfor -%}
-
         {%- assign cart_original_total = cart.original_total_price -%}
         {%- assign cart_final_total = cart.total_price -%}
         {%- assign cart_total_savings = cart.total_discount -%}
 
         <div class="drawer__footer">
           <div class="cart-drawer__footer" {{ block.shopify_attributes }}>
-            {% unless is_b2b_cart %}
-              <details
-                class="cart-drawer__accordion-item"
-                id="CartDrawer-DiscountAccordion"
-                {% if active_coupon != blank %}
-                  open
-                {% endif %}
-              >
-                <summary class="accordion-summary">
-                  <span class="subtitle">Adicionar cupom de desconto</span>
-                  <svg
-                    viewBox="0 0 14 10"
-                    fill="none"
-                    aria-hidden="true"
-                    focusable="false"
-                    class="icon icon-caret"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M10.954 3.046a.5.5 0 0 1 .707.708l-4.339 4.338a.5.5 0 0 1-.707 0L2.276 3.754a.5.5 0 0 1 .707-.708l3.985 3.986 3.986-3.986z" fill="currentColor"></path>
-                  </svg>
-                </summary>
-                <div class="accordion-wrapper" id="CartDrawer-DiscountWrapper">
-                  <div class="accordion-input-container">
-                    <span
-                      class="accordion-icon {% if active_coupon == blank %}hidden{% endif %}"
-                      id="CartDrawer-DiscountIcon"
-                    >
-                      {%- render 'icon-discount' -%}
-                    </span>
-                    <input
-                      type="text"
-                      id="CartDrawer-Discount"
-                      class="field__input custom-input"
-                      placeholder=""
-                      value="{{ active_coupon }}"
-                      {% if active_coupon != blank %}
-                        disabled
-                      {% endif %}
-                    >
-                  </div>
-                  <button
-                    type="button"
-                    class="button button--secondary focus-inset {% if active_coupon != blank %}hidden{% endif %} custom-btn"
-                    id="CartDrawer-ApplyDiscount"
-                  >
-                    Aplicar
-                  </button>
-                  <button
-                    type="button"
-                    class="button button--tertiary focus-inset {% if active_coupon == blank %}hidden{% endif %} custom-btn"
-                    id="CartDrawer-RemoveDiscount"
-                  >
-                    Remover
-                  </button>
-                </div>
-                <p
-                  id="discount-message-area"
-                  class="accordion-message {% if active_coupon == blank %}hidden{% else %}success{% endif %}"
-                >
-                  {% if active_coupon != blank %}
-                    <strong>{{ active_coupon | escape }}</strong> aplicado com sucesso.
-                    {% if active_coupon_savings > 0 %}
-                      Economia de <strong>{{ active_coupon_savings | money_with_currency }}</strong>.
-                    {% endif %}
-                  {% endif %}
-                </p>
-              </details>
-            {% endunless %}
-            <style>
-              .cart-drawer__accordion-item { margin-bottom: 1.5rem; }
-              .accordion-summary { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; cursor: pointer; list-style: none; position: relative; z-index: 20; border-bottom: 1px solid rgba(0,0,0,0.08); }
-              .accordion-summary::-webkit-details-marker { display: none; }
-              .accordion-summary .subtitle { font-size: 1.1rem; color: rgba(var(--color-foreground), 1); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-              .accordion-summary svg { width: 12px; transition: transform 0.3s ease; opacity: 0.6; }
-              .cart-drawer__accordion-item[open] .accordion-summary svg { transform: rotate(180deg); }
-              .accordion-wrapper { display: flex; gap: 1rem; padding-top: 1.5rem; padding-bottom: 0.5rem; position: relative; z-index: 20; align-items: stretch; }
-              .accordion-input-container { position: relative; flex-grow: 1; display: flex; align-items: center; }
-              .accordion-icon { position: absolute; left: 1rem; display: flex; align-items: center; justify-content: center; color: #2e7d32; width: 18px; height: 18px; z-index: 2;}
-              .accordion-icon svg { width: 100%; height: 100%; fill: currentColor; }
-
-              .custom-input { width: 100%; min-height: 40px !important; pointer-events: auto !important; border: 1px solid rgba(0,0,0,0.2) !important; padding-left: 1rem; transition: all 0.3s ease; background: transparent; }
-              #CartDrawer-Discount { text-transform: uppercase; }
-              .custom-input:disabled { background-color: transparent; color: #2e7d32; font-weight: 600; border-color: #2e7d32 !important; padding-left: 2.8rem; cursor: default; opacity: 1; -webkit-text-fill-color: #2e7d32; }
-              .custom-btn { min-height: 40px !important; padding: 0 1.5rem !important; min-width: 100px; pointer-events: auto !important; }
-
-              .accordion-message { font-size: 1.1rem; margin-top: 0.5rem; font-weight: 500; }
-              .accordion-message.success { color: #2e7d32; }
-              .accordion-message.error { color: #d32f2f; }
-
-              .shipping-results { margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.03); border-radius: 4px; font-size: 1.1rem; }
-              .shipping-results ul { list-style: none; padding: 0; margin: 0; }
-              .shipping-results li { display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
-              .shipping-results li:last-child { border-bottom: none; padding-bottom: 0; }
-
-              .hidden { display: none !important; }
-            </style>
-
             <div
               class="totals"
               role="status"
@@ -1021,171 +943,6 @@
         }
       }
 
-      // --- LÓGICA NATIVA DE CUPOM DA SHOPIFY ---
-      const normalizeDiscountCode = (value) =>
-        String(value || '')
-          .trim()
-          .toLocaleUpperCase('pt-BR');
-
-      const getAppliedDiscountTitles = (cart) => {
-        const titles = new Set();
-
-        const registerTitle = (title) => {
-          const normalized = normalizeDiscountCode(title);
-          if (normalized) titles.add(normalized);
-        };
-
-        (cart.discount_applications || []).forEach((application) => registerTitle(application.title));
-        (cart.cart_level_discount_applications || []).forEach((application) => registerTitle(application.title));
-
-        (cart.items || []).forEach((item) => {
-          (item.discounts || []).forEach((discount) => registerTitle(discount.title));
-
-          (item.discount_allocations || []).forEach((allocation) => {
-            registerTitle(allocation.discount_application && allocation.discount_application.title);
-          });
-
-          (item.line_level_discount_allocations || []).forEach((allocation) => {
-            registerTitle(allocation.discount_application && allocation.discount_application.title);
-          });
-        });
-
-        return titles;
-      };
-
-      const renderUpdatedCartSections = (cartState) => {
-        const cartDrawer = document.querySelector('cart-drawer');
-
-        if (cartDrawer && typeof cartDrawer.renderContents === 'function' && cartState.sections) {
-          cartDrawer.renderContents({
-            id: null,
-            sections: cartState.sections,
-          });
-          return;
-        }
-
-        window.location.reload();
-      };
-
-      const showDiscountError = (code, message) => {
-        window.setTimeout(() => {
-          const accordion = document.getElementById('CartDrawer-DiscountAccordion');
-          const input = document.getElementById('CartDrawer-Discount');
-          const messageArea = document.getElementById('discount-message-area');
-
-          if (accordion) accordion.open = true;
-
-          if (input) {
-            input.disabled = false;
-            input.value = code;
-          }
-
-          if (messageArea) {
-            messageArea.classList.remove('hidden', 'success');
-            messageArea.classList.add('error');
-            messageArea.textContent = message;
-          }
-        }, 80);
-      };
-
-      const updateShopifyDiscount = async (code) => {
-        const routesRoot =
-          window.Shopify && window.Shopify.routes && window.Shopify.routes.root
-            ? window.Shopify.routes.root
-            : '/';
-
-        const response = await fetch(routesRoot + 'cart/update.js', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-          body: JSON.stringify({
-            discount: code,
-            sections: ['cart-drawer', 'cart-icon-bubble'],
-            sections_url: window.location.pathname,
-          }),
-        });
-
-        const cartState = await response.json();
-
-        if (!response.ok) {
-          const description =
-            cartState && (cartState.description || cartState.message)
-              ? cartState.description || cartState.message
-              : 'Não foi possível atualizar o cupom.';
-          throw new Error(description);
-        }
-
-        return cartState;
-      };
-
-      if (e.target && e.target.id === 'CartDrawer-ApplyDiscount') {
-        e.preventDefault();
-
-        const discountInput = document.getElementById('CartDrawer-Discount');
-        const applyButton = document.getElementById('CartDrawer-ApplyDiscount');
-        const code = normalizeDiscountCode(discountInput ? discountInput.value : '');
-
-        if (!code) {
-          showDiscountError('', 'Digite um cupom de desconto.');
-          return;
-        }
-
-        if (applyButton) {
-          applyButton.disabled = true;
-          applyButton.textContent = 'Aplicando...';
-        }
-
-        try {
-          const cartState = await updateShopifyDiscount(code);
-          const appliedTitles = getAppliedDiscountTitles(cartState);
-          const wasApplied = appliedTitles.has(code);
-
-          renderUpdatedCartSections(cartState);
-
-          if (!wasApplied) {
-            showDiscountError(
-              code,
-              'Cupom inválido, expirado ou não aplicável aos produtos e condições atuais do carrinho.'
-            );
-          }
-        } catch (error) {
-          console.error('[AMMIS] Erro ao aplicar cupom:', error);
-          showDiscountError(code, error.message || 'Não foi possível aplicar o cupom.');
-        } finally {
-          const currentApplyButton = document.getElementById('CartDrawer-ApplyDiscount');
-          if (currentApplyButton) {
-            currentApplyButton.disabled = false;
-            currentApplyButton.textContent = 'Aplicar';
-          }
-        }
-      }
-
-      if (e.target && e.target.id === 'CartDrawer-RemoveDiscount') {
-        e.preventDefault();
-
-        const removeButton = document.getElementById('CartDrawer-RemoveDiscount');
-
-        if (removeButton) {
-          removeButton.disabled = true;
-          removeButton.textContent = 'Removendo...';
-        }
-
-        try {
-          const cartState = await updateShopifyDiscount('');
-          renderUpdatedCartSections(cartState);
-        } catch (error) {
-          console.error('[AMMIS] Erro ao remover cupom:', error);
-          showDiscountError('', error.message || 'Não foi possível remover o cupom.');
-        } finally {
-          const currentRemoveButton = document.getElementById('CartDrawer-RemoveDiscount');
-          if (currentRemoveButton) {
-            currentRemoveButton.disabled = false;
-            currentRemoveButton.textContent = 'Remover';
-          }
-        }
-      }
     });
   });
 </script>
