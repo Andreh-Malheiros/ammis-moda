@@ -15,8 +15,8 @@
         "slideshow_item_PQBcDq": {
           "type": "slideshow-item",
           "settings": {
-            "image": "shopify://shop_images/Prancheta_1.png",
-            "mobile_image": "shopify://shop_images/Prancheta_2.png",
+            "image": "shopify://shop_images/Prancheta_1_1.png",
+            "mobile_image": "shopify://shop_images/Prancheta_2_1.png",
             "overlay_opacity": 0.2,
             "show_video": false,
             "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
