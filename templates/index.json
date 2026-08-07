@@ -145,10 +145,19 @@
     "product_slider_myRt9j": {
       "type": "product-slider",
       "blocks": {
+        "product_slide_VVnKWd": {
+          "type": "product_slide",
+          "settings": {
+            "product": "",
+            "color_scheme": "background-2",
+            "overlay_opacity": 0.1,
+            "description": "Highlight products, promos, or seasonal picks to engage visitors."
+          }
+        },
         "product_slide_3Wwhf8": {
           "type": "product_slide",
           "settings": {
-            "product": "camisa-patacho",
+            "product": "vestido-duna-curto",
             "image": "{{ block.settings.product.featured_image }}",
             "color_scheme": "",
             "overlay_opacity": 0,
@@ -187,6 +196,7 @@
         }
       },
       "block_order": [
+        "product_slide_VVnKWd",
         "product_slide_3Wwhf8",
         "product_slide_jDfYeN",
         "product_slide_kraGFd",
