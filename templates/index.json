@@ -187,7 +187,7 @@
         "product_slide_rrxjNH": {
           "type": "product_slide",
           "settings": {
-            "product": "calca-munique",
+            "product": "calca-orquidea",
             "image": "{{ block.settings.product.featured_image }}",
             "color_scheme": "background-2",
             "overlay_opacity": 0.1,
