@@ -12,6 +12,25 @@
     "slideshow_97kWbf": {
       "type": "slideshow",
       "blocks": {
+        "slideshow_item_MfifAE": {
+          "type": "slideshow-item",
+          "settings": {
+            "image": "shopify://shop_images/DESKTOP_1.png",
+            "mobile_image": "shopify://shop_images/MOBILE_8aacb8cc-6874-4ab0-a745-fb3bba850192.png",
+            "overlay_opacity": 0.2,
+            "show_video": false,
+            "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+            "description_video": "",
+            "heading": "",
+            "description": "",
+            "tab_subheading": "",
+            "tab_heading": "",
+            "button_label": "",
+            "button_link": "shopify://collections/soleil",
+            "button_style": "tertiary",
+            "enable_fullscreen_link": true
+          }
+        },
         "slideshow_item_gjAiCC": {
           "type": "slideshow-item",
           "settings": {
@@ -90,6 +109,7 @@
         }
       },
       "block_order": [
+        "slideshow_item_MfifAE",
         "slideshow_item_gjAiCC",
         "slideshow_item_F6EnkM",
         "slideshow_item_KTNKJ6",
