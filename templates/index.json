@@ -178,7 +178,7 @@
         "product_slide_jDfYeN": {
           "type": "product_slide",
           "settings": {
-            "product": "blusa-turquia",
+            "product": "chemise-caraiva",
             "image": "{{ block.settings.product.featured_image }}",
             "color_scheme": "",
             "overlay_opacity": 0,
