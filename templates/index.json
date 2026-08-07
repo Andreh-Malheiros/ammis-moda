@@ -155,6 +155,16 @@
             "description": ""
           }
         },
+        "product_slide_jDfYeN": {
+          "type": "product_slide",
+          "settings": {
+            "product": "camisa-bordada-ipe",
+            "image": "{{ block.settings.product.featured_image }}",
+            "color_scheme": "",
+            "overlay_opacity": 0,
+            "description": ""
+          }
+        },
         "product_slide_kraGFd": {
           "type": "product_slide",
           "settings": {
@@ -174,23 +184,13 @@
             "overlay_opacity": 0.1,
             "description": ""
           }
-        },
-        "product_slide_jDfYeN": {
-          "type": "product_slide",
-          "settings": {
-            "product": "chemise-caraiva",
-            "image": "{{ block.settings.product.featured_image }}",
-            "color_scheme": "",
-            "overlay_opacity": 0,
-            "description": ""
-          }
         }
       },
       "block_order": [
         "product_slide_3Wwhf8",
+        "product_slide_jDfYeN",
         "product_slide_kraGFd",
-        "product_slide_rrxjNH",
-        "product_slide_jDfYeN"
+        "product_slide_rrxjNH"
       ],
       "settings": {
         "image_size": "adapt",
