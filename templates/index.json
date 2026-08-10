@@ -12,12 +12,12 @@
     "slideshow_97kWbf": {
       "type": "slideshow",
       "blocks": {
-        "slideshow_item_Hw484i": {
+        "slideshow_item_gjAiCC": {
           "type": "slideshow-item",
           "settings": {
-            "image": "shopify://shop_images/BANNER_SITE_DESKTOP_1.png",
-            "mobile_image": "shopify://shop_images/BANNER_SITE_MOBIILE.jpg",
-            "overlay_opacity": 0,
+            "image": "shopify://shop_images/DESKTOP_S__FRETE.png",
+            "mobile_image": "shopify://shop_images/MOBILE_S__FRETE.png",
+            "overlay_opacity": 0.2,
             "show_video": false,
             "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
             "description_video": "",
@@ -26,7 +26,26 @@
             "tab_subheading": "",
             "tab_heading": "",
             "button_label": "",
-            "button_link": "shopify://collections/arcadia-60-off",
+            "button_link": "shopify://collections/soleil",
+            "button_style": "tertiary",
+            "enable_fullscreen_link": true
+          }
+        },
+        "slideshow_item_MfifAE": {
+          "type": "slideshow-item",
+          "settings": {
+            "image": "shopify://shop_images/DESKTOP_1.png",
+            "mobile_image": "shopify://shop_images/MOBILE_8aacb8cc-6874-4ab0-a745-fb3bba850192.png",
+            "overlay_opacity": 0.2,
+            "show_video": false,
+            "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+            "description_video": "",
+            "heading": "",
+            "description": "",
+            "tab_subheading": "",
+            "tab_heading": "",
+            "button_label": "",
+            "button_link": "shopify://collections/soleil",
             "button_style": "tertiary",
             "enable_fullscreen_link": true
           }
@@ -49,11 +68,52 @@
             "button_style": "tertiary",
             "enable_fullscreen_link": true
           }
+        },
+        "slideshow_item_KTNKJ6": {
+          "type": "slideshow-item",
+          "settings": {
+            "image": "shopify://shop_images/1_5.png",
+            "mobile_image": "shopify://shop_images/2_4.png",
+            "overlay_opacity": 0,
+            "show_video": false,
+            "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+            "description_video": "",
+            "heading": "",
+            "description": "",
+            "tab_subheading": "",
+            "tab_heading": "",
+            "button_label": "",
+            "button_link": "https://ammismoda.com.br/collections/leather-selection",
+            "button_style": "simple",
+            "enable_fullscreen_link": true
+          }
+        },
+        "slideshow_item_Hw484i": {
+          "type": "slideshow-item",
+          "settings": {
+            "image": "shopify://shop_images/BANNER_SITE_DESKTOP_1.png",
+            "mobile_image": "shopify://shop_images/BANNER_SITE_MOBIILE.jpg",
+            "overlay_opacity": 0,
+            "show_video": false,
+            "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+            "description_video": "",
+            "heading": "",
+            "description": "",
+            "tab_subheading": "",
+            "tab_heading": "",
+            "button_label": "",
+            "button_link": "shopify://collections/arcadia-60-off",
+            "button_style": "tertiary",
+            "enable_fullscreen_link": true
+          }
         }
       },
       "block_order": [
-        "slideshow_item_Hw484i",
-        "slideshow_item_F6EnkM"
+        "slideshow_item_gjAiCC",
+        "slideshow_item_MfifAE",
+        "slideshow_item_F6EnkM",
+        "slideshow_item_KTNKJ6",
+        "slideshow_item_Hw484i"
       ],
       "name": "t:sections.slideshow.name",
       "settings": {
@@ -72,69 +132,43 @@
         "margin_bottom": "no-indent"
       }
     },
-    "home_sticky_video_4P8iwa": {
-      "type": "home-sticky-video",
-      "name": "Vídeo flutuante AMMIS",
+    "popular_products_Wgftz6": {
+      "type": "popular-products",
+      "name": "t:sections.popular-products.presets.name",
       "settings": {
-        "enable_widget": true,
-        "video": "shopify://files/videos/3D-EUROSUMMER-CHAMADA.mp4",
-        "enable_fallback_video_url": false,
-        "fallback_video_url": "",
-        "accessible_description": "Vídeo da AMMIS",
-        "destination_type": "product",
-        "destination_product": "bermuda-siena",
-        "destination_collection": "",
-        "destination_page": "",
-        "destination_url": "",
-        "show_cta": false,
-        "cta_text": "Ver agora",
-        "cta_new_tab": false,
-        "cta_position": "bottom-center",
-        "show_favorite": true,
-        "show_share": true,
-        "show_sound": true,
-        "copy_message": "Link copiado",
-        "save_favorite": true,
-        "backdrop_opacity": 70,
-        "close_on_backdrop": true,
-        "close_on_escape": true,
-        "position_side": "right",
-        "offset_x_desktop": 34,
-        "offset_y_desktop": 30,
-        "offset_x_mobile": 16,
-        "offset_y_mobile": 16,
-        "z_index": 990,
-        "circle_size_desktop": 100,
-        "circle_size_mobile": 72,
-        "expanded_width_desktop": 340,
-        "expanded_width_mobile": 340,
-        "expanded_radius": 18,
-        "border_width": 2,
-        "border_color": "#000000",
-        "button_background": "#ffffff",
-        "icon_color": "#000000",
-        "cta_background": "#000000",
-        "cta_text_color": "#ffffff",
-        "shadow_intensity": 16
+        "subheading": "",
+        "heading": "PEÇAS EM DESTAQUE",
+        "description": "",
+        "heading_size": "h1",
+        "product_list": [
+          "camisa-patacho",
+          "body-carneiros",
+          "chemise-caraiva",
+          "blusa-litoral"
+        ],
+        "products_to_show": 4,
+        "image_ratio": "portrait",
+        "image_fit": "contain",
+        "show_vendor": true,
+        "show_color_count": false,
+        "show_size_count": false,
+        "show_collection": false,
+        "show_desc": false,
+        "columns_mobile": "2",
+        "button_label": "VER TODAS",
+        "button_link": "shopify://collections/euro-summer",
+        "button_style": "simple",
+        "margin_top": "m",
+        "margin_bottom": "s"
       }
     },
     "product_slider_myRt9j": {
       "type": "product-slider",
       "blocks": {
-        "product_slide_3Wwhf8": {
-          "type": "product_slide",
-          "settings": {
-            "product": "casaco-biela",
-            "image": "{{ block.settings.product.featured_image }}",
-            "color_scheme": "",
-            "overlay_opacity": 0,
-            "description": ""
-          }
-        },
         "product_slide_kraGFd": {
           "type": "product_slide",
           "settings": {
-            "product": "casaco-suica",
+            "product": "echarpe-caraiva",
             "image": "{{ block.settings.product.featured_image }}",
             "color_scheme": "background-2",
             "overlay_opacity": 0,
@@ -144,17 +178,27 @@
         "product_slide_rrxjNH": {
           "type": "product_slide",
           "settings": {
-            "product": "vestido-madri",
+            "product": "calca-orquidea",
             "image": "{{ block.settings.product.featured_image }}",
             "color_scheme": "background-2",
             "overlay_opacity": 0.1,
             "description": ""
           }
         },
+        "product_slide_3Wwhf8": {
+          "type": "product_slide",
+          "settings": {
+            "product": "vestido-duna-curto",
+            "image": "{{ block.settings.product.featured_image }}",
+            "color_scheme": "",
+            "overlay_opacity": 0,
+            "description": ""
+          }
+        },
         "product_slide_jDfYeN": {
           "type": "product_slide",
           "settings": {
-            "product": "blusa-turquia",
+            "product": "camisa-bordada-ipe",
             "image": "{{ block.settings.product.featured_image }}",
             "color_scheme": "",
             "overlay_opacity": 0,
@@ -163,9 +207,9 @@
         }
       },
       "block_order": [
-        "product_slide_3Wwhf8",
         "product_slide_kraGFd",
         "product_slide_rrxjNH",
+        "product_slide_3Wwhf8",
         "product_slide_jDfYeN"
       ],
       "settings": {
@@ -202,41 +246,41 @@
     "ammis_category_grid_8b4PmG": {
       "type": "ammis-category-grid",
       "blocks": {
+        "category_VbUHmz": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/camisa_linho_bordada.jpg",
+            "title": "Novidades",
+            "text": "Os lançamentos mais recentes da curadoria AMMIS.",
+            "link": "shopify://collections/euro-summer",
+            "cta_label": "shop now"
+          }
+        },
         "category_DAADkA": {
           "type": "category",
           "settings": {
-            "image": "shopify://shop_images/FOTO_SITE_9.jpg",
-            "title": "Casaco & Jaqueta",
+            "image": "shopify://shop_images/FOTO_SITE_1080_x_1350_px_64.jpg",
+            "title": "Casacos & Jaquetas",
             "text": "Peças que transformam seu inverno em estilo.",
             "link": "shopify://collections/casaco",
-            "cta_label": "VER PEÇAS"
+            "cta_label": "shop now"
           }
         },
         "category_DK37Aa": {
           "type": "category",
           "settings": {
-            "image": "shopify://shop_images/blazer_alfaiataria.jpg",
+            "image": "shopify://shop_images/Captura_de_tela_2026-08-06_092113.png",
             "title": "alfaiataria",
             "text": "O luxo da alfaiataria feita por verdadeiros alfaiates.",
             "link": "shopify://collections/alfaiataria",
-            "cta_label": "VER PEÇAS"
-          }
-        },
-        "category_VbUHmz": {
-          "type": "category",
-          "settings": {
-            "image": "shopify://shop_images/FOTO_SITE_-_2026-06-03T170522.538.jpg",
-            "title": "Novidades",
-            "text": "Os lançamentos mais recentes da curadoria AMMIS.",
-            "link": "shopify://collections/arcadia26",
-            "cta_label": "VER PEÇAS"
+            "cta_label": "shop now"
           }
         }
       },
       "block_order": [
+        "category_VbUHmz",
         "category_DAADkA",
-        "category_DK37Aa",
-        "category_VbUHmz"
+        "category_DK37Aa"
       ],
       "name": "AMMIS - Categorias",
       "settings": {
@@ -250,11 +294,11 @@
         "columns_mobile": "2",
         "content_position": "bottom",
         "card_text_alignment": "center",
-        "overlay_opacity": 35,
+        "overlay_opacity": 0,
         "card_ratio_desktop": 125,
         "card_ratio_mobile": 150,
-        "title_size": 28,
-        "subtitle_size": 14,
+        "title_size": 35,
+        "subtitle_size": 16,
         "card_title_size": 20,
         "card_text_size": 13,
         "gap_desktop": 18,
@@ -409,36 +453,6 @@
         "margin_bottom": "no-indent"
       }
     },
-    "popular_products_Wgftz6": {
-      "type": "popular-products",
-      "name": "t:sections.popular-products.presets.name",
-      "settings": {
-        "subheading": "",
-        "heading": "PEÇAS EM DESTAQUE",
-        "description": "",
-        "heading_size": "h1",
-        "product_list": [
-          "calca-dijon",
-          "casaco-maia",
-          "vestido-portugal",
-          "vestido-roma"
-        ],
-        "products_to_show": 4,
-        "image_ratio": "portrait",
-        "image_fit": "contain",
-        "show_vendor": true,
-        "show_color_count": false,
-        "show_size_count": false,
-        "show_collection": false,
-        "show_desc": false,
-        "columns_mobile": "2",
-        "button_label": "VER TODAS",
-        "button_link": "shopify://collections/all",
-        "button_style": "simple",
-        "margin_top": "m",
-        "margin_bottom": "s"
-      }
-    },
     "ammis_instagram_showcase_bFzVET": {
       "type": "ammis-instagram-showcase",
       "blocks": {
@@ -510,16 +524,62 @@
         "padding_top": 16,
         "padding_bottom": 20
       }
+    },
+    "home_sticky_video_4P8iwa": {
+      "type": "home-sticky-video",
+      "name": "Vídeo flutuante AMMIS",
+      "settings": {
+        "enable_widget": true,
+        "video": "shopify://files/videos/3D-EUROSUMMER-CHAMADA.mp4",
+        "enable_fallback_video_url": false,
+        "fallback_video_url": "",
+        "accessible_description": "Vídeo da AMMIS",
+        "destination_type": "product",
+        "destination_product": "bermuda-siena",
+        "destination_collection": "",
+        "destination_page": "",
+        "destination_url": "",
+        "show_cta": false,
+        "cta_text": "Ver agora",
+        "cta_new_tab": false,
+        "cta_position": "bottom-center",
+        "show_favorite": true,
+        "show_share": true,
+        "show_sound": true,
+        "copy_message": "Link copiado",
+        "save_favorite": true,
+        "backdrop_opacity": 70,
+        "close_on_backdrop": true,
+        "close_on_escape": true,
+        "position_side": "right",
+        "offset_x_desktop": 34,
+        "offset_y_desktop": 30,
+        "offset_x_mobile": 16,
+        "offset_y_mobile": 16,
+        "z_index": 990,
+        "circle_size_desktop": 100,
+        "circle_size_mobile": 72,
+        "expanded_width_desktop": 340,
+        "expanded_width_mobile": 340,
+        "expanded_radius": 18,
+        "border_width": 2,
+        "border_color": "#000000",
+        "button_background": "#ffffff",
+        "icon_color": "#000000",
+        "cta_background": "#000000",
+        "cta_text_color": "#ffffff",
+        "shadow_intensity": 16
+      }
     }
   },
   "order": [
     "slideshow_97kWbf",
     "home_sticky_video_4P8iwa",
+    "popular_products_Wgftz6",
     "product_slider_myRt9j",
     "ammis_category_grid_8b4PmG",
     "product-slider",
     "slideshow_Jf4tqd",
-    "popular_products_Wgftz6",
     "ammis_instagram_showcase_bFzVET"
   ]
 }

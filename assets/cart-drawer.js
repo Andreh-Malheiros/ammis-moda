@@ -120,7 +120,7 @@ class CartDrawer extends HTMLElement {
 				`.cart-item[data-product-id="${this.productId}"`
 			);
 			notification.classList.add("notification-open");
-			activeItem.classList.add("active");
+			activeItem?.classList.add("active");
 		}
 
 		setTimeout(() => {
@@ -129,6 +129,12 @@ class CartDrawer extends HTMLElement {
 				this.close.bind(this)
 			);
 			this.open();
+			this.dispatchEvent(
+				new CustomEvent("cart-drawer:rendered", {
+					bubbles: true,
+					detail: { state: parsedState },
+				})
+			);
 		});
 	}
 
