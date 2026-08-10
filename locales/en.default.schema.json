@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
 	"settings_schema": {
 		"dark_mode": {
@@ -2566,7 +2575,7 @@
 							"default": "<p>Contact us for support, inquiries, or more information.</p>"
 						},
 						"subheading": {
-							"default": "Information",
+							"default": "Information"
 						}
 					}
 				},
@@ -2699,7 +2708,7 @@
 					},
 					"options__3": {
 						"label": "Icon and text"
-					},
+					}
 				},
 				"region_button_type": {
 					"label": "Region button type",
@@ -2712,7 +2721,7 @@
 					"options__3": {
 						"label": "Icon and text"
 					}
-				},
+				}
 			}
 		},
 		"gift-card": {
@@ -3478,7 +3487,7 @@
 					},
 					"heading": {
 						"label": "Heading",
-						"default": "Here can be your age verification title",
+						"default": "Here can be your age verification title"
 					},
 					"text": {
 						"label": "Text",
@@ -3573,13 +3582,13 @@
 					"content": "Empty address book"
 				},
 				"heading_orders": {
-					"default": "View and track your recent and past orders here",
+					"default": "View and track your recent and past orders here"
 				},
 				"heading_addresses": {
-					"default": "View your order history, track current orders, and manage returns.",
+					"default": "View your order history, track current orders, and manage returns."
 				},
 				"text_addresses": {
-					"default": "My Addresses",
+					"default": "My Addresses"
 				}
 			}
 		},
@@ -4649,7 +4658,7 @@
 					}
 				},
 				"heading": {
-					"default": "Your product grid title",
+					"default": "Your product grid title"
 				},
 				"button_label": {
 					"default": "Explore More"

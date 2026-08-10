@@ -15,10 +15,6 @@
       <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
     {%- endif -%}
 
-    {%- unless settings.type_header_font.system? -%}
-      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
-    {%- endunless -%}
-
     <title>{{ page_title }}</title>
 
     {% if page_description %}
@@ -31,29 +27,8 @@
 
     {{ content_for_header }}
 
-    {%- liquid
-      assign body_font_ligh = settings.type_body_font | font_modify: 'weight', '300'
-      assign body_font_regular = settings.type_body_font | font_modify: 'weight', '400'
-      assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
-      assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
-      assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
-      assign heading_font_italic = settings.type_header_font | font_modify: 'style', 'italic'
-    %}
     {{ 'base.css' | asset_url | stylesheet_tag }}
     {% style %}
-           {{ settings.type_body_font | font_face: font_display: 'swap' }}
-           {{ settings.type_header_font | font_face: font_display: 'swap' }}
-           {{ settings.type_header_font | font_face: font_display: 'swap' }}
-           {{ settings.type_button_font | font_face: font_display: 'swap' }}
-           {{ settings.type_header_font_card | font_face: font_display: 'swap' }}
-           {{ body_font_ligh | font_face: font_display: 'swap' }}
-           {{ body_font_regular | font_face: font_display: 'swap' }}
-           {{ body_font_medium | font_face: font_display: 'swap' }}
-           {{ body_font_bold | font_face: font_display: 'swap' }}
-           {{ body_font_italic | font_face: font_display: 'swap' }}
-           {{ heading_font_italic | font_face: font_display: 'swap' }}
-           {{ body_font_bold_italic | font_face: font_display: 'swap' }}
-
            {% for scheme in settings.color_schemes -%}
            	{% assign scheme_classes = scheme_classes | append: ', .color-' | append: scheme.id %}
            	{% if forloop.index == 1 -%}
@@ -242,13 +217,7 @@
            	}
 
     {% endstyle %}
-
-    {%- unless settings.type_body_font.system? -%}
-      <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
-    {%- endunless -%}
-    {%- unless settings.type_header_font.system? -%}
-      <link rel="preload" as="font" href="{{ settings.type_header_font | font_url }}" type="font/woff2" crossorigin>
-    {%- endunless -%}
+    {% render 'futura-fonts' %}
   </head>
 
   <body>

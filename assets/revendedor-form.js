@@ -1,6 +1,8 @@
 (function () {
   const SECTION_SELECTOR = '[data-revendedor-form-section]';
   const FORM_SELECTOR = '[data-revendedor-form]';
+  const STEP_SELECTOR = '[data-form-step]';
+  const STEP_BUTTON_SELECTOR = '[data-step-target]';
   const VIA_CEP_URL = 'https://viacep.com.br/ws/{cep}/json/';
   const IBGE_CITIES_URL = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados/{uf}/municipios';
   const REQUEST_TIMEOUT = 8000;
@@ -1067,6 +1069,247 @@
     }, { signal: signal });
   }
 
+function getSteps(form) {
+    return Array.from(form.querySelectorAll(STEP_SELECTOR));
+  }
+
+  function getStepButtons(form) {
+    return Array.from(form.querySelectorAll(STEP_BUTTON_SELECTOR));
+  }
+
+  function getStepIndexForField(form, field) {
+    if (!field) return 0;
+    const step = field.closest(STEP_SELECTOR);
+    const steps = getSteps(form);
+    const index = steps.indexOf(step);
+    return index >= 0 ? index : 0;
+  }
+
+  function getStepErrors(form, stepIndex) {
+    const steps = getSteps(form);
+    const currentStep = steps[stepIndex];
+    const allErrors = validateForm(form);
+
+    const stepErrors = allErrors.filter((error) => {
+      return error.field && error.field.closest(STEP_SELECTOR) === currentStep;
+    });
+
+    allErrors.forEach((error) => {
+      if (!stepErrors.includes(error)) clearFieldError(form, error.name);
+    });
+
+    return stepErrors;
+  }
+
+  function updateWizardProgress(form) {
+    const steps = getSteps(form);
+    const buttons = getStepButtons(form);
+    const currentIndex = form.revendedorCurrentStep || 0;
+    const maxReached = form.revendedorMaxReachedStep || 0;
+    const status = form.querySelector('[data-step-status]');
+    const fill = form.querySelector('[data-progress-fill]');
+    const denominator = Math.max(steps.length - 1, 1);
+    const percentage = (currentIndex / denominator) * 100;
+
+    if (status) {
+      status.textContent = 'Etapa ' + (currentIndex + 1) + ' de ' + steps.length;
+    }
+
+    if (fill) {
+      fill.style.width = percentage + '%';
+    }
+
+    buttons.forEach((button, index) => {
+      const isActive = index === currentIndex;
+      const isComplete = index < currentIndex;
+      const isAvailable = index <= maxReached;
+
+      button.classList.toggle('is-active', isActive);
+      button.classList.toggle('is-complete', isComplete);
+
+      if (isActive) {
+        button.setAttribute('aria-current', 'step');
+      } else {
+        button.removeAttribute('aria-current');
+      }
+
+      button.disabled = !isAvailable || isActive;
+      button.setAttribute('aria-disabled', button.disabled ? 'true' : 'false');
+      button.tabIndex = button.disabled ? -1 : 0;
+    });
+  }
+
+  function scrollWizardIntoView(form) {
+    const section = form.closest(SECTION_SELECTOR);
+    const target = section ? section.querySelector('.revendedor-form__shell') : form;
+    if (!target) return;
+
+    const rect = target.getBoundingClientRect();
+    const headerOffset = 110;
+
+    if (rect.top < headerOffset || rect.top > window.innerHeight * 0.42) {
+      window.scrollTo({
+        top: window.scrollY + rect.top - headerOffset,
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+      });
+    }
+  }
+
+  function setActiveStep(form, targetIndex, options) {
+    const steps = getSteps(form);
+    if (!steps.length) return;
+
+    const settings = options || {};
+    const currentIndex = form.revendedorCurrentStep || 0;
+    const nextIndex = Math.max(0, Math.min(targetIndex, steps.length - 1));
+    const direction = nextIndex < currentIndex ? 'back' : 'forward';
+    const currentStep = steps[currentIndex];
+    const nextStep = steps[nextIndex];
+
+    if (nextIndex === currentIndex && !settings.force) {
+      updateWizardProgress(form);
+      return;
+    }
+
+    if (currentStep && currentStep !== nextStep) {
+      currentStep.classList.add('is-leaving');
+      currentStep.setAttribute('aria-hidden', 'true');
+    }
+
+    window.setTimeout(() => {
+      steps.forEach((step, index) => {
+        const isActive = index === nextIndex;
+        step.hidden = !isActive;
+        step.classList.toggle('is-active', isActive);
+        step.classList.remove('is-leaving');
+        step.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+
+        if (isActive) {
+          step.dataset.direction = direction;
+        } else {
+          delete step.dataset.direction;
+        }
+      });
+
+      form.revendedorCurrentStep = nextIndex;
+      form.revendedorMaxReachedStep = Math.max(
+        form.revendedorMaxReachedStep || 0,
+        nextIndex
+      );
+
+      renderSummary(form, []);
+      clearSubmitError(form);
+      updateWizardProgress(form);
+
+      if (settings.scroll !== false) {
+        scrollWizardIntoView(form);
+      }
+
+      if (settings.focus !== false) {
+        const legend = nextStep && nextStep.querySelector('legend');
+        if (legend) {
+          legend.setAttribute('tabindex', '-1');
+          legend.focus({ preventScroll: true });
+        }
+      }
+    }, currentStep && currentStep !== nextStep ? 180 : 0);
+  }
+
+  function goToFirstErrorStep(form, errors) {
+    if (!errors.length) return;
+    const targetIndex = getStepIndexForField(form, errors[0].field);
+    form.revendedorMaxReachedStep = Math.max(
+      form.revendedorMaxReachedStep || 0,
+      targetIndex
+    );
+    setActiveStep(form, targetIndex, {
+      focus: false,
+      scroll: false
+    });
+  }
+
+  function handleNextStep(form) {
+    if (form.revendedorSubmitting) return;
+
+    const currentIndex = form.revendedorCurrentStep || 0;
+    const steps = getSteps(form);
+    const errors = getStepErrors(form, currentIndex);
+
+    renderSummary(form, errors);
+
+    if (errors.length) {
+      clearSubmitError(form);
+      focusFirstError(form, errors);
+      return;
+    }
+
+    if (currentIndex < steps.length - 1) {
+      setActiveStep(form, currentIndex + 1);
+    }
+  }
+
+  function initializeWizard(form, signal) {
+    const steps = getSteps(form);
+    if (!steps.length) return;
+
+    form.revendedorCurrentStep = 0;
+    form.revendedorMaxReachedStep = 0;
+
+    steps.forEach((step, index) => {
+      const isFirst = index === 0;
+      step.hidden = !isFirst;
+      step.classList.toggle('is-active', isFirst);
+      step.setAttribute('aria-hidden', isFirst ? 'false' : 'true');
+    });
+
+    updateWizardProgress(form);
+
+    form.querySelectorAll('[data-next-step]').forEach((button) => {
+      button.addEventListener('click', () => {
+        handleNextStep(form);
+      }, { signal: signal });
+    });
+
+    form.querySelectorAll('[data-prev-step]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const currentIndex = form.revendedorCurrentStep || 0;
+        if (currentIndex > 0) {
+          setActiveStep(form, currentIndex - 1);
+        }
+      }, { signal: signal });
+    });
+
+    getStepButtons(form).forEach((button) => {
+      button.addEventListener('click', () => {
+        const targetIndex = Number(button.dataset.stepTarget);
+        if (!Number.isFinite(targetIndex)) return;
+        if (targetIndex <= (form.revendedorMaxReachedStep || 0)) {
+          setActiveStep(form, targetIndex);
+        }
+      }, { signal: signal });
+    });
+
+    form.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') return;
+      const target = event.target;
+      if (
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLButtonElement ||
+        target instanceof HTMLAnchorElement
+      ) {
+        return;
+      }
+
+      const steps = getSteps(form);
+      const currentIndex = form.revendedorCurrentStep || 0;
+
+      if (currentIndex < steps.length - 1) {
+        event.preventDefault();
+        handleNextStep(form);
+      }
+    }, { signal: signal });
+  }
+
   function initSection(section) {
     if (section.revendedorFormController) section.revendedorFormController.abort();
     const controller = new AbortController();
@@ -1081,15 +1324,31 @@
     updateCountryState(form);
     updateCounters(form);
     bindFieldEvents(form, controller.signal);
+    initializeWizard(form, controller.signal);
 
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       if (form.revendedorSubmitting) return;
+
+      const steps = getSteps(form);
+      const currentIndex = form.revendedorCurrentStep || 0;
+
+      if (currentIndex < steps.length - 1) {
+        handleNextStep(form);
+        return;
+      }
+
       const errors = validateForm(form);
       renderSummary(form, errors);
+
       if (errors.length) {
         clearSubmitError(form);
-        focusFirstError(form, errors);
+        goToFirstErrorStep(form, errors);
+
+        window.setTimeout(() => {
+          renderSummary(form, errors);
+          focusFirstError(form, errors);
+        }, 200);
       } else {
         submitForm(form);
       }

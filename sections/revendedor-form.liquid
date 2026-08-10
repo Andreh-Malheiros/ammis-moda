@@ -52,6 +52,86 @@
           data-invalid-response-message="{{ section.settings.invalid_response_message | escape }}"
           data-timeout-message="{{ section.settings.timeout_message | escape }}"
         >
+          <div class="revendedor-form__progress" data-form-progress>
+            <div class="revendedor-form__progress-head">
+              <p class="revendedor-form__progress-status" aria-live="polite" data-step-status>
+                Etapa 1 de 4
+              </p>
+              <p class="revendedor-form__progress-hint">
+                Seus dados permanecem salvos ao avançar ou voltar.
+              </p>
+            </div>
+
+            <ol class="revendedor-form__progress-list" aria-label="Etapas do cadastro">
+              <li class="revendedor-form__progress-item">
+                <button
+                  class="revendedor-form__progress-button is-active"
+                  type="button"
+                  data-step-target="0"
+                  aria-current="step"
+                >
+                  <span class="revendedor-form__progress-number" aria-hidden="true">01</span>
+                  <span class="revendedor-form__progress-copy">
+                    <strong>{{ section.settings.company_group_title | escape }}</strong>
+                    <small>Informações da operação</small>
+                  </span>
+                </button>
+              </li>
+
+              <li class="revendedor-form__progress-item">
+                <button
+                  class="revendedor-form__progress-button"
+                  type="button"
+                  data-step-target="1"
+                  aria-disabled="true"
+                  disabled
+                >
+                  <span class="revendedor-form__progress-number" aria-hidden="true">02</span>
+                  <span class="revendedor-form__progress-copy">
+                    <strong>{{ section.settings.responsible_group_title | escape }}</strong>
+                    <small>Contato responsável</small>
+                  </span>
+                </button>
+              </li>
+
+              <li class="revendedor-form__progress-item">
+                <button
+                  class="revendedor-form__progress-button"
+                  type="button"
+                  data-step-target="2"
+                  aria-disabled="true"
+                  disabled
+                >
+                  <span class="revendedor-form__progress-number" aria-hidden="true">03</span>
+                  <span class="revendedor-form__progress-copy">
+                    <strong>{{ section.settings.address_group_title | escape }}</strong>
+                    <small>Localização comercial</small>
+                  </span>
+                </button>
+              </li>
+
+              <li class="revendedor-form__progress-item">
+                <button
+                  class="revendedor-form__progress-button"
+                  type="button"
+                  data-step-target="3"
+                  aria-disabled="true"
+                  disabled
+                >
+                  <span class="revendedor-form__progress-number" aria-hidden="true">04</span>
+                  <span class="revendedor-form__progress-copy">
+                    <strong>{{ section.settings.profile_group_title | escape }}</strong>
+                    <small>Perfil e confirmação</small>
+                  </span>
+                </button>
+              </li>
+            </ol>
+
+            <div class="revendedor-form__progress-track" aria-hidden="true">
+              <span class="revendedor-form__progress-fill" data-progress-fill></span>
+            </div>
+          </div>
+
           <div id="{{ summary_id }}" class="revendedor-form__summary" role="alert" tabindex="-1" hidden data-error-summary>
             <p class="revendedor-form__summary-title">{{ section.settings.error_summary_title | escape }}</p>
             <ul data-error-list></ul>
@@ -76,8 +156,19 @@
             >
           </div>
 
-          <fieldset class="revendedor-form__group">
-            <legend class="revendedor-form__legend h3">{{ section.settings.company_group_title | escape }}</legend>
+          <div
+            class="revendedor-form__step is-active"
+            data-form-step
+            data-step-index="0"
+            aria-hidden="false"
+          >
+            <div class="revendedor-form__step-heading">
+              <span>Etapa 01</span>
+              <p>Conte-nos sobre a sua operação.</p>
+            </div>
+
+            <fieldset class="revendedor-form__group">
+              <legend class="revendedor-form__legend h3">{{ section.settings.company_group_title | escape }}</legend>
             <div class="revendedor-form__grid">
               <div class="field revendedor-form__field revendedor-form__field--full" data-field-wrapper>
                 <input class="field__input focus-inset" id="{{ form_id }}-company_legal_name" name="company_legal_name" type="text" autocomplete="organization" maxlength="150" required placeholder="Razao social" aria-describedby="{{ form_id }}-company_legal_name-error">
@@ -131,10 +222,30 @@
                 </div>
               {%- endif -%}
             </div>
-          </fieldset>
+            </fieldset>
 
-          <fieldset class="revendedor-form__group">
-            <legend class="revendedor-form__legend h3">{{ section.settings.responsible_group_title | escape }}</legend>
+            <div class="revendedor-form__step-actions revendedor-form__step-actions--end">
+              <button class="button button--primary focus-inset" type="button" data-next-step>
+                <span>Continuar</span>
+                <span class="revendedor-form__button-arrow" aria-hidden="true">→</span>
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="revendedor-form__step"
+            data-form-step
+            data-step-index="1"
+            aria-hidden="true"
+            hidden
+          >
+            <div class="revendedor-form__step-heading">
+              <span>Etapa 02</span>
+              <p>Informe quem será o contato da AMMIS.</p>
+            </div>
+
+            <fieldset class="revendedor-form__group">
+              <legend class="revendedor-form__legend h3">{{ section.settings.responsible_group_title | escape }}</legend>
             <div class="revendedor-form__grid">
               <div class="field revendedor-form__field" data-field-wrapper>
                 <input class="field__input focus-inset" id="{{ form_id }}-responsible_name" name="responsible_name" type="text" autocomplete="name" maxlength="120" required placeholder="Nome completo" aria-describedby="{{ form_id }}-responsible_name-error">
@@ -188,10 +299,35 @@
                 <small class="revendedor-form__field-error form__message" id="{{ form_id }}-whatsapp_phone-error" data-error-for="whatsapp_phone"></small>
               </div>
             </div>
-          </fieldset>
+            </fieldset>
 
-          <fieldset class="revendedor-form__group">
-            <legend class="revendedor-form__legend h3">{{ section.settings.address_group_title | escape }}</legend>
+            <div class="revendedor-form__step-actions">
+              <button class="button button--secondary focus-inset" type="button" data-prev-step>
+                <span class="revendedor-form__button-arrow" aria-hidden="true">←</span>
+                <span>Voltar</span>
+              </button>
+
+              <button class="button button--primary focus-inset" type="button" data-next-step>
+                <span>Continuar</span>
+                <span class="revendedor-form__button-arrow" aria-hidden="true">→</span>
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="revendedor-form__step"
+            data-form-step
+            data-step-index="2"
+            aria-hidden="true"
+            hidden
+          >
+            <div class="revendedor-form__step-heading">
+              <span>Etapa 03</span>
+              <p>Informe o endereço comercial da loja.</p>
+            </div>
+
+            <fieldset class="revendedor-form__group">
+              <legend class="revendedor-form__legend h3">{{ section.settings.address_group_title | escape }}</legend>
             <div class="revendedor-form__grid">
               <div class="field revendedor-form__field" data-field-wrapper data-postal-code-wrapper>
                 <input class="field__input focus-inset" id="{{ form_id }}-postal_code" name="postal_code" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="20" required placeholder="00000-000" aria-describedby="{{ form_id }}-postal_code-status {{ form_id }}-postal_code-error" data-postal-code>
@@ -250,10 +386,35 @@
                 <small class="revendedor-form__field-error form__message" id="{{ form_id }}-city-error" data-error-for="city"></small>
               </div>
             </div>
-          </fieldset>
+            </fieldset>
 
-          <fieldset class="revendedor-form__group">
-            <legend class="revendedor-form__legend h3">{{ section.settings.profile_group_title | escape }}</legend>
+            <div class="revendedor-form__step-actions">
+              <button class="button button--secondary focus-inset" type="button" data-prev-step>
+                <span class="revendedor-form__button-arrow" aria-hidden="true">←</span>
+                <span>Voltar</span>
+              </button>
+
+              <button class="button button--primary focus-inset" type="button" data-next-step>
+                <span>Continuar</span>
+                <span class="revendedor-form__button-arrow" aria-hidden="true">→</span>
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="revendedor-form__step"
+            data-form-step
+            data-step-index="3"
+            aria-hidden="true"
+            hidden
+          >
+            <div class="revendedor-form__step-heading">
+              <span>Etapa 04</span>
+              <p>Confirme o perfil da loja e autorize a análise cadastral.</p>
+            </div>
+
+            <fieldset class="revendedor-form__group">
+              <legend class="revendedor-form__legend h3">{{ section.settings.profile_group_title | escape }}</legend>
             <div class="revendedor-form__radio-group" data-field-wrapper data-radio-group="store_type" aria-describedby="{{ form_id }}-store_type-error">
               <div class="revendedor-form__radio">
                 <input id="{{ form_id }}-store_type-physical" name="store_type" type="radio" value="physical">
@@ -283,10 +444,16 @@
             </div>
           </fieldset>
 
-          <div class="revendedor-form__actions">
+          <div class="revendedor-form__actions revendedor-form__step-actions">
+            <button class="button button--secondary focus-inset" type="button" data-prev-step>
+              <span class="revendedor-form__button-arrow" aria-hidden="true">←</span>
+              <span>Voltar</span>
+            </button>
+
             <button type="submit" class="button button--{{ section.settings.button_style }} focus-inset" data-submit-button>
               <span>{{ section.settings.button_label | escape }}</span>
             </button>
+          </div>
           </div>
         </form>
       </div>

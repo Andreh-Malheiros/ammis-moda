@@ -2,56 +2,797 @@
 
 {%- if section.settings.enable_section -%}
   {%- style -%}
-    {% render 'section-margin' %}
+                {% render 'section-margin' %}
+
+                #shopify-section-{{ section.id }} {
+                  --revendedor-background: rgb(var(--color-background));
+                  --revendedor-foreground: rgb(var(--color-foreground));
+
+                  --revendedor-border: rgba(var(--color-foreground), 0.1);
+                  --revendedor-border-strong: rgba(var(--color-foreground), 0.19);
+                  --revendedor-text-muted: rgba(var(--color-foreground), 0.7);
+
+                  --revendedor-accent-coral: {{ section.settings.accent_coral }};
+                  --revendedor-accent-sage: {{ section.settings.accent_sage }};
+                  --revendedor-accent-yellow: {{ section.settings.accent_yellow }};
+                  --revendedor-accent-lilac: {{ section.settings.accent_lilac }};
+
+                  --revendedor-radius-large: 2.8rem;
+                  --revendedor-radius-medium: 2rem;
+                }
+
+                /*
+                  Estrutura principal
+                */
+
+                #shopify-section-{{ section.id }} .revendedor-benefits {
+                  position: relative;
+                  overflow: visible;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefits__container {
+                  width: 100%;
+                  max-width: var(--page-width, 144rem);
+                  margin: 0 auto;
+                  padding-right: 5rem;
+                  padding-left: 5rem;
+                  overflow: visible;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefits__shell {
+                  position: relative;
+                  display: grid;
+                  grid-template-columns: minmax(27rem, 0.72fr) minmax(0, 1.65fr);
+                  gap: clamp(4rem, 6vw, 9rem);
+                  align-items: start;
+                  padding: clamp(5rem, 7vw, 9rem) 0;
+                  overflow: visible;
+                }
+
+                /*
+                  Cabeçalho lateral
+                */
+
+                #shopify-section-{{ section.id }} .revendedor-benefits__intro {
+                  position: sticky;
+                  top: calc(var(--header-height, 8rem) + 2.4rem);
+                  z-index: 2;
+                  align-self: start;
+                  max-width: 43rem;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefits__intro-inner {
+                  position: relative;
+                  isolation: isolate;
+                  padding: 1rem 0 1rem 2.6rem;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefits__intro-inner::before {
+                  content: '';
+                  position: absolute;
+                  top: 0.8rem;
+                  bottom: 0.8rem;
+                  left: 0;
+                  width: 0.4rem;
+                  background: var(--revendedor-accent-coral);
+                  border-radius: 999px;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefits__intro-inner::after {
+                  content: '';
+                  position: absolute;
+                  top: -3.4rem;
+                  left: -4.6rem;
+                  z-index: -1;
+                  width: 12rem;
+                  height: 12rem;
+                  background: var(--revendedor-accent-yellow);
+                  border-radius: 42% 58% 65% 35% / 55% 38% 62% 45%;
+                  opacity: 0.72;
+                  transform: rotate(-14deg);
+                  pointer-events: none;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefits__eyebrow {
+                  margin: 0 0 1.8rem;
+                  color: var(--revendedor-text-muted);
+                  font-size: 1.2rem;
+                  font-weight: 500;
+                  line-height: 1.4;
+                  letter-spacing: 0.16em;
+                  text-transform: uppercase;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefits__heading {
+                  max-width: 42rem;
+                  margin: 0;
+                  font-size: clamp(3.2rem, 3.6vw, 5.8rem);
+                  font-weight: 400;
+                  line-height: 1.04;
+                  letter-spacing: -0.04em;
+                  text-wrap: balance;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefits__description {
+                  max-width: 38rem;
+                  margin-top: 2.4rem;
+                  color: var(--revendedor-text-muted);
+                  font-size: 1.55rem;
+                  line-height: 1.7;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefits__description > *:first-child {
+                  margin-top: 0;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefits__description > *:last-child {
+                  margin-bottom: 0;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefits__signature {
+                  display: flex;
+                  align-items: center;
+                  gap: 1.2rem;
+                  margin: 3.2rem 0 0;
+                  color: var(--revendedor-text-muted);
+                  font-size: 1.2rem;
+                  line-height: 1.4;
+                  letter-spacing: 0.12em;
+                  text-transform: uppercase;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefits__signature::before {
+                  content: '';
+                  display: block;
+                  width: 3.2rem;
+                  height: 1px;
+                  background: currentColor;
+                }
+
+                /*
+                  Grade de benefícios
+                */
+
+                #shopify-section-{{ section.id }} .revendedor-benefits__grid {
+                  display: grid;
+                  grid-template-columns: repeat(2, minmax(0, 1fr));
+                  gap: 1.8rem;
+                  min-width: 0;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit {
+                  position: relative;
+                  display: flex;
+                  min-width: 0;
+                  min-height: 31rem;
+                  flex-direction: column;
+                  justify-content: space-between;
+                  padding: clamp(2.8rem, 3vw, 4.4rem);
+                  overflow: hidden;
+                  color: var(--revendedor-foreground);
+                  background: var(--revendedor-background);
+                  border: 1px solid var(--revendedor-border);
+                  border-radius: var(--revendedor-radius-medium);
+                  isolation: isolate;
+                  transition:
+                    transform 350ms cubic-bezier(0.22, 1, 0.36, 1),
+                    border-color 350ms ease,
+                    box-shadow 350ms ease;
+                }
+
+                /*
+                  Distribuição de cores
+                */
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(1) {
+                  background: var(--revendedor-accent-coral);
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(2) {
+                  background: var(--revendedor-accent-sage);
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(3) {
+                  background: var(--revendedor-background);
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(4) {
+                  background: var(--revendedor-accent-yellow);
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(5) {
+                  background: var(--revendedor-accent-lilac);
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) {
+              color: #ffffff;
+              background: #171717;
+            }
+
+                /*
+                  Benefícios em largura completa
+                */
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(1),
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) {
+                  grid-column: span 2;
+                  min-height: 27rem;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(1) {
+                  display: grid;
+                  grid-template-columns: minmax(10rem, 0.42fr) minmax(0, 1.58fr);
+                  gap: 3rem;
+                  align-items: end;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) {
+                  display: grid;
+                  grid-template-columns: minmax(0, 1.5fr) minmax(10rem, 0.5fr);
+                  gap: 3rem;
+                  align-items: end;
+                }
+
+                /*
+                  Elemento orgânico decorativo
+                */
+
+                #shopify-section-{{ section.id }} .revendedor-benefit::after {
+                  content: '';
+                  position: absolute;
+                  right: -5rem;
+                  bottom: -7rem;
+                  z-index: -1;
+                  width: 18rem;
+                  height: 18rem;
+                  border: 1px solid currentColor;
+                  border-radius: 46% 54% 62% 38% / 48% 42% 58% 52%;
+                  opacity: 0.1;
+                  transform: rotate(-12deg);
+                  pointer-events: none;
+                  transition:
+                    transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
+                    opacity 350ms ease;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(even)::after {
+                  top: -8rem;
+                  right: -6rem;
+                  bottom: auto;
+                  width: 20rem;
+                  height: 20rem;
+                  transform: rotate(18deg);
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:hover {
+                  transform: translateY(-0.5rem);
+                  border-color: var(--revendedor-border-strong);
+                  box-shadow: 0 1.8rem 4rem rgba(var(--color-foreground), 0.08);
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:hover::after {
+                  opacity: 0.18;
+                  transform: rotate(0deg) scale(1.08);
+                }
+
+                /*
+                  Imagem opcional
+                */
+
+                #shopify-section-{{ section.id }} .revendedor-benefit__media {
+                  position: absolute;
+                  inset: 0;
+                  z-index: -2;
+                  overflow: hidden;
+                  border-radius: inherit;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit__media::after {
+                  content: '';
+                  position: absolute;
+                  inset: 0;
+                  background: rgba(var(--color-background), 0.76);
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__media::after {
+                  background: rgba(var(--color-foreground), 0.74);
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit__image {
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                  transform: scale(1.015);
+                  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:hover .revendedor-benefit__image {
+                  transform: scale(1.055);
+                }
+
+                /*
+                  Parte superior do benefício
+                */
+
+                #shopify-section-{{ section.id }} .revendedor-benefit__top {
+                  position: relative;
+                  z-index: 2;
+                  display: flex;
+                  align-items: flex-start;
+                  justify-content: space-between;
+                  gap: 2rem;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit__number {
+                  display: inline-flex;
+                  min-width: 4.6rem;
+                  height: 4.6rem;
+                  align-items: center;
+                  justify-content: center;
+                  flex-shrink: 0;
+                  padding: 0 1rem;
+                  color: var(--revendedor-foreground);
+                  background: var(--revendedor-background);
+                  border-radius: 50%;
+                  box-shadow: 0 0 0 1px var(--revendedor-border);
+                  font-size: 1.15rem;
+                  font-weight: 500;
+                  line-height: 1;
+                  letter-spacing: 0.04em;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__number {
+              color: #ffff;
+              background: #171717;
+              box-shadow: none;
+            }
+
+            #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__heading,
+            #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__line {
+              color: #ffffff;
+            }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit__decorative-number {
+                  margin: -0.8rem 0 0;
+                  color: rgba(var(--color-foreground), 0.075);
+                  font-size: clamp(6rem, 7vw, 11rem);
+                  font-weight: 400;
+                  line-height: 0.8;
+                  letter-spacing: -0.08em;
+                  user-select: none;
+                  pointer-events: none;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__decorative-number {
+                  color: rgba(var(--color-background), 0.1);
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(1) .revendedor-benefit__decorative-number,
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__decorative-number {
+                  display: none;
+                }
+
+                /*
+                  Conteúdo
+                */
+
+                #shopify-section-{{ section.id }} .revendedor-benefit__content {
+                  position: relative;
+                  z-index: 2;
+                  max-width: 46rem;
+                  margin-top: 5rem;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(1) .revendedor-benefit__content,
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__content {
+                  margin-top: 0;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__top {
+                  grid-column: 2;
+                  grid-row: 1;
+                  justify-self: end;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__content {
+                  grid-column: 1;
+                  grid-row: 1;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit__heading {
+                  max-width: 42rem;
+                  margin: 0;
+                  color: currentColor;
+                  font-size: clamp(2rem, 2vw, 3rem);
+                  font-weight: 400;
+                  line-height: 1.16;
+                  letter-spacing: -0.025em;
+                  text-wrap: balance;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(1) .revendedor-benefit__heading,
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__heading {
+                  font-size: clamp(2.4rem, 2.6vw, 3.8rem);
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit__text {
+                  max-width: 47rem;
+                  margin-top: 1.8rem;
+                  color: var(--revendedor-text-muted);
+                  font-size: 1.5rem;
+                  line-height: 1.65;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__text {
+              color: rgba(255, 255, 255, 0.76);
+            }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit__text > *:first-child {
+                  margin-top: 0;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit__text > *:last-child {
+                  margin-bottom: 0;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit__line {
+                  display: block;
+                  width: 3.2rem;
+                  height: 1px;
+                  margin-top: 2.4rem;
+                  background: currentColor;
+                  opacity: 0.45;
+                  transition:
+                    width 350ms cubic-bezier(0.22, 1, 0.36, 1),
+                    opacity 350ms ease;
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:hover .revendedor-benefit__line {
+                  width: 5.4rem;
+                  opacity: 0.85;
+                }
+
+                /*
+                  Desktop intermediário
+                */
+
+                @media screen and (max-width: 1199px) {
+                  #shopify-section-{{ section.id }} .revendedor-benefits__container {
+                    padding-right: 3.2rem;
+                    padding-left: 3.2rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__shell {
+                    grid-template-columns: minmax(24rem, 0.7fr) minmax(0, 1.5fr);
+                    gap: 4rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefit {
+                    min-height: 33rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(1),
+                  #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) {
+                    min-height: 29rem;
+                  }
+                }
+
+                #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6),
+        #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__heading,
+        #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__text,
+        #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__text p,
+        #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__text a,
+        #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .rte,
+        #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .rte p {
+          color: #ffffff !important;
+        }
+
+        #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__text,
+    #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__text p {
+      color: rgba(255, 255, 255, 0.78) !important;
+    }
+
+                /*
+                  Tablet
+                */
+
+                @media screen and (max-width: 989px) {
+                  #shopify-section-{{ section.id }} .revendedor-benefits__container {
+                    padding-right: 2rem;
+                    padding-left: 2rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__shell {
+                    display: block;
+                    padding: 5.5rem 0;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__intro {
+                    position: static;
+                    max-width: 68rem;
+                    margin-bottom: 4rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__intro-inner {
+                    padding-left: 2rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__intro-inner::after {
+                    top: -2.6rem;
+                    left: -3.5rem;
+                    width: 10rem;
+                    height: 10rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__heading {
+                    max-width: 62rem;
+                    font-size: clamp(3.2rem, 6vw, 5rem);
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__description {
+                    max-width: 58rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__signature {
+                    margin-top: 2.4rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__grid {
+                    gap: 1.6rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefit {
+                    min-height: 30rem;
+                  }
+                }
+
+                /*
+                  Mobile
+                */
+
+                @media screen and (max-width: 749px) {
+                  #shopify-section-{{ section.id }} {
+                    --revendedor-radius-large: 2.2rem;
+                    --revendedor-radius-medium: 1.8rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__shell {
+                    padding: 4.5rem 0;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__intro {
+                    margin-bottom: 3.2rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__intro-inner {
+                    padding: 0.5rem 0 0.5rem 1.7rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__intro-inner::before {
+                    top: 0.4rem;
+                    bottom: 0.4rem;
+                    width: 0.3rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__intro-inner::after {
+                    top: -2.2rem;
+                    left: -2.8rem;
+                    width: 8rem;
+                    height: 8rem;
+                    opacity: 0.62;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__eyebrow {
+                    margin-bottom: 1.4rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__heading {
+                    font-size: clamp(3rem, 9vw, 4.2rem);
+                    line-height: 1.06;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__description {
+                    margin-top: 1.8rem;
+                    font-size: 1.45rem;
+                    line-height: 1.65;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__signature {
+                    display: none;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefits__grid {
+                    grid-template-columns: 1fr;
+                    gap: 1.4rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefit,
+                  #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(1),
+                  #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) {
+                    display: flex;
+                    grid-column: auto;
+                    min-height: auto;
+                    padding: 2.6rem 2.4rem 2.8rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__top,
+                  #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__content {
+                    grid-column: auto;
+                    grid-row: auto;
+                    justify-self: auto;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefit__top {
+                    align-items: center;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefit__number {
+                    min-width: 4.3rem;
+                    height: 4.3rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefit__decorative-number {
+                    margin: 0;
+                    font-size: 6rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefit__content,
+                  #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(1) .revendedor-benefit__content,
+                  #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__content {
+                    max-width: none;
+                    margin-top: 3.6rem;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefit__heading,
+                  #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(1) .revendedor-benefit__heading,
+                  #shopify-section-{{ section.id }} .revendedor-benefit:nth-child(6) .revendedor-benefit__heading {
+                    max-width: 32rem;
+                    font-size: 2.2rem;
+                    line-height: 1.18;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefit__text {
+                    margin-top: 1.5rem;
+                    font-size: 1.45rem;
+                    line-height: 1.62;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefit::after {
+                    width: 14rem;
+                    height: 14rem;
+                  }
+                }
+
+                /*
+                  Acessibilidade
+                */
+
+                @media (prefers-reduced-motion: reduce) {
+                  #shopify-section-{{ section.id }} .revendedor-benefit,
+                  #shopify-section-{{ section.id }} .revendedor-benefit::after,
+                  #shopify-section-{{ section.id }} .revendedor-benefit__image,
+                  #shopify-section-{{ section.id }} .revendedor-benefit__line {
+                    transition: none;
+                  }
+
+                  #shopify-section-{{ section.id }} .revendedor-benefit:hover {
+                    transform: none;
+                  }
+                }
   {%- endstyle -%}
 
-  <section class="revendedor-cards color-{{ section.settings.color_scheme }} background" aria-labelledby="RevendedorCards-{{ section.id }}">
-    <div class="container">
-      <div class="revendedor-section-heading revendedor-section-heading--{{ section.settings.alignment }}">
-        {%- if section.settings.eyebrow != blank -%}
-          <p class="revendedor-eyebrow">{{ section.settings.eyebrow | escape }}</p>
-        {%- endif -%}
-        {%- if section.settings.heading != blank -%}
-          <h2 id="RevendedorCards-{{ section.id }}" class="title--section title--section-m-none {{ section.settings.heading_size }}">
-            {{ section.settings.heading | escape }}
-          </h2>
-        {%- endif -%}
-        {%- if section.settings.text != blank -%}
-          <div class="revendedor-section-heading__text rte">{{ section.settings.text }}</div>
-        {%- endif -%}
-      </div>
+  {%- liquid
+    assign visible_benefits = 0
 
-      <div class="revendedor-card-grid revendedor-card-grid--{{ section.settings.columns_desktop }}">
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'benefit' and block.settings.show_item -%}
-            <article class="revendedor-card" {{ block.shopify_attributes }}>
-              {%- if block.settings.image != blank -%}
-                <div class="revendedor-card__media">
-                  {{
-                    block.settings.image
-                    | image_url: width: 720
-                    | image_tag:
-                      loading: 'lazy',
-                      widths: '240, 360, 533, 720',
-                      sizes: '(min-width: 990px) 25vw, 100vw',
-                      class: 'revendedor-card__image',
-                      alt: block.settings.image_alt
-                  }}
+    for block in section.blocks
+      if block.type == 'benefit' and block.settings.show_item
+        assign visible_benefits = visible_benefits | plus: 1
+      endif
+    endfor
+  -%}
+
+  <section
+    class="revendedor-benefits color-{{ section.settings.color_scheme }} background"
+    aria-labelledby="RevendedorBenefitsHeading-{{ section.id }}"
+  >
+    <div class="revendedor-benefits__container">
+      <div class="revendedor-benefits__shell">
+        <header class="revendedor-benefits__intro">
+          <div class="revendedor-benefits__intro-inner">
+            {%- if section.settings.eyebrow != blank -%}
+              <p class="revendedor-benefits__eyebrow">
+                {{ section.settings.eyebrow | escape }}
+              </p>
+            {%- endif -%}
+
+            {%- if section.settings.heading != blank -%}
+              <h2
+                id="RevendedorBenefitsHeading-{{ section.id }}"
+                class="revendedor-benefits__heading {{ section.settings.heading_size }}"
+              >
+                {{ section.settings.heading | escape }}
+              </h2>
+            {%- endif -%}
+
+            {%- if section.settings.text != blank -%}
+              <div class="revendedor-benefits__description rte">
+                {{ section.settings.text }}
+              </div>
+            {%- endif -%}
+
+            {%- if visible_benefits > 0 -%}
+              <p class="revendedor-benefits__signature" aria-hidden="true">Universo AMMIS</p>
+            {%- endif -%}
+          </div>
+        </header>
+
+        <div class="revendedor-benefits__grid">
+          {%- assign benefit_index = 0 -%}
+
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'benefit' and block.settings.show_item -%}
+              {%- assign benefit_index = benefit_index | plus: 1 -%}
+              {%- assign benefit_number = benefit_index | prepend: '0' | slice: -2, 2 -%}
+
+              <article
+                class="revendedor-benefit"
+                aria-label="Benefício {{ benefit_index }} de {{ visible_benefits }}"
+                {{ block.shopify_attributes }}
+              >
+                {%- if block.settings.image != blank -%}
+                  <div class="revendedor-benefit__media" aria-hidden="true">
+                    {{
+                      block.settings.image
+                      | image_url: width: 1200
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '360, 533, 720, 900, 1200',
+                        sizes: '(min-width: 990px) 45vw, (min-width: 750px) 50vw, 100vw',
+                        class: 'revendedor-benefit__image',
+                        alt: ''
+                    }}
+                  </div>
+                {%- endif -%}
+
+                <div class="revendedor-benefit__top">
+                  <span class="revendedor-benefit__number" aria-hidden="true">
+                    {%- if block.settings.icon_text != blank -%}
+                      {{ block.settings.icon_text | escape }}
+                    {%- else -%}
+                      {{ benefit_number }}
+                    {%- endif -%}
+                  </span>
+
+                  <span
+                    class="revendedor-benefit__decorative-number"
+                    aria-hidden="true"
+                  >
+                    {{ benefit_number }}
+                  </span>
                 </div>
-              {%- elsif block.settings.icon_text != blank -%}
-                <span class="revendedor-card__icon" aria-hidden="true">{{ block.settings.icon_text | escape }}</span>
-              {%- endif -%}
 
-              {%- if block.settings.heading != blank -%}
-                <h3 class="revendedor-card__heading h3">{{ block.settings.heading | escape }}</h3>
-              {%- endif -%}
+                <div class="revendedor-benefit__content">
+                  {%- if block.settings.heading != blank -%}
+                    <h3 class="revendedor-benefit__heading">
+                      {{ block.settings.heading | escape }}
+                    </h3>
+                  {%- endif -%}
 
-              {%- if block.settings.text != blank -%}
-                <div class="revendedor-card__text rte">{{ block.settings.text }}</div>
-              {%- endif -%}
-            </article>
-          {%- endif -%}
-        {%- endfor -%}
+                  {%- if block.settings.text != blank -%}
+                    <div class="revendedor-benefit__text rte">
+                      {{ block.settings.text }}
+                    </div>
+                  {%- endif -%}
+
+                  <span
+                    class="revendedor-benefit__line"
+                    aria-hidden="true"
+                  ></span>
+                </div>
+              </article>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
       </div>
     </div>
   </section>
@@ -77,6 +818,38 @@
       "id": "color_scheme",
       "default": "background-1",
       "label": "t:sections.all.color_scheme.label"
+    },
+    {
+      "type": "header",
+      "content": "Cores dos beneficios"
+    },
+    {
+      "type": "color",
+      "id": "accent_coral",
+      "default": "#F3C3B8",
+      "label": "Cor coral"
+    },
+    {
+      "type": "color",
+      "id": "accent_sage",
+      "default": "#CBD8C4",
+      "label": "Cor verde suave"
+    },
+    {
+      "type": "color",
+      "id": "accent_yellow",
+      "default": "#F3DFA5",
+      "label": "Cor amarela"
+    },
+    {
+      "type": "color",
+      "id": "accent_lilac",
+      "default": "#D8CCE6",
+      "label": "Cor lilas"
+    },
+    {
+      "type": "header",
+      "content": "Conteudo"
     },
     {
       "type": "text",
