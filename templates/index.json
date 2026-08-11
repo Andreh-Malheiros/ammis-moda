@@ -12,6 +12,24 @@
     "slideshow_97kWbf": {
       "type": "slideshow",
       "blocks": {
+        "slideshow_item_RTqjtc": {
+          "type": "slideshow-item",
+          "settings": {
+            "image": "shopify://shop_images/DESK_1_5x_9c0abdae-723d-4486-860f-213ab256e1e5.png",
+            "overlay_opacity": 0.2,
+            "show_video": false,
+            "video_url": "",
+            "description_video": "",
+            "heading": "",
+            "description": "",
+            "tab_subheading": "",
+            "tab_heading": "",
+            "button_label": "",
+            "button_link": "shopify://collections/outlet",
+            "button_style": "tertiary",
+            "enable_fullscreen_link": true
+          }
+        },
         "slideshow_item_gjAiCC": {
           "type": "slideshow-item",
           "settings": {
@@ -109,6 +127,7 @@
         }
       },
       "block_order": [
+        "slideshow_item_RTqjtc",
         "slideshow_item_gjAiCC",
         "slideshow_item_MfifAE",
         "slideshow_item_F6EnkM",
