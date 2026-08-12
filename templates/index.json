@@ -255,7 +255,7 @@
         "product_slide_3Wwhf8": {
           "type": "product_slide",
           "settings": {
-            "product": "vestido-duna-curto",
+            "product": "jaqueta-falesia",
             "image": "{{ block.settings.product.featured_image }}",
             "color_scheme": "",
             "overlay_opacity": 0,
