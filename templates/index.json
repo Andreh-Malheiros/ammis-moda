@@ -235,7 +235,7 @@
         "product_slide_kraGFd": {
           "type": "product_slide",
           "settings": {
-            "product": "echarpe-caraiva",
+            "product": "body-carneiros",
             "image": "{{ block.settings.product.featured_image }}",
             "color_scheme": "background-2",
             "overlay_opacity": 0,
