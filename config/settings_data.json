@@ -193,7 +193,7 @@
         "disabled": false,
         "settings": {
           "button_label": "TABELA DE MEDIDAS",
-          "button_style": "button",
+          "button_style": "link",
           "button_icon": "ruler",
           "button_color": "#000000",
           "button_background_color": "#E4E3E3",
