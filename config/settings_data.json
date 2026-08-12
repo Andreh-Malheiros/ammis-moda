@@ -57,6 +57,7 @@
     "empty_cart_heading": "Sugestões para você",
     "notification": false,
     "show_shipping": true,
+    "min_installment_value": 0,
     "min_spend": "2000",
     "account_heading": "Bem-Vindo à sua conta",
     "account_description": "Gerencie seu perfil, acompanhe seus pedidos e aproveite uma jornada de compras tranquila conosco.",
