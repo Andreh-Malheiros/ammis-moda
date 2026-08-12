@@ -155,7 +155,6 @@
     },
     "home_sticky_video_4P8iwa": {
       "type": "home-sticky-video",
-      "disabled": true,
       "name": "Vídeo flutuante AMMIS",
       "settings": {
         "enable_widget": true,
@@ -164,7 +163,7 @@
         "fallback_video_url": "",
         "accessible_description": "Vídeo da AMMIS",
         "destination_type": "product",
-        "destination_product": "bermuda-siena",
+        "destination_product": "saia-curta-trancoso",
         "destination_collection": "",
         "destination_page": "",
         "destination_url": "",
