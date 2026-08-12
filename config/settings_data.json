@@ -149,7 +149,7 @@
       },
       "9474353549209701101": {
         "type": "shopify://apps/smart-size-recommender/blocks/smartsize-recommender-embed/b756010c-643b-4084-bf2f-97a8df367547",
-        "disabled": true,
+        "disabled": false,
         "settings": {
           "smartrecom_accent_color": "#000000",
           "default_unit": "store_locale",
@@ -178,7 +178,7 @@
       },
       "4293466245358296089": {
         "type": "shopify://apps/smartsize/blocks/app-embed/465a43e0-6a1a-4d30-b82e-fe6118568705",
-        "disabled": true,
+        "disabled": false,
         "settings": {
           "button_horizontal_aligment": "center",
           "button_horizontal_aligment_mobile": "center",
@@ -190,7 +190,7 @@
       },
       "5958882876626866175": {
         "type": "shopify://apps/smartsize/blocks/smartsize-sizechart-embed/465a43e0-6a1a-4d30-b82e-fe6118568705",
-        "disabled": false,
+        "disabled": true,
         "settings": {
           "button_label": "TABELA DE MEDIDAS",
           "button_style": "link",
