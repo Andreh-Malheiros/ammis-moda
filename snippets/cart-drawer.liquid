@@ -91,7 +91,10 @@
         {% assign free_shipping_remaining = free_shipping_threshold_cents | minus: cart.total_price %}
 
         {% if free_shipping_threshold_cents > 0 %}
-          {% assign free_shipping_progress = cart.total_price | times: 100.0 | divided_by: free_shipping_threshold_cents %}
+          {% assign free_shipping_progress = cart.total_price
+            | times: 100.0
+            | divided_by: free_shipping_threshold_cents
+          %}
         {% endif %}
 
         {% if free_shipping_progress > 100 %}
@@ -269,7 +272,11 @@
                                         <div class="cart-item__discount-badge">
                                           {%- render 'icon-discount' -%}
                                           <span class="cart-item__discount-badge-title">
-                                            {{ discount_allocation.discount_application.title | default: 'Desconto aplicado' | escape }}
+                                            {{
+                                              discount_allocation.discount_application.title
+                                              | default: 'Desconto aplicado'
+                                              | escape
+                                            }}
                                           </span>
                                           <span class="cart-item__discount-badge-value">
                                             -{{ discount_allocation.amount | money }}
@@ -676,7 +683,7 @@
                   name="checkout"
                   form="CartDrawer-Form"
                 >
-                  <span> {{ 'sections.cart.checkout' | t }} </span>
+                  <span>Finalizar Pedido</span>
                 </button>
               </div>
             </div>
