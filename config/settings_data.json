@@ -147,18 +147,6 @@
         "disabled": false,
         "settings": {}
       },
-      "9474353549209701101": {
-        "type": "shopify://apps/smart-size-recommender/blocks/smartsize-recommender-embed/b756010c-643b-4084-bf2f-97a8df367547",
-        "disabled": false,
-        "settings": {
-          "smartrecom_accent_color": "#000000",
-          "default_unit": "store_locale",
-          "show_support_link": false,
-          "smartrecom_support_link__label": "Ficou em dúvida? Fale com a gente — vamos te ajudar a escolher o tamanho certo.",
-          "smartrecom_support_link_url": "mailto:support@your-store.com",
-          "smartrecom_recommendation_text": "Seu tamanho é [[recommendedSize]]"
-        }
-      },
       "10736359279748399689": {
         "type": "shopify://apps/smartsize/blocks/smartsize-recommender-embed/465a43e0-6a1a-4d30-b82e-fe6118568705",
         "disabled": true,
@@ -188,12 +176,24 @@
           "hide_default_button": false
         }
       },
+      "9474353549209701101": {
+        "type": "shopify://apps/smart-size-recommender/blocks/smartsize-recommender-embed/b756010c-643b-4084-bf2f-97a8df367547",
+        "disabled": true,
+        "settings": {
+          "smartrecom_accent_color": "#000000",
+          "default_unit": "store_locale",
+          "show_support_link": false,
+          "smartrecom_support_link__label": "Ficou em dúvida? Fale com a gente — vamos te ajudar a escolher o tamanho certo.",
+          "smartrecom_support_link_url": "mailto:support@your-store.com",
+          "smartrecom_recommendation_text": "Seu tamanho é [[recommendedSize]]"
+        }
+      },
       "5958882876626866175": {
         "type": "shopify://apps/smartsize/blocks/smartsize-sizechart-embed/465a43e0-6a1a-4d30-b82e-fe6118568705",
         "disabled": true,
         "settings": {
           "button_label": "TABELA DE MEDIDAS",
-          "button_style": "link",
+          "button_style": "button",
           "button_icon": "ruler",
           "button_color": "#000000",
           "button_background_color": "#E4E3E3",
