@@ -155,7 +155,6 @@
     },
     "home_sticky_video_4P8iwa": {
       "type": "home-sticky-video",
-      "disabled": true,
       "name": "Vídeo flutuante AMMIS",
       "settings": {
         "enable_widget": true,
