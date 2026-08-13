@@ -323,7 +323,7 @@
 				"badge_sale_type": {
 					"label": "Discount badge type",
 					"options__1": {
-						"label": "Label \"OUTLET\""
+						"label": "Label \"Sale\""
 					},
 					"options__2": {
 						"label": "Percentage"
