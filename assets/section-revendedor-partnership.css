@@ -1,439 +1,380 @@
-.revendedor-partnership {
-  position: relative;
-  overflow: hidden;
+.revendedor-partnership{
+     position:relative;
+     overflow:hidden 
 }
-
-.revendedor-partnership__container {
-  max-width: var(--page-width, 144rem);
-  padding-top: clamp(6rem, 10vw, 13rem);
-  padding-bottom: clamp(6rem, 10vw, 13rem);
+ .revendedor-partnership__container{
+     max-width:var(--page-width,144rem);
+     padding-top:clamp(6rem,10vw,13rem);
+     padding-bottom:clamp(6rem,10vw,13rem) 
 }
-
-.revendedor-partnership__header {
-  position: relative;
-  max-width: 88rem;
-  margin: 0 auto clamp(6rem, 10vw, 12rem);
-  text-align: center;
+ .revendedor-partnership__header{
+     position:relative;
+     max-width:88rem;
+     margin:0 auto clamp(6rem,10vw,12rem);
+     text-align:center 
 }
-
-.revendedor-partnership__header::after {
-  content: '';
-  display: block;
-  width: 7rem;
-  height: 1px;
-  margin: 3.2rem auto 0;
-  background: currentColor;
-  opacity: 0.45;
+ .revendedor-partnership__header:after{
+     content:'';
+     display:block;
+     width:7rem;
+     height:1px;
+     margin:3.2rem auto 0;
+     background:currentColor;
+     opacity:.45 
 }
-
-.revendedor-partnership__eyebrow {
-  margin: 0 0 1.8rem;
-  color: var(--partnership-muted);
-  font-size: 1.05rem;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  line-height: 1.4;
-  text-transform: uppercase;
+ .revendedor-partnership__eyebrow{
+     margin:0 0 1.8rem;
+     color:var(--partnership-muted);
+     font-size:1.05rem;
+     font-weight:500;
+     letter-spacing:.2em;
+     line-height:1.4;
+     text-transform:uppercase 
 }
-
-.revendedor-partnership__heading,
-.revendedor-partnership__block-heading h3,
-.revendedor-partnership__content-card h3 {
-  margin: 0;
-  font-weight: 400;
-  line-height: 1.02;
-  letter-spacing: -0.05em;
-  text-wrap: balance;
+ .revendedor-partnership__heading,.revendedor-partnership__block-heading h3,.revendedor-partnership__content-card h3{
+     margin:0;
+     font-weight:400;
+     line-height:1.02;
+     letter-spacing:-.05em;
+     text-wrap:balance 
 }
-
-.revendedor-partnership__heading {
-  font-size: clamp(4rem, 6.5vw, 9rem);
+ .revendedor-partnership__heading{
+     font-size:clamp(4rem,6.5vw,9rem) 
 }
-
-.revendedor-partnership__intro {
-  max-width: 58rem;
-  margin: 2.8rem auto 0;
-  color: var(--partnership-muted);
-  font-size: clamp(1.5rem, 1.6vw, 1.9rem);
-  line-height: 1.65;
+ .revendedor-partnership__intro{
+     max-width:58rem;
+     margin:2.8rem auto 0;
+     color:var(--partnership-muted);
+     font-size:clamp(1.5rem,1.6vw,1.9rem);
+     line-height:1.65 
 }
-
-.revendedor-partnership__blocks {
-  display: grid;
-  gap: clamp(3rem, 6vw, 8rem);
+ .revendedor-partnership__blocks{
+     display:grid;
+     gap:clamp(3rem,6vw,8rem) 
 }
-
-.revendedor-partnership__block {
-  position: relative;
-  padding: clamp(3rem, 6vw, 8rem);
-  border: 0;
-  border-radius: var(--partnership-radius);
-  background: color-mix(
-    in srgb,
-    var(--partnership-foreground) 4%,
-    var(--partnership-background)
-  );
-  isolation: isolate;
+ .revendedor-partnership__block{
+     position:relative;
+     padding:clamp(3rem,6vw,8rem);
+     border:0;
+     border-radius:var(--partnership-radius);
+     background:color-mix(in srgb,var(--partnership-foreground) 4%,var(--partnership-background));
+     isolation:isolate 
 }
-
-.revendedor-partnership__block::before {
-  content: '';
-  position: absolute;
-  inset: 1.2rem;
-  border: 1px solid var(--partnership-border);
-  border-radius: calc(var(--partnership-radius) - 1.2rem);
-  pointer-events: none;
+ .revendedor-partnership__block:before{
+     content:'';
+     position:absolute;
+     inset:1.2rem;
+     border:1px solid var(--partnership-border);
+     border-radius:calc(var(--partnership-radius) - 1.2rem);
+     pointer-events:none 
 }
-
-.revendedor-partnership__block-heading {
-  position: relative;
-  max-width: 65rem;
-  margin-bottom: 4rem;
+ .revendedor-partnership__block-heading{
+     position:relative;
+     max-width:65rem;
+     margin-bottom:4rem 
 }
-
-.revendedor-partnership__block-heading h3 {
-  font-size: clamp(3rem, 4vw, 6rem);
+ .revendedor-partnership__block-heading h3{
+     font-size:clamp(3rem,4vw,6rem) 
 }
-
-.revendedor-partnership__calendar {
-  background: color-mix(
-    in srgb,
-    var(--partnership-foreground) 7%,
-    var(--partnership-background)
-  );
+ .revendedor-partnership__calendar{
+     background:color-mix(in srgb,var(--partnership-foreground) 7%,var(--partnership-background)) 
 }
-
-.revendedor-partnership__calendar::after {
-  content: '02';
-  position: absolute;
-  top: clamp(2.5rem, 5vw, 6rem);
-  right: clamp(3rem, 6vw, 8rem);
-  color: var(--partnership-muted);
-  font-size: 1.2rem;
-  letter-spacing: 0.15em;
+ .revendedor-partnership__calendar:after{
+     content:'02';
+     position:absolute;
+     top:clamp(2.5rem,5vw,6rem);
+     right:clamp(3rem,6vw,8rem);
+     color:var(--partnership-muted);
+     font-size:1.2rem;
+     letter-spacing:.15em 
 }
-
-.revendedor-partnership__calendar-grid {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2rem;
-  margin-top: 4rem;
-  border: 0;
+ .revendedor-partnership__calendar-grid{
+     position:relative;
+     display:grid;
+     grid-template-columns:1fr 1fr;
+     gap:1.4rem;
+     margin-top:4rem;
+     border:0 
 }
-
-.revendedor-partnership__season-card {
-  position: relative;
-  min-height: 34rem;
-  padding: clamp(2.8rem, 4vw, 5rem);
-  border: 1px solid var(--partnership-border);
-  border-radius: calc(var(--partnership-radius) / 2);
-  background: var(--partnership-background);
-  transition:
-    transform 350ms ease,
-    background-color 350ms ease;
+ .revendedor-partnership__calendar-head{
+     display:none 
 }
-
-.revendedor-partnership__season-card:hover {
-  transform: translateY(-0.6rem);
-  background: color-mix(
-    in srgb,
-    var(--partnership-foreground) 6%,
-    var(--partnership-background)
-  );
+ .revendedor-partnership__calendar-cell{
+     position:relative;
+     min-height:14rem;
+     padding:2.4rem;
+     border:1px solid var(--partnership-border);
+     border-radius:calc(var(--partnership-radius) / 2);
+     background:var(--partnership-background);
+     color:var(--partnership-muted);
+     font-size:1.5rem;
+     line-height:1.55;
+     transition:transform .35s ease,background-color .35s ease 
 }
-
-.revendedor-partnership__season-label {
-  display: block;
-  margin-bottom: 2rem;
-  color: var(--partnership-muted);
-  font-size: 1rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+ .revendedor-partnership__calendar-cell:hover{
+     transform:translateY(-.5rem);
+     background:color-mix(in srgb,var(--partnership-foreground) 6%,var(--partnership-background)) 
 }
-
-.revendedor-partnership__season-card h4 {
-  margin: 0 0 5rem;
-  color: var(--partnership-foreground);
-  font-size: clamp(3.2rem, 4vw, 5.8rem);
-  font-weight: 400;
-  letter-spacing: -0.05em;
-  line-height: 1;
+ .revendedor-partnership__calendar-cell strong{
+     display:block;
+     margin-bottom:1.4rem;
+     color:var(--partnership-foreground);
+     font-size:clamp(2.2rem,3vw,4rem);
+     font-weight:400;
+     letter-spacing:-.04em 
 }
-
-.revendedor-partnership__season-detail {
-  display: grid;
-  grid-template-columns: minmax(12rem, 0.7fr) minmax(0, 1.3fr);
-  gap: 1.5rem;
-  padding: 1.6rem 0;
-  border-top: 1px solid var(--partnership-border);
+ .revendedor-partnership__calendar-cell:nth-child(3n+1):before{
+     content:'VENDA';
+     display:block;
+     margin-bottom:1.2rem;
+     color:var(--partnership-muted);
+     font-size:1rem;
+     letter-spacing:.16em 
 }
-
-.revendedor-partnership__season-detail span {
-  color: var(--partnership-muted);
-  font-size: 1.1rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+ .revendedor-partnership__calendar-cell:nth-child(3n+2):before{
+     content:'ENTREGAS / FATURAMENTO';
+     display:block;
+     margin-bottom:1.2rem;
+     color:var(--partnership-muted);
+     font-size:1rem;
+     letter-spacing:.12em 
 }
-
-.revendedor-partnership__season-detail strong {
-  color: var(--partnership-foreground);
-  font-size: 1.5rem;
-  font-weight: 400;
-  line-height: 1.5;
+ .revendedor-partnership__calendar-cell:nth-child(3n+3){
+     display:none 
 }
-
-.revendedor-partnership__note {
-  position: relative;
-  max-width: 72rem;
-  margin: 3rem 0 0;
-  padding: 1.8rem 2rem;
-  border-left: 2px solid var(--partnership-foreground);
-  color: var(--partnership-muted);
-  font-size: 1.45rem;
-  line-height: 1.65;
+ .revendedor-partnership__note{
+     position:relative;
+     max-width:72rem;
+     margin:3rem 0 0;
+     padding:1.8rem 2rem;
+     border-left:2px solid var(--partnership-foreground);
+     color:var(--partnership-muted);
+     font-size:1.45rem;
+     line-height:1.65 
 }
-
-.revendedor-partnership__content-card {
-  display: grid;
-  grid-template-columns: minmax(8rem, 0.3fr) minmax(0, 1.7fr);
-  gap: clamp(2rem, 8vw, 12rem);
-  align-items: start;
-  background: var(--partnership-background);
+ .revendedor-partnership__content-card{
+     display:grid;
+     grid-template-columns:minmax(8rem,.3fr) minmax(0,1.7fr);
+     gap:clamp(2rem,8vw,12rem);
+     align-items:start;
+     background:var(--partnership-background) 
 }
-
-.revendedor-partnership__content-card:nth-child(3) {
-  background: color-mix(
-    in srgb,
-    var(--partnership-foreground) 9%,
-    var(--partnership-background)
-  );
+ .revendedor-partnership__content-card:nth-child(3){
+     background:color-mix(in srgb,var(--partnership-foreground) 9%,var(--partnership-background)) 
 }
-
-.revendedor-partnership__content-index {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1.8rem;
-  padding-top: 0.8rem;
+ .revendedor-partnership__number{
+     color:var(--partnership-muted);
+     font-size:1.3rem;
+     letter-spacing:.18em 
 }
-
-.revendedor-partnership__number {
-  color: var(--partnership-muted);
-  font-size: 1.3rem;
-  letter-spacing: 0.18em;
+ .revendedor-partnership__content-card h3{
+     max-width:75rem;
+     font-size:clamp(3.4rem,5vw,7rem) 
 }
-
-.revendedor-partnership__content-index-line {
-  display: block;
-  width: 4.8rem;
-  height: 1px;
-  background: var(--partnership-foreground);
-  opacity: 0.6;
+ .revendedor-partnership__content-card .revendedor-partnership__text{
+     max-width:72rem;
+     margin-top:3rem 
 }
-
-.revendedor-partnership__content-index-label {
-  max-width: 8rem;
-  color: var(--partnership-muted);
-  font-size: 0.95rem;
-  line-height: 1.4;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
+ .revendedor-partnership__text{
+     color:var(--partnership-muted);
+     font-size:1.55rem;
+     line-height:1.75 
 }
-
-.revendedor-partnership__content-main {
-  max-width: 86rem;
+ .revendedor-partnership__text ul{
+     display:grid;
+     grid-template-columns:repeat(2,minmax(0,1fr));
+     gap:1.2rem 3rem;
+     margin:3rem 0 0;
+     padding:0;
+     list-style:none 
 }
-
-.revendedor-partnership__content-kicker {
-  margin: 0 0 2.2rem;
-  color: var(--partnership-foreground);
-  font-size: clamp(1.8rem, 2.2vw, 3rem);
-  font-weight: 400;
-  letter-spacing: -0.025em;
-  line-height: 1.25;
+ .revendedor-partnership__text li{
+     position:relative;
+     padding:1.2rem 0 1.2rem 2.6rem;
+     border-top:1px solid var(--partnership-border) 
 }
-
-.revendedor-partnership__content-main h3 {
-  max-width: 75rem;
-  font-size: clamp(3rem, 4.5vw, 6.4rem);
+ .revendedor-partnership__text li:before{
+     content:'↗';
+     position:absolute;
+     left:0;
+     color:var(--partnership-foreground) 
 }
-
-.revendedor-partnership__content-main .revendedor-partnership__text {
-  max-width: 70rem;
-  margin-top: 2.8rem;
+ .revendedor-partnership__features{
+     position:relative;
+     display:grid;
+     grid-template-columns:repeat(3,minmax(0,1fr));
+     gap:1px;
+     margin-top:1rem;
+     background:var(--partnership-border) 
 }
-
-.revendedor-partnership__text {
-  color: var(--partnership-muted);
-  font-size: 1.55rem;
-  line-height: 1.75;
+ .revendedor-partnership__feature{
+     min-height:20rem;
+     padding:clamp(2rem,3vw,3.5rem);
+     background:var(--partnership-background);
+     transition:transform .35s ease,background-color .35s ease 
 }
-
-.revendedor-partnership__text ul {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0 2.5rem;
-  margin: 3.2rem 0 0;
-  padding: 0;
-  list-style: none;
+ .revendedor-partnership__feature:hover{
+     z-index:1;
+     transform:translateY(-.8rem);
+     background:color-mix(in srgb,var(--partnership-foreground) 8%,var(--partnership-background)) 
 }
-
-.revendedor-partnership__text li {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.2rem;
-  min-height: 8rem;
-  padding: 1.2rem 0;
-  border-top: 1px solid var(--partnership-border);
+ .revendedor-partnership__feature h4{
+     margin:0 0 1.5rem;
+     font-size:1.8rem;
+     font-weight:500;
+     line-height:1.15 
 }
-
-.revendedor-partnership__text li::before {
-  content: '✦';
-  flex: 0 0 auto;
-  color: var(--partnership-foreground);
-  font-size: 1rem;
-  line-height: 1.6;
+ .revendedor-partnership__feature p{
+     margin:0;
+     color:var(--partnership-muted);
+     font-size:1.4rem;
+     line-height:1.65 
 }
-
-.revendedor-partnership__features {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  margin-top: 1rem;
-  background: var(--partnership-border);
+ .revendedor-partnership__value-list{
+     display:grid;
+     grid-template-columns:repeat(2,minmax(0,1fr));
+     gap:0 5rem;
+     margin-top:1rem;
+     border-top:1px solid var(--partnership-border) 
 }
-
-.revendedor-partnership__feature {
-  min-height: 20rem;
-  padding: clamp(2rem, 3vw, 3.5rem);
-  background: var(--partnership-background);
-  transition:
-    transform 350ms ease,
-    background-color 350ms ease;
+ .revendedor-partnership__value-list p{
+     position:relative;
+     margin:0;
+     padding:2.2rem 0 2.2rem 3.2rem;
+     border-bottom:1px solid var(--partnership-border);
+     color:var(--partnership-muted);
+     font-size:1.5rem;
+     line-height:1.55 
 }
-
-.revendedor-partnership__feature:hover {
-  z-index: 1;
-  transform: translateY(-0.8rem);
-  background: color-mix(
-    in srgb,
-    var(--partnership-foreground) 8%,
-    var(--partnership-background)
-  );
+ .revendedor-partnership__value-list p:before{
+     content:'—';
+     position:absolute;
+     left:0;
+     color:var(--partnership-foreground) 
 }
-
-.revendedor-partnership__feature h4 {
-  margin: 0 0 1.5rem;
-  font-size: 1.8rem;
-  font-weight: 500;
-  line-height: 1.15;
+ @media screen and (max-width:749px){
+     .revendedor-partnership__container{
+         padding-top:5rem;
+         padding-bottom:5rem 
+    }
+     .revendedor-partnership__header{
+         margin-bottom:5rem 
+    }
+     .revendedor-partnership__block{
+         padding:3rem 2rem 
+    }
+     .revendedor-partnership__block:before{
+         inset:.8rem;
+         border-radius:calc(var(--partnership-radius) - .8rem) 
+    }
+     .revendedor-partnership__calendar-grid,.revendedor-partnership__features,.revendedor-partnership__value-list,.revendedor-partnership__text ul{
+         grid-template-columns:1fr 
+    }
+     .revendedor-partnership__calendar-cell{
+         min-height:auto 
+    }
+     .revendedor-partnership__calendar-cell:nth-child(3n+1):before{
+         content:'VERÃO / VENDA' 
+    }
+     .revendedor-partnership__calendar-cell:nth-child(3n+2):before{
+         content:'VERÃO / ENTREGAS' 
+    }
+     .revendedor-partnership__calendar-cell:nth-child(3n+3){
+         display:block 
+    }
+     .revendedor-partnership__calendar-cell:nth-child(3n+3):before{
+         content:'INFORMAÇÃO' 
+    }
+     .revendedor-partnership__content-card{
+         grid-template-columns:1fr;
+         gap:1.5rem 
+    }
+     .revendedor-partnership__content-card h3{
+         font-size:clamp(3rem,11vw,5rem) 
+    }
+     .revendedor-partnership__feature{
+         min-height:auto 
+    }
 }
-
-.revendedor-partnership__feature p {
-  margin: 0;
-  color: var(--partnership-muted);
-  font-size: 1.4rem;
-  line-height: 1.65;
+ .revendedor-partnership__calendar-cell:nth-child(3n+3){
+     display:block!important 
 }
-
-.revendedor-partnership__value-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0 5rem;
-  margin-top: 1rem;
-  border-top: 1px solid var(--partnership-border);
+ .revendedor-partnership__calendar-cell:nth-child(3n+1):before{
+     content:'COLEÇÃO'!important 
 }
-
-.revendedor-partnership__value-list p {
-  position: relative;
-  margin: 0;
-  padding: 2.2rem 0 2.2rem 3.2rem;
-  border-bottom: 1px solid var(--partnership-border);
-  color: var(--partnership-muted);
-  font-size: 1.5rem;
-  line-height: 1.55;
+ .revendedor-partnership__calendar-cell:nth-child(3n+2):before{
+     content:'VENDA'!important 
 }
-
-.revendedor-partnership__value-list p::before {
-  content: '—';
-  position: absolute;
-  left: 0;
-  color: var(--partnership-foreground);
+ .revendedor-partnership__calendar-cell:nth-child(3n+3):before{
+     content:'ENTREGAS / FATURAMENTO'!important 
 }
-
-@media screen and (max-width: 749px) {
-  .revendedor-partnership__container {
-    padding-top: 5rem;
-    padding-bottom: 5rem;
-  }
-
-  .revendedor-partnership__header {
-    margin-bottom: 5rem;
-  }
-
-  .revendedor-partnership__block {
-    padding: 3rem 2rem;
-  }
-
-  .revendedor-partnership__block::before {
-    inset: 0.8rem;
-    border-radius: calc(var(--partnership-radius) - 0.8rem);
-  }
-
-  .revendedor-partnership__calendar-grid,
-  .revendedor-partnership__features,
-  .revendedor-partnership__value-list,
-  .revendedor-partnership__text ul {
-    grid-template-columns: 1fr;
-  }
-
-  .revendedor-partnership__season-card {
-    min-height: auto;
-  }
-
-  .revendedor-partnership__season-card h4 {
-    margin-bottom: 3rem;
-  }
-
-  .revendedor-partnership__season-detail {
-    grid-template-columns: 1fr;
-    gap: 0.6rem;
-  }
-
-  .revendedor-partnership__content-card {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .revendedor-partnership__content-index {
-    flex-direction: row;
-    align-items: center;
-    gap: 1.2rem;
-  }
-
-  .revendedor-partnership__content-index-line {
-    width: 2.8rem;
-  }
-
-  .revendedor-partnership__content-index-label {
-    max-width: none;
-  }
-
-  .revendedor-partnership__content-main h3 {
-    font-size: clamp(3rem, 11vw, 5rem);
-  }
-
-  .revendedor-partnership__content-main .revendedor-partnership__text ul {
-    grid-template-columns: 1fr;
-  }
-
-  .revendedor-partnership__content-main .revendedor-partnership__text li {
-    min-height: auto;
-  }
-
-  .revendedor-partnership__feature {
-    min-height: auto;
-  }
+ .revendedor-partnership__calendar-grid {
+     display: grid;
+     grid-template-columns: repeat(2, minmax(0, 1fr));
+     gap: 2rem;
+     margin-top: 4rem;
+     border: 0;
+}
+ .revendedor-partnership__season-card {
+     position: relative;
+     min-height: 34rem;
+     padding: clamp(2.8rem, 4vw, 5rem);
+     border: 1px solid var(--partnership-border);
+     border-radius: calc(var(--partnership-radius) / 2);
+     background: var(--partnership-background);
+     transition: transform 350ms ease, background-color 350ms ease;
+}
+ .revendedor-partnership__season-card:hover {
+     transform: translateY(-0.6rem);
+     background: color-mix( in srgb, var(--partnership-foreground) 6%, var(--partnership-background) );
+}
+ .revendedor-partnership__season-label {
+     display: block;
+     margin-bottom: 2rem;
+     color: var(--partnership-muted);
+     font-size: 1rem;
+     letter-spacing: 0.16em;
+     text-transform: uppercase;
+}
+ .revendedor-partnership__season-card h4 {
+     margin: 0 0 5rem;
+     color: var(--partnership-foreground);
+     font-size: clamp(3.2rem, 4vw, 5.8rem);
+     font-weight: 400;
+     letter-spacing: -0.05em;
+     line-height: 1;
+}
+ .revendedor-partnership__season-detail {
+     display: grid;
+     grid-template-columns: minmax(12rem, 0.7fr) minmax(0, 1.3fr);
+     gap: 1.5rem;
+     padding: 1.6rem 0;
+     border-top: 1px solid var(--partnership-border);
+}
+ .revendedor-partnership__season-detail span {
+     color: var(--partnership-muted);
+     font-size: 1.1rem;
+     letter-spacing: 0.08em;
+     text-transform: uppercase;
+}
+ .revendedor-partnership__season-detail strong {
+     color: var(--partnership-foreground);
+     font-size: 1.5rem;
+     font-weight: 400;
+     line-height: 1.5;
+}
+ @media screen and (max-width: 749px) {
+     .revendedor-partnership__calendar-grid {
+         grid-template-columns: 1fr;
+    }
+     .revendedor-partnership__season-card {
+         min-height: auto;
+    }
+     .revendedor-partnership__season-card h4 {
+         margin-bottom: 3rem;
+    }
+     .revendedor-partnership__season-detail {
+         grid-template-columns: 1fr;
+         gap: 0.6rem;
+    }
 }
