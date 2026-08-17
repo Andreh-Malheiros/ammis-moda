@@ -15,7 +15,7 @@
   -%}
 
   <section
-    id="cadastro-revendedor"
+    id="{{ section.settings.anchor_id | default: 'cadastro-revendedor' | handleize }}"
     class="revendedor-form color-{{ section.settings.color_scheme }} background"
     aria-labelledby="{{ heading_id }}"
     data-revendedor-form-section
@@ -39,7 +39,7 @@
         <form
           id="{{ form_id }}"
           class="revendedor-form__form"
-          action="#cadastro-revendedor"
+          action="#{{ section.settings.anchor_id | default: 'cadastro-revendedor' | handleize }}"
           method="post"
           novalidate
           data-revendedor-form
@@ -535,6 +535,13 @@
       "id": "intro_text",
       "default": "<p>Preencha seus dados empresariais e comerciais para que nossa equipe possa conhecer sua operacao e analisar a possibilidade de parceria.</p>",
       "label": "Texto introdutorio"
+    },
+    {
+      "type": "text",
+      "id": "anchor_id",
+      "default": "cadastro-revendedor",
+      "label": "ID da ancora da secao",
+      "info": "Use somente letras, numeros e hifens. No CTA, use o mesmo valor precedido por #."
     },
     {
       "type": "header",

@@ -28,7 +28,10 @@
         "primary_button_style": "primary",
         "secondary_button_label": "Conhecer a parceria",
         "secondary_button_link": "#oportunidade-revenda",
-        "secondary_button_style": "tertiary",
+        "secondary_button_style": "simple",
+        "tertiary_button_label": "Falar com o comercial",
+        "tertiary_button_link": "https://wa.me/5531971302725?text=Ol%C3%A1+Ammis%21+Voc%C3%AA+pode+me+ajudar%3F",
+        "tertiary_button_style": "tertiary",
         "margin_top": "no-indent",
         "margin_bottom": "no-indent"
       }
@@ -413,6 +416,7 @@
         "heading": "Apresente sua loja a AMMIS",
         "heading_size": "h2",
         "intro_text": "<p>Preencha seus dados empresariais e comerciais para que nossa equipe possa conhecer sua operacao e analisar a possibilidade de parceria.</p>",
+        "anchor_id": "cadastro-revendedor",
         "company_group_title": "Dados da empresa",
         "responsible_group_title": "Responsavel pelo cadastro",
         "address_group_title": "Endereco comercial",

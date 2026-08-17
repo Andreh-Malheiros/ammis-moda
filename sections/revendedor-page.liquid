@@ -35,6 +35,7 @@
   {%- liquid
     assign show_primary_button = false
     assign show_secondary_button = false
+    assign show_tertiary_button = false
 
     if section.settings.primary_button_label != blank and section.settings.primary_button_link != blank
       assign show_primary_button = true
@@ -42,6 +43,10 @@
 
     if section.settings.secondary_button_label != blank and section.settings.secondary_button_link != blank
       assign show_secondary_button = true
+    endif
+
+    if section.settings.tertiary_button_label != blank and section.settings.tertiary_button_link != blank
+      assign show_tertiary_button = true
     endif
   -%}
 
@@ -93,7 +98,7 @@
           </div>
         {%- endif -%}
 
-        {%- if show_primary_button or show_secondary_button -%}
+        {%- if show_primary_button or show_secondary_button or show_tertiary_button -%}
           <div class="revendedor-button-group">
             {%- if show_primary_button -%}
               <a
@@ -101,6 +106,15 @@
                 class="button button--{{ section.settings.primary_button_style }} focus-inset"
               >
                 <span>{{ section.settings.primary_button_label | escape }}</span>
+              </a>
+            {%- endif -%}
+
+            {%- if show_tertiary_button -%}
+              <a
+                href="{{ section.settings.tertiary_button_link }}"
+                class="button button--{{ section.settings.tertiary_button_style }} focus-inset"
+              >
+                <span>{{ section.settings.tertiary_button_label | escape }}</span>
               </a>
             {%- endif -%}
 
@@ -112,6 +126,7 @@
                 <span>{{ section.settings.secondary_button_label | escape }}</span>
               </a>
             {%- endif -%}
+
           </div>
         {%- endif -%}
       </div>
@@ -227,7 +242,7 @@
     {
       "type": "text",
       "id": "primary_button_label",
-      "default": "Quero ser revendedor",
+      "default": "Quero me cadastrar",
       "label": "Texto do botao principal"
     },
     {
@@ -289,6 +304,41 @@
       ],
       "default": "tertiary",
       "label": "Estilo do botao secundario"
+    },
+    {
+      "type": "text",
+      "id": "tertiary_button_label",
+      "default": "Falar com o comercial",
+      "label": "Texto do terceiro botao"
+    },
+    {
+      "type": "url",
+      "id": "tertiary_button_link",
+      "label": "Link do terceiro botao"
+    },
+    {
+      "type": "select",
+      "id": "tertiary_button_style",
+      "options": [
+        {
+          "value": "primary",
+          "label": "t:sections.all.button.button_style.options__1.label"
+        },
+        {
+          "value": "secondary",
+          "label": "t:sections.all.button.button_style.options__2.label"
+        },
+        {
+          "value": "tertiary",
+          "label": "t:sections.all.button.button_style.options__3.label"
+        },
+        {
+          "value": "simple",
+          "label": "t:sections.all.button.button_style.options__4.label"
+        }
+      ],
+      "default": "secondary",
+      "label": "Estilo do terceiro botao"
     },
     {
       "type": "header",
