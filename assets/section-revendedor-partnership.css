@@ -188,16 +188,20 @@
      padding:0;
      list-style:none 
 }
- .revendedor-partnership__text li{
-     position:relative;
-     padding:1.2rem 0 1.2rem 2.6rem;
-     border-top:1px solid var(--partnership-border) 
+.revendedor-partnership__text li {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2rem;
+  padding: 1.2rem 0;
+  border-top: 1px solid var(--partnership-border);
 }
- .revendedor-partnership__text li:before{
-     content:'↗';
-     position:absolute;
-     left:0;
-     color:var(--partnership-foreground) 
+
+.revendedor-partnership__text li::before {
+  content: '↗';
+  position: static;
+  flex: 0 0 auto;
+  color: var(--partnership-foreground);
+  line-height: 1.6;
 }
  .revendedor-partnership__features{
      position:relative;
