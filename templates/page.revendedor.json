@@ -120,7 +120,7 @@
         "heading": "Uma parceria construída com intenção",
         "heading_size": "h3",
         "intro_text": "<p>Conheça o modelo comercial, o cuidado de produção e os valores que orientam cada parceria AMMIS.</p>",
-        "card_radius": "2rem",
+        "card_radius": "1rem",
         "margin_top": "s",
         "margin_bottom": "s"
       }
