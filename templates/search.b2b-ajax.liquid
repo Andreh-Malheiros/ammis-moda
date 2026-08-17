@@ -1,5 +1,10 @@
 {% layout none %}
 
+{% unless customer or request.design_mode %}
+  <p style="grid-column: 1/-1; text-align: center; padding: 5rem; font-size: 1.6rem;">
+    A busca do catálogo B2B está disponível somente para parceiros autenticados.
+  </p>
+{% else %}
 {% paginate search.results by 50 %}
   {% if search.results_count == 0 %}
     <p style="grid-column: 1/-1; text-align: center; padding: 5rem; font-size: 1.6rem;">
@@ -115,3 +120,4 @@
     {% endfor %}
   {% endif %}
 {% endpaginate %}
+{% endunless %}
