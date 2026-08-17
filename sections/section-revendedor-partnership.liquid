@@ -57,37 +57,19 @@
                   <div class="revendedor-partnership__text rte">{{ block.settings.text }}</div>
                 {%- endif -%}
                 <div class="revendedor-partnership__calendar-grid">
-                  <article class="revendedor-partnership__season-card">
-                    <span class="revendedor-partnership__season-label">COLEÇÃO</span>
-
-                    <h4>{{ block.settings.summer_name | escape }}</h4>
-
-                    <div class="revendedor-partnership__season-detail">
-                      <span>Venda</span>
-                      <strong>{{ block.settings.summer_sales | escape }}</strong>
-                    </div>
-
-                    <div class="revendedor-partnership__season-detail">
-                      <span>Entregas / faturamento</span>
-                      <strong>{{ block.settings.summer_delivery | escape }}</strong>
-                    </div>
-                  </article>
-
-                  <article class="revendedor-partnership__season-card">
-                    <span class="revendedor-partnership__season-label">COLEÇÃO</span>
-
-                    <h4>{{ block.settings.winter_name | escape }}</h4>
-
-                    <div class="revendedor-partnership__season-detail">
-                      <span>Venda</span>
-                      <strong>{{ block.settings.winter_sales | escape }}</strong>
-                    </div>
-
-                    <div class="revendedor-partnership__season-detail">
-                      <span>Entregas / faturamento</span>
-                      <strong>{{ block.settings.winter_delivery | escape }}</strong>
-                    </div>
-                  </article>
+                  <div class="revendedor-partnership__calendar-head">Coleção</div>
+                  <div class="revendedor-partnership__calendar-head">Venda</div>
+                  <div class="revendedor-partnership__calendar-head">Entregas / faturamento</div>
+                  <div class="revendedor-partnership__calendar-cell">
+                    <strong>{{ block.settings.summer_name | escape }}</strong>
+                  </div>
+                  <div class="revendedor-partnership__calendar-cell">{{ block.settings.summer_sales | escape }}</div>
+                  <div class="revendedor-partnership__calendar-cell">{{ block.settings.summer_delivery | escape }}</div>
+                  <div class="revendedor-partnership__calendar-cell">
+                    <strong>{{ block.settings.winter_name | escape }}</strong>
+                  </div>
+                  <div class="revendedor-partnership__calendar-cell">{{ block.settings.winter_sales | escape }}</div>
+                  <div class="revendedor-partnership__calendar-cell">{{ block.settings.winter_delivery | escape }}</div>
                 </div>
                 {%- if block.settings.note != blank -%}
                   <div class="revendedor-partnership__note rte">{{ block.settings.note }}</div>
@@ -99,10 +81,15 @@
                 class="revendedor-partnership__block revendedor-partnership__content-card"
                 {{ block.shopify_attributes }}
               >
-                {%- if block.settings.number != blank -%}
-                  <span class="revendedor-partnership__number">{{ block.settings.number | escape }}</span>
-                {%- endif -%}
-                <div>
+                <div class="revendedor-partnership__content-index">
+                  {%- if block.settings.number != blank -%}
+                    <span class="revendedor-partnership__number">{{ block.settings.number | escape }}</span>
+                  {%- endif -%}
+                  <span class="revendedor-partnership__content-index-line" aria-hidden="true"></span>
+                  <span class="revendedor-partnership__content-index-label">DECISÃO COMERCIAL</span>
+                </div>
+                <div class="revendedor-partnership__content-main">
+                  <p class="revendedor-partnership__content-kicker">O pedido certo para a loja certa.</p>
                   <h3>{{ block.settings.heading | escape }}</h3>
                   <div class="revendedor-partnership__text rte">{{ block.settings.text }}</div>
                 </div>
@@ -205,7 +192,7 @@
     },
     {
       "type": "content",
-      "name": "Curadoria comercial",
+      "name": "Conteudo",
       "settings": [
         { "type": "text", "id": "number", "default": "01", "label": "Numero" },
         { "type": "text", "id": "heading", "default": "Curadoria comercial do pedido", "label": "Titulo" },
