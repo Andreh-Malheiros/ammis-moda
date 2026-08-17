@@ -1,0 +1,98 @@
+{{ 'section-revendedor-growth.css' | asset_url | stylesheet_tag }}
+
+{%- if section.settings.enable_section -%}
+  {%- style -%}
+    {% render 'section-margin' %}
+    #shopify-section-{{ section.id }} { --growth-bg: rgb(var(--color-background)); --growth-fg: rgb(var(--color-foreground)); --growth-muted: rgba(var(--color-foreground), .68); --growth-border: rgba(var(--color-foreground), .14); --growth-radius: {{ section.settings.card_radius }}; }
+  {%- endstyle -%}
+
+  <section id="{{ section.settings.anchor_id | default: 'evolucao-parceria' | handleize }}" class="revendedor-growth color-{{ section.settings.color_scheme }} background" aria-labelledby="RevendedorGrowth-{{ section.id }}">
+    <div class="container revendedor-growth__container">
+      <header class="revendedor-growth__header">
+        {%- if section.settings.eyebrow != blank -%}<p class="revendedor-growth__eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        <h2 id="RevendedorGrowth-{{ section.id }}" class="revendedor-growth__heading {{ section.settings.heading_size }}">{{ section.settings.heading | escape }}</h2>
+        {%- if section.settings.intro_text != blank -%}<div class="revendedor-growth__intro rte">{{ section.settings.intro_text }}</div>{%- endif -%}
+      </header>
+
+      <div class="revendedor-growth__blocks">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'opportunities' -%}
+              <div class="revendedor-growth__block revendedor-growth__opportunities" {{ block.shopify_attributes }}>
+                <div class="revendedor-growth__block-heading"><p class="revendedor-growth__eyebrow">{{ block.settings.eyebrow | escape }}</p><h3>{{ block.settings.heading | escape }}</h3></div>
+                <div class="revendedor-growth__opportunity-grid">
+                  {%- for i in (1..4) -%}
+                    {%- assign title_key = 'item_' | append: i | append: '_title' -%}{%- assign text_key = 'item_' | append: i | append: '_text' -%}
+                    <article class="revendedor-growth__opportunity"><span>0{{ i }}</span><h4>{{ block.settings[title_key] | escape }}</h4><p>{{ block.settings[text_key] | escape }}</p></article>
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- when 'order_formats' -%}
+              <div class="revendedor-growth__block revendedor-growth__orders" {{ block.shopify_attributes }}>
+                <div class="revendedor-growth__block-heading"><p class="revendedor-growth__eyebrow">{{ block.settings.eyebrow | escape }}</p><h3>{{ block.settings.heading | escape }}</h3><div class="revendedor-growth__text rte">{{ block.settings.text }}</div></div>
+                <div class="revendedor-growth__format-list">
+                  {%- for i in (1..4) -%}
+                    {%- assign title_key = 'format_' | append: i | append: '_title' -%}{%- assign text_key = 'format_' | append: i | append: '_text' -%}
+                    <div class="revendedor-growth__format"><span>{{ i | prepend: '0' }}</span><div><h4>{{ block.settings[title_key] | escape }}</h4><p>{{ block.settings[text_key] | escape }}</p></div></div>
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- when 'gallery' -%}
+              <div class="revendedor-growth__gallery-block" {{ block.shopify_attributes }}>
+                <div class="revendedor-growth__block-heading"><p class="revendedor-growth__eyebrow">{{ block.settings.eyebrow | escape }}</p><h3>{{ block.settings.heading | escape }}</h3></div>
+                <div class="revendedor-growth__gallery">
+                  {%- for i in (1..3) -%}
+                    {%- assign image_key = 'image_' | append: i -%}{%- assign label_key = 'label_' | append: i -%}{%- assign alt_key = 'image_' | append: i | append: '_alt' -%}
+                    <figure class="revendedor-growth__image-card revendedor-growth__image-card--{{ i }}">
+                      {%- if block.settings[image_key] != blank -%}{{ block.settings[image_key] | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500, 800, 1200, 1400', sizes: '(min-width: 750px) 33vw, 100vw', alt: block.settings[alt_key] -}}{%- else -%}<div class="revendedor-growth__image-placeholder"><span>Imagem {{ i }}</span></div>{%- endif -%}
+                      <figcaption>{{ block.settings[label_key] | escape }}</figcaption>
+                    </figure>
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- when 'language' -%}
+              <div class="revendedor-growth__block revendedor-growth__language" {{ block.shopify_attributes }}>
+                <p class="revendedor-growth__eyebrow">{{ block.settings.eyebrow | escape }}</p><h3>{{ block.settings.heading | escape }}</h3><div class="revendedor-growth__language-pills"><span>{{ block.settings.pill_1 | escape }}</span><span>{{ block.settings.pill_2 | escape }}</span><span>{{ block.settings.pill_3 | escape }}</span></div><div class="revendedor-growth__text rte">{{ block.settings.text }}</div>
+                <div class="revendedor-growth__principles"><p>{{ block.settings.principle_1 | escape }}</p><p>{{ block.settings.principle_2 | escape }}</p><p>{{ block.settings.principle_3 | escape }}</p></div>
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Revendedor - evolução",
+  "tag": "section",
+  "class": "revendedor-growth-section spaced-section",
+  "enabled_on": { "templates": ["page"] },
+  "blocks": [
+    { "type": "opportunities", "name": "Possibilidades comerciais", "limit": 1, "settings": [
+      { "type": "text", "id": "eyebrow", "default": "POSSIBILIDADES COMERCIAIS", "label": "Sobretitulo" }, { "type": "text", "id": "heading", "default": "Uma parceria que pode evoluir", "label": "Titulo" },
+      { "type": "text", "id": "item_1_title", "default": "Exclusividade", "label": "Item 1 titulo" }, { "type": "text", "id": "item_1_text", "default": "Exclusividade de praça e/ou de produto, conforme estratégia e potencial comercial.", "label": "Item 1 descricao" },
+      { "type": "text", "id": "item_2_title", "default": "Eventos personalizados", "label": "Item 2 titulo" }, { "type": "text", "id": "item_2_text", "default": "Criação e realização de eventos com participação ativa da AMMIS.", "label": "Item 2 descricao" },
+      { "type": "text", "id": "item_3_title", "default": "Collabs", "label": "Item 3 titulo" }, { "type": "text", "id": "item_3_text", "default": "Desenvolvimento de produtos exclusivos em parceria com o lojista.", "label": "Item 3 descricao" },
+      { "type": "text", "id": "item_4_title", "default": "Suporte 360°", "label": "Item 4 titulo" }, { "type": "text", "id": "item_4_text", "default": "Apoio em marketing, visual merchandising, comercial e planejamento.", "label": "Item 4 descricao" }
+    ]},
+    { "type": "order_formats", "name": "Formas de pedido", "limit": 1, "settings": [
+      { "type": "text", "id": "eyebrow", "default": "FORMAS DE PEDIDO", "label": "Sobretitulo" }, { "type": "text", "id": "heading", "default": "Faça seu pedido do seu jeito", "label": "Titulo" }, { "type": "richtext", "id": "text", "default": "<p>O lojista escolhe a forma mais conveniente para conhecer a coleção e construir o pedido, sempre com acompanhamento do time comercial.</p>", "label": "Texto" },
+      { "type": "text", "id": "format_1_title", "default": "Catálogo", "label": "Formato 1 titulo" }, { "type": "text", "id": "format_1_text", "default": "Seleção orientada a partir do material comercial.", "label": "Formato 1 descricao" }, { "type": "text", "id": "format_2_title", "default": "Site", "label": "Formato 2 titulo" }, { "type": "text", "id": "format_2_text", "default": "Consulta digital das peças e informações disponíveis.", "label": "Formato 2 descricao" }, { "type": "text", "id": "format_3_title", "default": "Fotos e vídeos", "label": "Formato 3 titulo" }, { "type": "text", "id": "format_3_text", "default": "Apresentação remota e detalhada da coleção.", "label": "Formato 3 descricao" }, { "type": "text", "id": "format_4_title", "default": "Presencialmente", "label": "Formato 4 titulo" }, { "type": "text", "id": "format_4_text", "default": "Atendimento personalizado para construção do mix.", "label": "Formato 4 descricao" }
+    ]},
+    { "type": "gallery", "name": "Galeria de familias", "limit": 1, "settings": [
+      { "type": "text", "id": "eyebrow", "default": "UNIVERSO AMMIS", "label": "Sobretitulo" }, { "type": "text", "id": "heading", "default": "Coleções que podem ganhar novos caminhos", "label": "Titulo" },
+      { "type": "image_picker", "id": "image_1", "label": "Imagem Amalfi" }, { "type": "text", "id": "label_1", "default": "Amalfi", "label": "Nome Amalfi" }, { "type": "text", "id": "image_1_alt", "label": "Alt Amalfi" },
+      { "type": "image_picker", "id": "image_2", "label": "Imagem Estonada Verde" }, { "type": "text", "id": "label_2", "default": "Estonada Verde", "label": "Nome Estonada Verde" }, { "type": "text", "id": "image_2_alt", "label": "Alt Estonada Verde" },
+      { "type": "image_picker", "id": "image_3", "label": "Imagem Italy" }, { "type": "text", "id": "label_3", "default": "Italy", "label": "Nome Italy" }, { "type": "text", "id": "image_3_alt", "label": "Alt Italy" }
+    ]},
+    { "type": "language", "name": "Direcao de linguagem", "limit": 1, "settings": [
+      { "type": "text", "id": "eyebrow", "default": "DIREÇÃO DE LINGUAGEM", "label": "Sobretitulo" }, { "type": "text", "id": "heading", "default": "Exclusividade sem distância", "label": "Titulo" }, { "type": "text", "id": "pill_1", "default": "Premium", "label": "Tom 1" }, { "type": "text", "id": "pill_2", "default": "Próximo", "label": "Tom 2" }, { "type": "text", "id": "pill_3", "default": "Seguro", "label": "Tom 3" }, { "type": "richtext", "id": "text", "default": "<p>A página deve demonstrar que o lojista contará com orientação comercial em toda a jornada.</p>", "label": "Texto" }, { "type": "text", "id": "principle_1", "default": "Frases claras e benefícios concretos.", "label": "Principio 1" }, { "type": "text", "id": "principle_2", "default": "CTAs visíveis e objetivos.", "label": "Principio 2" }, { "type": "text", "id": "principle_3", "default": "Autoria, produto limitado e suporte ao parceiro.", "label": "Principio 3" }
+    ]}
+  ],
+  "settings": [
+    { "type": "checkbox", "id": "enable_section", "default": true, "label": "Exibir seção" }, { "type": "text", "id": "anchor_id", "default": "evolucao-parceria", "label": "ID da âncora" }, { "type": "color_scheme", "id": "color_scheme", "default": "background-1", "label": "Esquema de cores" }, { "type": "text", "id": "eyebrow", "default": "UMA PARCERIA QUE PODE EVOLUIR", "label": "Sobretitulo" }, { "type": "text", "id": "heading", "default": "Possibilidades comerciais para construir o próximo passo", "label": "Titulo" }, { "type": "select", "id": "heading_size", "default": "h1", "label": "Tamanho do titulo", "options": [{ "value": "h1", "label": "Grande" }, { "value": "h2", "label": "Médio" }, { "value": "h3", "label": "Pequeno" }] }, { "type": "richtext", "id": "intro_text", "default": "<p>A parceria pode começar de diferentes formas e evoluir conforme o potencial da loja, o perfil das clientes e os objetivos comerciais.</p>", "label": "Texto introdutorio" }, { "type": "select", "id": "card_radius", "default": "2rem", "label": "Arredondamento", "options": [{ "value": "0", "label": "Sem arredondamento" }, { "value": "1rem", "label": "Pequeno" }, { "value": "2rem", "label": "Médio" }, { "value": "3rem", "label": "Grande" }] }, { "type": "select", "id": "margin_top", "default": "s", "label": "Margem superior", "options": [{ "value": "no-indent", "label": "Nenhuma" }, { "value": "xs", "label": "Pequena" }, { "value": "s", "label": "Média" }, { "value": "m", "label": "Grande" }] }, { "type": "select", "id": "margin_bottom", "default": "s", "label": "Margem inferior", "options": [{ "value": "no-indent", "label": "Nenhuma" }, { "value": "xs", "label": "Pequena" }, { "value": "s", "label": "Média" }, { "value": "m", "label": "Grande" }] }
+  ],
+  "presets": [{ "name": "Revendedor - evolução", "blocks": [{ "type": "opportunities" }, { "type": "order_formats" }, { "type": "gallery" }, { "type": "language" }] }]
+}
+{% endschema %}
