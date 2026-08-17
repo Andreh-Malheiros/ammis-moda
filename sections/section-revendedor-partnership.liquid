@@ -1,0 +1,409 @@
+{{ 'section-revendedor-partnership.css' | asset_url | stylesheet_tag }}
+
+{%- if section.settings.enable_section -%}
+  {%- style -%}
+    {% render 'section-margin' %}
+
+    #shopify-section-{{ section.id }} {
+      --partnership-background: rgb(var(--color-background));
+      --partnership-foreground: rgb(var(--color-foreground));
+      --partnership-muted: rgba(var(--color-foreground), 0.68);
+      --partnership-border: rgba(var(--color-foreground), 0.14);
+      --partnership-surface: rgba(var(--color-foreground), 0.035);
+      --partnership-radius: {{ section.settings.card_radius }};
+    }
+  {%- endstyle -%}
+
+  <section
+    id="{{ section.settings.anchor_id | default: 'oportunidade-revenda' | handleize }}"
+    class="revendedor-partnership color-{{ section.settings.color_scheme }} background"
+    aria-labelledby="RevendedorPartnership-{{ section.id }}"
+  >
+    <div class="container revendedor-partnership__container">
+      <header class="revendedor-partnership__header revendedor-partnership__header--{{ section.settings.alignment }}">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="revendedor-partnership__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.heading != blank -%}
+          <h2
+            id="RevendedorPartnership-{{ section.id }}"
+            class="revendedor-partnership__heading {{ section.settings.heading_size }}"
+          >
+            {{ section.settings.heading | escape }}
+          </h2>
+        {%- endif -%}
+
+        {%- if section.settings.intro_text != blank -%}
+          <div class="revendedor-partnership__intro rte">{{ section.settings.intro_text }}</div>
+        {%- endif -%}
+      </header>
+
+      <div class="revendedor-partnership__blocks">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'calendar' -%}
+              <div
+                class="revendedor-partnership__block revendedor-partnership__calendar"
+                {{ block.shopify_attributes }}
+              >
+                <div class="revendedor-partnership__block-heading">
+                  {%- if block.settings.eyebrow != blank -%}
+                    <p class="revendedor-partnership__eyebrow">{{ block.settings.eyebrow | escape }}</p>
+                  {%- endif -%}
+                  <h3>{{ block.settings.heading | escape }}</h3>
+                </div>
+                {%- if block.settings.text != blank -%}
+                  <div class="revendedor-partnership__text rte">{{ block.settings.text }}</div>
+                {%- endif -%}
+                <div class="revendedor-partnership__calendar-grid">
+                  <article class="revendedor-partnership__season-card">
+                    <span class="revendedor-partnership__season-label">COLEÇÃO</span>
+
+                    <h4>{{ block.settings.summer_name | escape }}</h4>
+
+                    <div class="revendedor-partnership__season-detail">
+                      <span>Venda</span>
+                      <strong>{{ block.settings.summer_sales | escape }}</strong>
+                    </div>
+
+                    <div class="revendedor-partnership__season-detail">
+                      <span>Entregas / faturamento</span>
+                      <strong>{{ block.settings.summer_delivery | escape }}</strong>
+                    </div>
+                  </article>
+
+                  <article class="revendedor-partnership__season-card">
+                    <span class="revendedor-partnership__season-label">COLEÇÃO</span>
+
+                    <h4>{{ block.settings.winter_name | escape }}</h4>
+
+                    <div class="revendedor-partnership__season-detail">
+                      <span>Venda</span>
+                      <strong>{{ block.settings.winter_sales | escape }}</strong>
+                    </div>
+
+                    <div class="revendedor-partnership__season-detail">
+                      <span>Entregas / faturamento</span>
+                      <strong>{{ block.settings.winter_delivery | escape }}</strong>
+                    </div>
+                  </article>
+                </div>
+                {%- if block.settings.note != blank -%}
+                  <div class="revendedor-partnership__note rte">{{ block.settings.note }}</div>
+                {%- endif -%}
+              </div>
+
+            {%- when 'content', 'flexibility' -%}
+              <article
+                class="revendedor-partnership__block revendedor-partnership__content-card"
+                {{ block.shopify_attributes }}
+              >
+                {%- if block.settings.number != blank -%}
+                  <span class="revendedor-partnership__number">{{ block.settings.number | escape }}</span>
+                {%- endif -%}
+                <div>
+                  <h3>{{ block.settings.heading | escape }}</h3>
+                  <div class="revendedor-partnership__text rte">{{ block.settings.text }}</div>
+                </div>
+              </article>
+
+            {%- when 'features' -%}
+              <div class="revendedor-partnership__block" {{ block.shopify_attributes }}>
+                <div class="revendedor-partnership__block-heading">
+                  {%- if block.settings.eyebrow != blank -%}
+                    <p class="revendedor-partnership__eyebrow">{{ block.settings.eyebrow | escape }}</p>
+                  {%- endif -%}
+                  <h3>{{ block.settings.heading | escape }}</h3>
+                </div>
+                <div class="revendedor-partnership__features">
+                  {%- for i in (1..6) -%}
+                    {%- assign title_key = 'feature_' | append: i | append: '_title' -%}
+                    {%- assign text_key = 'feature_' | append: i | append: '_text' -%}
+                    {%- if block.settings[title_key] != blank -%}
+                      <div class="revendedor-partnership__feature">
+                        <h4>{{ block.settings[title_key] | escape }}</h4>
+                        <p>{{ block.settings[text_key] | escape }}</p>
+                      </div>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+              </div>
+
+            {%- when 'values' -%}
+              <div class="revendedor-partnership__block revendedor-partnership__values" {{ block.shopify_attributes }}>
+                <div class="revendedor-partnership__block-heading">
+                  {%- if block.settings.eyebrow != blank -%}
+                    <p class="revendedor-partnership__eyebrow">{{ block.settings.eyebrow | escape }}</p>
+                  {%- endif -%}
+                  <h3>{{ block.settings.heading | escape }}</h3>
+                </div>
+                <div class="revendedor-partnership__value-list">
+                  {%- for i in (1..6) -%}
+                    {%- assign value_key = 'value_' | append: i -%}
+                    {%- if block.settings[value_key] != blank -%}
+                      <p>{{ block.settings[value_key] | escape }}</p>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Revendedor - parceria",
+  "tag": "section",
+  "class": "revendedor-partnership-section spaced-section",
+  "enabled_on": { "templates": ["page"] },
+  "blocks": [
+    {
+      "type": "calendar",
+      "name": "Modelo e calendario",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "eyebrow", "default": "MODELO COMERCIAL", "label": "Sobretitulo" },
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Pedidos planejados para acompanhar cada estação",
+          "label": "Titulo"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>A AMMIS trabalha exclusivamente por meio de pedidos e apresenta duas coleções principais por ano, com faturamento parcial ao longo das estações.</p>",
+          "label": "Texto"
+        },
+        { "type": "text", "id": "summer_name", "default": "Verão", "label": "Nome da primeira coleção" },
+        { "type": "text", "id": "summer_sales", "default": "Abril", "label": "Venda da primeira coleção" },
+        {
+          "type": "text",
+          "id": "summer_delivery",
+          "default": "Agosto, setembro, outubro e novembro",
+          "label": "Entregas da primeira coleção"
+        },
+        { "type": "text", "id": "winter_name", "default": "Inverno", "label": "Nome da segunda coleção" },
+        { "type": "text", "id": "winter_sales", "default": "Outubro", "label": "Venda da segunda coleção" },
+        {
+          "type": "text",
+          "id": "winter_delivery",
+          "default": "Fevereiro, março, abril e maio",
+          "label": "Entregas da segunda coleção"
+        },
+        {
+          "type": "richtext",
+          "id": "note",
+          "default": "<p>Entre esses dois momentos, a AMMIS acompanha os movimentos do mercado e apresenta entregas complementares, mantendo o mix do lojista atualizado durante toda a jornada da cliente.</p>",
+          "label": "Observacao"
+        }
+      ]
+    },
+    {
+      "type": "content",
+      "name": "Curadoria comercial",
+      "settings": [
+        { "type": "text", "id": "number", "default": "01", "label": "Numero" },
+        { "type": "text", "id": "heading", "default": "Curadoria comercial do pedido", "label": "Titulo" },
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>No momento da venda, o lojista recebe orientação personalizada do time comercial para construir um pedido estratégico e adequado ao perfil de sua loja.</p><ul><li>Indicadores e movimentos de mercado;</li><li>Best-sellers e produtos mais pedidos da AMMIS;</li><li>Mix equilibrado entre categorias e faixas de preço;</li><li>Perfil da loja e comportamento de suas clientes.</li></ul>",
+          "label": "Conteudo"
+        }
+      ]
+    },
+    {
+      "type": "flexibility",
+      "name": "Flexibilidade",
+      "settings": [
+        { "type": "text", "id": "number", "default": "02", "label": "Numero" },
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Produção própria, reposição e personalização",
+          "label": "Titulo"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>A produção é realizada internamente, em fábrica própria, preservando o padrão de qualidade AMMIS e garantindo suporte próximo ao lojista e ao cliente final.</p><p><strong>Flexibilidade da parceria:</strong> Embora a marca trabalhe prioritariamente por pedidos, oferece pequenas reposições mediante disponibilidade de estoque e peças sob encomenda para clientes finais.</p>",
+          "label": "Conteudo"
+        }
+      ]
+    },
+    {
+      "type": "features",
+      "name": "Fortalezas",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "eyebrow", "default": "CÓDIGOS DA MARCA", "label": "Sobretitulo" },
+        { "type": "text", "id": "heading", "default": "Fortalezas da AMMIS", "label": "Titulo" },
+        { "type": "text", "id": "feature_1_title", "default": "Exclusividade", "label": "Fortaleza 1" },
+        {
+          "type": "text",
+          "id": "feature_1_text",
+          "default": "Produtos limitados e produzidos em pequena escala.",
+          "label": "Descricao 1"
+        },
+        { "type": "text", "id": "feature_2_title", "default": "Alfaiataria clássica", "label": "Fortaleza 2" },
+        {
+          "type": "text",
+          "id": "feature_2_text",
+          "default": "Peças confeccionadas pelas mãos de alfaiates especializados.",
+          "label": "Descricao 2"
+        },
+        { "type": "text", "id": "feature_3_title", "default": "Couro de cabra", "label": "Fortaleza 3" },
+        {
+          "type": "text",
+          "id": "feature_3_text",
+          "default": "Matéria-prima de alta qualidade e acabamento sofisticado.",
+          "label": "Descricao 3"
+        },
+        { "type": "text", "id": "feature_4_title", "default": "Design autoral", "label": "Fortaleza 4" },
+        {
+          "type": "text",
+          "id": "feature_4_text",
+          "default": "Criações que traduzem os códigos e a identidade AMMIS.",
+          "label": "Descricao 4"
+        },
+        { "type": "text", "id": "feature_5_title", "default": "Matérias-primas nobres", "label": "Fortaleza 5" },
+        {
+          "type": "text",
+          "id": "feature_5_text",
+          "default": "Linho puro e couro de cabra selecionado.",
+          "label": "Descricao 5"
+        },
+        { "type": "text", "id": "feature_6_title", "default": "Fatto a mano", "label": "Fortaleza 6" },
+        {
+          "type": "text",
+          "id": "feature_6_text",
+          "default": "Bordados, crochê, tramas em couro e patchwork.",
+          "label": "Descricao 6"
+        }
+      ]
+    },
+    {
+      "type": "values",
+      "name": "Valores",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "eyebrow", "default": "COMPROMISSOS", "label": "Sobretitulo" },
+        { "type": "text", "id": "heading", "default": "Valores inegociáveis", "label": "Titulo" },
+        {
+          "type": "text",
+          "id": "value_1",
+          "default": "Profissionais especializados para cada tipo de desenvolvimento.",
+          "label": "Valor 1"
+        },
+        {
+          "type": "text",
+          "id": "value_2",
+          "default": "Personalização e atenção às necessidades do parceiro.",
+          "label": "Valor 2"
+        },
+        {
+          "type": "text",
+          "id": "value_3",
+          "default": "Qualidade dos tecidos e excelência dos acabamentos.",
+          "label": "Valor 3"
+        },
+        {
+          "type": "text",
+          "id": "value_4",
+          "default": "Relações consistentes com parceiros alinhados à marca.",
+          "label": "Valor 4"
+        },
+        { "type": "text", "id": "value_5", "label": "Valor 5" },
+        { "type": "text", "id": "value_6", "label": "Valor 6" }
+      ]
+    }
+  ],
+  "settings": [
+    { "type": "checkbox", "id": "enable_section", "default": true, "label": "Exibir seção" },
+    { "type": "text", "id": "anchor_id", "default": "oportunidade-revenda", "label": "ID da âncora" },
+    { "type": "color_scheme", "id": "color_scheme", "default": "background-1", "label": "Esquema de cores" },
+    {
+      "type": "select",
+      "id": "alignment",
+      "default": "left",
+      "label": "Alinhamento",
+      "options": [
+        { "value": "left", "label": "Esquerda" },
+        { "value": "center", "label": "Centro" }
+      ]
+    },
+    { "type": "text", "id": "eyebrow", "default": "A PARCERIA AMMIS", "label": "Sobretitulo" },
+    { "type": "text", "id": "heading", "default": "Uma parceria construída com intenção", "label": "Titulo" },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "default": "h1",
+      "label": "Tamanho do titulo",
+      "options": [
+        { "value": "h1", "label": "Grande" },
+        { "value": "h2", "label": "Médio" },
+        { "value": "h3", "label": "Pequeno" }
+      ]
+    },
+    {
+      "type": "richtext",
+      "id": "intro_text",
+      "default": "<p>Conheça o modelo comercial, o cuidado de produção e os valores que orientam cada parceria AMMIS.</p>",
+      "label": "Texto introdutorio"
+    },
+    {
+      "type": "select",
+      "id": "card_radius",
+      "default": "2rem",
+      "label": "Arredondamento dos blocos",
+      "options": [
+        { "value": "0", "label": "Sem arredondamento" },
+        { "value": "1rem", "label": "Pequeno" },
+        { "value": "2rem", "label": "Médio" },
+        { "value": "3rem", "label": "Grande" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "default": "s",
+      "label": "Margem superior",
+      "options": [
+        { "value": "no-indent", "label": "Nenhuma" },
+        { "value": "xs", "label": "Pequena" },
+        { "value": "s", "label": "Média" },
+        { "value": "m", "label": "Grande" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "margin_bottom",
+      "default": "s",
+      "label": "Margem inferior",
+      "options": [
+        { "value": "no-indent", "label": "Nenhuma" },
+        { "value": "xs", "label": "Pequena" },
+        { "value": "s", "label": "Média" },
+        { "value": "m", "label": "Grande" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Revendedor - parceria",
+      "blocks": [
+        { "type": "calendar" },
+        { "type": "content" },
+        { "type": "flexibility" },
+        { "type": "features" },
+        { "type": "values" }
+      ]
+    }
+  ]
+}
+{% endschema %}

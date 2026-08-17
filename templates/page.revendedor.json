@@ -36,6 +36,95 @@
         "margin_bottom": "no-indent"
       }
     },
+    "section_revendedor_partnership_7TcdpT": {
+      "type": "section-revendedor-partnership",
+      "blocks": {
+        "calendar_ntC7LW": {
+          "type": "calendar",
+          "settings": {
+            "eyebrow": "MODELO COMERCIAL",
+            "heading": "Pedidos planejados para acompanhar cada estação",
+            "text": "<p>A AMMIS trabalha exclusivamente por meio de pedidos e apresenta duas coleções principais por ano, com faturamento parcial ao longo das estações.</p>",
+            "summer_name": "Verão",
+            "summer_sales": "Abril",
+            "summer_delivery": "Agosto, setembro, outubro e novembro",
+            "winter_name": "Inverno",
+            "winter_sales": "Outubro",
+            "winter_delivery": "Fevereiro, março, abril e maio",
+            "note": "<p>Entre esses dois momentos, a AMMIS acompanha os movimentos do mercado e apresenta entregas complementares, mantendo o mix do lojista atualizado durante toda a jornada da cliente.</p>"
+          }
+        },
+        "content_LkJwxw": {
+          "type": "content",
+          "settings": {
+            "number": "01",
+            "heading": "Curadoria comercial do pedido",
+            "text": "<p>No momento da venda, o lojista recebe orientação personalizada do time comercial para construir um pedido estratégico e adequado ao perfil de sua loja.</p><ul><li>Indicadores e movimentos de mercado;</li><li>Best-sellers e produtos mais pedidos da AMMIS;</li><li>Mix equilibrado entre categorias e faixas de preço;</li><li>Perfil da loja e comportamento de suas clientes.</li></ul>"
+          }
+        },
+        "flexibility_rBTf3g": {
+          "type": "flexibility",
+          "settings": {
+            "number": "02",
+            "heading": "Produção própria, reposição e personalização",
+            "text": "<p>A produção é realizada internamente, em fábrica própria, preservando o padrão de qualidade AMMIS e garantindo suporte próximo ao lojista e ao cliente final.</p><p><strong>Flexibilidade da parceria:</strong> Embora a marca trabalhe prioritariamente por pedidos, oferece pequenas reposições mediante disponibilidade de estoque e peças sob encomenda para clientes finais.</p>"
+          }
+        },
+        "features_ktrEzh": {
+          "type": "features",
+          "settings": {
+            "eyebrow": "CÓDIGOS DA MARCA",
+            "heading": "Fortalezas da AMMIS",
+            "feature_1_title": "Exclusividade",
+            "feature_1_text": "Produtos limitados e produzidos em pequena escala.",
+            "feature_2_title": "Alfaiataria clássica",
+            "feature_2_text": "Peças confeccionadas pelas mãos de alfaiates especializados.",
+            "feature_3_title": "Couro de cabra",
+            "feature_3_text": "Matéria-prima de alta qualidade e acabamento sofisticado.",
+            "feature_4_title": "Design autoral",
+            "feature_4_text": "Criações que traduzem os códigos e a identidade AMMIS.",
+            "feature_5_title": "Matérias-primas nobres",
+            "feature_5_text": "Linho puro e couro de cabra selecionado.",
+            "feature_6_title": "Fatto a mano",
+            "feature_6_text": "Bordados, crochê, tramas em couro e patchwork."
+          }
+        },
+        "values_RVJAUT": {
+          "type": "values",
+          "settings": {
+            "eyebrow": "COMPROMISSOS",
+            "heading": "Valores inegociáveis",
+            "value_1": "Profissionais especializados para cada tipo de desenvolvimento.",
+            "value_2": "Personalização e atenção às necessidades do parceiro.",
+            "value_3": "Qualidade dos tecidos e excelência dos acabamentos.",
+            "value_4": "Relações consistentes com parceiros alinhados à marca.",
+            "value_5": "",
+            "value_6": ""
+          }
+        }
+      },
+      "block_order": [
+        "calendar_ntC7LW",
+        "content_LkJwxw",
+        "flexibility_rBTf3g",
+        "features_ktrEzh",
+        "values_RVJAUT"
+      ],
+      "name": "Revendedor - parceria",
+      "settings": {
+        "enable_section": true,
+        "anchor_id": "oportunidade-revenda",
+        "color_scheme": "",
+        "alignment": "left",
+        "eyebrow": "A PARCERIA AMMIS",
+        "heading": "Uma parceria construída com intenção",
+        "heading_size": "h3",
+        "intro_text": "<p>Conheça o modelo comercial, o cuidado de produção e os valores que orientam cada parceria AMMIS.</p>",
+        "card_radius": "2rem",
+        "margin_top": "s",
+        "margin_bottom": "s"
+      }
+    },
     "opportunity": {
       "type": "revendedor-content",
       "blocks": {
@@ -74,6 +163,7 @@
         "feature_3",
         "feature_YUcmNh"
       ],
+      "disabled": true,
       "settings": {
         "enable_section": true,
         "anchor_id": "oportunidade-revenda",
@@ -190,6 +280,7 @@
         "benefit_5",
         "benefit_6"
       ],
+      "disabled": true,
       "settings": {
         "enable_section": true,
         "color_scheme": "background-1",
@@ -326,6 +417,7 @@
         "step_3",
         "step_4"
       ],
+      "disabled": true,
       "settings": {
         "enable_section": true,
         "color_scheme": "background-1",
@@ -361,6 +453,7 @@
         "image_bxJpAC",
         "feature_F3kpi7"
       ],
+      "disabled": true,
       "custom_css": [],
       "settings": {
         "enable_section": true,
@@ -408,6 +501,7 @@
     },
     "form_intro": {
       "type": "revendedor-form",
+      "disabled": true,
       "settings": {
         "enable_section": true,
         "color_scheme": "background-1",
@@ -443,6 +537,7 @@
     },
     "commercial_contact": {
       "type": "revendedor-content",
+      "disabled": true,
       "settings": {
         "enable_section": true,
         "anchor_id": "",
@@ -538,6 +633,7 @@
   },
   "order": [
     "hero",
+    "section_revendedor_partnership_7TcdpT",
     "opportunity",
     "benefits",
     "brand_universe",
