@@ -1,0 +1,369 @@
+<section id="evolucao-parceria-ammis" class="wholesale-partnership-paths">
+  <div class="wholesale-partnership-paths__inner">
+    <header class="wholesale-partnership-paths__header">
+      {% if section.settings.eyebrow != blank %}
+        <p class="wholesale-partnership-paths__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {% endif %}
+      {% if section.settings.heading != blank %}
+        <h2 class="wholesale-partnership-paths__heading">{{ section.settings.heading | escape }}</h2>
+      {% endif %}
+      {% if section.settings.text != blank %}
+        <p class="wholesale-partnership-paths__text">{{ section.settings.text | escape }}</p>
+      {% endif %}
+    </header>
+
+    {% assign opportunity_blocks = section.blocks | where: 'type', 'opportunity' %}
+    {% if opportunity_blocks.size > 0 %}
+      <div class="wholesale-partnership-paths__opportunities">
+        {% for block in opportunity_blocks %}
+          <article class="wholesale-partnership-paths__opportunity" {{ block.shopify_attributes }}>
+            <span class="wholesale-partnership-paths__index" aria-hidden="true">0{{ forloop.index }}</span>
+            {% if block.settings.heading != blank %}
+              <h3>{{ block.settings.heading | escape }}</h3>
+            {% endif %}
+            {% if block.settings.text != blank %}
+              <p>{{ block.settings.text | escape }}</p>
+            {% endif %}
+          </article>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div id="formas-de-pedido-ammis" class="wholesale-partnership-paths__order">
+      <div class="wholesale-partnership-paths__order-intro">
+        {% if section.settings.order_eyebrow != blank %}
+          <p class="wholesale-partnership-paths__eyebrow">{{ section.settings.order_eyebrow | escape }}</p>
+        {% endif %}
+        {% if section.settings.order_heading != blank %}
+          <h3>{{ section.settings.order_heading | escape }}</h3>
+        {% endif %}
+        {% if section.settings.order_text != blank %}
+          <p>{{ section.settings.order_text | escape }}</p>
+        {% endif %}
+      </div>
+
+      {% assign order_blocks = section.blocks | where: 'type', 'order_option' %}
+      {% if order_blocks.size > 0 %}
+        <div class="wholesale-partnership-paths__order-options">
+          {% for block in order_blocks %}
+            <article class="wholesale-partnership-paths__order-option" {{ block.shopify_attributes }}>
+              <span class="wholesale-partnership-paths__order-mark" aria-hidden="true">↗</span>
+              {% if block.settings.heading != blank %}
+                <h4>{{ block.settings.heading | escape }}</h4>
+              {% endif %}
+              {% if block.settings.text != blank %}
+                <p>{{ block.settings.text | escape }}</p>
+              {% endif %}
+            </article>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths {
+    background: rgb(var(--color-background));
+    color: rgb(var(--color-foreground));
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__inner {
+    width: min(100% - 4rem, 136rem);
+    margin: 0 auto;
+    padding: clamp(7rem, 11vw, 14rem) 0;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__header {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 4rem;
+    align-items: end;
+    margin-bottom: clamp(4rem, 7vw, 8rem);
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__eyebrow {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: rgba(var(--color-foreground), 0.62);
+    font-family: var(--font-body-family);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__heading {
+    max-width: 58rem;
+    margin: 0;
+    color: rgb(var(--color-foreground-title));
+    font-family: var(--font-heading-family);
+    font-size: clamp(3.2rem, 4.2vw, 5.8rem);
+    font-weight: var(--font-heading-weight);
+    letter-spacing: var(--font-heading-letter-spacing);
+    line-height: 1.08;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__text {
+    max-width: 54rem;
+    margin: 0;
+    color: rgba(var(--color-foreground), 0.72);
+    font-family: var(--font-body-family);
+    font-size: 1.7rem;
+    line-height: 1.6;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunities {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid rgba(var(--color-foreground), 0.16);
+    border-bottom: 1px solid rgba(var(--color-foreground), 0.16);
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity {
+    min-height: 24rem;
+    padding: 3rem 2.4rem 3rem 0;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity + .wholesale-partnership-paths__opportunity {
+    padding-left: 2.4rem;
+    border-left: 1px solid rgba(var(--color-foreground), 0.16);
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__index {
+    display: block;
+    margin-bottom: 3.2rem;
+    color: rgba(var(--color-foreground), 0.46);
+    font-family: var(--font-body-family);
+    font-size: 1.2rem;
+    letter-spacing: 0.12em;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity h3 {
+    margin: 0;
+    color: rgb(var(--color-foreground-title));
+    font-family: var(--font-heading-family);
+    font-size: 2.2rem;
+    font-weight: var(--font-heading-weight);
+    line-height: 1.2;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity p {
+    margin: 1.4rem 0 0;
+    color: rgba(var(--color-foreground), 0.68);
+    font-family: var(--font-body-family);
+    font-size: 1.5rem;
+    line-height: 1.6;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__order {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 5rem;
+    margin-top: clamp(6rem, 9vw, 11rem);
+    padding-top: 3.5rem;
+    border-top: 1px solid rgba(var(--color-foreground), 0.2);
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__order-intro h3 {
+    max-width: 46rem;
+    margin: 1.4rem 0 0;
+    color: rgb(var(--color-foreground-title));
+    font-family: var(--font-heading-family);
+    font-size: clamp(2.6rem, 3.2vw, 4rem);
+    font-weight: var(--font-heading-weight);
+    line-height: 1.15;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__order-intro > p:last-child {
+    max-width: 42rem;
+    margin: 1.5rem 0 0;
+    color: rgba(var(--color-foreground), 0.68);
+    font-family: var(--font-body-family);
+    font-size: 1.5rem;
+    line-height: 1.6;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__order-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3rem 4rem;
+    align-content: start;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__order-option {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__order-mark {
+    color: rgba(var(--color-foreground), 0.48);
+    font-size: 1.7rem;
+    line-height: 1.25;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__order-option h4 {
+    margin: 0;
+    color: rgb(var(--color-foreground-title));
+    font-family: var(--font-heading-family);
+    font-size: 2rem;
+    font-weight: var(--font-heading-weight);
+    line-height: 1.25;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__order-option p {
+    margin: 0.9rem 0 0;
+    color: rgba(var(--color-foreground), 0.68);
+    font-family: var(--font-body-family);
+    font-size: 1.5rem;
+    line-height: 1.55;
+  }
+
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .wholesale-partnership-paths__header,
+    #shopify-section-{{ section.id }} .wholesale-partnership-paths__order {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunities {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity:nth-child(3) {
+      border-left: 0;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity:nth-child(n + 3) {
+      border-top: 1px solid rgba(var(--color-foreground), 0.16);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .wholesale-partnership-paths__inner {
+      width: min(100% - 3.2rem, 60rem);
+      padding: 6rem 0;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunities,
+    #shopify-section-{{ section.id }} .wholesale-partnership-paths__order-options {
+      grid-template-columns: 1fr;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity,
+    #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity + .wholesale-partnership-paths__opportunity,
+    #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity:nth-child(n + 3) {
+      min-height: auto;
+      padding: 2.6rem 0;
+      border-top: 0;
+      border-left: 0;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Evolução e formas de pedido",
+  "tag": "section",
+  "class": "wholesale-partnership-paths-section",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Identificação",
+      "default": "Possibilidades de evolução"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "default": "Uma parceria que pode crescer com a sua loja"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Introdução",
+      "default": "Conforme a estratégia e o potencial comercial, novas possibilidades podem ser construídas ao longo da relação."
+    },
+    {
+      "type": "text",
+      "id": "order_eyebrow",
+      "label": "Identificação das formas de pedido",
+      "default": "Faça seu pedido do seu jeito"
+    },
+    {
+      "type": "text",
+      "id": "order_heading",
+      "label": "Título das formas de pedido",
+      "default": "O relacionamento comercial vai além do catálogo online"
+    },
+    {
+      "type": "textarea",
+      "id": "order_text",
+      "label": "Texto das formas de pedido",
+      "default": "Escolha o formato que melhor acompanha o momento da sua loja e a construção do seu mix."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "opportunity",
+      "name": "Possibilidade de evolução",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Título",
+          "default": "Exclusividade"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Texto",
+          "default": "Possibilidade de exclusividade de praça e/ou produto, conforme estratégia e potencial comercial."
+        }
+      ]
+    },
+    {
+      "type": "order_option",
+      "name": "Forma de pedido",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Título",
+          "default": "Catálogo"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Texto",
+          "default": "Seleção orientada a partir do material comercial."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Evolução e formas de pedido",
+      "blocks": [
+        { "type": "opportunity" },
+        { "type": "opportunity" },
+        { "type": "opportunity" },
+        { "type": "opportunity" },
+        { "type": "order_option" },
+        { "type": "order_option" },
+        { "type": "order_option" },
+        { "type": "order_option" }
+      ]
+    }
+  ]
+}
+{% endschema %}

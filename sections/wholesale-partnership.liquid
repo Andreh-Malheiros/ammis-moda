@@ -1,0 +1,270 @@
+<section id="parceria-ammis" class="wholesale-partnership">
+  <div class="wholesale-partnership__inner">
+    <div class="wholesale-partnership__intro">
+      {% if section.settings.eyebrow != blank %}
+        <p class="wholesale-partnership__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h2 class="wholesale-partnership__heading">{{ section.settings.heading | escape }}</h2>
+      {% endif %}
+
+      {% if section.settings.text != blank %}
+        <div class="wholesale-partnership__text">{{ section.settings.text | escape }}</div>
+      {% endif %}
+
+      {% if section.settings.cta_label != blank and section.settings.cta_link != blank %}
+        <a class="wholesale-partnership__cta" href="{{ section.settings.cta_link | escape }}">
+          {{ section.settings.cta_label | escape }}
+          <span aria-hidden="true">↗</span>
+        </a>
+      {% endif %}
+    </div>
+
+    {% if section.blocks.size > 0 %}
+      <div class="wholesale-partnership__principles">
+        {% for block in section.blocks %}
+          <article class="wholesale-partnership__principle" {{ block.shopify_attributes }}>
+            <span class="wholesale-partnership__index" aria-hidden="true">0{{ forloop.index }}</span>
+            {% if block.settings.heading != blank %}
+              <h3>{{ block.settings.heading | escape }}</h3>
+            {% endif %}
+            {% if block.settings.text != blank %}
+              <p>{{ block.settings.text | escape }}</p>
+            {% endif %}
+          </article>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% style %}
+  #shopify-section-{{ section.id }} .wholesale-partnership {
+    background: rgb(var(--color-background));
+    color: rgb(var(--color-foreground));
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership__inner {
+    display: grid;
+    grid-template-columns: minmax(24rem, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(4rem, 9vw, 12rem);
+    width: min(100% - 4rem, 136rem);
+    margin: 0 auto;
+    padding: clamp(7rem, 11vw, 14rem) 0;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership__intro {
+    max-width: 53rem;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership__eyebrow {
+    margin: 0 0 1.6rem;
+    color: rgba(var(--color-foreground), 0.62);
+    font-family: var(--font-body-family);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership__heading {
+    max-width: 52rem;
+    margin: 0;
+    color: rgb(var(--color-foreground-title));
+    font-family: var(--font-heading-family);
+    font-size: clamp(3.2rem, 4.4vw, 5.8rem);
+    font-weight: var(--font-heading-weight);
+    letter-spacing: var(--font-heading-letter-spacing);
+    line-height: 1.08;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership__text {
+    max-width: 48rem;
+    margin-top: 2.4rem;
+    color: rgba(var(--color-foreground), 0.76);
+    font-family: var(--font-body-family);
+    font-size: 1.7rem;
+    line-height: 1.6;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership__cta {
+    display: inline-flex;
+    gap: 0.8rem;
+    align-items: center;
+    margin-top: 3rem;
+    color: rgb(var(--color-foreground));
+    font-family: var(--font-body-family);
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership__cta:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 0.5rem;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership__cta span {
+    font-size: 1.8rem;
+    line-height: 1;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership__principles {
+    display: grid;
+    align-content: center;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid rgba(var(--color-foreground), 0.16);
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership__principle {
+    min-height: 17rem;
+    padding: 2.8rem 2.4rem 2.8rem 0;
+    border-bottom: 1px solid rgba(var(--color-foreground), 0.16);
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership__principle:nth-child(even) {
+    padding-right: 0;
+    padding-left: 2.4rem;
+    border-left: 1px solid rgba(var(--color-foreground), 0.16);
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership__index {
+    display: block;
+    margin-bottom: 2.8rem;
+    color: rgba(var(--color-foreground), 0.48);
+    font-family: var(--font-body-family);
+    font-size: 1.2rem;
+    letter-spacing: 0.12em;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership__principle h3 {
+    margin: 0;
+    color: rgb(var(--color-foreground-title));
+    font-family: var(--font-heading-family);
+    font-size: 2.2rem;
+    font-weight: var(--font-heading-weight);
+    line-height: 1.2;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership__principle p {
+    margin: 1.2rem 0 0;
+    color: rgba(var(--color-foreground), 0.68);
+    font-family: var(--font-body-family);
+    font-size: 1.5rem;
+    line-height: 1.55;
+  }
+
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .wholesale-partnership__inner {
+      grid-template-columns: 1fr;
+      gap: 6rem;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-partnership__intro {
+      max-width: 68rem;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .wholesale-partnership__inner {
+      width: min(100% - 3.2rem, 60rem);
+      gap: 4.5rem;
+      padding: 6rem 0;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-partnership__text {
+      font-size: 1.6rem;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-partnership__principles {
+      grid-template-columns: 1fr;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-partnership__principle,
+    #shopify-section-{{ section.id }} .wholesale-partnership__principle:nth-child(even) {
+      min-height: auto;
+      padding: 2.4rem 0;
+      border-left: 0;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Parceria AMMIS",
+  "tag": "section",
+  "class": "wholesale-partnership-section",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Identificação",
+      "default": "A parceria AMMIS"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "default": "Uma parceria comercial próxima e autoral"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Introdução",
+      "default": "A AMMIS trabalha ao lado de cada parceiro para construir um mix com identidade, flexibilidade e visão de longo prazo."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Texto do CTA opcional",
+      "default": "Falar com o comercial"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Link do CTA opcional",
+      "info": "Deixe vazio até definir o destino comercial."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "principle",
+      "name": "Princípio da parceria",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Título",
+          "default": "Acompanhamento próximo"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Texto",
+          "default": "Orientação comercial para transformar intenção em um pedido coerente com a sua loja."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Parceria AMMIS",
+      "blocks": [
+        { "type": "principle" },
+        { "type": "principle" },
+        { "type": "principle" }
+      ]
+    }
+  ]
+}
+{% endschema %}

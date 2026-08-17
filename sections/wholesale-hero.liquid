@@ -88,11 +88,11 @@
 
 {% style %}
   #shopify-section-{{ section.id }} .wholesale-hero {
-    --wholesale-hero-content-width: 72rem;
+    --wholesale-hero-content-width: 78rem;
     position: relative;
     isolation: isolate;
     display: flex;
-    min-height: clamp(48rem, 68vh, 76rem);
+    min-height: clamp(42rem, 64vh, 64rem);
     overflow: hidden;
     background: rgb(var(--color-background));
     color: rgb(var(--color-foreground));
@@ -130,7 +130,7 @@
     width: 100%;
     max-width: 144rem;
     margin: 0 auto;
-    padding: clamp(5rem, 9vw, 11rem) clamp(2rem, 6vw, 8rem);
+    padding: clamp(4.5rem, 7vh, 8rem) clamp(2rem, 6vw, 8rem);
   }
 
   #shopify-section-{{ section.id }} .wholesale-hero__content {
@@ -175,8 +175,9 @@
   }
 
   #shopify-section-{{ section.id }} .wholesale-hero__eyebrow {
-    margin: 0 0 1.8rem;
-    font-size: 1.2rem;
+    margin: 0 0 1.4rem;
+    font-family: var(--font-body-family);
+    font-size: 1.4rem;
     font-weight: 600;
     letter-spacing: 0.16em;
     line-height: 1.4;
@@ -184,20 +185,21 @@
   }
 
   #shopify-section-{{ section.id }} .wholesale-hero__heading {
-    max-width: 68rem;
+    max-width: 66rem;
     margin: 0;
     font-family: var(--font-heading-family);
-    font-size: clamp(3.4rem, 6vw, 7.2rem);
+    font-size: clamp(3.8rem, 5.4vw, 7rem);
     font-weight: var(--font-heading-weight);
     letter-spacing: var(--font-heading-letter-spacing);
-    line-height: 1.05;
+    line-height: 1.02;
   }
 
   #shopify-section-{{ section.id }} .wholesale-hero__text {
-    max-width: 54rem;
-    margin-top: 2.2rem;
-    font-size: clamp(1.5rem, 1.8vw, 1.9rem);
-    line-height: 1.55;
+    max-width: 56rem;
+    margin-top: 1.8rem;
+    font-family: var(--font-body-family);
+    font-size: clamp(1.6rem, 1.7vw, 1.9rem);
+    line-height: 1.5;
   }
 
   #shopify-section-{{ section.id }} .wholesale-hero__actions {
@@ -205,20 +207,22 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 1.2rem 1.6rem;
-    margin-top: 3.2rem;
+    margin-top: 2.8rem;
   }
 
   #shopify-section-{{ section.id }} .wholesale-hero__cta {
     display: inline-flex;
-    min-height: 4.8rem;
+    min-width: 20rem;
+    min-height: 5.6rem;
     align-items: center;
     justify-content: center;
-    padding: 1.3rem 2rem;
+    padding: 1.5rem 2.6rem;
     border: 1px solid transparent;
     border-radius: 999px;
-    font-size: 1.3rem;
+    font-family: var(--font-body-family);
+    font-size: 1.4rem;
     font-weight: 600;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
     line-height: 1.2;
     text-align: center;
     text-decoration: none;
@@ -243,14 +247,36 @@
     color: #171717;
   }
 
+  #shopify-section-{{ section.id }} .wholesale-hero--light .wholesale-hero__eyebrow,
+  #shopify-section-{{ section.id }} .wholesale-hero--light .wholesale-hero__heading,
+  #shopify-section-{{ section.id }} .wholesale-hero--light .wholesale-hero__text,
+  #shopify-section-{{ section.id }} .wholesale-hero--light .wholesale-hero__cta--secondary,
+  #shopify-section-{{ section.id }} .wholesale-hero--light .wholesale-hero__cta--tertiary {
+    color: #fff;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-hero--dark .wholesale-hero__eyebrow,
+  #shopify-section-{{ section.id }} .wholesale-hero--dark .wholesale-hero__heading,
+  #shopify-section-{{ section.id }} .wholesale-hero--dark .wholesale-hero__text,
+  #shopify-section-{{ section.id }} .wholesale-hero--dark .wholesale-hero__cta--secondary,
+  #shopify-section-{{ section.id }} .wholesale-hero--dark .wholesale-hero__cta--tertiary {
+    color: #171717;
+  }
+
   #shopify-section-{{ section.id }} .wholesale-hero--no-image.wholesale-hero--light {
-    background: #171717;
+    background:
+      radial-gradient(circle at 82% 18%, rgba(191, 164, 132, 0.34), transparent 34%),
+      linear-gradient(120deg, #292624 0%, #5b5047 52%, #181717 100%);
     color: #fff;
   }
 
   #shopify-section-{{ section.id }} .wholesale-hero--no-image.wholesale-hero--dark {
-    background: #fff;
+    background: linear-gradient(120deg, #f7f4ef 0%, #e8e0d7 100%);
     color: #171717;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-hero--no-image .wholesale-hero__overlay {
+    background: transparent;
   }
 
   #shopify-section-{{ section.id }} .wholesale-hero--light .wholesale-hero__cta--primary {
@@ -266,16 +292,14 @@
   #shopify-section-{{ section.id }} .wholesale-hero__cta--secondary {
     border-color: currentColor;
     background: transparent;
-    color: inherit;
   }
 
   #shopify-section-{{ section.id }} .wholesale-hero__cta--tertiary {
     gap: 0.8rem;
-    min-height: auto;
-    padding-right: 0;
-    padding-left: 0;
+    min-height: 5.6rem;
+    padding-right: 1rem;
+    padding-left: 1rem;
     border-color: transparent;
-    color: inherit;
   }
 
   #shopify-section-{{ section.id }} .wholesale-hero__cta--tertiary span {
@@ -284,23 +308,26 @@
   }
 
   #shopify-section-{{ section.id }} .wholesale-hero__cta--disabled {
-    cursor: not-allowed;
-    opacity: 0.55;
+    cursor: default;
+    opacity: 0.9;
+    pointer-events: none;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-hero__cta--disabled:hover {
+    opacity: 0.9;
   }
 
   @media screen and (max-width: 749px) {
     #shopify-section-{{ section.id }} .wholesale-hero {
-      min-height: 62rem;
+      min-height: clamp(50rem, 78svh, 58rem);
     }
 
     #shopify-section-{{ section.id }} .wholesale-hero__inner {
-      padding: 6rem 2rem 5rem;
+      padding: 4.5rem 2rem 4rem;
     }
 
-    #shopify-section-{{ section.id }} .wholesale-hero__content,
-    #shopify-section-{{ section.id }} .wholesale-hero--align-right .wholesale-hero__content {
-      align-items: flex-start;
-      text-align: left;
+    #shopify-section-{{ section.id }} .wholesale-hero__content {
+      width: 100%;
     }
 
     #shopify-section-{{ section.id }} .wholesale-hero__actions {
@@ -316,6 +343,14 @@
     #shopify-section-{{ section.id }} .wholesale-hero__cta--tertiary {
       width: auto;
       align-self: flex-start;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-hero--align-center .wholesale-hero__cta--tertiary {
+      align-self: center;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-hero--align-right .wholesale-hero__cta--tertiary {
+      align-self: flex-end;
     }
   }
 {% endstyle %}

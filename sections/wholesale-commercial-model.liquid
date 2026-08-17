@@ -1,0 +1,355 @@
+<section id="modelo-comercial-ammis" class="wholesale-commercial-model">
+  <div class="wholesale-commercial-model__inner">
+    <header class="wholesale-commercial-model__header">
+      {% if section.settings.eyebrow != blank %}
+        <p class="wholesale-commercial-model__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {% endif %}
+      {% if section.settings.heading != blank %}
+        <h2 class="wholesale-commercial-model__heading">{{ section.settings.heading | escape }}</h2>
+      {% endif %}
+      {% if section.settings.text != blank %}
+        <p class="wholesale-commercial-model__text">{{ section.settings.text | escape }}</p>
+      {% endif %}
+    </header>
+
+    <div class="wholesale-commercial-model__seasons">
+      <article class="wholesale-commercial-model__season">
+        <div class="wholesale-commercial-model__season-topline">
+          <span class="wholesale-commercial-model__season-index" aria-hidden="true">01</span>
+          <h3>{{ section.settings.summer_label | escape }}</h3>
+        </div>
+        <dl class="wholesale-commercial-model__details">
+          <div>
+            <dt>{{ section.settings.summer_sale_label | escape }}</dt>
+            <dd>{{ section.settings.summer_sale_value | escape }}</dd>
+          </div>
+          <div>
+            <dt>{{ section.settings.summer_delivery_label | escape }}</dt>
+            <dd>{{ section.settings.summer_delivery_value | escape }}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="wholesale-commercial-model__season">
+        <div class="wholesale-commercial-model__season-topline">
+          <span class="wholesale-commercial-model__season-index" aria-hidden="true">02</span>
+          <h3>{{ section.settings.winter_label | escape }}</h3>
+        </div>
+        <dl class="wholesale-commercial-model__details">
+          <div>
+            <dt>{{ section.settings.winter_sale_label | escape }}</dt>
+            <dd>{{ section.settings.winter_sale_value | escape }}</dd>
+          </div>
+          <div>
+            <dt>{{ section.settings.winter_delivery_label | escape }}</dt>
+            <dd>{{ section.settings.winter_delivery_value | escape }}</dd>
+          </div>
+        </dl>
+      </article>
+    </div>
+
+    {% if section.settings.complementary_label != blank or section.settings.complementary_text != blank %}
+      <aside class="wholesale-commercial-model__note">
+        {% if section.settings.complementary_label != blank %}
+          <strong>{{ section.settings.complementary_label | escape }}</strong>
+        {% endif %}
+        {% if section.settings.complementary_text != blank %}
+          <p>{{ section.settings.complementary_text | escape }}</p>
+        {% endif %}
+      </aside>
+    {% endif %}
+  </div>
+</section>
+
+{% style %}
+  #shopify-section-{{ section.id }} .wholesale-commercial-model {
+    background: rgb(var(--color-background-secondary));
+    color: rgb(var(--color-foreground));
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__inner {
+    width: min(100% - 4rem, 136rem);
+    margin: 0 auto;
+    padding: clamp(7rem, 11vw, 14rem) 0;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__header {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 4rem;
+    align-items: end;
+    margin-bottom: clamp(4rem, 7vw, 8rem);
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__eyebrow {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: rgba(var(--color-foreground), 0.62);
+    font-family: var(--font-body-family);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__heading {
+    max-width: 54rem;
+    margin: 0;
+    color: rgb(var(--color-foreground-title));
+    font-family: var(--font-heading-family);
+    font-size: clamp(3.2rem, 4.2vw, 5.8rem);
+    font-weight: var(--font-heading-weight);
+    letter-spacing: var(--font-heading-letter-spacing);
+    line-height: 1.08;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__text {
+    max-width: 54rem;
+    margin: 0;
+    color: rgba(var(--color-foreground), 0.72);
+    font-family: var(--font-body-family);
+    font-size: 1.7rem;
+    line-height: 1.6;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__seasons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid rgba(var(--color-foreground), 0.18);
+    border-bottom: 1px solid rgba(var(--color-foreground), 0.18);
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__season {
+    padding: clamp(3rem, 5vw, 5.5rem) clamp(2.4rem, 4vw, 5.5rem) clamp(3.5rem, 5vw, 6rem) 0;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__season + .wholesale-commercial-model__season {
+    padding-right: 0;
+    padding-left: clamp(2.4rem, 4vw, 5.5rem);
+    border-left: 1px solid rgba(var(--color-foreground), 0.18);
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__season-topline {
+    display: flex;
+    gap: 2rem;
+    align-items: baseline;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__season-index {
+    color: rgba(var(--color-foreground), 0.46);
+    font-family: var(--font-body-family);
+    font-size: 1.2rem;
+    letter-spacing: 0.12em;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__season h3 {
+    margin: 0;
+    color: rgb(var(--color-foreground-title));
+    font-family: var(--font-heading-family);
+    font-size: clamp(2.8rem, 3.6vw, 4.8rem);
+    font-weight: var(--font-heading-weight);
+    line-height: 1.1;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__details {
+    display: grid;
+    gap: 2.6rem;
+    margin: 4.5rem 0 0;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__details div {
+    display: grid;
+    grid-template-columns: minmax(10rem, 0.65fr) minmax(0, 1.35fr);
+    gap: 2rem;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__details dt {
+    color: rgba(var(--color-foreground), 0.58);
+    font-family: var(--font-body-family);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__details dd {
+    margin: 0;
+    color: rgb(var(--color-foreground));
+    font-family: var(--font-body-family);
+    font-size: 1.7rem;
+    line-height: 1.5;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__note {
+    display: flex;
+    gap: 2rem;
+    align-items: baseline;
+    max-width: 90rem;
+    margin-top: 3.5rem;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__note strong {
+    flex: 0 0 auto;
+    color: rgb(var(--color-foreground-title));
+    font-family: var(--font-body-family);
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-commercial-model__note p {
+    margin: 0;
+    color: rgba(var(--color-foreground), 0.68);
+    font-family: var(--font-body-family);
+    font-size: 1.5rem;
+    line-height: 1.55;
+  }
+
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .wholesale-commercial-model__header {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .wholesale-commercial-model__inner {
+      width: min(100% - 3.2rem, 60rem);
+      padding: 6rem 0;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-commercial-model__seasons {
+      grid-template-columns: 1fr;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-commercial-model__season,
+    #shopify-section-{{ section.id }} .wholesale-commercial-model__season + .wholesale-commercial-model__season {
+      padding: 3rem 0;
+      border-left: 0;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-commercial-model__details div {
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-commercial-model__note {
+      display: block;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-commercial-model__note p {
+      margin-top: 1rem;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Modelo comercial AMMIS",
+  "tag": "section",
+  "class": "wholesale-commercial-model-section",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Identificação",
+      "default": "Modelo comercial"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "default": "Um calendário pensado para o seu negócio"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Introdução",
+      "default": "O planejamento das coleções organiza vendas e entregas para que o parceiro componha o mix com clareza."
+    },
+    {
+      "type": "text",
+      "id": "summer_label",
+      "label": "Nome da coleção de verão",
+      "default": "Verão"
+    },
+    {
+      "type": "text",
+      "id": "summer_sale_label",
+      "label": "Rótulo da venda de verão",
+      "default": "Venda"
+    },
+    {
+      "type": "text",
+      "id": "summer_sale_value",
+      "label": "Período de venda de verão",
+      "default": "Abril"
+    },
+    {
+      "type": "text",
+      "id": "summer_delivery_label",
+      "label": "Rótulo das entregas de verão",
+      "default": "Entregas / faturamento"
+    },
+    {
+      "type": "textarea",
+      "id": "summer_delivery_value",
+      "label": "Período de entregas de verão",
+      "default": "Agosto, setembro, outubro e novembro"
+    },
+    {
+      "type": "text",
+      "id": "winter_label",
+      "label": "Nome da coleção de inverno",
+      "default": "Inverno"
+    },
+    {
+      "type": "text",
+      "id": "winter_sale_label",
+      "label": "Rótulo da venda de inverno",
+      "default": "Venda"
+    },
+    {
+      "type": "text",
+      "id": "winter_sale_value",
+      "label": "Período de venda de inverno",
+      "default": "Outubro"
+    },
+    {
+      "type": "text",
+      "id": "winter_delivery_label",
+      "label": "Rótulo das entregas de inverno",
+      "default": "Entregas / faturamento"
+    },
+    {
+      "type": "textarea",
+      "id": "winter_delivery_value",
+      "label": "Período de entregas de inverno",
+      "default": "Fevereiro, março, abril e maio"
+    },
+    {
+      "type": "text",
+      "id": "complementary_label",
+      "label": "Rótulo das possibilidades complementares",
+      "default": "Também trabalhamos com"
+    },
+    {
+      "type": "textarea",
+      "id": "complementary_text",
+      "label": "Possibilidades complementares",
+      "default": "Alto Verão, Euro Summer e entregas complementares, conforme a coleção e o planejamento comercial."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Modelo comercial AMMIS"
+    }
+  ]
+}
+{% endschema %}
