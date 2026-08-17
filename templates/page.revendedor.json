@@ -125,6 +125,73 @@
         "margin_bottom": "s"
       }
     },
+    "section_revendedor_growth_UAYrdH": {
+      "type": "section-revendedor-growth",
+      "blocks": {
+        "opportunities_tbxrMT": {
+          "type": "opportunities",
+          "settings": {
+            "eyebrow": "POSSIBILIDADES COMERCIAIS",
+            "heading": "Uma parceria que pode evoluir",
+            "item_1_title": "Exclusividade",
+            "item_1_text": "Exclusividade de praça e/ou de produto, conforme estratégia e potencial comercial.",
+            "item_2_title": "Eventos personalizados",
+            "item_2_text": "Criação e realização de eventos com participação ativa da AMMIS.",
+            "item_3_title": "Collabs",
+            "item_3_text": "Desenvolvimento de produtos exclusivos em parceria com o lojista.",
+            "item_4_title": "Suporte 360°",
+            "item_4_text": "Apoio em marketing, visual merchandising, comercial e planejamento."
+          }
+        },
+        "order_formats_RADWAV": {
+          "type": "order_formats",
+          "settings": {
+            "eyebrow": "FORMAS DE PEDIDO",
+            "heading": "Faça seu pedido do seu jeito",
+            "text": "<p>O lojista escolhe a forma mais conveniente para conhecer a coleção e construir o pedido, sempre com acompanhamento do time comercial.</p>",
+            "format_1_title": "Catálogo",
+            "format_1_text": "Seleção orientada a partir do material comercial.",
+            "format_2_title": "Site",
+            "format_2_text": "Consulta digital das peças e informações disponíveis.",
+            "format_3_title": "Fotos e vídeos",
+            "format_3_text": "Apresentação remota e detalhada da coleção.",
+            "format_4_title": "Presencialmente",
+            "format_4_text": "Atendimento personalizado para construção do mix."
+          }
+        },
+        "gallery_w8NKcr": {
+          "type": "gallery",
+          "settings": {
+            "eyebrow": "UNIVERSO AMMIS",
+            "heading": "Coleções que podem ganhar novos caminhos",
+            "label_1": "Amalfi",
+            "image_1_alt": "",
+            "label_2": "Estonada Verde",
+            "image_2_alt": "",
+            "label_3": "Italy",
+            "image_3_alt": ""
+          }
+        }
+      },
+      "block_order": [
+        "opportunities_tbxrMT",
+        "order_formats_RADWAV",
+        "gallery_w8NKcr"
+      ],
+      "name": "Revendedor - evolução",
+      "settings": {
+        "enable_section": true,
+        "anchor_id": "evolucao-parceria",
+        "color_scheme": "",
+        "eyebrow": "UMA PARCERIA QUE PODE EVOLUIR",
+        "heading": "Possibilidades comerciais para construir o próximo passo",
+        "heading_size": "h1",
+        "intro_text": "<p>A parceria pode começar de diferentes formas e evoluir conforme o potencial da loja, o perfil das clientes e os objetivos comerciais.</p>",
+        "card_radius": "2rem",
+        "margin_top": "s",
+        "margin_bottom": "s"
+      }
+    },
     "opportunity": {
       "type": "revendedor-content",
       "blocks": {
@@ -634,6 +701,7 @@
   "order": [
     "hero",
     "section_revendedor_partnership_7TcdpT",
+    "section_revendedor_growth_UAYrdH",
     "opportunity",
     "benefits",
     "brand_universe",
