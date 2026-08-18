@@ -71,6 +71,7 @@
         },
         "slideshow_item_F6EnkM": {
           "type": "slideshow-item",
+          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/BANNER_SITE_DESKTOP_4_dc392bab-d8b6-4bf6-98d2-4371c4f328ca.jpg",
             "mobile_image": "shopify://shop_images/BANNER_SITE_MOBIILE_1.jpg",
