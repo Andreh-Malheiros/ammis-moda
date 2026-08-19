@@ -326,11 +326,15 @@ details[open] > .menu-drawer__submenu {
   }
 
   .menu-drawer__navigation {
-    flex: 1 0 auto;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
     padding: 1.4rem 2rem 0;
   }
 
   .ammis-mobile-menu {
+    flex: 0 0 auto;
     width: 100%;
   }
 
@@ -349,13 +353,18 @@ details[open] > .menu-drawer__submenu {
   }
 
   .ammis-mobile-menu__section-title {
-    margin: 0 0 0.65rem;
+    display: flex;
+    align-items: center;
+    min-height: clamp(6.4rem, 17vw, 7.6rem);
+    margin: 0 0 0.8rem;
     padding: 0 0.2rem;
-    color: rgba(var(--color-foreground), 0.56);
-    font-size: 1.05rem;
-    line-height: 1.4;
-    font-weight: 500;
-    letter-spacing: 0.12em;
+    color: rgb(var(--color-foreground));
+    font-family: var(--font-header-menu-family);
+    font-style: var(--font-header-menu-style);
+    font-size: clamp(1.9rem, 5.4vw, 2.25rem);
+    line-height: 1.15;
+    font-weight: 400;
+    letter-spacing: 0.015em;
     text-transform: uppercase;
   }
 
@@ -384,6 +393,19 @@ details[open] > .menu-drawer__submenu {
     text-decoration: none;
   }
 
+  .ammis-mobile-menu > .ammis-mobile-menu__row > .ammis-mobile-menu__item,
+  .ammis-mobile-menu > .ammis-mobile-menu__row > details > .ammis-mobile-menu__item {
+    min-height: clamp(6.4rem, 17vw, 7.6rem);
+    padding: clamp(1.6rem, 4.4vw, 2.15rem) 3.6rem clamp(1.6rem, 4.4vw, 2.15rem) 0.2rem;
+    border-bottom-color: rgba(var(--color-foreground), 0.14);
+    font-family: var(--font-header-menu-family);
+    font-style: var(--font-header-menu-style);
+    font-size: clamp(1.9rem, 5.4vw, 2.25rem);
+    line-height: 1.15;
+    font-weight: 400;
+    letter-spacing: 0.015em;
+  }
+
   .ammis-mobile-menu__item:hover,
   .ammis-mobile-menu__submenu-item:hover {
     background: transparent;
@@ -400,14 +422,20 @@ details[open] > .menu-drawer__submenu {
     transition: none;
   }
 
+  .ammis-mobile-menu > .ammis-mobile-menu__row > .ammis-mobile-menu__item > .icon-caret,
+  .ammis-mobile-menu > .ammis-mobile-menu__row > details > .ammis-mobile-menu__item > .icon-caret {
+    position: absolute;
+    top: 50%;
+    right: 0.35rem;
+    width: clamp(1.25rem, 3.8vw, 1.5rem);
+    height: clamp(1.25rem, 3.8vw, 1.5rem);
+    transform: translateY(-50%) rotate(-90deg);
+    transition: none;
+  }
+
   .menu-drawer__menu .menu-opening[open] > summary.ammis-mobile-menu__item > .icon-caret,
   .menu-drawer__menu .menu-opening[open] > summary.ammis-mobile-menu__submenu-item > .icon-caret {
     transform: translateY(-50%) rotate(-90deg);
-  }
-
-  .ammis-mobile-menu > .ammis-mobile-menu__row:first-child > .ammis-mobile-menu__item,
-  .ammis-mobile-menu > .ammis-mobile-menu__row:first-child > details > .ammis-mobile-menu__item {
-    font-size: 1.65rem;
   }
 
   .ammis-mobile-menu__details {
@@ -505,7 +533,7 @@ details[open] > .menu-drawer__submenu {
     position: relative;
     width: 100%;
     min-height: 17rem;
-    margin: 2.4rem 0 0;
+    margin: auto 0 0;
     overflow: hidden;
     border-radius: 0.4rem;
     background: rgba(var(--color-foreground), 0.08);
