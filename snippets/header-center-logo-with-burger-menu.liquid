@@ -18,11 +18,11 @@
 		{%- if section.settings.menu != blank -%}
 			<ul class='list-menu list-menu--inline' role='list'>
 				{%- for link in section.settings.menu.links -%}
-					{% liquid
-						assign mega_menu = false
-						assign mega_menu_list = false
-						assign mega_menu_blocks = false
-					%}
+						{% liquid
+							assign mega_menu = false
+							assign mega_menu_list = false
+							assign mega_menu_blocks = false
+						%}
 					{%- if link.links != blank -%}
 						{% if section.blocks.size > 0 %}
 							{% for block in section.blocks %}
@@ -51,7 +51,7 @@
 							{% endfor %}
 						{% endif %}
 						<li
-							class='list-menu-item {% if mega_menu or mega_menu_blocks or mega_menu_list %}list-menu--megamenu {% else %}list-menu--submenu{% endif %}'
+							class='list-menu-item list-menu--megamenu'
 							{{ shopify_attributes }}
 						>
 							{% if mega_menu %}

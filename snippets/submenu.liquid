@@ -1,55 +1,51 @@
-<ul
-	class="header__submenu list-menu list-menu--disclosure caption-large motion-reduce color-background-1"
-	role="list"
->
-	<div class="container">
-		{%- for childlink in link.links -%}
-			<li>
-				{%- if childlink.links == blank -%}
-					<a
-						href="{{ childlink.url }}"
-						class="header__menu-item list-menu__item link link--text focus-inset caption-large{% if childlink.current %} header__menu-item--active{% endif %}"
-						{% if childlink.current %}
-							aria-current="page"
+{% liquid
+	assign submenu_group_count = link.links.size
+	assign submenu_group_layout = submenu_group_count
+	if submenu_group_count > 4
+		assign submenu_group_layout = 'many'
+	endif
+%}
+
+{% if link.links != blank %}
+	<div
+		class="header__submenu header__submenu--mega mega-menu mega-menu--groups-{{ submenu_group_layout }}"
+		role="region"
+		aria-label="{{ link.title | escape }}"
+	>
+		<div class="mega-menu__inner container">
+			<ul class="mega-menu__list list-unstyled" role="list">
+				{% for childlink in link.links %}
+					<li class="mega-menu__list-item{% if childlink.links == blank %} mega-menu__list-item--standalone{% endif %}">
+						<a
+							href="{{ childlink.url }}"
+							class="mega-menu__category-heading link link--text focus-inset{% if childlink.current %} mega-menu__link--active{% endif %}"
+							{% if childlink.current %}
+								aria-current="page"
+							{% endif %}
+						>
+							<span class="link-hover-line">{{ childlink.title | escape }}</span>
+						</a>
+
+						{% if childlink.links != blank %}
+							<ul class="mega-menu__subcategory-list list-unstyled" role="list">
+								{% for grandchildlink in childlink.links %}
+									<li class="mega-menu__subcategory-item">
+										<a
+											href="{{ grandchildlink.url }}"
+											class="mega-menu__subcategory-link link link--text focus-inset{% if grandchildlink.current %} mega-menu__link--active{% endif %}"
+											{% if grandchildlink.current %}
+												aria-current="page"
+											{% endif %}
+										>
+											<span class="link-hover-line">{{ grandchildlink.title | escape }}</span>
+										</a>
+									</li>
+								{% endfor %}
+							</ul>
 						{% endif %}
-					>
-						<span class="link-hover-line">
-							{{ childlink.title | escape }}
-						</span>
-					</a>
-				{%- else -%}
-					<a
-						href="{{ childlink.url }}"
-						class="header__menu-item list-menu__item link link--text focus-inset caption-large{% if childlink.current %} header__menu-item--active{% endif %}"
-						{% if childlink.current %}
-							aria-current="page"
-						{% endif %}
-					>
-						<span class="link-hover-line">
-							{{ childlink.title | escape }}
-						</span>
-					</a>
-					<ul
-						class="header__submenu list-menu--disclosure list-menu motion-reduce color-background-1"
-					>
-						{%- for grandchildlink in childlink.links -%}
-							<li>
-								<a
-									href="{{ grandchildlink.url }}"
-									class="header__menu-item list-menu__item link link--text focus-inset caption-large{% if grandchildlink.current %} header__menu-item--active{% endif %}"
-									{% if grandchildlink.current %}
-										aria-current="page"
-									{% endif %}
-								>
-									<span class="link-hover-line">
-										{{ grandchildlink.title | escape }}
-									</span>
-								</a>
-							</li>
-						{%- endfor -%}
-					</ul>
-				{%- endif -%}
-			</li>
-		{%- endfor -%}
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
 	</div>
-</ul>
+{% endif %}

@@ -53,7 +53,7 @@
                                 %}
                             {% endfor %}
                         {% endif %}
-                        <li class='list-menu-item {% if mega_menu or mega_menu_blocks or mega_menu_list %}list-menu--megamenu {% else %}list-menu--submenu{% endif %}' {{ shopify_attributes }}>
+                        <li class='list-menu-item list-menu--megamenu' {{ shopify_attributes }}>
                             {% if mega_menu %}
                                 {% render 'mega-menu', link: link, blocks: section.blocks %}
                             {% endif %}
