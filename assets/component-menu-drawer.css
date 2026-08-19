@@ -306,10 +306,10 @@ details[open] > .menu-drawer__submenu {
 }
 
 /* ==========================================================
-   AMMIS — experiência do menu apenas no mobile
-   Desktop/tablet >= 750px mantém as regras anteriores.
+   AMMIS — experiência do menu enquanto o drawer estiver ativo
+   O menu desktop/mega menu começa em 1100px.
    ========================================================== */
-@media screen and (max-width: 749px) {
+@media screen and (max-width: 1099px) {
   .menu-drawer {
     background: rgb(var(--color-background));
   }

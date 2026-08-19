@@ -3643,7 +3643,7 @@ body.body--hidden {
 .header--center-logo-burger > .header__heading, .header--center-logo-burger > .header__heading-link {
   padding-block: 2.4rem;
 }
-@media screen and (max-width: 749px) {
+@media screen and (max-width: 1099px) {
   .header--center-logo-burger > .header__heading {
     padding-block: 0;
   }
@@ -3700,7 +3700,7 @@ body.body--hidden {
   height: auto;
   object-fit: contain;
 }
-@media screen and (max-width: 749px) {
+@media screen and (max-width: 1099px) {
   .header__heading-logo {
     max-width: 18rem;
   }
@@ -5279,8 +5279,7 @@ details[open] > .header__icon--menu .icon-hamburger {
   .header__inline-menu .mega-menu__inner {
     max-width: none;
     padding: 1.2rem;
-    background-color: rgb(var(--color-background));
-    border: 1px solid rgba(var(--color-border), 0.16);
+    border: 0;
   }
 
   .header__inline-menu .mega-menu__list {
@@ -5346,16 +5345,27 @@ details[open] > .header__icon--menu .icon-hamburger {
     align-self: start;
     box-sizing: border-box;
     padding: 2rem 2.2rem 2.2rem;
-    background-color: rgb(var(--color-background-secondary));
-    border: 1px solid rgba(var(--color-border), 0.28);
-    border-radius: var(--border-radius-media);
-    transition: background-color var(--duration-default), border-color var(--duration-default);
+    background: rgba(255, 255, 255);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 1.2rem;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+    opacity: 1;
+    filter: none;
+    transition: background-color var(--duration-default), border-color var(--duration-default), box-shadow var(--duration-default), opacity var(--duration-default), filter var(--duration-default);
   }
 
   .header__inline-menu .mega-menu__list-item:hover,
   .header__inline-menu .mega-menu__list-item:focus-within {
-    background-color: rgba(var(--color-foreground), 0.06);
-    border-color: rgba(var(--color-border), 0.5);
+    background: rgba(255, 255, 255, 0.91);
+    border-color: rgba(255, 255, 255, 0.34);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.2);
+  }
+
+  .header__inline-menu .mega-menu__list:has(.mega-menu__list-item:hover, .mega-menu__list-item:focus-within) > .mega-menu__list-item:not(:hover):not(:focus-within) {
+    opacity: 0.84;
+    filter: blur(2px);
   }
 
   .header__inline-menu .mega-menu__category-heading,
@@ -5368,14 +5378,14 @@ details[open] > .header__icon--menu .icon-hamburger {
   }
 
   .header__inline-menu .mega-menu__category-heading {
-    margin: 0 0 1.6rem;
-    color: rgb(var(--color-foreground-title));
+    margin: 0 0 1.8rem;
+    color: rgb(var(--color-foreground));
     font-family: var(--font-header-menu-family);
     font-style: var(--font-header-menu-style);
-    font-weight: var(--font-header-menu-weight);
-    font-size: 1.25rem;
+    font-weight: 600;
+    font-size: 1.6rem;
     line-height: 1.2;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
@@ -5395,11 +5405,11 @@ details[open] > .header__icon--menu .icon-hamburger {
   .header__inline-menu .mega-menu__subcategory-link {
     min-height: 2.6rem;
     padding-block: 0.35rem;
-    color: rgb(var(--color-foreground-secondary));
+    color: rgba(var(--color-foreground), 0.9);
     font-family: var(--font-body-family);
     font-style: var(--font-body-style);
-    font-weight: var(--font-body-weight);
-    font-size: 1.2rem;
+    font-weight: 500;
+    font-size: 1.5rem;
     line-height: 1.4;
     letter-spacing: 0.01em;
     text-transform: none;
@@ -5409,6 +5419,19 @@ details[open] > .header__icon--menu .icon-hamburger {
   .header__inline-menu .mega-menu__subcategory-link:hover,
   .header__inline-menu .mega-menu__link--active {
     color: rgb(var(--color-foreground));
+  }
+
+  .header__inline-menu .mega-menu__category-heading:hover .link-hover-line::after,
+  .header__inline-menu .mega-menu__subcategory-link:hover .link-hover-line::after,
+  .header__inline-menu .mega-menu__category-heading:focus-visible .link-hover-line::after,
+  .header__inline-menu .mega-menu__subcategory-link:focus-visible .link-hover-line::after {
+    width: 100%;
+  }
+
+  .header__inline-menu .mega-menu__category-heading:focus-visible,
+  .header__inline-menu .mega-menu__subcategory-link:focus-visible {
+    outline: 0.2rem solid rgb(var(--color-foreground));
+    outline-offset: 0.3rem;
   }
 }
 
