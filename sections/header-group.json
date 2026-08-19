@@ -47,7 +47,7 @@
         "logo": "shopify://shop_images/logo300a.png",
         "logo_2": "shopify://shop_images/logo300b.png",
         "logo_width": 140,
-        "menu": "menu-teste",
+        "menu": "main-menu",
         "mobile_menu_promo_enabled": true,
         "mobile_menu_promo_image": "shopify://shop_images/DESKTOP_S__FRETE.png",
         "mobile_menu_promo_title": "SOLEIL",
