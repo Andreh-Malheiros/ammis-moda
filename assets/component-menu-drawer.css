@@ -39,6 +39,7 @@ menu-drawer > details[open] > summary::before {
   background-color: rgba(var(--color-overlay), 0.1);
   overflow-x: hidden;
 }
+
 .menu-drawer__menu-link {
   text-decoration: none;
 }
@@ -51,7 +52,10 @@ menu-drawer > details[open] > summary::before {
 
 .js details[open] > .menu-drawer,
 .js details[open] > .menu-drawer__submenu {
-  transition: transform var(--duration-default) ease, visibility var(--duration-default) ease, opacity var(--duration-default) ease;
+  transition:
+    transform var(--duration-default) ease,
+    visibility var(--duration-default) ease,
+    opacity var(--duration-default) ease;
 }
 
 .no-js details[open] > .menu-drawer,
@@ -69,6 +73,7 @@ details[open] > .menu-drawer__submenu {
     height: auto;
   }
 }
+
 .menu-drawer__inner-container {
   position: relative;
   height: 100%;
@@ -100,6 +105,7 @@ details[open] > .menu-drawer__submenu {
   color: rgb(var(--color-foreground));
   text-transform: none;
 }
+
 .menu-drawer__menu .menu-drawer__menu-item:hover {
   background-color: transparent;
 }
@@ -163,10 +169,12 @@ details[open] > .menu-drawer__submenu {
 .menu-drawer__utility-links {
   padding: 1.8rem 2rem;
 }
+
 .menu-drawer__utility-links.menu-drawer__utility-links-customer {
   padding: 2.4rem 0;
   border-top: 1px solid rgb(var(--color-border));
 }
+
 .menu-drawer__utility-links.menu-drawer__utility-links-customer .menu-drawer__utility-account {
   padding: 0 2rem;
 }
@@ -287,4 +295,379 @@ details[open] > .menu-drawer__submenu {
 
 .menu-drawer__utility-links .list-social__link:hover {
   color: rgba(var(--color-foreground), 0.75);
+}
+
+/* ==========================================================
+   AMMIS — experiência do menu apenas no mobile
+   Desktop/tablet >= 750px mantém as regras anteriores.
+   ========================================================== */
+@media screen and (max-width: 749px) {
+  .menu-drawer {
+    background: rgb(var(--color-background));
+  }
+
+  .menu-drawer__inner-container {
+    position: relative;
+    max-width: none;
+    width: 100%;
+    transform: none;
+    overflow: hidden;
+  }
+
+  .menu-drawer__navigation-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-top: 0;
+    background: rgb(var(--color-background));
+  }
+
+  .menu-drawer__navigation {
+    flex: 1 0 auto;
+    padding: 1.4rem 2rem 0;
+  }
+
+  .ammis-mobile-menu {
+    width: 100%;
+  }
+
+  .ammis-mobile-menu__row,
+  .ammis-mobile-menu__section {
+    margin: 0;
+    padding: 0;
+  }
+
+  .ammis-mobile-menu__section {
+    margin-top: 2rem;
+  }
+
+  .ammis-mobile-menu__section:first-child {
+    margin-top: 0;
+  }
+
+  .ammis-mobile-menu__section-title {
+    margin: 0 0 0.65rem;
+    padding: 0 0.2rem;
+    color: rgba(var(--color-foreground), 0.56);
+    font-size: 1.05rem;
+    line-height: 1.4;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .ammis-mobile-menu__section-list {
+    border-top: 0.1rem solid rgba(var(--color-foreground), 0.12);
+  }
+
+  .ammis-mobile-menu__item,
+  .ammis-mobile-menu__submenu-item {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 5.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+    padding: 1.35rem 3.6rem 1.35rem 0.2rem;
+    border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.12);
+    color: rgb(var(--color-foreground));
+    font-family: var(--font-body-family);
+    font-style: var(--font-body-style);
+    font-size: 1.55rem;
+    line-height: 1.35;
+    font-weight: 400;
+    text-decoration: none;
+  }
+
+  .ammis-mobile-menu__item:hover,
+  .ammis-mobile-menu__submenu-item:hover {
+    background: transparent;
+  }
+
+  .ammis-mobile-menu__item > .icon-caret,
+  .ammis-mobile-menu__submenu-item > .icon-caret {
+    position: absolute;
+    top: 50%;
+    right: 0.35rem;
+    width: 1.35rem;
+    height: 1.35rem;
+    transform: translateY(-50%) rotate(-90deg);
+    transition: none;
+  }
+
+  .menu-drawer__menu .menu-opening[open] > summary.ammis-mobile-menu__item > .icon-caret,
+  .menu-drawer__menu .menu-opening[open] > summary.ammis-mobile-menu__submenu-item > .icon-caret {
+    transform: translateY(-50%) rotate(-90deg);
+  }
+
+  .ammis-mobile-menu > .ammis-mobile-menu__row:first-child > .ammis-mobile-menu__item,
+  .ammis-mobile-menu > .ammis-mobile-menu__row:first-child > details > .ammis-mobile-menu__item {
+    font-size: 1.65rem;
+  }
+
+  .ammis-mobile-menu__details {
+    width: 100%;
+  }
+
+  .js .ammis-mobile-menu__details > .menu-drawer__submenu {
+    position: absolute;
+    z-index: 5;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: rgb(var(--color-background));
+    overflow: hidden;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateX(100%);
+    pointer-events: none;
+  }
+
+  .js .ammis-mobile-menu__details[open] > .menu-drawer__submenu {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(100%);
+  }
+
+  .js .ammis-mobile-menu__details.menu-opening[open] > .menu-drawer__submenu {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  .ammis-mobile-menu__details > .menu-drawer__submenu .menu-drawer__inner-submenu {
+    box-sizing: border-box;
+    height: 100%;
+    max-height: 100%;
+    padding: 0 2rem 2rem;
+    background: rgb(var(--color-background));
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .menu-drawer__close-button.ammis-mobile-menu__back {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-height: 6rem;
+    width: 100%;
+    margin: 0;
+    padding: 1.5rem 0;
+    border: 0;
+    border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.12);
+    color: rgb(var(--color-foreground));
+    font-size: 1.55rem;
+    line-height: 1.3;
+    font-weight: 500;
+    text-align: left;
+  }
+
+  .menu-drawer__close-button.ammis-mobile-menu__back .icon-arrow {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0;
+    transform: rotate(-90deg);
+  }
+
+  .ammis-mobile-menu__view-all {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 1.6rem 0;
+    border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.12);
+    color: rgb(var(--color-foreground)) !important;
+    font-size: 1.3rem;
+    line-height: 1.35;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-decoration: underline;
+    text-underline-offset: 0.35rem;
+  }
+
+  .ammis-mobile-menu__submenu-list {
+    width: 100%;
+    padding-bottom: 2rem;
+  }
+
+  .ammis-mobile-menu__submenu-list > li {
+    width: 100%;
+  }
+
+  .ammis-mobile-menu__promo {
+    position: relative;
+    width: 100%;
+    min-height: 17rem;
+    margin: 2.4rem 0 0;
+    overflow: hidden;
+    border-radius: 0.4rem;
+    background: rgba(var(--color-foreground), 0.08);
+    isolation: isolate;
+  }
+
+  .ammis-mobile-menu__promo-link {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-height: 17rem;
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  /* A imagem ocupa toda a área do banner, com ou sem link configurado. */
+  .ammis-mobile-menu__promo-media {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 17rem;
+    overflow: hidden;
+  }
+
+  .ammis-mobile-menu__promo-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 17rem;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  /* Overlay em degradê: mais forte atrás do texto e mais leve sobre a imagem. */
+  .ammis-mobile-menu__promo::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.66) 0%,
+      rgba(0, 0, 0, 0.52) 38%,
+      rgba(0, 0, 0, 0.28) 68%,
+      rgba(0, 0, 0, 0.14) 100%
+    );
+  }
+
+  .ammis-mobile-menu__promo-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    box-sizing: border-box;
+    width: min(70%, 25rem);
+    min-height: 17rem;
+    padding: 2rem 1.8rem;
+    color: #ffffff;
+  }
+
+  .ammis-mobile-menu__promo-title {
+    margin: 0;
+    color: #ffffff;
+    font-family: var(--font-heading-family);
+    font-style: var(--font-heading-style);
+    font-size: 2.25rem;
+    line-height: 1.08;
+    font-weight: var(--font-heading-weight);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.18);
+  }
+
+  .ammis-mobile-menu__promo-text {
+    margin: 0.8rem 0 0;
+    max-width: 20rem;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 1.2rem;
+    line-height: 1.4;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.18);
+  }
+
+  .ammis-mobile-menu__promo-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-top: 1.5rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 0.1rem solid rgba(255, 255, 255, 0.9);
+    color: #ffffff;
+    font-size: 1.2rem;
+    line-height: 1.2;
+  }
+
+  .menu-drawer__utility-links {
+    flex: 0 0 auto;
+    margin: 2.4rem 2rem 0;
+    padding: 2rem 0 2.4rem;
+    border-top: 0.1rem solid rgba(var(--color-foreground), 0.12);
+  }
+
+  .menu-drawer__utility-links .menu-drawer__account {
+    box-sizing: border-box;
+    min-height: 5.2rem;
+    justify-content: center;
+    padding: 1.3rem 1.6rem;
+    border: 0.1rem solid rgb(var(--color-foreground));
+    background: transparent;
+    color: rgb(var(--color-foreground));
+    font-size: 1.2rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .menu-drawer__account-register {
+    margin-top: 1.25rem;
+  }
+
+  .menu-drawer__account-register .button--simple {
+    min-height: auto;
+    padding: 0.4rem 0;
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .menu-drawer__utility-links.menu-drawer__utility-links-customer {
+    margin-inline: 0;
+    padding: 2rem;
+  }
+
+  .menu-drawer__utility-links.menu-drawer__utility-links-customer .menu-drawer__utility-account {
+    padding: 0;
+  }
+
+  .menu-drawer__bottom {
+    flex: 0 0 auto;
+  }
+}
+
+@media screen and (max-width: 390px) {
+  .menu-drawer__navigation {
+    padding-right: 1.6rem;
+    padding-left: 1.6rem;
+  }
+
+  .menu-drawer__utility-links {
+    margin-right: 1.6rem;
+    margin-left: 1.6rem;
+  }
+
+
+  .ammis-mobile-menu__promo-content {
+    padding-left: 1.4rem;
+  }
+
+  .ammis-mobile-menu__promo-title {
+    font-size: 2rem;
+  }
 }
