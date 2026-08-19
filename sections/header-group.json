@@ -54,7 +54,7 @@
         "mobile_menu_promo_text": "Conheça a coleção",
         "mobile_menu_promo_label": "Explorar",
         "mobile_menu_promo_link": "",
-        "sticky_header_type": "always",
+        "sticky_header_type": "on-scroll-up",
         "header_animation_type": "fade",
         "enable_country_selector": false,
         "enable_language_selector": false,
