@@ -88,3 +88,14 @@
     order: 1;
   }
 }
+.product-measures {
+  font-size: 1.3rem;
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+}
+
+.product-measures br {
+  content: "";
+  display: block;
+  margin-bottom: 0.6rem;
+}
