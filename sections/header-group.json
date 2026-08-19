@@ -59,7 +59,7 @@
         "enable_country_selector": false,
         "enable_language_selector": false,
         "enable_search": true,
-        "scheme_position": "burger",
+        "scheme_position": "right",
         "dm_button_type": "icon",
         "search_button_type": "icon",
         "search_mobile_button_type": "icon",
