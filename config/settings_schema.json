@@ -523,8 +523,8 @@
 				"max": 150,
 				"step": 1,
 				"unit": "%",
-				"label": "t:settings_schema.typography.settings.subtitle_scale.label",
-				"default": 134
+				"label": "Tamanho da fonte do menu desktop",
+				"default": 145
 			},
 			{
 				"type": "range",

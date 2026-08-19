@@ -297,6 +297,14 @@ details[open] > .menu-drawer__submenu {
   color: rgba(var(--color-foreground), 0.75);
 }
 
+/* Floating widgets stay out of the way while the mobile drawer owns the screen. */
+@media screen and (max-width: 1099px) {
+  body:has(header-drawer details.menu-drawer-container.menu-opening) gty-whatsapp-chat-button,
+  body:has(header-drawer details.menu-drawer-container.menu-opening) .home-sticky-video {
+    display: none !important;
+  }
+}
+
 /* ==========================================================
    AMMIS — experiência do menu apenas no mobile
    Desktop/tablet >= 750px mantém as regras anteriores.
@@ -485,48 +493,75 @@ details[open] > .menu-drawer__submenu {
     display: flex;
     align-items: center;
     gap: 1rem;
-    min-height: 6rem;
+    min-height: 7.2rem;
     width: 100%;
     margin: 0;
-    padding: 1.5rem 0;
+    padding: 1rem 0.2rem 1.4rem;
     border: 0;
     border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.12);
     color: rgb(var(--color-foreground));
-    font-size: 1.55rem;
-    line-height: 1.3;
-    font-weight: 500;
+    font-family: var(--font-header-menu-family);
+    font-style: var(--font-header-menu-style);
+    font-size: clamp(1.85rem, 5vw, 2.15rem);
+    line-height: 1.15;
+    font-weight: 400;
+    letter-spacing: 0.015em;
     text-align: left;
   }
 
   .menu-drawer__close-button.ammis-mobile-menu__back .icon-arrow {
-    width: 1.5rem;
-    height: 1.5rem;
+    flex: 0 0 auto;
+    width: 1.3rem;
+    height: 1.3rem;
     margin: 0;
+    opacity: 0.58;
     transform: rotate(-90deg);
   }
 
+  .menu-drawer__close-button.ammis-mobile-menu__back span {
+    flex: 1 1 auto;
+  }
+
   .ammis-mobile-menu__view-all {
-    display: block;
+    display: flex;
+    align-items: center;
     width: 100%;
-    margin: 0;
-    padding: 1.6rem 0;
+    min-height: 4.8rem;
+    margin: 1.2rem 0 0;
+    padding: 1.1rem 0.2rem;
     border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.12);
-    color: rgb(var(--color-foreground)) !important;
-    font-size: 1.3rem;
+    color: rgba(var(--color-foreground), 0.68) !important;
+    font-family: var(--font-header-menu-family);
+    font-style: var(--font-header-menu-style);
+    font-size: 1.2rem;
     line-height: 1.35;
     font-weight: 500;
-    letter-spacing: 0.03em;
-    text-decoration: underline;
-    text-underline-offset: 0.35rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    text-transform: uppercase;
   }
 
   .ammis-mobile-menu__submenu-list {
     width: 100%;
-    padding-bottom: 2rem;
+    padding: 1.1rem 0 2rem;
+    border-top: 0.1rem solid rgba(var(--color-foreground), 0.08);
   }
 
   .ammis-mobile-menu__submenu-list > li {
     width: 100%;
+  }
+
+  .ammis-mobile-menu__submenu-list > li + li {
+    border-top: 0.1rem solid rgba(var(--color-foreground), 0.06);
+  }
+
+  .ammis-mobile-menu__submenu-list .ammis-mobile-menu__submenu-item {
+    min-height: 5.2rem;
+    padding: 1.2rem 3.6rem 1.2rem 0.2rem;
+    border-bottom: 0;
+    color: rgba(var(--color-foreground), 0.8);
+    font-size: 1.45rem;
+    line-height: 1.3;
   }
 
   .ammis-mobile-menu__promo {
@@ -635,33 +670,36 @@ details[open] > .menu-drawer__submenu {
 
   .menu-drawer__utility-links {
     flex: 0 0 auto;
-    margin: 2.4rem 2rem 0;
-    padding: 2rem 0 2.4rem;
+    margin: 1.2rem 2rem 0;
+    padding: 1.2rem 0 1.4rem;
     border-top: 0.1rem solid rgba(var(--color-foreground), 0.12);
   }
 
   .menu-drawer__utility-links .menu-drawer__account {
     box-sizing: border-box;
-    min-height: 5.2rem;
+    min-height: 4.4rem;
     justify-content: center;
-    padding: 1.3rem 1.6rem;
+    padding: 1rem 1.4rem;
     border: 0.1rem solid rgb(var(--color-foreground));
     background: transparent;
     color: rgb(var(--color-foreground));
-    font-size: 1.2rem;
-    letter-spacing: 0.12em;
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 
   .menu-drawer__account-register {
-    margin-top: 1.25rem;
+    margin-top: 0.35rem;
   }
 
   .menu-drawer__account-register .button--simple {
-    min-height: auto;
-    padding: 0.4rem 0;
-    font-size: 1.1rem;
-    letter-spacing: 0.1em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 4.4rem;
+    padding: 0.7rem 1rem;
+    font-size: 1.05rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
