@@ -3450,19 +3450,69 @@ body.body--hidden {
   align-items: center;
   gap: 1rem;
 }
-@media screen and (min-width: 1100px) {
-  .header--left-logo {
-    display: grid;
-    grid-template-columns: auto auto;
-    gap: 2rem;
-    align-items: center;
-  }
+.header--left-logo .header-left-logo__brand {
+  display: flex;
+  align-items: center;
+  gap: 2.4rem;
 }
 .header--left-logo .menu_left_block {
   display: flex;
 }
 .header--left-logo .header__inline-menu {
   margin-left: -1.2rem;
+}
+
+@media screen and (max-width: 1099px) {
+  .header--left-logo {
+    position: relative;
+  }
+
+  .header--left-logo .header__heading,
+  .header--left-logo .header__heading-link {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  .header--left-logo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 2.4rem;
+    align-items: center;
+  }
+
+  .header--left-logo .menu_left_block {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-row: 1;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .header--left-logo .header-left-logo__brand {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .header--left-logo .header__inline-menu {
+    grid-column: 2;
+    justify-self: center;
+    max-width: 100%;
+    min-width: 0;
+    margin-left: 0;
+  }
+
+  .header--left-logo > .header__column {
+    z-index: 1;
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+  }
 }
 .header--left-logo .header__contact {
   padding: 0;
@@ -4557,13 +4607,15 @@ details[open] > .header__icon--menu .icon-hamburger {
   display: none;
 }
 
-.header__inline-menu .header__menu-item {
-  font-family: var(--font-header-menu-family);
-  font-style: var(--font-header-menu-style);
-  font-weight: var(--font-header-menu-weight);
-  text-transform: var(--font-header-menu-text-transform);
-  font-size: calc(var(--font-header-menu-scale) * 0.9rem);
-  letter-spacing: calc(var(--font-header-menu-letter-spacing) * 0.1);
+@media screen and (min-width: 1100px) {
+  .header__inline-menu > .list-menu--inline > .list-menu-item > .header__menu-item {
+    font-family: var(--font-header-menu-family);
+    font-style: var(--font-header-menu-style);
+    font-weight: var(--font-header-menu-weight);
+    text-transform: var(--font-header-menu-text-transform);
+    font-size: calc(var(--font-header-menu-scale) * 0.9rem);
+    letter-spacing: calc(var(--font-header-menu-letter-spacing) * 0.1);
+  }
 }
 
 .header--center .header__heading-link {

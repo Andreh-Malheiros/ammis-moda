@@ -13,9 +13,10 @@
 {%- endif -%}
 
 <div class='menu_left_block'>
-	{% render 'desktop-burger-menu' %}
-
-	{% render 'header-logo', tag: 'h1' %}
+	<div class='header-left-logo__brand'>
+		{% render 'desktop-burger-menu' %}
+		{% render 'header-logo', tag: 'h1' %}
+	</div>
 
 	<nav class='header__inline-menu'>
 		{%- if section.settings.menu != blank -%}
