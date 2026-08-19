@@ -520,7 +520,7 @@
 				"type": "range",
 				"id": "header_menu_scale",
 				"min": 100,
-				"max": 150,
+				"max": 200,
 				"step": 1,
 				"unit": "%",
 				"label": "Tamanho da fonte do menu desktop",
