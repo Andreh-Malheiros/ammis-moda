@@ -9,6 +9,7 @@
  */
 {
   "current": {
+    "dark_mode_toggle": false,
     "type_header_font": "poppins_n3",
     "heading_h1_scale": 110,
     "type_header_letter_spacing": 0,
@@ -25,7 +26,7 @@
     "button_scale": 110,
     "type_header_menu_font": "oxygen_n4",
     "header_menu_scale": 200,
-    "type_header_menu_letter_spacing": 0.4,
+    "type_header_menu_letter_spacing": 1,
     "header_menu_text_transform": "uppercase",
     "type_footer_menu_font": "oxygen_n4",
     "header_footer_menu_scale": 146,
