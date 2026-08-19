@@ -1,0 +1,350 @@
+<section id="fortalezas-ammis" class="wholesale-strengths">
+  <div class="wholesale-strengths__inner">
+    <header class="wholesale-strengths__header">
+      {% if section.settings.eyebrow != blank %}
+        <p class="wholesale-strengths__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {% endif %}
+      {% if section.settings.heading != blank %}
+        <h2 class="wholesale-strengths__heading">{{ section.settings.heading | escape }}</h2>
+      {% endif %}
+      {% if section.settings.text != blank %}
+        <p class="wholesale-strengths__text">{{ section.settings.text | escape }}</p>
+      {% endif %}
+    </header>
+
+    {% assign strength_blocks = section.blocks | where: 'type', 'strength' %}
+    {% if strength_blocks.size > 0 %}
+      <div class="wholesale-strengths__grid">
+        {% for block in strength_blocks %}
+          <article class="wholesale-strengths__item" {{ block.shopify_attributes }}>
+            <span class="wholesale-strengths__index" aria-hidden="true">0{{ forloop.index }}</span>
+            {% if block.settings.heading != blank %}
+              <h3>{{ block.settings.heading | escape }}</h3>
+            {% endif %}
+            {% if block.settings.text != blank %}
+              <p>{{ block.settings.text | escape }}</p>
+            {% endif %}
+          </article>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="wholesale-strengths__values">
+      <div class="wholesale-strengths__values-intro">
+        {% if section.settings.values_eyebrow != blank %}
+          <p class="wholesale-strengths__eyebrow">{{ section.settings.values_eyebrow | escape }}</p>
+        {% endif %}
+        {% if section.settings.values_heading != blank %}
+          <h3>{{ section.settings.values_heading | escape }}</h3>
+        {% endif %}
+        {% if section.settings.values_text != blank %}
+          <p>{{ section.settings.values_text | escape }}</p>
+        {% endif %}
+      </div>
+
+      {% assign value_blocks = section.blocks | where: 'type', 'value' %}
+      {% if value_blocks.size > 0 %}
+        <ul class="wholesale-strengths__values-list" role="list">
+          {% for block in value_blocks %}
+            <li {{ block.shopify_attributes }}>
+              <span aria-hidden="true">—</span>
+              {{ block.settings.heading | escape }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  #shopify-section-{{ section.id }} .wholesale-strengths {
+    background: rgb(var(--color-background-secondary));
+    color: rgb(var(--color-foreground));
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__inner {
+    width: min(100% - 4rem, 136rem);
+    margin: 0 auto;
+    padding: clamp(7rem, 11vw, 14rem) 0;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__header {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 4rem;
+    align-items: end;
+    margin-bottom: clamp(4rem, 7vw, 8rem);
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__eyebrow {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: rgba(var(--color-foreground), 0.62);
+    font-family: var(--font-body-family);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__heading {
+    max-width: 56rem;
+    margin: 0;
+    color: rgb(var(--color-foreground-title));
+    font-family: var(--font-heading-family);
+    font-size: clamp(3.2rem, 4.2vw, 5.8rem);
+    font-weight: var(--font-heading-weight);
+    letter-spacing: var(--font-heading-letter-spacing);
+    line-height: 1.08;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__text {
+    max-width: 54rem;
+    margin: 0;
+    color: rgba(var(--color-foreground), 0.72);
+    font-family: var(--font-body-family);
+    font-size: 1.7rem;
+    line-height: 1.6;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid rgba(var(--color-foreground), 0.16);
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__item {
+    min-height: 22rem;
+    padding: 3.2rem 2.8rem 3.4rem 0;
+    border-bottom: 1px solid rgba(var(--color-foreground), 0.16);
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__item:not(:nth-child(3n + 1)) {
+    padding-left: 2.8rem;
+    border-left: 1px solid rgba(var(--color-foreground), 0.16);
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__index {
+    display: block;
+    margin-bottom: 3.2rem;
+    color: rgba(var(--color-foreground), 0.46);
+    font-family: var(--font-body-family);
+    font-size: 1.2rem;
+    letter-spacing: 0.12em;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__item h3 {
+    margin: 0;
+    color: rgb(var(--color-foreground-title));
+    font-family: var(--font-heading-family);
+    font-size: 2.3rem;
+    font-weight: var(--font-heading-weight);
+    line-height: 1.2;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__item p {
+    max-width: 32rem;
+    margin: 1.3rem 0 0;
+    color: rgba(var(--color-foreground), 0.68);
+    font-family: var(--font-body-family);
+    font-size: 1.5rem;
+    line-height: 1.6;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__values {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 5rem;
+    margin-top: clamp(5rem, 8vw, 9rem);
+    padding-top: 3.5rem;
+    border-top: 1px solid rgba(var(--color-foreground), 0.2);
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__values-intro h3 {
+    max-width: 46rem;
+    margin: 1.4rem 0 0;
+    color: rgb(var(--color-foreground-title));
+    font-family: var(--font-heading-family);
+    font-size: clamp(2.6rem, 3.2vw, 4rem);
+    font-weight: var(--font-heading-weight);
+    line-height: 1.15;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__values-intro > p:last-child {
+    max-width: 46rem;
+    margin: 1.5rem 0 0;
+    color: rgba(var(--color-foreground), 0.68);
+    font-family: var(--font-body-family);
+    font-size: 1.5rem;
+    line-height: 1.6;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__values-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.4rem 3rem;
+    align-content: start;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__values-list li {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    color: rgb(var(--color-foreground));
+    font-family: var(--font-body-family);
+    font-size: 1.6rem;
+    line-height: 1.45;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-strengths__values-list li span {
+    color: rgba(var(--color-foreground), 0.46);
+  }
+
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .wholesale-strengths__header,
+    #shopify-section-{{ section.id }} .wholesale-strengths__values {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-strengths__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-strengths__item:not(:nth-child(3n + 1)) {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-strengths__item:not(:nth-child(2n + 1)) {
+      padding-left: 2.8rem;
+      border-left: 1px solid rgba(var(--color-foreground), 0.16);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .wholesale-strengths__inner {
+      width: min(100% - 3.2rem, 60rem);
+      padding: 6rem 0;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-strengths__grid,
+    #shopify-section-{{ section.id }} .wholesale-strengths__values-list {
+      grid-template-columns: 1fr;
+    }
+
+    #shopify-section-{{ section.id }} .wholesale-strengths__item,
+    #shopify-section-{{ section.id }} .wholesale-strengths__item:not(:nth-child(3n + 1)),
+    #shopify-section-{{ section.id }} .wholesale-strengths__item:not(:nth-child(2n + 1)) {
+      min-height: auto;
+      padding: 2.6rem 0;
+      border-left: 0;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Fortalezas AMMIS",
+  "tag": "section",
+  "class": "wholesale-strengths-section",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Identificação",
+      "default": "Fortalezas AMMIS"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "default": "Códigos autorais, feitos para permanecer"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Introdução",
+      "default": "Uma combinação de design, matéria-prima e trabalho especializado que dá consistência ao produto e à parceria."
+    },
+    {
+      "type": "text",
+      "id": "values_eyebrow",
+      "label": "Identificação dos valores",
+      "default": "Valores da parceria"
+    },
+    {
+      "type": "text",
+      "id": "values_heading",
+      "label": "Título dos valores",
+      "default": "Relações consistentes começam nos detalhes"
+    },
+    {
+      "type": "textarea",
+      "id": "values_text",
+      "label": "Texto dos valores",
+      "default": "Atenção às necessidades de cada parceiro, qualidade em cada etapa e alinhamento com a identidade da marca."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "strength",
+      "name": "Fortaleza",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Título",
+          "default": "Exclusividade"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Texto",
+          "default": "Produtos limitados e produzidos em pequena escala."
+        }
+      ]
+    },
+    {
+      "type": "value",
+      "name": "Valor da parceria",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Valor",
+          "default": "Profissionais especializados"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fortalezas AMMIS",
+      "blocks": [
+        { "type": "strength" },
+        { "type": "strength" },
+        { "type": "strength" },
+        { "type": "strength" },
+        { "type": "strength" },
+        { "type": "strength" },
+        { "type": "value" },
+        { "type": "value" },
+        { "type": "value" },
+        { "type": "value" }
+      ]
+    }
+  ]
+}
+{% endschema %}

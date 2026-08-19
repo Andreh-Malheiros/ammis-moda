@@ -469,8 +469,9 @@
                           <span class="subtitle">{{ block.settings.heading_2 }}</span>
                           {% render 'icon-caret' %}
                         </summary>
-                        <div class="accordion-content rte">
-                          {{ product.metafields.custom.medidas }}
+
+                        <div class="accordion-content rte product-measures">
+                          {{ product.metafields.custom.medidas.value | newline_to_br }}
                         </div>
                       </details>
                     {%- endif -%}
@@ -820,7 +821,11 @@
                     class="stock-badge {%- if product.selected_or_first_available_variant.available %} stock-badge--in-stock{%- else %} stock-badge--out-of-stock{%- endif %}"
                     data-stock-badge="{{ section.id }}"
                   >
-                    {%- if product.selected_or_first_available_variant.available -%}Em estoque{%- else -%}Esgotado{%- endif -%}
+                    {%- if product.selected_or_first_available_variant.available -%}
+                      Em estoque
+                    {%- else -%}
+                      Esgotado
+                    {%- endif -%}
                   </span>
                   </div>
                   <script src="{{ 'ammis-smart-variant-select.js' | asset_url }}" defer></script>

@@ -28,9 +28,168 @@
         "primary_button_style": "primary",
         "secondary_button_label": "Conhecer a parceria",
         "secondary_button_link": "#oportunidade-revenda",
-        "secondary_button_style": "tertiary",
+        "secondary_button_style": "simple",
+        "tertiary_button_label": "Falar com o comercial",
+        "tertiary_button_link": "https://wa.me/5572227117?text=Ol%C3%A1+Ammis%21+Voc%C3%AA+pode+me+ajudar%3F",
+        "tertiary_button_style": "tertiary",
         "margin_top": "no-indent",
         "margin_bottom": "no-indent"
+      }
+    },
+    "section_revendedor_partnership_7TcdpT": {
+      "type": "section-revendedor-partnership",
+      "blocks": {
+        "calendar_ntC7LW": {
+          "type": "calendar",
+          "settings": {
+            "eyebrow": "MODELO COMERCIAL",
+            "heading": "Pedidos planejados para acompanhar cada estação",
+            "text": "<p>A AMMIS trabalha exclusivamente por meio de pedidos e apresenta duas coleções principais por ano, com faturamento parcial ao longo das estações.</p>",
+            "summer_name": "Verão",
+            "summer_sales": "Abril",
+            "summer_delivery": "Agosto, setembro, outubro e novembro",
+            "winter_name": "Inverno",
+            "winter_sales": "Outubro",
+            "winter_delivery": "Fevereiro, março, abril e maio",
+            "note": "<p>Entre esses dois momentos, a AMMIS acompanha os movimentos do mercado e apresenta entregas complementares, mantendo o mix do lojista atualizado durante toda a jornada da cliente.</p>"
+          }
+        },
+        "content_LkJwxw": {
+          "type": "content",
+          "settings": {
+            "number": "01",
+            "heading": "Curadoria comercial do pedido",
+            "text": "<p>No momento da venda, o lojista recebe orientação personalizada do time comercial para construir um pedido estratégico e adequado ao perfil de sua loja.</p><ul><li>Indicadores e movimentos de mercado;</li><li>Best-sellers e produtos mais pedidos da AMMIS;</li><li>Mix equilibrado entre categorias e faixas de preço;</li><li>Perfil da loja e comportamento de suas clientes.</li></ul>"
+          }
+        },
+        "flexibility_rBTf3g": {
+          "type": "flexibility",
+          "settings": {
+            "number": "02",
+            "heading": "Produção própria, reposição e personalização",
+            "text": "<p>A produção é realizada internamente, em fábrica própria, preservando o padrão de qualidade AMMIS e garantindo suporte próximo ao lojista e ao cliente final.</p><p><strong>Flexibilidade da parceria:</strong> Embora a marca trabalhe prioritariamente por pedidos, oferece pequenas reposições mediante disponibilidade de estoque e peças sob encomenda para clientes finais.</p>"
+          }
+        },
+        "features_ktrEzh": {
+          "type": "features",
+          "settings": {
+            "eyebrow": "CÓDIGOS DA MARCA",
+            "heading": "Fortalezas da AMMIS",
+            "feature_1_title": "Exclusividade",
+            "feature_1_text": "Produtos limitados e produzidos em pequena escala.",
+            "feature_2_title": "Alfaiataria clássica",
+            "feature_2_text": "Peças confeccionadas pelas mãos de alfaiates especializados.",
+            "feature_3_title": "Couro de cabra",
+            "feature_3_text": "Matéria-prima de alta qualidade e acabamento sofisticado.",
+            "feature_4_title": "Design autoral",
+            "feature_4_text": "Criações que traduzem os códigos e a identidade AMMIS.",
+            "feature_5_title": "Matérias-primas nobres",
+            "feature_5_text": "Linho puro e couro de cabra selecionado.",
+            "feature_6_title": "Fatto a mano",
+            "feature_6_text": "Bordados, crochê, tramas em couro e patchwork."
+          }
+        },
+        "values_RVJAUT": {
+          "type": "values",
+          "settings": {
+            "eyebrow": "COMPROMISSOS",
+            "heading": "Valores inegociáveis",
+            "value_1": "Profissionais especializados para cada tipo de desenvolvimento.",
+            "value_2": "Personalização e atenção às necessidades do parceiro.",
+            "value_3": "Qualidade dos tecidos e excelência dos acabamentos.",
+            "value_4": "Relações consistentes com parceiros alinhados à marca.",
+            "value_5": "",
+            "value_6": ""
+          }
+        }
+      },
+      "block_order": [
+        "calendar_ntC7LW",
+        "content_LkJwxw",
+        "flexibility_rBTf3g",
+        "features_ktrEzh",
+        "values_RVJAUT"
+      ],
+      "name": "Revendedor - parceria",
+      "settings": {
+        "enable_section": true,
+        "anchor_id": "oportunidade-revenda",
+        "color_scheme": "",
+        "alignment": "left",
+        "eyebrow": "A PARCERIA AMMIS",
+        "heading": "Uma parceria construída com intenção",
+        "heading_size": "h3",
+        "intro_text": "<p>Conheça o modelo comercial, o cuidado de produção e os valores que orientam cada parceria AMMIS.</p>",
+        "card_radius": "1rem",
+        "margin_top": "s",
+        "margin_bottom": "s"
+      }
+    },
+    "section_revendedor_growth_UAYrdH": {
+      "type": "section-revendedor-growth",
+      "blocks": {
+        "opportunities_tbxrMT": {
+          "type": "opportunities",
+          "settings": {
+            "eyebrow": "POSSIBILIDADES COMERCIAIS",
+            "heading": "Uma parceria que pode evoluir",
+            "item_1_title": "Exclusividade",
+            "item_1_text": "Exclusividade de praça e/ou de produto, conforme estratégia e potencial comercial.",
+            "item_2_title": "Eventos personalizados",
+            "item_2_text": "Criação e realização de eventos com participação ativa da AMMIS.",
+            "item_3_title": "Collabs",
+            "item_3_text": "Desenvolvimento de produtos exclusivos em parceria com o lojista.",
+            "item_4_title": "Suporte 360°",
+            "item_4_text": "Apoio em marketing, visual merchandising, comercial e planejamento."
+          }
+        },
+        "order_formats_RADWAV": {
+          "type": "order_formats",
+          "settings": {
+            "eyebrow": "FORMAS DE PEDIDO",
+            "heading": "Faça seu pedido do seu jeito",
+            "text": "<p>O lojista escolhe a forma mais conveniente para conhecer a coleção e construir o pedido, sempre com acompanhamento do time comercial.</p>",
+            "format_1_title": "Catálogo",
+            "format_1_text": "Seleção orientada a partir do material comercial.",
+            "format_2_title": "Site",
+            "format_2_text": "Consulta digital das peças e informações disponíveis.",
+            "format_3_title": "Fotos e vídeos",
+            "format_3_text": "Apresentação remota e detalhada da coleção.",
+            "format_4_title": "Presencialmente",
+            "format_4_text": "Atendimento personalizado para construção do mix."
+          }
+        },
+        "gallery_w8NKcr": {
+          "type": "gallery",
+          "settings": {
+            "eyebrow": "UNIVERSO AMMIS",
+            "heading": "Coleções que podem ganhar novos caminhos",
+            "label_1": "Amalfi",
+            "image_1_alt": "",
+            "label_2": "Estonada Verde",
+            "image_2_alt": "",
+            "label_3": "Italy",
+            "image_3_alt": ""
+          }
+        }
+      },
+      "block_order": [
+        "opportunities_tbxrMT",
+        "order_formats_RADWAV",
+        "gallery_w8NKcr"
+      ],
+      "name": "Revendedor - evolução",
+      "settings": {
+        "enable_section": true,
+        "anchor_id": "evolucao-parceria",
+        "color_scheme": "",
+        "eyebrow": "UMA PARCERIA QUE PODE EVOLUIR",
+        "heading": "Possibilidades comerciais para construir o próximo passo",
+        "heading_size": "h1",
+        "intro_text": "<p>A parceria pode começar de diferentes formas e evoluir conforme o potencial da loja, o perfil das clientes e os objetivos comerciais.</p>",
+        "card_radius": "2rem",
+        "margin_top": "s",
+        "margin_bottom": "s"
       }
     },
     "opportunity": {
@@ -71,6 +230,7 @@
         "feature_3",
         "feature_YUcmNh"
       ],
+      "disabled": true,
       "settings": {
         "enable_section": true,
         "anchor_id": "oportunidade-revenda",
@@ -125,7 +285,7 @@
             "icon_text": "01",
             "image_alt": "",
             "heading": "UMA MARCA COM IDENTIDADE CLARA",
-            "text": "<p>Cada coleção é desenvolvida a partir de um conceito consistente, criando um universo visual coeso que fortalece a exposição da loja e facilita<br/>uma curadoria alinhada ao cliente contemporâneo.</p>"
+            "text": "<p>Cada coleção é desenvolvida a partir de um conceito consistente, criando um universo visual coeso que fortalece a exposição da loja e facilita uma curadoria alinhada ao cliente contemporâneo.</p>"
           }
         },
         "benefit_2": {
@@ -135,7 +295,7 @@
             "icon_text": "02",
             "image_alt": "",
             "heading": "CURADORIA QUE AGREGA VALOR",
-            "text": "<p>Mais do que produtos, oferecemos coleções capazes de enriquecer o mix da loja, fortalecer seu posicionamento e criar uma experiência de<br/>compra sofisticada e consistente.</p>"
+            "text": "<p>Mais do que produtos, oferecemos coleções capazes de enriquecer o mix da loja, fortalecer seu posicionamento e criar uma experiência de compra sofisticada e consistente.</p>"
           }
         },
         "benefit_3": {
@@ -145,7 +305,7 @@
             "icon_text": "03",
             "image_alt": "",
             "heading": "QUALIDADE EM CADA DETALHE",
-            "text": "<p>Materiais selecionados, modelagens refinadas e acabamento cuidadoso traduzem o compromisso da AMMIS com produtos que unem design,<br/>durabilidade e valor percebido.</p>"
+            "text": "<p>Materiais selecionados, modelagens refinadas e acabamento cuidadoso traduzem o compromisso da AMMIS com produtos que unem design, durabilidade e valor percebido.</p>"
           }
         },
         "benefit_4": {
@@ -155,7 +315,7 @@
             "icon_text": "04",
             "image_alt": "",
             "heading": "RELACIONAMENTO PRÓXIMO",
-            "text": "<p>Nossa equipe comercial acompanha cada parceiro de forma personalizada, oferecendo suporte contínuo, orientação comercial e um<br/>atendimento próximo em todas as etapas da parceria.</p>"
+            "text": "<p>Nossa equipe comercial acompanha cada parceiro de forma personalizada, oferecendo suporte contínuo, orientação comercial e um atendimento próximo em todas as etapas da parceria.</p>"
           }
         },
         "benefit_5": {
@@ -165,7 +325,7 @@
             "icon_text": "05",
             "image_alt": "",
             "heading": "PARCERIAS CONSTRUÍDAS COM CRITÉRIO",
-            "text": "<p>Cada novo parceiro é selecionado individualmente, considerando o perfil da operação, o posicionamento da loja e sua afinidade com o<br/>universo da AMMIS. Acreditamos que as melhores parcerias nascem quando existe propósito em comum.</p>"
+            "text": "<p>Cada novo parceiro é selecionado individualmente, considerando o perfil da operação, o posicionamento da loja e sua afinidade com o universo da AMMIS. Acreditamos que as melhores parcerias nascem quando existe propósito em comum.</p>"
           }
         },
         "benefit_6": {
@@ -175,7 +335,7 @@
             "icon_text": "06",
             "image_alt": "",
             "heading": "COLEÇÕES PENSADAS PARA VENDER",
-            "text": "<p>Design autoral, equilíbrio entre peças comerciais e itens de desejo, além de uma construção de mix que amplia as possibilidades de venda e<br/>composição dentro da loja.</p>"
+            "text": "<p>Design autoral, equilíbrio entre peças comerciais e itens de desejo, além de uma construção de mix que amplia as possibilidades de venda e composição dentro da loja.</p>"
           }
         }
       },
@@ -187,6 +347,7 @@
         "benefit_5",
         "benefit_6"
       ],
+      "disabled": true,
       "settings": {
         "enable_section": true,
         "color_scheme": "background-1",
@@ -323,6 +484,7 @@
         "step_3",
         "step_4"
       ],
+      "disabled": true,
       "settings": {
         "enable_section": true,
         "color_scheme": "background-1",
@@ -358,6 +520,7 @@
         "image_bxJpAC",
         "feature_F3kpi7"
       ],
+      "disabled": true,
       "custom_css": [],
       "settings": {
         "enable_section": true,
@@ -405,6 +568,7 @@
     },
     "form_intro": {
       "type": "revendedor-form",
+      "disabled": true,
       "settings": {
         "enable_section": true,
         "color_scheme": "background-1",
@@ -413,6 +577,7 @@
         "heading": "Apresente sua loja a AMMIS",
         "heading_size": "h2",
         "intro_text": "<p>Preencha seus dados empresariais e comerciais para que nossa equipe possa conhecer sua operacao e analisar a possibilidade de parceria.</p>",
+        "anchor_id": "cadastro-revendedor",
         "company_group_title": "Dados da empresa",
         "responsible_group_title": "Responsavel pelo cadastro",
         "address_group_title": "Endereco comercial",
@@ -439,6 +604,7 @@
     },
     "commercial_contact": {
       "type": "revendedor-content",
+      "disabled": true,
       "settings": {
         "enable_section": true,
         "anchor_id": "",
@@ -534,6 +700,8 @@
   },
   "order": [
     "hero",
+    "section_revendedor_partnership_7TcdpT",
+    "section_revendedor_growth_UAYrdH",
     "opportunity",
     "benefits",
     "brand_universe",

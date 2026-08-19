@@ -33,10 +33,10 @@
     "type_popups_text_font": "oxygen_n4",
     "card_color_scheme": "background-1",
     "badges_background": false,
-    "badge_sale_show": false,
+    "badge_sale_show": true,
     "badge_sale_type": "percentage",
     "badge_soldout_text_color": "#000000",
-    "badge_custom_show": true,
+    "badge_custom_show": false,
     "on_hover": "hover",
     "type_color_swatch": "standart",
     "swatch_type": "variant_image",
@@ -57,6 +57,7 @@
     "empty_cart_heading": "Sugestões para você",
     "notification": false,
     "show_shipping": true,
+    "min_installment_value": 250,
     "min_spend": "2000",
     "account_heading": "Bem-Vindo à sua conta",
     "account_description": "Gerencie seu perfil, acompanhe seus pedidos e aproveite uma jornada de compras tranquila conosco.",
@@ -142,38 +143,14 @@
         "disabled": false,
         "settings": {}
       },
-      "4293466245358296089": {
-        "type": "shopify://apps/smartsize/blocks/app-embed/465a43e0-6a1a-4d30-b82e-fe6118568705",
-        "disabled": false,
-        "settings": {
-          "button_horizontal_aligment": "center",
-          "button_horizontal_aligment_mobile": "center",
-          "smartsize_button_label": "MEDIDAS",
-          "smartsize_conversion_label_CM": "CM",
-          "smartsize_conversion_label_IN": "INCHES",
-          "hide_default_button": false
-        }
-      },
       "12948015482042402483": {
         "type": "shopify://apps/mercado-pago-antifraud-plus/blocks/embed-block/b19ea721-f94a-4308-bee5-0057c043bac5",
         "disabled": false,
         "settings": {}
       },
-      "9474353549209701101": {
-        "type": "shopify://apps/smart-size-recommender/blocks/smartsize-recommender-embed/b756010c-643b-4084-bf2f-97a8df367547",
-        "disabled": false,
-        "settings": {
-          "smartrecom_accent_color": "#000000",
-          "default_unit": "store_locale",
-          "show_support_link": false,
-          "smartrecom_support_link__label": "Ficou em dúvida? Fale com a gente — vamos te ajudar a escolher o tamanho certo.",
-          "smartrecom_support_link_url": "mailto:support@your-store.com",
-          "smartrecom_recommendation_text": "Seu tamanho é [[recommendedSize]]"
-        }
-      },
       "10736359279748399689": {
         "type": "shopify://apps/smartsize/blocks/smartsize-recommender-embed/465a43e0-6a1a-4d30-b82e-fe6118568705",
-        "disabled": false,
+        "disabled": true,
         "settings": {
           "smartrecom_button_label": "FIND MY SIZE",
           "smartrecom_recommendation_text": "Your size is [[recommendedSize]]",
@@ -188,26 +165,45 @@
           "button_margin_left_px": 0
         }
       },
-      "5958882876626866175": {
-        "type": "shopify://apps/smartsize/blocks/smartsize-sizechart-embed/465a43e0-6a1a-4d30-b82e-fe6118568705",
+      "4293466245358296089": {
+        "type": "shopify://apps/smartsize/blocks/app-embed/465a43e0-6a1a-4d30-b82e-fe6118568705",
         "disabled": false,
         "settings": {
-          "button_label": "SIZE GUIDE",
-          "button_style": "link",
-          "button_icon": "sizenone",
+          "button_horizontal_aligment": "center",
+          "button_horizontal_aligment_mobile": "center",
+          "smartsize_button_label": "MEDIDAS",
+          "smartsize_conversion_label_CM": "CM",
+          "smartsize_conversion_label_IN": "INCHES",
+          "hide_default_button": false
+        }
+      },
+      "9474353549209701101": {
+        "type": "shopify://apps/smart-size-recommender/blocks/smartsize-recommender-embed/b756010c-643b-4084-bf2f-97a8df367547",
+        "disabled": true,
+        "settings": {
+          "smartrecom_accent_color": "#000000",
+          "default_unit": "store_locale",
+          "show_support_link": false,
+          "smartrecom_support_link__label": "Ficou em dúvida? Fale com a gente — vamos te ajudar a escolher o tamanho certo.",
+          "smartrecom_support_link_url": "mailto:support@your-store.com",
+          "smartrecom_recommendation_text": "Seu tamanho é [[recommendedSize]]"
+        }
+      },
+      "5958882876626866175": {
+        "type": "shopify://apps/smartsize/blocks/smartsize-sizechart-embed/465a43e0-6a1a-4d30-b82e-fe6118568705",
+        "disabled": true,
+        "settings": {
+          "button_label": "TABELA DE MEDIDAS",
+          "button_style": "button",
+          "button_icon": "ruler",
           "button_color": "#000000",
-          "button_background_color": "",
-          "button_corner_radius_px": 5,
+          "button_background_color": "#E4E3E3",
+          "button_corner_radius_px": 13,
           "button_margin_top_px": 0,
           "button_margin_right_px": 0,
           "button_margin_bottom_px": 0,
           "button_margin_left_px": 0
         }
-      },
-      "14826766009936288847": {
-        "type": "shopify://apps/discounty/blocks/sdk/d65eb522-0d94-499f-9831-d4b3301f5340",
-        "disabled": false,
-        "settings": {}
       }
     },
     "color_schemes": {

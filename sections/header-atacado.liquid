@@ -98,7 +98,8 @@
 			{% endif %}
 </header>
 
-        {% comment %} ==========================================
+{% if customer or request.design_mode %}
+{% comment %} ==========================================
            BUSCA B2B INTEGRADA NA LINHA (ÍCONE + OVERLAY)
            ========================================== {% endcomment %}
         
@@ -281,8 +282,9 @@
   }, true);
 });
 </script>
+{% endif %}
 
-	</{% if section.settings.enable_sticky_header %}sticky-header{% else %}div{% endif %}>
+		</{% if section.settings.enable_sticky_header %}sticky-header{% else %}div{% endif %}>
 {% endunless %}
 
 {% javascript %}

@@ -1,117 +1,123 @@
-{% layout none %}
+  {% layout none %}
 
-{% paginate search.results by 50 %}
-  {% if search.results_count == 0 %}
+  {% unless customer or request.design_mode %}
     <p style="grid-column: 1/-1; text-align: center; padding: 5rem; font-size: 1.6rem;">
-      Nenhum produto encontrado no atacado para sua busca.
+      A busca do catálogo B2B está disponível somente para parceiros autenticados.
     </p>
   {% else %}
-    {% for item in search.results %}
-      {% comment %} Filtro garantido para processar apenas produtos {% endcomment %}
-      {% if item.object_type == 'product' %}
-        {% assign product = item %}
-        
-        <div class="b2b-card" style="border: 1px solid var(--color-border); padding: 1.5rem; border-radius: 8px; display: flex; flex-direction: column; background: var(--color-background);">
+  {% paginate search.results by 50 %}
+    {% if search.results_count == 0 %}
+      <p style="grid-column: 1/-1; text-align: center; padding: 5rem; font-size: 1.6rem;">
+        Nenhum produto encontrado no atacado para sua busca.
+      </p>
+    {% else %}
+      {% for item in search.results %}
+        {% comment %} Filtro garantido para processar apenas produtos {% endcomment %}
+        {% if item.object_type == 'product' %}
+          {% assign product = item %}
           
-          {% comment %} Área de Imagem com Carrossel e Setas [cite: 80] {% endcomment %}
-          <div class="b2b-image-container" style="position: relative; width: 100%; aspect-ratio: 3/4; overflow: hidden; border-radius: 4px; margin-bottom: 1.5rem; background: #f4f4f4;">
-            <div class="b2b-carousel" style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; height: 100%;">
-              {% for image in product.images %}
-                <div style="flex: 0 0 100%; scroll-snap-align: start; height: 100%;">
-                  <a href="{{ product.url }}" style="display: block; width: 100%; height: 100%;">
-                    <img src="{{ image | image_url: width: 800 }}" alt="{{ product.title | escape }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
-                  </a>
+          <div class="b2b-card" style="border: 1px solid var(--color-border); padding: 1.5rem; border-radius: 8px; display: flex; flex-direction: column; background: var(--color-background);">
+            
+            {% comment %} Área de Imagem com Carrossel e Setas [cite: 80] {% endcomment %}
+            <div class="b2b-image-container" style="position: relative; width: 100%; aspect-ratio: 3/4; overflow: hidden; border-radius: 4px; margin-bottom: 1.5rem; background: #f4f4f4;">
+              <div class="b2b-carousel" style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; height: 100%;">
+                {% for image in product.images %}
+                  <div style="flex: 0 0 100%; scroll-snap-align: start; height: 100%;">
+                    <a href="{{ product.url }}" style="display: block; width: 100%; height: 100%;">
+                      <img src="{{ image | image_url: width: 800 }}" alt="{{ product.title | escape }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
+                    </a>
+                  </div>
+                {% endfor %}
+              </div>
+
+              {% if product.images.size > 1 %}
+                <button type="button" class="b2b-nav-arrow prev" onclick="const carrossel = this.parentElement.querySelector('.b2b-carousel'); carrossel.scrollBy({left: -carrossel.offsetWidth, behavior: 'smooth'});">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <button type="button" class="b2b-nav-arrow next" onclick="const carrossel = this.parentElement.querySelector('.b2b-carousel'); carrossel.scrollBy({left: carrossel.offsetWidth, behavior: 'smooth'});">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+                <div class="b2b-counter" style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 1rem; pointer-events: none; font-weight: 500; z-index: 2;">
+                  1/{{ product.images.size }}
                 </div>
-              {% endfor %}
+              {% endif %}
             </div>
 
-            {% if product.images.size > 1 %}
-              <button type="button" class="b2b-nav-arrow prev" onclick="const carrossel = this.parentElement.querySelector('.b2b-carousel'); carrossel.scrollBy({left: -carrossel.offsetWidth, behavior: 'smooth'});">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-              </button>
-              <button type="button" class="b2b-nav-arrow next" onclick="const carrossel = this.parentElement.querySelector('.b2b-carousel'); carrossel.scrollBy({left: carrossel.offsetWidth, behavior: 'smooth'});">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-              </button>
-              <div class="b2b-counter" style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 1rem; pointer-events: none; font-weight: 500; z-index: 2;">
-                1/{{ product.images.size }}
-              </div>
-            {% endif %}
-          </div>
+            {% comment %} Informações do Produto [cite: 95, 96] {% endcomment %}
+            <h3 style="font-size: 1.6rem; margin: 0 0 1rem 0; text-align: center;">
+              <a href="{{ product.url }}" style="text-decoration: none; color: inherit;">{{ product.title }}</a>
+            </h3>
+            <p style="font-size: 1.8rem; font-weight: bold; text-align: center; margin-bottom: 2rem;">
+              {{ product.price | money }}
+            </p>
 
-          {% comment %} Informações do Produto [cite: 95, 96] {% endcomment %}
-          <h3 style="font-size: 1.6rem; margin: 0 0 1rem 0; text-align: center;">
-            <a href="{{ product.url }}" style="text-decoration: none; color: inherit;">{{ product.title }}</a>
-          </h3>
-          <p style="font-size: 1.8rem; font-weight: bold; text-align: center; margin-bottom: 2rem;">
-            {{ product.price | money }}
-          </p>
+            <div style="flex-grow: 1;"></div>
 
-          <div style="flex-grow: 1;"></div>
-
-          {% comment %} Formulário de Compra e Swatches [cite: 98, 134] {% endcomment %}
-          <product-form>
-            <form method="post" action="/cart/add" class="b2b-add-form" style="margin: 0; display: flex; flex-direction: column; gap: 1.5rem;">
-              {% unless product.has_only_default_variant %}
-                <div class="b2b-swatch-container" style="margin-bottom: 1.5rem;">
-                  {% for option in product.options_with_values %}
-                    <fieldset style="border: none; padding: 0; margin: 0 0 1rem 0;">
-                      <legend style="font-size: 1.2rem; margin-bottom: 0.5rem; color: #555555; text-align: left; width: 100%;">
-                        {{ option.name }}: <span class="b2b-selected-value" style="font-weight: 600; color: #000;">{{ option.selected_value }}</span>
-                      </legend>
-                      <div style="display: flex; flex-wrap: wrap; gap: 0.8rem;">
-                        {% for value in option.values %}
-                          <label class="b2b-swatch-label" style="cursor: pointer; position: relative;">
-                            <input type="radio" name="option-{{ product.id }}-{{ option.name | handleize }}" value="{{ value | escape }}" {% if option.selected_value == value %}checked{% endif %} class="b2b-swatch-radio" style="position: absolute; opacity: 0; width: 0; height: 0;">
-                            
-                            {% if value.swatch.color or option.name == 'Cor' or option.name == 'Color' %}
-                              {% assign current_color = value.swatch.color %}
-                              {% if current_color == blank %}
-                                {% assign value_downcase = value | downcase %}
-                                {% case value_downcase %}
-                                  {% when 'azul' %}{% assign current_color = '#0055ff' %}
-                                  {% when 'azul claro' %}{% assign current_color = '#add8e6' %}
-                                  {% when 'azul-marinho', 'marinho' %}{% assign current_color = '#000080' %}
-                                  {% when 'bege' %}{% assign current_color = '#f5f5dc' %}
-                                  {% when 'blush' %}{% assign current_color = '#de5d83' %}
-                                  {% when 'branca', 'branco' %}{% assign current_color = '#ffffff' %}
-                                  {% when 'canela' %}{% assign current_color = '#d2691e' %}
-                                  {% when 'preto' %}{% assign current_color = '#000000' %}
-                                  {% else %}{% assign current_color = '#cccccc' %}
-                                {% endcase %}
+            {% comment %} Formulário de Compra e Swatches [cite: 98, 134] {% endcomment %}
+            <product-form>
+              <form method="post" action="/cart/add" class="b2b-add-form" style="margin: 0; display: flex; flex-direction: column; gap: 1.5rem;">
+                {% unless product.has_only_default_variant %}
+                  <div class="b2b-swatch-container" style="margin-bottom: 1.5rem;">
+                    {% for option in product.options_with_values %}
+                      <fieldset style="border: none; padding: 0; margin: 0 0 1rem 0;">
+                        <legend style="font-size: 1.2rem; margin-bottom: 0.5rem; color: #555555; text-align: left; width: 100%;">
+                          {{ option.name }}: <span class="b2b-selected-value" style="font-weight: 600; color: #000;">{{ option.selected_value }}</span>
+                        </legend>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.8rem;">
+                          {% for value in option.values %}
+                            <label class="b2b-swatch-label" style="cursor: pointer; position: relative;">
+                              <input type="radio" name="option-{{ product.id }}-{{ option.name | handleize }}" value="{{ value | escape }}" {% if option.selected_value == value %}checked{% endif %} class="b2b-swatch-radio" style="position: absolute; opacity: 0; width: 0; height: 0;">
+                              
+                              {% if value.swatch.color or option.name == 'Cor' or option.name == 'Color' %}
+                                {% assign current_color = value.swatch.color %}
+                                {% if current_color == blank %}
+                                  {% assign value_downcase = value | downcase %}
+                                  {% case value_downcase %}
+                                    {% when 'azul' %}{% assign current_color = '#0055ff' %}
+                                    {% when 'azul claro' %}{% assign current_color = '#add8e6' %}
+                                    {% when 'azul-marinho', 'marinho' %}{% assign current_color = '#000080' %}
+                                    {% when 'bege' %}{% assign current_color = '#f5f5dc' %}
+                                    {% when 'blush' %}{% assign current_color = '#de5d83' %}
+                                    {% when 'branca', 'branco' %}{% assign current_color = '#ffffff' %}
+                                    {% when 'canela' %}{% assign current_color = '#d2691e' %}
+                                    {% when 'preto' %}{% assign current_color = '#000000' %}
+                                    {% else %}{% assign current_color = '#cccccc' %}
+                                  {% endcase %}
+                                {% endif %}
+                                <div class="b2b-visual-swatch type-color" style="width: 28px; height: 28px; border-radius: 50%; background-color: {{ current_color }}; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15);" title="{{ value }}"></div>
+                              {% else %}
+                                <div class="b2b-visual-swatch type-text" style="padding: 0.6rem 1.2rem; border: 1px solid #D1D5DB; border-radius: 4px; font-size: 1.3rem; background: #fff; color: #333;">{{ value }}</div>
                               {% endif %}
-                              <div class="b2b-visual-swatch type-color" style="width: 28px; height: 28px; border-radius: 50%; background-color: {{ current_color }}; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15);" title="{{ value }}"></div>
-                            {% else %}
-                              <div class="b2b-visual-swatch type-text" style="padding: 0.6rem 1.2rem; border: 1px solid #D1D5DB; border-radius: 4px; font-size: 1.3rem; background: #fff; color: #333;">{{ value }}</div>
-                            {% endif %}
-                          </label>
-                        {% endfor %}
-                      </div>
-                    </fieldset>
-                  {% endfor %}
-                  <select name="id" class="b2b-master-select" style="display: none;">
-                    {% for variant in product.variants %}
-                      <option value="{{ variant.id }}" data-options="{{ variant.options | join: '||' | escape }}" data-price="{{ variant.price | money }}" data-available="{{ variant.available }}" {% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}>
-                        {{ variant.title }}
-                      </option>
+                            </label>
+                          {% endfor %}
+                        </div>
+                      </fieldset>
                     {% endfor %}
-                  </select>
+                    <select name="id" class="b2b-master-select" style="display: none;">
+                      {% for variant in product.variants %}
+                        <option value="{{ variant.id }}" data-options="{{ variant.options | join: '||' | escape }}" data-price="{{ variant.price | money }}" data-available="{{ variant.available }}" {% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}>
+                          {{ variant.title }}
+                        </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                {% else %}
+                  <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                {% endunless %}
+
+                <div style="display: flex; gap: 1.5rem; align-items: center;">
+                  <label for="qty-{{ product.id }}" style="font-size: 1.3rem; color: #555555;">Quantidade:</label>
+                  <input type="number" id="qty-{{ product.id }}" name="quantity" value="1" min="1" style="width: 80px; padding: 1rem; text-align: center; border: 1px solid #D1D5DB; border-radius: 4px; font-size: 1.4rem; background-color: #F9FAFB; color: #000000;">
                 </div>
-              {% else %}
-                <input type="hidden" name="id" value="{{ product.variants.first.id }}">
-              {% endunless %}
 
-              <div style="display: flex; gap: 1.5rem; align-items: center;">
-                <label for="qty-{{ product.id }}" style="font-size: 1.3rem; color: #555555;">Quantidade:</label>
-                <input type="number" id="qty-{{ product.id }}" name="quantity" value="1" min="1" style="width: 80px; padding: 1rem; text-align: center; border: 1px solid #D1D5DB; border-radius: 4px; font-size: 1.4rem; background-color: #F9FAFB; color: #000000;">
-              </div>
-
-              <button type="submit" class="button button--primary" style="width: 100%; margin-top: 0.5rem;">
-                <span>Adicionar</span>
-              </button>
-            </form>
-          </product-form>
-        </div>
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-{% endpaginate %}
+                <button type="submit" class="button button--primary" style="width: 100%; margin-top: 0.5rem;">
+                  <span>Adicionar</span>
+                </button>
+              </form>
+            </product-form>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endpaginate %}
+  {% endunless %}

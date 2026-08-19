@@ -402,6 +402,20 @@
     <meta name="robots" content="noindex, nofollow">
     {{ 'custom-styles.css' | asset_url | stylesheet_tag }}
 
+    {% unless customer or request.design_mode %}
+      <style>
+        /* Visitantes podem ver a camada pública, mas não os controles B2B. */
+        .header__search,
+        .b2b-header-search-icon,
+        .header__cart,
+        #b2b-search-overlay {
+          display: none !important;
+          visibility: hidden !important;
+          pointer-events: none !important;
+        }
+      </style>
+    {% endunless %}
+
     <style>
                                     /* Esconde botões acelerados (PayPal, Shop Pay) no ambiente B2B para forçar o checkout manual */
                                     #buttons-container,
@@ -485,37 +499,16 @@
     {% sections 'overlay-group' %}
 
     <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
-      {% comment %} ===== NOVO BLOCO DE GATING (OPÇÃO 1) ===== {% endcomment %}
-      {% if customer or request.design_mode %}
-        <div style="padding: 2rem;">
-          {{ content_for_layout }}
-        </div>
-
-      {% else %}
-        <div
-          class="b2b-auth-container"
-          style="max-width: 500px; margin: 10rem auto; padding: 4rem 2rem; text-align: center; border: 1px solid var(--color-border); border-radius: 8px;"
-        >
-          <h1 style="margin-bottom: 1.5rem; font-size: 3rem;">Área Exclusiva Atacado</h1>
-          <p style="margin-bottom: 3rem; font-size: 1.6rem; color: var(--color-foreground-secondary);">
-            O acesso ao catálogo B2B é restrito. Faça login com seu e-mail para visualizar nossos produtos e condições.
-          </p>
-
-          <a
-            href="{{ routes.storefront_login_url }}?return_to={{ request.path | url_encode }}"
-            class="button button--primary"
-            style="width: 100%;"
-          >
-            Fazer Login com E-mail
-          </a>
-        </div>
-      {% endif %}
-      {% comment %} ===== FIM DO BLOCO DE GATING ===== {% endcomment %}
+      <div style="padding: 2rem;">
+        {{ content_for_layout }}
+      </div>
     </main>
 
-    {%- if request.page_type != 'cart' and settings.cart_type == 'drawer' -%}
-      {%- render 'cart-drawer' -%}
-    {%- endif -%}
+    {% if customer or request.design_mode %}
+      {%- if request.page_type != 'cart' and settings.cart_type == 'drawer' -%}
+        {%- render 'cart-drawer' -%}
+      {%- endif -%}
+    {% endif %}
 
     {% render 'search-modal' %}
 
@@ -755,7 +748,8 @@
     {% endif %}
 
     {% comment %} ===== LEÃO DE CHÁCARA B2B: Limpa itens de varejo do carrinho B2B ===== {% endcomment %}
-    {% if cart.item_count > 0 %}
+    {% if customer or request.design_mode %}
+      {% if cart.item_count > 0 %}
       <script>
         (function() {
           let updates = {};
@@ -778,6 +772,7 @@
           }
         })();
       </script>
+      {% endif %}
     {% endif %}
 
     <script>

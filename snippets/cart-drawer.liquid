@@ -85,13 +85,16 @@
         {% endunless %}
       {% endcomment %}
 
-      {% if settings.show_commercial_benefits %}
+      {% comment %} {% if settings.show_commercial_benefits %}
         {% assign free_shipping_threshold_cents = settings.free_shipping_threshold | times: 100 %}
         {% assign free_shipping_progress = 0 %}
         {% assign free_shipping_remaining = free_shipping_threshold_cents | minus: cart.total_price %}
 
         {% if free_shipping_threshold_cents > 0 %}
-          {% assign free_shipping_progress = cart.total_price | times: 100.0 | divided_by: free_shipping_threshold_cents %}
+          {% assign free_shipping_progress = cart.total_price
+            | times: 100.0
+            | divided_by: free_shipping_threshold_cents
+          %}
         {% endif %}
 
         {% if free_shipping_progress > 100 %}
@@ -129,7 +132,7 @@
             <strong>{{ settings.min_installment_value | times: 100 | money_without_trailing_zeros }}</strong>.
           </p>
         </div>
-      {% endif %}
+      {% endif %} {% endcomment %}
 
       {%- if cart == empty -%}
         <div class="drawer__inner-empty">
@@ -269,7 +272,11 @@
                                         <div class="cart-item__discount-badge">
                                           {%- render 'icon-discount' -%}
                                           <span class="cart-item__discount-badge-title">
-                                            {{ discount_allocation.discount_application.title | default: 'Desconto aplicado' | escape }}
+                                            {{
+                                              discount_allocation.discount_application.title
+                                              | default: 'Desconto aplicado'
+                                              | escape
+                                            }}
                                           </span>
                                           <span class="cart-item__discount-badge-value">
                                             -{{ discount_allocation.amount | money }}
@@ -663,7 +670,7 @@
               </div>
 
               <small class="tax-note secondary_text" style="display: block; text-align: right; margin-top: 1.5rem;">
-                Impostos e frete calculados no checkout.
+                Frete calculado na próxima etapa.
               </small>
             </div>
 
@@ -676,7 +683,7 @@
                   name="checkout"
                   form="CartDrawer-Form"
                 >
-                  <span> {{ 'sections.cart.checkout' | t }} </span>
+                  <span>Finalizar Pedido</span>
                 </button>
               </div>
             </div>

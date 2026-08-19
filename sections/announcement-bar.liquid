@@ -27,7 +27,7 @@
       gap: 1rem;
       width: 100%;
       text-align: center;
-      font-size: 1.2rem;
+      font-size: 1.6rem;
       line-height: 1.4;
     }
 
@@ -78,11 +78,11 @@
                 Frete grátis acima de
                 <strong>{{ settings.free_shipping_threshold | times: 100 | money_without_trailing_zeros }}</strong>
               </span>
-              <span class="ammis-announcement__separator" aria-hidden="true">•</span>
+              {% comment %} <span class="ammis-announcement__separator" aria-hidden="true">•</span>
               <span>
                 Até <strong>{{ settings.max_installments }}x sem juros</strong>, com parcela mínima de
                 <strong>{{ settings.min_installment_value | times: 100 | money_without_trailing_zeros }}</strong>
-              </span>
+              </span> {% endcomment %}
             {% endif %}
           </div>
         </div>
