@@ -1,18 +1,22 @@
 {% liquid
   assign enable_burger_menu = false
+  assign burger_block = nil
+
   for block in section.blocks
     if block.type == 'burger_menu'
       assign enable_burger_menu = true
       assign burger_block = block
+      break
     endif
   endfor
+
+  assign mobile_menu = section.settings.menu
+  if enable_burger_menu and burger_block.settings.main_menu != blank
+    assign mobile_menu = burger_block.settings.main_menu
+  endif
 %}
 
-
 <header-drawer data-breakpoint="tablet">
-  {% liquid
-    assign mega_menu_blocks = false
-  %}
   <details class="menu-drawer-container">
     <summary
       class="header__icon header__icon--menu header__icon--summary link--text focus-inset"
@@ -25,912 +29,313 @@
         </span>
       </span>
     </summary>
-    <div id="menu-drawer" class="menu-drawer motion-reduce color-background-1" tabind ex="-1">
+
+    <div id="menu-drawer" class="menu-drawer motion-reduce color-background-1" tabindex="-1">
       <div class="menu-drawer__inner-container">
         <div class="menu-drawer__navigation-container">
-          <nav class="menu-drawer__navigation">
-            <ul class="menu-drawer__menu list-menu" role="list">
-              {%- for link in section.settings.menu.links -%}
-                {% liquid
-                  assign mega_menu = false
-                %}
-                <li>
-                  {%- if link.links != blank -%}
-                    {% for block in section.blocks %}
-                      {% liquid
-									      assign mega_menu_trigger = block.settings.mega_menu_trigger | handle | strip
 
-                        if link.handle == mega_menu_trigger
-                          assign mega_menu = true
-                        endif
-                      %}
-                    {% endfor %}
-                    <details>
-                      <summary class="menu-drawer__menu-item list-menu__item link--text focus-inset{% if link.child_active %} menu-drawer__menu-item--active{% endif %}">
-                        <a
-                          href="{{ link.url }}"
-                          class="menu-drawer__menu-link h3 link--text list-menu__item focus-inset"
-                          {% if childlink.current %}
-                            aria-current="page"
-                          {% endif %}
-                        >
-                          {{ link.title | escape }}
-                        </a>
-                        {% render 'icon-caret' %}
-                      </summary>
-                      <div
-                        id="link-{{ link.title | escape }}"
-                        class="menu-drawer__submenu motion-reduce {% if mega_menu_blocks == true %}menu-drawer__submenu--hidden{% endif %}"
-                        tabindex="-1"
-                      >
-                        <div class="menu-drawer__inner-submenu">
-                          <button
-                            class="menu-drawer__close-button link link--text focus-inset"
-                            aria-expanded="true"
-                          >
-                            {% render 'icon-arrow' %}
-                            {{ link.title | escape }}
-                          </button>
-                          <ul
-                            class="menu-drawer__menu list-menu"
-                            role="list"
-                            tabindex="-1"
-                          >
-                            {%- for childlink in link.links -%}
-                              <li>
-                                {%- if childlink.links == blank -%}
-                                  <a
-                                    href="{{ childlink.url }}"
-                                    class="menu-drawer__menu-item h3 link--text list-menu__item focus-inset{% if childlink.current %} menu-drawer__menu-item--active{% endif %}"
-                                    {% if childlink.current %}
-                                      aria-current="page"
-                                    {% endif %}
-                                  >
-                                    {{ childlink.title | escape }}
-                                  </a>
-                                {%- else -%}
-                                  <details>
-                                    <summary class="menu-drawer__menu-item link--text list-menu__item focus-inset">
-                                      {{ childlink.title | escape }}
-                                      {% render 'icon-caret' %}
-                                    </summary>
-                                    <div
-                                      id="childlink-{{ link.title }}-{{ childlink.title | escape }}"
-                                      class="menu-drawer__submenu motion-reduce"
-                                    >
-                                      <button
-                                        class="menu-drawer__close-button link link--text focus-inset"
-                                        aria-expanded="true"
-                                      >
-                                        {% render 'icon-arrow' %}
-                                        {{ childlink.title | escape }}
-                                      </button>
-                                      <ul
-                                        class="menu-drawer__menu list-menu"
-                                        role="list"
-                                        tabindex="-1"
-                                      >
-                                        {%- for grandchildlink in childlink.links -%}
-                                          <li>
-                                            <a
-                                              href="{{ grandchildlink.url }}"
-                                              class="menu-drawer__menu-item h3 link--text list-menu__item focus-inset{% if grandchildlink.current %} menu-drawer__menu-item--active{% endif %}"
-                                              {% if grandchildlink.current %}
-                                                aria-current="page"
-                                              {% endif %}
-                                            >
-                                              {{ grandchildlink.title | escape }}
-                                            </a>
-                                          </li>
-                                        {%- endfor -%}
-                                      </ul>
-                                      {% if mega_menu %}
-                                        <div class="mega-menu__items">
-                                          {% for block in section.blocks %}
-                                            {% assign mega_menu_trigger = block.settings.mega_menu_trigger | handle | strip %}
-                                            {% if link.handle == mega_menu_trigger %}
-                                              {% assign mega_menu_promo_1_trigger = block.settings.mega_menu_promo_1_trigger
-                                                | handle
-                                                | strip
-                                              %}
-                                              {% if childlink.handle == mega_menu_promo_1_trigger %}
-                                                <div class="mega-menu__item">
-                                                  <div class="mega-menu__item-image-wrapper">
-                                                    {% if block.settings.image_1 != blank %}
-                                                      {{
-                                                        block.settings.image_1
-                                                        | image_url:
-                                                          width: block.settings.image_1.width
-                                                        | image_tag:
-                                                          loading: 'lazy',
-                                                          sizes: '100vw',
-                                                          widths: '360, 550, 710',
-                                                          width: block.settings.image_1.width,
-                                                          class: 'mega-menu__item-image'
-                                                      }}
-                                                    {%  else %}
-                                                      {{ "hero-apparel-1" | placeholder_svg_tag: 'placeholder-svg' }}
-                                                    {%- endif -%}
-                                                  </div>
-                                                  
-                                                  {% if block.settings.heading_1 != blank %}
-                                                    <div class="mega-menu__item-heading subtitle">
-                                                      {{ block.settings.heading_1 }}
-                                                    </div>
-                                                  {%- endif -%}
-                                                  {% if block.settings.button_link_1 != blank %}
-                                                    <a
-                                                      href="{{ block.settings.button_link_1 }}"
-                                                      class="mega-menu__item-button link link--overlay"
-                                                    >
-                                                    </a>
-                                                  {% endif %}
-                                                </div>
-                                              {% endif %}
+          <nav class="menu-drawer__navigation" aria-label="{{ 'sections.header.menu' | t }}">
+            <ul class="menu-drawer__menu list-menu ammis-mobile-menu" role="list">
+              {%- for link in mobile_menu.links -%}
+                {%- liquid
+                  assign is_group_heading = false
+                  if link.links != blank
+                    if link.url == blank or link.url == '#' or link.url contains 'javascript:void'
+                      assign is_group_heading = true
+                    endif
+                  endif
+                -%}
 
-                                              {% assign mega_menu_promo_2_trigger = block.settings.mega_menu_promo_2_trigger
-                                                | handle
-                                                | strip
-                                              %}
-                                              
-                                              {% if childlink.handle == mega_menu_promo_2_trigger %}
-                                                <div class="mega-menu__item">
-                                                  <div class="mega-menu__item-image-wrapper">
-                                                    {% if block.settings.image_2 != blank %}
-                                                      {{
-                                                        block.settings.image_2
-                                                        | image_url:
-                                                          width: block.settings.image_2.width
-                                                        | image_tag:
-                                                          loading: 'lazy',
-                                                          sizes: '100vw',
-                                                          widths: '360, 550, 710',
-                                                          width: block.settings.image_2.width,
-                                                          class: 'mega-menu__item-image'
-                                                      }}
-                                                    {%  else %}
-                                                      {{ "hero-apparel-2" | placeholder_svg_tag: 'placeholder-svg' }}
-                                                    {%- endif -%}
-                                                  </div>
-                                                  {% if block.settings.heading_2 != blank %}
-                                                    <div class="mega-menu__item-heading subtitle">
-                                                      {{ block.settings.heading_2 }}
-                                                    </div>
-                                                  {%- endif -%}
-                                                  {% if block.settings.button_link_2 != blank %}
-                                                    <a
-                                                      href="{{ block.settings.button_link_2 }}"
-                                                      class="mega-menu__item-button link link--overlay"
-                                                    >
-                                                    </a>
-                                                  {% endif %}
-                                                </div>
-                                              {% endif %}
-
-                                              {% assign mega_menu_promo_3_trigger = block.settings.mega_menu_promo_3_trigger
-                                                | handle
-                                                | strip
-                                              %}
-
-                                              {% if childlink.handle == mega_menu_promo_3_trigger %}
-                                                <div class="mega-menu__item">
-                                                  <div class="mega-menu__item-image-wrapper">
-                                                    {% if block.settings.image_3 != blank %}
-                                                      {{
-                                                        block.settings.image_3
-                                                        | image_url:
-                                                          width: block.settings.image_3.width
-                                                        | image_tag:
-                                                          loading: 'lazy',
-                                                          sizes: '100vw',
-                                                          widths: '360, 550, 710',
-                                                          width: block.settings.image_3.width,
-                                                          class: 'mega-menu__item-image'
-                                                      }}
-                                                    {%  else %}
-                                                      {{ "hero-apparel-3" | placeholder_svg_tag: 'placeholder-svg' }}
-                                                    {%- endif -%}
-                                                  </div>
-                                                  {% if block.settings.heading_3 != blank %}
-                                                    <div class="mega-menu__item-heading subtitle">
-                                                      {{ block.settings.heading_3 }}
-                                                    </div>
-                                                  {%- endif -%}
-                                                  {% if block.settings.button_link_3 != blank %}
-                                                    <a
-                                                      href="{{ block.settings.button_link_3 }}"
-                                                      class="mega-menu__item-button link link--overlay"
-                                                    >
-                                                    </a>
-                                                  {% endif %}
-                                                </div>
-                                              {% endif %}
-
-                                              {% assign mega_menu_promo_4_trigger = block.settings.mega_menu_promo_4_trigger
-                                                | handle
-                                                | strip
-                                              %}
-
-                                              {% if childlink.handle == mega_menu_promo_4_trigger %}
-                                                <div class="mega-menu__item">
-                                                  <div class="mega-menu__item-image-wrapper">
-                                                    {% if block.settings.image_4 != blank %}
-                                                      {{
-                                                        block.settings.image_4
-                                                        | image_url:
-                                                          width: block.settings.image_4.width
-                                                        | image_tag:
-                                                          loading: 'lazy',
-                                                          sizes: '100vw',
-                                                          widths: '360, 550, 710',
-                                                          width: block.settings.image_4.width,
-                                                          class: 'mega-menu__item-image'
-                                                      }}
-                                                    {%  else %}
-                                                      {{ "hero-apparel-3" | placeholder_svg_tag: 'placeholder-svg' }}
-                                                    {%- endif -%}
-                                                  </div>
-                                                  {% if block.settings.heading_4 != blank %}
-                                                    <div class="mega-menu__item-heading subtitle">
-                                                      {{ block.settings.heading_4 }}
-                                                    </div>
-                                                  {%- endif -%}
-                                                  {% if block.settings.button_link_4 != blank %}
-                                                    <a
-                                                      href="{{ block.settings.button_link_4 }}"
-                                                      class="mega-menu__item-button link link--overlay"
-                                                    >
-                                                    </a>
-                                                  {% endif %}
-                                                </div>
-                                              {% endif %}
-
-                                              {% assign mega_menu_promo_5_trigger = block.settings.mega_menu_promo_5_trigger
-                                                | handle
-                                                | strip
-                                              %}
-
-                                              {% if childlink.handle == mega_menu_promo_5_trigger %}
-                                                <div class="mega-menu__item">
-                                                  <div class="mega-menu__item-image-wrapper">
-                                                    {% if block.settings.image_5 != blank %}
-                                                      {{
-                                                        block.settings.image_5
-                                                        | image_url:
-                                                          width: block.settings.image_5.width
-                                                        | image_tag:
-                                                          loading: 'lazy',
-                                                          sizes: '100vw',
-                                                          widths: '360, 550, 710',
-                                                          width: block.settings.image_5.width,
-                                                          class: 'mega-menu__item-image'
-                                                      }}
-                                                    {%  else %}
-                                                      {{ "hero-apparel-3" | placeholder_svg_tag: 'placeholder-svg' }}
-                                                    {%- endif -%}
-                                                  </div>
-                                                  {% if block.settings.heading_5 != blank %}
-                                                    <div class="mega-menu__item-heading subtitle">
-                                                      {{ block.settings.heading_5 }}
-                                                    </div>
-                                                  {%- endif -%}
-                                                  {% if block.settings.button_link_5 != blank %}
-                                                    <a
-                                                      href="{{ block.settings.button_link_5 }}"
-                                                      class="mega-menu__item-button link link--overlay"
-                                                    >
-                                                    </a>
-                                                  {% endif %}
-                                                </div>
-                                              {% endif %}
-                                            {% endif %}
-                                          {% endfor %}
-                                        </div>
-							                        {% endif %}
-                                    </div>
-                                  </details>
-                                {%- endif -%}
-                              </li>
-                            {%- endfor -%}
-                          </ul>
-                        </div>
-                      </div>
-                      {% for block in section.blocks %}
-                        {% assign mega_menu_trigger = block.settings.mega_menu_trigger | handle | strip %}
-                        {% if link.handle == mega_menu_trigger %}
-                          {% if block.settings.small_menu != blank %}
-                            <ul
-                              class="burger-menu__list burger-menu__list-second list-unstyled"
-                              role="list"
-                            >
-                              {%- for link in block.settings.small_menu.links -%}
-                                <li>
-                                  {%- if link != blank -%}
-                                    <a
-                                      href="{{ link.url }}"
-                                      class=" burger-menu__item burger-menu__link link-hover-line body-xl h3"
-                                      {% if link.current %}
-                                        aria-current="page"
-                                      {% endif %}
-                                    >
-                                      <span>
-                                        {{ link.title | escape }}
-                                      </span>
-                                    </a>
-                                  {% endif %}
-                                </li>
-                              {% endfor %}
-                            </ul>
-                          {% endif %}
-                        {% endif %}
-                      {% endfor %}
-                    </details>
-                  {%- else -%}
-                    <a
-                      href="{{ link.url }}"
-                      class="menu-drawer__menu-item list-menu__item h3 link--text focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}"
-                      {% if link.current %}
-                        aria-current="page"
-                      {% endif %}
-                    >
+                {%- if is_group_heading -%}
+                  <li class="ammis-mobile-menu__section">
+                    <div class="ammis-mobile-menu__section-title">
                       {{ link.title | escape }}
-                    </a>
-                  {%- endif -%}
-                </li>
-              {%- endfor -%}
-              
-            </ul>
-            <ul class="menu-drawer__menu list-menu" role="list">
-              {% if burger_block.settings.main_menu.links != blank %}
-                {%- for link in burger_block.settings.main_menu.links -%}
-                  <li>
+                    </div>
+
+                    <ul class="ammis-mobile-menu__section-list list-menu" role="list">
+                      {%- for childlink in link.links -%}
+                        <li class="ammis-mobile-menu__row">
+                          {%- if childlink.links != blank -%}
+                            <details class="ammis-mobile-menu__details">
+                              <summary class="menu-drawer__menu-item ammis-mobile-menu__item list-menu__item link--text focus-inset{% if childlink.child_active %} menu-drawer__menu-item--active{% endif %}">
+                                <span>{{ childlink.title | escape }}</span>
+                                {% render 'icon-caret' %}
+                              </summary>
+
+                              <div
+                                id="childlink-{{ link.handle }}-{{ childlink.handle }}"
+                                class="menu-drawer__submenu motion-reduce"
+                                tabindex="-1"
+                              >
+                                <div class="menu-drawer__inner-submenu">
+                                  <button
+                                    type="button"
+                                    class="menu-drawer__close-button ammis-mobile-menu__back link link--text focus-inset"
+                                    aria-expanded="true"
+                                  >
+                                    {% render 'icon-arrow' %}
+                                    <span>{{ childlink.title | escape }}</span>
+                                  </button>
+
+                                  {%- if childlink.url != blank and childlink.url != '#' -%}
+                                    <a
+                                      href="{{ childlink.url }}"
+                                      class="ammis-mobile-menu__view-all link focus-inset"
+                                    >
+                                      Ver todos
+                                    </a>
+                                  {%- endif -%}
+
+                                  <ul class="menu-drawer__menu list-menu ammis-mobile-menu__submenu-list" role="list">
+                                    {%- for grandchildlink in childlink.links -%}
+                                      <li>
+                                        <a
+                                          href="{{ grandchildlink.url }}"
+                                          class="menu-drawer__menu-item ammis-mobile-menu__submenu-item link--text list-menu__item focus-inset{% if grandchildlink.current %} menu-drawer__menu-item--active{% endif %}"
+                                          {% if grandchildlink.current %}
+                                            aria-current="page"
+                                          {% endif %}
+                                        >
+                                          {{ grandchildlink.title | escape }}
+                                        </a>
+                                      </li>
+                                    {%- endfor -%}
+                                  </ul>
+                                </div>
+                              </div>
+                            </details>
+                          {%- else -%}
+                            <a
+                              href="{{ childlink.url }}"
+                              class="menu-drawer__menu-item ammis-mobile-menu__item list-menu__item link--text focus-inset{% if childlink.current %} menu-drawer__menu-item--active{% endif %}"
+                              {% if childlink.current %}
+                                aria-current="page"
+                              {% endif %}
+                            >
+                              <span>{{ childlink.title | escape }}</span>
+                            </a>
+                          {%- endif -%}
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </li>
+
+                {%- else -%}
+                  <li class="ammis-mobile-menu__row">
                     {%- if link.links != blank -%}
-                      <details>
-                        <summary class="menu-drawer__menu-item list-menu__item link link--text focus-inset{% if link.child_active %} menu-drawer__menu-item--active{% endif %}">
-                          <a
-                            href="{{ link.url }}"
-                            class="menu-drawer__menu-link h3 link--text list-menu__item focus-inset"
-                            {% if childlink.current %}
-                              aria-current="page"
-                            {% endif %}
-                          >
-                            {{ link.title | escape }}
-                          </a>
+                      <details class="ammis-mobile-menu__details">
+                        <summary class="menu-drawer__menu-item ammis-mobile-menu__item list-menu__item link--text focus-inset{% if link.child_active %} menu-drawer__menu-item--active{% endif %}">
+                          <span>{{ link.title | escape }}</span>
                           {% render 'icon-caret' %}
                         </summary>
+
                         <div
-                          id="link-{{ link.title | escape }}"
-                          class="menu-drawer__submenu motion-reduce {% if mega_menu_blocks == true %}menu-drawer__submenu--hidden{% endif %}"
+                          id="link-{{ link.handle }}"
+                          class="menu-drawer__submenu motion-reduce"
                           tabindex="-1"
                         >
                           <div class="menu-drawer__inner-submenu">
                             <button
-                              class="menu-drawer__close-button link link--text focus-inset"
+                              type="button"
+                              class="menu-drawer__close-button ammis-mobile-menu__back link link--text focus-inset"
                               aria-expanded="true"
                             >
                               {% render 'icon-arrow' %}
-                              {{ link.title | escape }}
+                              <span>{{ link.title | escape }}</span>
                             </button>
-                            <ul
-                              class="menu-drawer__menu list-menu"
-                              role="list"
-                              tabindex="-1"
-                            >
+
+                            {%- if link.url != blank and link.url != '#' -%}
+                              <a
+                                href="{{ link.url }}"
+                                class="ammis-mobile-menu__view-all link focus-inset"
+                              >
+                                Ver todos
+                              </a>
+                            {%- endif -%}
+
+                            <ul class="menu-drawer__menu list-menu ammis-mobile-menu__submenu-list" role="list">
                               {%- for childlink in link.links -%}
                                 <li>
-                                  {%- if childlink.links == blank -%}
+                                  {%- if childlink.links != blank -%}
+                                    <details class="ammis-mobile-menu__details">
+                                      <summary class="menu-drawer__menu-item ammis-mobile-menu__submenu-item list-menu__item link--text focus-inset{% if childlink.child_active %} menu-drawer__menu-item--active{% endif %}">
+                                        <span>{{ childlink.title | escape }}</span>
+                                        {% render 'icon-caret' %}
+                                      </summary>
+
+                                      <div
+                                        id="childlink-{{ link.handle }}-{{ childlink.handle }}"
+                                        class="menu-drawer__submenu motion-reduce"
+                                        tabindex="-1"
+                                      >
+                                        <div class="menu-drawer__inner-submenu">
+                                          <button
+                                            type="button"
+                                            class="menu-drawer__close-button ammis-mobile-menu__back link link--text focus-inset"
+                                            aria-expanded="true"
+                                          >
+                                            {% render 'icon-arrow' %}
+                                            <span>{{ childlink.title | escape }}</span>
+                                          </button>
+
+                                          {%- if childlink.url != blank and childlink.url != '#' -%}
+                                            <a
+                                              href="{{ childlink.url }}"
+                                              class="ammis-mobile-menu__view-all link focus-inset"
+                                            >
+                                              Ver todos
+                                            </a>
+                                          {%- endif -%}
+
+                                          <ul class="menu-drawer__menu list-menu ammis-mobile-menu__submenu-list" role="list">
+                                            {%- for grandchildlink in childlink.links -%}
+                                              <li>
+                                                <a
+                                                  href="{{ grandchildlink.url }}"
+                                                  class="menu-drawer__menu-item ammis-mobile-menu__submenu-item link--text list-menu__item focus-inset{% if grandchildlink.current %} menu-drawer__menu-item--active{% endif %}"
+                                                  {% if grandchildlink.current %}
+                                                    aria-current="page"
+                                                  {% endif %}
+                                                >
+                                                  {{ grandchildlink.title | escape }}
+                                                </a>
+                                              </li>
+                                            {%- endfor -%}
+                                          </ul>
+                                        </div>
+                                      </div>
+                                    </details>
+                                  {%- else -%}
                                     <a
                                       href="{{ childlink.url }}"
-                                      class="menu-drawer__menu-item h3 link--text list-menu__item focus-inset{% if childlink.current %} menu-drawer__menu-item--active{% endif %}"
+                                      class="menu-drawer__menu-item ammis-mobile-menu__submenu-item link--text list-menu__item focus-inset{% if childlink.current %} menu-drawer__menu-item--active{% endif %}"
                                       {% if childlink.current %}
                                         aria-current="page"
                                       {% endif %}
                                     >
                                       {{ childlink.title | escape }}
                                     </a>
-                                  {%- else -%}
-                                    <details>
-                                      <summary class="menu-drawer__menu-item link link--text list-menu__item focus-inset">
-                                        {{ childlink.title | escape }}
-                                        {% render 'icon-caret' %}
-                                      </summary>
-                                      <div
-                                        id="childlink-{{ link.title }}-{{ childlink.title | escape }}"
-                                        class="menu-drawer__submenu motion-reduce"
-                                      >
-                                        <button
-                                          class="menu-drawer__close-button link link--text focus-inset"
-                                          aria-expanded="true"
-                                        >
-                                          {% render 'icon-arrow' %}
-                                          {{ childlink.title | escape }}
-                                        </button>
-                                        <ul
-                                          class="menu-drawer__menu list-menu"
-                                          role="list"
-                                          tabindex="-1"
-                                        >
-                                          {%- for grandchildlink in childlink.links -%}
-                                            <li>
-                                              <a
-                                                href="{{ grandchildlink.url }}"
-                                                class="menu-drawer__menu-item h3 link--text list-menu__item focus-inset{% if grandchildlink.current %} menu-drawer__menu-item--active{% endif %}"
-                                                {% if grandchildlink.current %}
-                                                  aria-current="page"
-                                                {% endif %}
-                                              >
-                                                {{ grandchildlink.title | escape }}
-                                              </a>
-                                            </li>
-                                          {%- endfor -%}
-                                        </ul>
-                                        {% if enable_burger_menu %} 
-                                          {% liquid
-                                            assign burger_menu_promo_1_trigger = burger_block.settings.burger_menu_promo_1_trigger | handle | strip
-                                            assign burger_menu_promo_2_trigger = burger_block.settings.burger_menu_promo_2_trigger | handle | strip
-                                            assign burger_menu_promo_3_trigger = burger_block.settings.burger_menu_promo_3_trigger | handle | strip
-                                            assign burger_menu_promo_3_trigger = burger_block.settings.burger_menu_promo_3_trigger | handle | strip
-                                            assign burger_menu_promo_5_trigger = burger_block.settings.burger_menu_promo_5_trigger | handle | strip
-                                          %}
-                                          {% if childlink.handle == burger_menu_promo_1_trigger or childlink.handle == burger_menu_promo_2_trigger or childlink.handle == burger_menu_promo_3_trigger or childlink.handle == burger_menu_promo_4_trigger or childlink.handle == burger_menu_promo_5_trigger %}
-                                            <div class="mega-menu__items">
-
-                                              {% if childlink.handle == burger_menu_promo_1_trigger %}
-                                                <div class="mega-menu__item">
-                                                  <div class="mega-menu__image-item">
-                                                    {% if burger_block.settings.image_1 != blank %}
-                                                      {{
-                                                        burger_block.settings.image_1
-                                                        | image_url:
-                                                          width: burger_block.settings.image_1.width
-                                                        | image_tag:
-                                                          loading: 'lazy',
-                                                          sizes: '100vw',
-                                                          widths: '360, 550, 710',
-                                                          width: burger_block.settings.image_1.width,
-                                                          class: 'mega-menu__item-image'
-                                                      }}
-                                                    {%  else %}
-                                                      {{ "hero-apparel-1" | placeholder_svg_tag: 'placeholder-svg' }}
-                                                    {%- endif -%}
-                                                  </div>
-                                                  
-                                                  {% if burger_block.settings.heading_1 != blank %}
-                                                    <div class="mega-menu__item-heading subtitle">
-                                                      {{ burger_block.settings.heading_1 }}
-                                                    </div>
-                                                  {%- endif -%}
-                                                  {% if burger_block.settings.button_link_1 != blank %}
-                                                    <a
-                                                      href="{{ burger_block.settings.button_link_1 }}"
-                                                      class="mega-menu__item-button link link--overlay"
-                                                    >
-                                                    </a>
-                                                  {% endif %}
-                                                </div>
-                                              {% endif %}
-                                              
-                                              {% if childlink.handle == burger_menu_promo_2_trigger %}
-                                                <div class="mega-menu__item">
-                                                  <div class="mega-menu__image-item">
-                                                    {% if burger_block.settings.image_2 != blank %}
-                                                      {{
-                                                        burger_block.settings.image_2
-                                                        | image_url:
-                                                          width: burger_block.settings.image_2.width
-                                                        | image_tag:
-                                                          loading: 'lazy',
-                                                          sizes: '100vw',
-                                                          widths: '360, 550, 710',
-                                                          width: burger_block.settings.image_2.width,
-                                                          class: 'mega-menu__item-image'
-                                                      }}
-                                                    {%  else %}
-                                                      {{ "hero-apparel-2" | placeholder_svg_tag: 'placeholder-svg' }}
-                                                    {%- endif -%}
-                                                  </div>
-                                                  {% if burger_block.settings.heading_2 != blank %}
-                                                    <div class="mega-menu__item-heading subtitle">
-                                                      {{ burger_block.settings.heading_2 }}
-                                                    </div>
-                                                  {%- endif -%}
-                                                  {% if burger_block.settings.button_link_2 != blank %}
-                                                    <a
-                                                      href="{{ burger_block.settings.button_link_2 }}"
-                                                      class="mega-menu__item-button link link--overlay"
-                                                    >
-                                                    </a>
-                                                  {% endif %}
-                                                </div>
-                                              {% endif %}
-                
-                                              {% if childlink.handle == burger_menu_promo_3_trigger %}
-                                                <div class="mega-menu__item">
-                                                  <div class="mega-menu__image-item ">
-                                                    {% if burger_block.settings.image_3 != blank %}
-                                                      {{
-                                                        burger_block.settings.image_3
-                                                        | image_url:
-                                                          width: burger_block.settings.image_3.width
-                                                        | image_tag:
-                                                          loading: 'lazy',
-                                                          sizes: '100vw',
-                                                          widths: '360, 550, 710',
-                                                          width: burger_block.settings.image_3.width,
-                                                          class: 'mega-menu__item-image'
-                                                      }}
-                                                    {%  else %}
-                                                      {{ "hero-apparel-3" | placeholder_svg_tag: 'placeholder-svg' }}
-                                                    {%- endif -%}
-                                                  </div>
-                                                  {% if burger_block.settings.heading_3 != blank %}
-                                                    <div class="mega-menu__item-heading subtitle">
-                                                      {{ burger_block.settings.heading_3 }}
-                                                    </div>
-                                                  {%- endif -%}
-                                                  {% if burger_block.settings.button_link_3 != blank %}
-                                                    <a
-                                                      href="{{ burger_block.settings.button_link_3 }}"
-                                                      class="mega-menu__item-button link link--overlay"
-                                                    >
-                                                    </a>
-                                                  {% endif %}
-                                                </div>
-                                              {% endif %}
-
-                                              {% if childlink.handle == burger_menu_promo_4_trigger %}
-                                                <div class="mega-menu__item">
-                                                  <div class="mega-menu__image-item ">
-                                                    {% if burger_block.settings.image_4 != blank %}
-                                                      {{
-                                                        burger_block.settings.image_4
-                                                        | image_url:
-                                                          width: burger_block.settings.image_4.width
-                                                        | image_tag:
-                                                          loading: 'lazy',
-                                                          sizes: '100vw',
-                                                          widths: '360, 550, 710',
-                                                          width: burger_block.settings.image_4.width,
-                                                          class: 'mega-menu__item-image'
-                                                      }}
-                                                    {%  else %}
-                                                      {{ "hero-apparel-1" | placeholder_svg_tag: 'placeholder-svg' }}
-                                                    {%- endif -%}
-                                                  </div>
-                                                  {% if burger_block.settings.heading_4 != blank %}
-                                                    <div class="mega-menu__item-heading subtitle">
-                                                      {{ burger_block.settings.heading_4 }}
-                                                    </div>
-                                                  {%- endif -%}
-                                                  {% if burger_block.settings.button_link_4 != blank %}
-                                                    <a
-                                                      href="{{ burger_block.settings.button_link_4 }}"
-                                                      class="mega-menu__item-button link link--overlay"
-                                                    >
-                                                    </a>
-                                                  {% endif %}
-                                                </div>
-                                              {% endif %}
-
-                                              {% if childlink.handle == burger_menu_promo_5_trigger %}
-                                                <div class="mega-menu__item">
-                                                  <div class="mega-menu__image-item ">
-                                                    {% if burger_block.settings.image_5 != blank %}
-                                                      {{
-                                                        burger_block.settings.image_5
-                                                        | image_url:
-                                                          width: burger_block.settings.image_5.width
-                                                        | image_tag:
-                                                          loading: 'lazy',
-                                                          sizes: '100vw',
-                                                          widths: '360, 550, 710',
-                                                          width: burger_block.settings.image_5.width,
-                                                          class: 'mega-menu__item-image'
-                                                      }}
-                                                    {%  else %}
-                                                      {{ "hero-apparel-2" | placeholder_svg_tag: 'placeholder-svg' }}
-                                                    {%- endif -%}
-                                                  </div>
-                                                  {% if burger_block.settings.heading_5 != blank %}
-                                                    <div class="mega-menu__item-heading subtitle">
-                                                      {{ burger_block.settings.heading_5 }}
-                                                    </div>
-                                                  {%- endif -%}
-                                                  {% if burger_block.settings.button_link_5 != blank %}
-                                                    <a
-                                                      href="{{ burger_block.settings.button_link_5 }}"
-                                                      class="mega-menu__item-button link link--overlay"
-                                                    >
-                                                    </a>
-                                                  {% endif %}
-                                                </div>
-                                              {% endif %}
-                                            </div>
-                                          {% endif %}
-                                        {% endif %}
-                                      </div>
-                                    </details>
                                   {%- endif -%}
                                 </li>
                               {%- endfor -%}
                             </ul>
-                            {% if enable_burger_menu %} 
-                              {% liquid
-                                assign burger_menu_promo_1_trigger = burger_block.settings.burger_menu_promo_1_trigger | handle | strip
-                                assign burger_menu_promo_2_trigger = burger_block.settings.burger_menu_promo_2_trigger | handle | strip
-                                assign burger_menu_promo_3_trigger = burger_block.settings.burger_menu_promo_3_trigger | handle | strip
-                                assign burger_menu_promo_3_trigger = burger_block.settings.burger_menu_promo_3_trigger | handle | strip
-                                assign burger_menu_promo_5_trigger = burger_block.settings.burger_menu_promo_5_trigger | handle | strip
-                              %}
-                              {% if link.handle == burger_menu_promo_1_trigger or link.handle == burger_menu_promo_2_trigger or link.handle == burger_menu_promo_3_trigger or link.handle == burger_menu_promo_4_trigger or link.handle == burger_menu_promo_5_trigger  %} 
-                                <div class="mega-menu__items">
-                                  
-                                  {% if link.handle == burger_menu_promo_1_trigger   %}
-                                    <div class="mega-menu__item">
-                                      <div class="mega-menu__image-item">
-                                        {% if burger_block.settings.image_1 != blank %}
-                                          {{
-                                            burger_block.settings.image_1
-                                            | image_url:
-                                              width: burger_block.settings.image_1.width
-                                            | image_tag:
-                                              loading: 'lazy',
-                                              sizes: '100vw',
-                                              widths: '360, 550, 710',
-                                              width: burger_block.settings.image_1.width,
-                                              class: 'mega-menu__item-image'
-                                          }}
-                                        {%  else %}
-                                          {{ "hero-apparel-1" | placeholder_svg_tag: 'placeholder-svg' }}
-                                        {%- endif -%}
-                                      </div>
-                                      
-                                      {% if burger_block.settings.heading_1 != blank %}
-                                        <div class="mega-menu__item-heading subtitle">
-                                          {{ burger_block.settings.heading_1 }}
-                                        </div>
-                                      {%- endif -%}
-                                      {% if burger_block.settings.button_link_1 != blank %}
-                                        <a
-                                          href="{{ burger_block.settings.button_link_1 }}"
-                                          class="mega-menu__item-button link link--overlay"
-                                        >
-                                        </a>
-                                      {% endif %}
-                                    </div>
-                                  {% endif %}
-
-                                  {% if link.handle == burger_menu_promo_2_trigger %}
-                                    <div class="mega-menu__item">
-                                      <div class="mega-menu__image-item ">
-                                        {% if burger_block.settings.image_2 != blank %}
-                                          {{
-                                            burger_block.settings.image_2
-                                            | image_url:
-                                              width: burger_block.settings.image_2.width
-                                            | image_tag:
-                                              loading: 'lazy',
-                                              sizes: '100vw',
-                                              widths: '360, 550, 710',
-                                              width: burger_block.settings.image_2.width,
-                                              class: 'mega-menu__item-image'
-                                          }}
-                                        {%  else %}
-                                          {{ "hero-apparel-2" | placeholder_svg_tag: 'placeholder-svg' }}
-                                        {%- endif -%}
-                                      </div>
-                                      {% if burger_block.settings.heading_2 != blank %}
-                                        <div class="mega-menu__item-heading subtitle">
-                                          {{ burger_block.settings.heading_2 }}
-                                        </div>
-                                      {%- endif -%}
-                                      {% if burger_block.settings.button_link_2 != blank %}
-                                        <a
-                                          href="{{ burger_block.settings.button_link_2 }}"
-                                          class="mega-menu__item-button link link--overlay"
-                                        >
-                                        </a>
-                                      {% endif %}
-                                    </div>
-                                  {% endif %}
-
-                                  {% if link.handle == burger_menu_promo_3_trigger %}
-                                    <div class="mega-menu__item">
-                                      <div class="mega-menu__image-item ">
-                                        {% if burger_block.settings.image_3 != blank %}
-                                          {{
-                                            burger_block.settings.image_3
-                                            | image_url:
-                                              width: burger_block.settings.image_3.width
-                                            | image_tag:
-                                              loading: 'lazy',
-                                              sizes: '100vw',
-                                              widths: '360, 550, 710',
-                                              width: burger_block.settings.image_3.width,
-                                              class: 'mega-menu__item-image'
-                                          }}
-                                        {%  else %}
-                                          {{ "hero-apparel-3" | placeholder_svg_tag: 'placeholder-svg' }}
-                                        {%- endif -%}
-                                      </div>
-                                      {% if burger_block.settings.heading_3 != blank %}
-                                        <div class="mega-menu__item-heading subtitle">
-                                          {{ burger_block.settings.heading_3 }}
-                                        </div>
-                                      {%- endif -%}
-                                      {% if burger_block.settings.button_link_3 != blank %}
-                                        <a
-                                          href="{{ burger_block.settings.button_link_3 }}"
-                                          class="mega-menu__item-button link link--overlay"
-                                        >
-                                        </a>
-                                      {% endif %}
-                                    </div>
-                                  {% endif %}
-                                  
-                                  {% if link.handle == burger_menu_promo_4_trigger %}
-                                    <div class="mega-menu__item">
-                                      <div class="mega-menu__image-item ">
-                                        {% if burger_block.settings.image_4 != blank %}
-                                          {{
-                                            burger_block.settings.image_4
-                                            | image_url:
-                                              width: burger_block.settings.image_4.width
-                                            | image_tag:
-                                              loading: 'lazy',
-                                              sizes: '100vw',
-                                              widths: '360, 550, 710',
-                                              width: burger_block.settings.image_4.width,
-                                              class: 'mega-menu__item-image'
-                                          }}
-                                        {%  else %}
-                                          {{ "hero-apparel-1" | placeholder_svg_tag: 'placeholder-svg' }}
-                                        {%- endif -%}
-                                      </div>
-                                      {% if burger_block.settings.heading_4 != blank %}
-                                        <div class="mega-menu__item-heading subtitle">
-                                          {{ burger_block.settings.heading_4 }}
-                                        </div>
-                                      {%- endif -%}
-                                      {% if burger_block.settings.button_link_4 != blank %}
-                                        <a
-                                          href="{{ burger_block.settings.button_link_4 }}"
-                                          class="mega-menu__item-button link link--overlay"
-                                        >
-                                        </a>
-                                      {% endif %}
-                                    </div>
-                                  {% endif %}
-
-                                  {% if link.handle == burger_menu_promo_5_trigger %}
-                                    <div class="mega-menu__item">
-                                      <div class="mega-menu__image-item ">
-                                        {% if burger_block.settings.image_5 != blank %}
-                                          {{
-                                            burger_block.settings.image_5
-                                            | image_url:
-                                              width: burger_block.settings.image_5.width
-                                            | image_tag:
-                                              loading: 'lazy',
-                                              sizes: '100vw',
-                                              widths: '360, 550, 710',
-                                              width: burger_block.settings.image_5.width,
-                                              class: 'mega-menu__item-image'
-                                          }}
-                                        {%  else %}
-                                          {{ "hero-apparel-2" | placeholder_svg_tag: 'placeholder-svg' }}
-                                        {%- endif -%}
-                                      </div>
-                                      {% if burger_block.settings.heading_5 != blank %}
-                                        <div class="mega-menu__item-heading subtitle">
-                                          {{ burger_block.settings.heading_5 }}
-                                        </div>
-                                      {%- endif -%}
-                                      {% if burger_block.settings.button_link_5 != blank %}
-                                        <a
-                                          href="{{ burger_block.settings.button_link_3 }}"
-                                          class="mega-menu__item-button link link--overlay"
-                                        >
-                                        </a>
-                                      {% endif %}
-                                    </div>
-                                  {% endif %}
-                                </div>
-                              {% endif %}
-                            {% endif %}
                           </div>
                         </div>
                       </details>
                     {%- else -%}
                       <a
                         href="{{ link.url }}"
-                        class="menu-drawer__menu-item list-menu__item h3 link--text focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}"
+                        class="menu-drawer__menu-item ammis-mobile-menu__item list-menu__item link--text focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}"
                         {% if link.current %}
                           aria-current="page"
                         {% endif %}
                       >
-                        {{ link.title | escape }}
+                        <span>{{ link.title | escape }}</span>
                       </a>
                     {%- endif -%}
                   </li>
-                {%- endfor -%}
-              {%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
             </ul>
-            {% if burger_block.settings.small_menu != blank %}
-              <ul
-                class="burger-menu__list burger-menu__list-second list-unstyled"
-                role="list"
-              >
-                {%- for link in burger_block.settings.small_menu.links -%}
-                  <li>
-                    {%- if link != blank -%}
-                      <a
-                        href="{{ link.url }}"
-                        class=" burger-menu__item burger-menu__link link-hover-line body-xl"
-                        {% if link.current %}
-                          aria-current="page"
-                        {% endif %}
-                      >
-                        <span>
-                          {{ link.title | escape }}
-                        </span>
-                      </a>
+
+            {% if section.settings.mobile_menu_promo_enabled %}
+              {% if section.settings.mobile_menu_promo_image != blank
+                or section.settings.mobile_menu_promo_title != blank
+                or section.settings.mobile_menu_promo_text != blank
+              %}
+                <div class="ammis-mobile-menu__promo">
+                  {%- if section.settings.mobile_menu_promo_link != blank -%}
+                    <a
+                      href="{{ section.settings.mobile_menu_promo_link }}"
+                      class="ammis-mobile-menu__promo-link focus-inset"
+                      aria-label="{{ section.settings.mobile_menu_promo_title | default: section.settings.mobile_menu_promo_label | escape }}"
+                    >
+                  {%- endif -%}
+
+                  <div class="ammis-mobile-menu__promo-content">
+                    {% if section.settings.mobile_menu_promo_title != blank %}
+                      <p class="ammis-mobile-menu__promo-title">
+                        {{ section.settings.mobile_menu_promo_title | escape }}
+                      </p>
                     {% endif %}
-                  </li>
-                {% endfor %}
-              </ul>
+
+                    {% if section.settings.mobile_menu_promo_text != blank %}
+                      <p class="ammis-mobile-menu__promo-text">
+                        {{ section.settings.mobile_menu_promo_text | escape }}
+                      </p>
+                    {% endif %}
+
+                    {% if section.settings.mobile_menu_promo_label != blank %}
+                      <span class="ammis-mobile-menu__promo-cta">
+                        {{ section.settings.mobile_menu_promo_label | escape }}
+                        <span aria-hidden="true">→</span>
+                      </span>
+                    {% endif %}
+                  </div>
+
+                  {% if section.settings.mobile_menu_promo_image != blank %}
+                    <div class="ammis-mobile-menu__promo-media">
+                      {{
+                        section.settings.mobile_menu_promo_image
+                        | image_url: width: 900
+                        | image_tag:
+                          loading: 'lazy',
+                          widths: '320, 480, 640, 900',
+                          sizes: '(max-width: 749px) 48vw, 1px',
+                          class: 'ammis-mobile-menu__promo-image',
+                          alt: section.settings.mobile_menu_promo_image.alt
+                      }}
+                    </div>
+                  {% endif %}
+
+                  {%- if section.settings.mobile_menu_promo_link != blank -%}
+                    </a>
+                  {%- endif -%}
+                </div>
+              {% endif %}
             {% endif %}
           </nav>
 
-          <div class="menu-drawer__utility-links {% if customer %} menu-drawer__utility-links-customer {% endif %}">
+          <div class="menu-drawer__utility-links{% if customer %} menu-drawer__utility-links-customer{% endif %}">
             {%- if shop.customer_accounts_enabled -%}
               {%- if customer -%}
                 <div class="menu-drawer__utility-account">
                   <div class="menu-drawer__utility-account-header">
-                    <h3 class="menu-drawer__utility-name">
-                      {{- customer.name -}}
-                    </h3>
-  
+                    <h3 class="menu-drawer__utility-name">{{ customer.name }}</h3>
                   </div>
-                  <ul class="menu-drawer__utility-account-body">
 
+                  <ul class="menu-drawer__utility-account-body">
                     <li class="menu-drawer__utility-account-link">
-                      <a href="{{ routes.account_url }}"  class="link button button--simple">
+                      <a href="{{ routes.account_url }}" class="link button button--simple">
                         <span>{{ 'customer.account_fallback' | t }}</span>
                       </a>
                     </li>
                     <li class="menu-drawer__utility-account-address">
-                      <a href="{{ routes.account_addresses_url }}"  class="link button button--simple">
-                        <span>{{- 'customer.addresses.book' | t -}}</span>
+                      <a href="{{ routes.account_addresses_url }}" class="link button button--simple">
+                        <span>{{ 'customer.addresses.book' | t }}</span>
                       </a>
                     </li>
                   </ul>
-                    <a
-                      class="header__account__logout button button--tertiary focus-inset"
-                      href="{{ routes.account_logout_url }}"
-                    >
-                      <span> {{ 'customer.log_out' | t }} </span>
+
+                  <a
+                    class="header__account__logout button button--tertiary focus-inset"
+                    href="{{ routes.account_logout_url }}"
+                  >
+                    <span>{{ 'customer.log_out' | t }}</span>
                   </a>
                 </div>
               {%- else -%}
                 <a
-                  href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+                  href="{{ routes.account_login_url }}"
                   class="button button--tertiary menu-drawer__account link focus-inset"
                 >
-                  <span> 
-                    {%- liquid
-                      if customer
-                        echo 'customer.account_fallback' | t
-                      else
-                        echo 'customer.log_in' | t
-                      endif
-                    -%}
-                  </span>
+                  <span>{{ 'customer.log_in' | t }}</span>
                 </a>
+
                 {% if settings.enable_create_account %}
                   <div class="menu-drawer__account-register">
                     <a href="{{ routes.account_register_url }}" class="link button button--simple">
-                      <span>{{- 'customer.login_page.create_account' | t -}}</span>
+                      <span>{{ 'customer.login_page.create_account' | t }}</span>
                     </a>
                   </div>
                 {% endif %}
@@ -939,30 +344,12 @@
           </div>
 
           <div class="menu-drawer__bottom">
-            {%- if section.settings.enable_country_selector
-              or section.settings.enable_language_selector
-            -%}
+            {%- if section.settings.enable_country_selector or section.settings.enable_language_selector -%}
               <div class="menu-drawer__localization-wrapper">
-								{% render 'header-region', section: section %}
+                {% render 'header-region', section: section %}
               </div>
             {%- endif -%}
             {% render 'color-scheme' %}
-            {% comment %}{%- if section.settings.enable_search -%}
-              <div class="header__icons">
-                <div class="header__search">
-                  <a
-                    href="{{ routes.search_url }}"
-                    class="header__icon header__icon--search focus-inset"
-                    title="{{ 'general.search.search' | t }}"
-                    aria-label="{{ 'general.search.search' | t }}"
-                  >
-                    <span class="link-hover-line">
-                      {{- 'sections.header.search' | t -}}
-                    </span>
-                  </a>
-              </div>
-              </div>
-            {% endif %}{% endcomment %}
           </div>
         </div>
       </div>
