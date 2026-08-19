@@ -3449,7 +3449,6 @@ body.body--hidden {
   display: flex;
   align-items: center;
   gap: 1rem;
-  font-weight: bold;
 }
 .header--left-logo .header-left-logo__brand {
   display: flex;
