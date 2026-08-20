@@ -1,12 +1,19 @@
 {% liquid
-	assign enable_burger_menu = false
-	assign new_in_menu = linklists['new-in']
-	for block in section.blocks
-		if block.type == 'burger_menu'
-			assign enable_burger_menu = true
-		endif
-	endfor
+  assign enable_burger_menu = false
+  assign new_in_menu = linklists['new-in']
+
+  for block in section.blocks
+    if block.type == 'burger_menu'
+      assign enable_burger_menu = true
+    endif
+  endfor
 %}
+
+<!-- DEBUG NEW-IN
+title: {{ new_in_menu.title }}
+handle: {{ new_in_menu.handle }}
+links: {{ new_in_menu.links.size }}
+-->
 
 {%- if section.settings.menu != blank or enable_burger_menu -%}
 	{% render 'header-drawer' %}
