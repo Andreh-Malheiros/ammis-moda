@@ -38,8 +38,42 @@
             <ul class="menu-drawer__menu list-menu ammis-mobile-menu" role="list">
               {%- for link in mobile_menu.links -%}
                 {%- liquid
-                  assign is_group_heading = false
+                  assign has_native_submenu = false
                   if link.links != blank
+                    assign has_native_submenu = true
+                  endif
+                  assign has_external_submenu = false
+                  assign external_menu = blank
+                  assign link_handle = link.handle | default: link.title | handle | strip
+                  assign link_title_handle = link.title | handle | strip
+                  for block in section.blocks
+                    if block.type == 'external_submenu'
+                      assign external_trigger = block.settings.external_submenu_trigger | strip
+                      assign external_trigger_handle = external_trigger | handle | strip
+                      if has_native_submenu == false and block.settings.external_submenu_menu.links != blank
+                        if link_handle == external_trigger_handle or link_title_handle == external_trigger_handle
+                          assign has_external_submenu = true
+                          assign external_menu = block.settings.external_submenu_menu
+                        endif
+                      endif
+                    endif
+                  endfor
+
+                  assign has_submenu = false
+                  if has_native_submenu or has_external_submenu
+                    assign has_submenu = true
+                  endif
+
+                  assign mobile_link_links = link.links
+                  if has_native_submenu == false and has_external_submenu
+                    assign mobile_link_links = external_menu.links
+                    if external_menu.links.size == 1 and external_menu.links[0].links != blank
+                      assign mobile_link_links = external_menu.links[0].links
+                    endif
+                  endif
+
+                  assign is_group_heading = false
+                  if has_submenu
                     if link.url == blank or link.url == '#' or link.url contains 'javascript:void'
                       assign is_group_heading = true
                     endif
@@ -53,7 +87,7 @@
                     </div>
 
                     <ul class="ammis-mobile-menu__section-list list-menu" role="list">
-                      {%- for childlink in link.links -%}
+                      {%- for childlink in mobile_link_links -%}
                         <li class="ammis-mobile-menu__row">
                           {%- if childlink.links != blank -%}
                             <details class="ammis-mobile-menu__details">
@@ -122,7 +156,7 @@
 
                 {%- else -%}
                   <li class="ammis-mobile-menu__row">
-                    {%- if link.links != blank -%}
+                    {%- if has_submenu -%}
                       <details class="ammis-mobile-menu__details">
                         <summary class="menu-drawer__menu-item ammis-mobile-menu__item list-menu__item link--text focus-inset{% if link.child_active %} menu-drawer__menu-item--active{% endif %}">
                           <span>{{ link.title | escape }}</span>
@@ -154,7 +188,7 @@
                             {%- endif -%}
 
                             <ul class="menu-drawer__menu list-menu ammis-mobile-menu__submenu-list" role="list">
-                              {%- for childlink in link.links -%}
+                              {%- for childlink in mobile_link_links -%}
                                 <li>
                                   {%- if childlink.links != blank -%}
                                     <details class="ammis-mobile-menu__details">

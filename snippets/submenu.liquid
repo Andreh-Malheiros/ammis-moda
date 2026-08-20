@@ -1,12 +1,20 @@
 {% liquid
-	assign submenu_group_count = link.links.size
+	assign submenu_links = link.links
+	if submenu_links == blank and external_menu != blank
+		assign submenu_links = external_menu.links
+		if external_menu.links.size == 1 and external_menu.links[0].links != blank
+			assign submenu_links = external_menu.links[0].links
+		endif
+	endif
+
+	assign submenu_group_count = submenu_links.size
 	assign submenu_group_layout = submenu_group_count
 	if submenu_group_count > 4
 		assign submenu_group_layout = 'many'
 	endif
 %}
 
-{% if link.links != blank %}
+{% if submenu_links != blank %}
 	<div
 		class="header__submenu header__submenu--mega mega-menu mega-menu--groups-{{ submenu_group_layout }}"
 		role="region"
@@ -14,7 +22,7 @@
 	>
 		<div class="mega-menu__inner container">
 			<ul class="mega-menu__list list-unstyled" role="list">
-				{% for childlink in link.links %}
+				{% for childlink in submenu_links %}
 					<li class="mega-menu__list-item{% if childlink.links == blank %} mega-menu__list-item--standalone{% endif %}">
 						<a
 							href="{{ childlink.url }}"

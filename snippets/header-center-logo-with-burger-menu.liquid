@@ -22,8 +22,35 @@
 							assign mega_menu = false
 							assign mega_menu_list = false
 							assign mega_menu_blocks = false
+							assign has_native_submenu = false
+							if link.links != blank
+								assign has_native_submenu = true
+							endif
+							assign has_external_submenu = false
+							assign external_submenu = blank
+							assign external_submenu_attributes = blank
+							assign link_handle = link.handle | default: link.title | handle | strip
+							assign link_title_handle = link.title | handle | strip
+							for block in section.blocks
+								if block.type == 'external_submenu'
+									assign external_submenu_trigger = block.settings.external_submenu_trigger | strip
+									assign external_submenu_trigger_handle = external_submenu_trigger | handle | strip
+									if has_native_submenu == false and block.settings.external_submenu_menu.links != blank
+										if link_handle == external_submenu_trigger_handle or link_title_handle == external_submenu_trigger_handle
+											assign has_external_submenu = true
+											assign external_submenu = block.settings.external_submenu_menu
+											assign external_submenu_attributes = block.shopify_attributes
+										endif
+									endif
+								endif
+							endfor
+							assign has_submenu = false
+							if has_native_submenu or has_external_submenu
+								assign has_submenu = true
+							endif
+							assign shopify_attributes = external_submenu_attributes
 						%}
-					{%- if link.links != blank -%}
+						{%- if has_submenu -%}
 						{% if section.blocks.size > 0 %}
 							{% for block in section.blocks %}
 								{% liquid
@@ -31,17 +58,17 @@
 									assign mega_menu_list_trigger = block.settings.mega_menu_list_trigger | handle | strip
 									assign mega_menu_blocks_trigger = block.settings.mega_menu_blocks_trigger | handle | strip
 
-									if link.handle == mega_menu_trigger
+									if mega_menu_trigger != blank and link_handle == mega_menu_trigger
 										assign mega_menu = true
 										assign mega_menu_list = false
 										assign mega_menu_blocks = false
 										assign shopify_attributes = block.shopify_attributes
-									elsif link.handle == mega_menu_list_trigger
+									elsif mega_menu_list_trigger != blank and link_handle == mega_menu_list_trigger
 										assign mega_menu_list = true
 										assign mega_menu = false
 										assign mega_menu_blocks = false
 										assign shopify_attributes = block.shopify_attributes
-									elsif link.handle == mega_menu_blocks_trigger
+									elsif mega_menu_blocks_trigger != blank and link_handle == mega_menu_blocks_trigger
 										assign mega_menu_blocks = true
 										assign mega_menu_list = false
 										assign mega_menu = false
@@ -73,7 +100,7 @@
 								</span>
 							</a>
 							{% if mega_menu == false %}
-								{% render 'submenu', link: link %}
+								{% render 'submenu', link: link, external_menu: external_submenu %}
 							{% endif %}
 						</li>
 					{%- else -%}
