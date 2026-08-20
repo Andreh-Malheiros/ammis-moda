@@ -45,10 +45,23 @@
                   assign has_external_submenu = false
                   assign external_menu = blank
                   assign link_handle = link.handle | handle | strip
+                  assign link_title_handle = link.title | handle | strip
                   assign current_menu_handle = mobile_menu.handle | strip
-                  assign external_menu_handle = link.title | handle | strip
+                  assign is_new_in_item = false
+                  if link_handle == 'inicio' or link_handle == 'home' or link_title_handle == 'inicio' or link_title_handle == 'home'
+                    assign is_new_in_item = true
+                  endif
+                  if has_native_submenu == false and is_new_in_item
+                    assign external_menu = linklists['new-in']
+                    if external_menu != blank and external_menu.links != blank and external_menu.handle != current_menu_handle
+                      assign has_external_submenu = true
+                    else
+                      assign external_menu = blank
+                    endif
+                  endif
+                  assign external_menu_handle = link_title_handle
                   assign external_menu_candidate = linklists[external_menu_handle]
-                  if has_native_submenu == false and external_menu_handle != blank and external_menu_candidate != blank and external_menu_candidate.links != blank and external_menu_candidate.handle != current_menu_handle
+                  if has_native_submenu == false and has_external_submenu == false and external_menu_handle != blank and external_menu_candidate != blank and external_menu_candidate.links != blank and external_menu_candidate.handle != current_menu_handle
                     assign external_menu = external_menu_candidate
                     assign has_external_submenu = true
                   endif
