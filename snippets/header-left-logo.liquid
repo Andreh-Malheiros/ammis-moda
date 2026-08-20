@@ -9,11 +9,11 @@
   endfor
 %}
 
-<!-- DEBUG NEW-IN
+
 title: {{ new_in_menu.title }}
 handle: {{ new_in_menu.handle }}
 links: {{ new_in_menu.links.size }}
--->
+
 
 {%- if section.settings.menu != blank or enable_burger_menu -%}
 	{% render 'header-drawer' %}
