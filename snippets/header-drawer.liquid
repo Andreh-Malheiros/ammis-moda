@@ -44,20 +44,22 @@
                   endif
                   assign has_external_submenu = false
                   assign external_menu = blank
-                  assign link_handle = link.handle | default: link.title | handle | strip
-                  assign link_title_handle = link.title | handle | strip
-                  for block in section.blocks
-                    if block.type == 'external_submenu'
-                      assign external_trigger = block.settings.external_submenu_trigger | strip
-                      assign external_trigger_handle = external_trigger | handle | strip
-                      if has_native_submenu == false and block.settings.external_submenu_menu.links != blank
-                        if link_handle == external_trigger_handle or link_title_handle == external_trigger_handle
-                          assign has_external_submenu = true
-                          assign external_menu = block.settings.external_submenu_menu
-                        endif
-                      endif
+                  assign link_handle = link.handle | handle | strip
+                  assign current_menu_handle = mobile_menu.handle | strip
+                  assign external_menu_handle = link.title | handle | strip
+                  assign external_menu_candidate = linklists[external_menu_handle]
+                  if has_native_submenu == false and external_menu_handle != blank and external_menu_candidate != blank and external_menu_candidate.links != blank and external_menu_candidate.handle != current_menu_handle
+                    assign external_menu = external_menu_candidate
+                    assign has_external_submenu = true
+                  endif
+                  if has_native_submenu == false and has_external_submenu == false and link_handle != blank and link_handle != external_menu_handle
+                    assign external_menu_handle = link_handle
+                    assign external_menu_candidate = linklists[external_menu_handle]
+                    if external_menu_candidate != blank and external_menu_candidate.links != blank and external_menu_candidate.handle != current_menu_handle
+                      assign external_menu = external_menu_candidate
+                      assign has_external_submenu = true
                     endif
-                  endfor
+                  endif
 
                   assign has_submenu = false
                   if has_native_submenu or has_external_submenu

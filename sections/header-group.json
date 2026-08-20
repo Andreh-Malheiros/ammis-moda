@@ -41,18 +41,6 @@
     },
     "header": {
       "type": "header",
-      "blocks": {
-        "external_submenu_y7cxnF": {
-          "type": "external_submenu",
-          "settings": {
-            "external_submenu_trigger": "inicio",
-            "external_submenu_menu": "main-menu"
-          }
-        }
-      },
-      "block_order": [
-        "external_submenu_y7cxnF"
-      ],
       "settings": {
         "enable_border": false,
         "header_type": "left-logo",

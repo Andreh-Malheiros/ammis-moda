@@ -29,27 +29,27 @@
 							endif
 							assign has_external_submenu = false
 							assign external_submenu = blank
-							assign external_submenu_attributes = blank
-							assign link_handle = link.handle | default: link.title | handle | strip
-							assign link_title_handle = link.title | handle | strip
-							for block in section.blocks
-								if block.type == 'external_submenu'
-									assign external_submenu_trigger = block.settings.external_submenu_trigger | strip
-									assign external_submenu_trigger_handle = external_submenu_trigger | handle | strip
-									if has_native_submenu == false and block.settings.external_submenu_menu.links != blank
-										if link_handle == external_submenu_trigger_handle or link_title_handle == external_submenu_trigger_handle
-											assign has_external_submenu = true
-											assign external_submenu = block.settings.external_submenu_menu
-											assign external_submenu_attributes = block.shopify_attributes
-										endif
-									endif
+							assign link_handle = link.handle | handle | strip
+							assign current_menu_handle = section.settings.menu.handle | strip
+							assign external_menu_handle = link.title | handle | strip
+							assign external_menu_candidate = linklists[external_menu_handle]
+							if has_native_submenu == false and external_menu_handle != blank and external_menu_candidate != blank and external_menu_candidate.links != blank and external_menu_candidate.handle != current_menu_handle
+								assign external_submenu = external_menu_candidate
+								assign has_external_submenu = true
+							endif
+							if has_native_submenu == false and has_external_submenu == false and link_handle != blank and link_handle != external_menu_handle
+								assign external_menu_handle = link_handle
+								assign external_menu_candidate = linklists[external_menu_handle]
+								if external_menu_candidate != blank and external_menu_candidate.links != blank and external_menu_candidate.handle != current_menu_handle
+									assign external_submenu = external_menu_candidate
+									assign has_external_submenu = true
 								endif
-							endfor
+							endif
 							assign has_submenu = false
 							if has_native_submenu or has_external_submenu
 								assign has_submenu = true
 							endif
-							assign shopify_attributes = external_submenu_attributes
+							assign shopify_attributes = blank
 					%}
 						{%- if has_submenu -%}
 						{% if section.blocks.size > 0 %}
