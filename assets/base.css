@@ -111,7 +111,7 @@
   display: none;
 }
 [data-scheme=dark] .card--product-placeholder .placeholder-svg {
-  background-color: rgb(var(--color-background));
+  background-color: #fff;
 }
 [data-scheme=dark] .product .advantage img:first-child:nth-last-child(2),
 [data-scheme=dark] .product .advantage svg:first-child:nth-last-child(2) {
@@ -183,7 +183,7 @@
   [data-scheme=auto] .card-horizontal__link,
   [data-scheme=auto] .card-horizontal__link::after,
   [data-scheme=auto] .collection-product-list .collection-product-card--extended .card__link::after {
-    background-color: rgb(var(--color-background));
+    background-color: #fff;
   }
   [data-scheme=auto] .collection-product-list .card-information__wrapper > *,
   [data-scheme=auto] .collection-results--products .card-information__wrapper > *,
@@ -3288,6 +3288,48 @@ body.body--hidden {
 
 .shopify-section-header.animate {
   transition: transform 0.15s ease-out;
+}
+
+@media screen and (min-width: 1100px) {
+  /* The compact state keeps the header in flow and only fades secondary content. */
+  .shopify-section-header .header__inline-menu,
+  .shopify-section-header .header__column,
+  .shopify-section-header .desktop-burger-menu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 0s ease, visibility 0s linear 0s;
+  }
+
+  .shopify-section-header.header--compact .header__inline-menu,
+  .shopify-section-header.header--compact .header__column,
+  .shopify-section-header.header--compact .desktop-burger-menu {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0 ease, visibility 0s linear 0s;
+  }
+
+  /* Reflow the left-logo layout into the existing center grid without offsets. */
+  .shopify-section-header.header--compact .header--left-logo .header-left-logo__brand {
+    display: flex;
+    grid-column: 2;
+    justify-self: center;
+    gap: 0;
+    position: relative;
+  }
+
+  .shopify-section-header.header--compact .header--left-logo .header-left-logo__brand > .desktop-burger-menu {
+    position: absolute;
+  }
+
+  .shopify-section-header.header--compact .header--center-logo > .header__heading,
+  .shopify-section-header.header--compact .header--center-logo > .header__heading-link,
+  .shopify-section-header.header--compact .header--center-logo-burger > .header__heading,
+  .shopify-section-header.header--compact .header--center-logo-burger > .header__heading-link {
+    grid-column: 2;
+    justify-self: center;
+  }
 }
 
 .header-wrapper {

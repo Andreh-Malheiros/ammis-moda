@@ -141,6 +141,9 @@
 
 	onScroll() {
 	const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+	const isDesktop = window.matchMedia('(min-width: 1100px)').matches;
+	const hasScrolledPastHeader = isDesktop ? scrollTop > 0 : scrollTop > this.headerBounds.bottom;
+	const isAtTop = isDesktop ? scrollTop <= 0 : scrollTop <= this.headerBounds.top;
 
 	if (this.headerIsAlwaysSticky && scrollTop > this.header.offsetHeight + 1) {
 		this.header.classList.add('shopify-section-header-sticky','shopify-section-header-always-sticky');
@@ -162,10 +165,10 @@
 		};
 	};
 
-	if (scrollTop > this.currentScrollTop && scrollTop > this.headerBounds.bottom) {
+	if (scrollTop > this.currentScrollTop && hasScrolledPastHeader) {
 		if (this.preventHide) return;
 		requestAnimationFrame(this.hide.bind(this));
-		} else if (scrollTop < this.currentScrollTop && scrollTop > this.headerBounds.bottom) {
+		} else if (scrollTop < this.currentScrollTop && hasScrolledPastHeader) {
 		if (!this.preventReveal) {
 		requestAnimationFrame(this.reveal.bind(this));
 		} else {
@@ -177,23 +180,65 @@
 
 			requestAnimationFrame(this.hide.bind(this));
 		}
-		} else if (scrollTop <= this.headerBounds.top) {
+		} else if (isAtTop) {
 		requestAnimationFrame(this.reset.bind(this));
 		}
 
 		this.currentScrollTop = scrollTop;
 	}
 
+	getDesktopLogoState() {
+		if (!window.matchMedia('(min-width: 1100px)').matches || !this.header) return null;
+		const logo = this.header.querySelector('.header__heading-link');
+		return logo ? { logo, rect: logo.getBoundingClientRect() } : null;
+	}
+
+	animateDesktopLogo(state) {
+		if (!state || typeof state.logo.animate !== 'function') return;
+		const nextRect = state.logo.getBoundingClientRect();
+		const deltaX = state.rect.left - nextRect.left;
+
+		if (Math.abs(deltaX) < 1) return;
+
+		if (typeof state.logo.getAnimations === 'function') {
+			state.logo.getAnimations().forEach((animation) => animation.cancel());
+		}
+		state.logo.animate(
+			[
+				{ transform: `translateX(${deltaX}px)` },
+				{ transform: 'translateX(0)' }
+			],
+			{
+				duration: 400,
+				easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+				fill: 'none'
+			}
+		);
+	}
+
 	hide() {
 		if (this.headerIsAlwaysSticky) return;		
 		if (document.querySelector(".overflow-hidden-tablet")) return;
-		this.header.classList.add('shopify-section-header-hidden', 'shopify-section-header-sticky');
+		const isDesktop = window.matchMedia('(min-width: 1100px)').matches;
+		const logoState = this.getDesktopLogoState();
+		if (isDesktop) {
+			this.header.classList.add('header--compact', 'shopify-section-header-sticky');
+			this.header.classList.remove('shopify-section-header-hidden');
+		} else {
+			this.header.classList.add('shopify-section-header-hidden', 'shopify-section-header-sticky');
+		}
+		this.animateDesktopLogo(logoState);
 		this.closeMenuDisclosure();
 	}
 
 	reveal() {
 		if (this.headerIsAlwaysSticky) return;
-		if (document.querySelector('.entering-section')) {
+		const isDesktop = window.matchMedia('(min-width: 1100px)').matches;
+		const logoState = this.getDesktopLogoState();
+		if (isDesktop) {
+			this.header.classList.add('shopify-section-header-sticky', 'animate');
+			this.header.classList.remove('header--compact', 'shopify-section-header-hidden');
+		} else if (document.querySelector('.entering-section')) {
 			this.header.classList.add('shopify-section-header-sticky', 'animate');
 			this.header.classList.remove('shopify-section-header-hidden');
 		}
@@ -201,14 +246,17 @@
 			this.header.classList.add('shopify-section-header-sticky', 'animate');
 			this.header.classList.remove('shopify-section-header-hidden','color-background-2');
 		}
+		this.animateDesktopLogo(logoState);
 	}
 
 	reset() {
 		if (this.headerIsAlwaysSticky) return;
-		this.header.classList.remove('shopify-section-header-hidden', 'shopify-section-header-sticky', 'animate');
+		const logoState = this.getDesktopLogoState();
+		this.header.classList.remove('header--compact', 'shopify-section-header-hidden', 'shopify-section-header-sticky', 'animate');
 		if (this.header.classList.contains('color-background-1')) {
 			this.header.classList.add('color-background-2');
 		};
+		this.animateDesktopLogo(logoState);
 	}
 
 	closeMenuDisclosure() {
