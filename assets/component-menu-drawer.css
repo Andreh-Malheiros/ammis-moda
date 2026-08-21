@@ -305,6 +305,96 @@ details[open] > .menu-drawer__submenu {
   }
 }
 
+/* The open drawer owns the complete mobile/tablet viewport. */
+@media screen and (max-width: 1099px) {
+  body:has(header-drawer details.menu-drawer-container.menu-opening) {
+    --announcement-height: 0px;
+    --countdown-bar-height: 0px;
+  }
+
+  body:has(header-drawer details.menu-drawer-container.menu-opening) .section-announcement,
+  body:has(header-drawer details.menu-drawer-container.menu-opening) .section-countdown-timer-bar {
+    display: none !important;
+    height: 0 !important;
+    visibility: hidden;
+  }
+
+  body:has(header-drawer details.menu-drawer-container.menu-opening) .shopify-section-header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 100;
+    width: 100%;
+    --color-background: 255, 255, 255;
+    --color-background-secondary: 255, 255, 255;
+    --color-foreground: 17, 17, 17;
+    --color-foreground-secondary: 17, 17, 17;
+    --color-border: 17, 17, 17;
+    --color-button-tertiary: 17, 17, 17;
+    --color-button-tertiary-text: 17, 17, 17;
+    --color-button-tertiary-hover: 17, 17, 17;
+    --color-button-tertiary-text-hover: 255, 255, 255;
+    color: #111111;
+    background-color: #fff;
+    transform: none !important;
+  }
+
+  body:has(header-drawer details.menu-drawer-container.menu-opening) .shopify-section-header .header {
+    color: #111111;
+    background-color: #fff;
+  }
+
+  body:has(header-drawer details.menu-drawer-container.menu-opening) .menu-drawer {
+    top: var(--header-height);
+    height: calc(100svh - var(--header-height));
+    height: calc(100dvh - var(--header-height));
+    max-height: calc(100svh - var(--header-height));
+    max-height: calc(100dvh - var(--header-height));
+    --color-background: 255, 255, 255;
+    --color-background-secondary: 255, 255, 255;
+    --color-foreground: 17, 17, 17;
+    --color-foreground-secondary: 17, 17, 17;
+    --color-border: 17, 17, 17;
+    --color-button-tertiary: 17, 17, 17;
+    --color-button-tertiary-text: 17, 17, 17;
+    --color-button-tertiary-hover: 17, 17, 17;
+    --color-button-tertiary-text-hover: 255, 255, 255;
+    color: #111111;
+    background-color: #fff;
+  }
+
+  body:has(header-drawer details.menu-drawer-container.menu-opening) .menu-drawer__inner-container,
+  body:has(header-drawer details.menu-drawer-container.menu-opening) .menu-drawer__navigation-container,
+  body:has(header-drawer details.menu-drawer-container.menu-opening) .menu-drawer__submenu,
+  body:has(header-drawer details.menu-drawer-container.menu-opening) .menu-drawer__inner-submenu {
+    --color-background: 255, 255, 255;
+    --color-background-secondary: 255, 255, 255;
+    --color-foreground: 17, 17, 17;
+    --color-foreground-secondary: 17, 17, 17;
+    --color-border: 17, 17, 17;
+    color: #111111;
+    background-color: #fff;
+  }
+
+  body:has(header-drawer details.menu-drawer-container.menu-opening) .menu-drawer__navigation-container {
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body:has(header-drawer details.menu-drawer-container.menu-opening) .menu-drawer__navigation {
+    flex: 1 0 auto;
+    min-height: 0;
+  }
+
+  body:has(header-drawer details.menu-drawer-container.menu-opening) .ammis-mobile-menu__promo,
+  body:has(header-drawer details.menu-drawer-container.menu-opening) .menu-drawer__utility-links,
+  body:has(header-drawer details.menu-drawer-container.menu-opening) .menu-drawer__bottom {
+    flex-shrink: 0;
+  }
+}
+
 /* ==========================================================
    AMMIS — experiência do menu enquanto o drawer estiver ativo
    O menu desktop/mega menu começa em 1100px.

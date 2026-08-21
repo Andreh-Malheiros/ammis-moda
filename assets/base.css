@@ -3272,6 +3272,62 @@ body.body--hidden {
   display: block;
 }
 
+@media screen and (max-width: 1099px) {
+  body:has(header-drawer details.menu-drawer-container.menu-opening)
+    .shopify-section-header
+    .header__heading-logo:not(.search__header .header__heading-logo) {
+    display: block;
+  }
+
+  body:has(header-drawer details.menu-drawer-container.menu-opening)
+    .shopify-section-header
+    .header__heading-logo--overlay:not(.search__header .header__heading-logo):not(:only-child) {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  /* A revealed header and an active desktop submenu use the solid light surface. */
+  .shopify-section-header:is(
+    .shopify-section-header-sticky:not(.header--compact):not(.shopify-section-header-hidden),
+    :has(.header__inline-menu .list-menu-item.list-menu--megamenu:hover),
+    :has(.header__inline-menu .list-menu-item.list-menu--megamenu:focus-within)
+  ) {
+    --color-foreground: 17, 17, 17;
+    --color-foreground-secondary: 17, 17, 17;
+    --color-foreground-title: 17, 17, 17;
+    --color-link: 17, 17, 17;
+    --color-border: 17, 17, 17;
+    color: #111111;
+    background-color: #fff;
+  }
+
+  .shopify-section-header:is(
+    .shopify-section-header-sticky:not(.header--compact):not(.shopify-section-header-hidden),
+    :has(.header__inline-menu .list-menu-item.list-menu--megamenu:hover),
+    :has(.header__inline-menu .list-menu-item.list-menu--megamenu:focus-within)
+  ) .header {
+    color: #111111;
+    background-color: #fff;
+  }
+
+  .shopify-section-header:is(
+    .shopify-section-header-sticky:not(.header--compact):not(.shopify-section-header-hidden),
+    :has(.header__inline-menu .list-menu-item.list-menu--megamenu:hover),
+    :has(.header__inline-menu .list-menu-item.list-menu--megamenu:focus-within)
+  ) .header__heading-logo:not(.search__header .header__heading-logo) {
+    display: block;
+  }
+
+  .shopify-section-header:is(
+    .shopify-section-header-sticky:not(.header--compact):not(.shopify-section-header-hidden),
+    :has(.header__inline-menu .list-menu-item.list-menu--megamenu:hover),
+    :has(.header__inline-menu .list-menu-item.list-menu--megamenu:focus-within)
+  ) .header__heading-logo--overlay:not(.search__header .header__heading-logo):not(:only-child) {
+    display: none;
+  }
+}
+
 .shopify-section-header-sticky {
   position: sticky;
   top: 0;
