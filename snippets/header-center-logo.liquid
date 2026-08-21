@@ -1,6 +1,5 @@
 {% liquid
     assign enable_burger_menu = false
-    assign new_in_menu = linklists['new-in']
     for block in section.blocks
         if block.type == 'burger_menu'
             assign enable_burger_menu = true
@@ -24,10 +23,50 @@
                         assign mega_menu = false
                         assign mega_menu_list = false
                         assign mega_menu_blocks = false
+                        assign has_native_submenu = false
+                        if link.links != blank
+                            assign has_native_submenu = true
+                        endif
+                        assign has_external_submenu = false
+                        assign external_submenu = blank
+                        assign link_handle = link.handle | handle | strip
+                        assign link_title_handle = link.title | handle | strip
+                        assign current_menu_handle = section.settings.menu.handle | strip
+                        assign is_new_in_item = false
+                        if link_handle == 'inicio' or link_handle == 'home' or link_title_handle == 'inicio' or link_title_handle == 'home'
+                            assign is_new_in_item = true
+                        endif
+                        if has_native_submenu == false and is_new_in_item
+                            assign external_submenu = linklists['new-in']
+                            if external_submenu != blank and external_submenu.links != blank and external_submenu.handle != current_menu_handle
+                                assign has_external_submenu = true
+                            else
+                                assign external_submenu = blank
+                            endif
+                        endif
+                        assign external_menu_handle = link_title_handle
+                        assign external_menu_candidate = linklists[external_menu_handle]
+                        if has_native_submenu == false and has_external_submenu == false and external_menu_handle != blank and external_menu_candidate != blank and external_menu_candidate.links != blank and external_menu_candidate.handle != current_menu_handle
+                            assign external_submenu = external_menu_candidate
+                            assign has_external_submenu = true
+                        endif
+                        if has_native_submenu == false and has_external_submenu == false and link_handle != blank and link_handle != external_menu_handle
+                            assign external_menu_handle = link_handle
+                            assign external_menu_candidate = linklists[external_menu_handle]
+                            if external_menu_candidate != blank and external_menu_candidate.links != blank and external_menu_candidate.handle != current_menu_handle
+                                assign external_submenu = external_menu_candidate
+                                assign has_external_submenu = true
+                            endif
+                        endif
+                        assign has_submenu = false
+                        if has_native_submenu or has_external_submenu
+                            assign has_submenu = true
+                        endif
+                        assign shopify_attributes = blank
                     %}
                     
                     {%- comment -%} VERIFICA SE O LINK TEM SUBMENU NATIVO DO SHOPIFY {%- endcomment -%}
-                    {%- if link.links != blank -%}
+                    {%- if has_submenu -%}
                         {% if section.blocks.size > 0 %}
                             {% for block in section.blocks %}
                                 {% liquid
@@ -35,17 +74,17 @@
                                     assign mega_menu_list_trigger = block.settings.mega_menu_list_trigger | handle | strip
                                     assign mega_menu_blocks_trigger = block.settings.mega_menu_blocks_trigger | handle | strip
 
-                                    if link.handle == mega_menu_trigger
+                                    if mega_menu_trigger != blank and link_handle == mega_menu_trigger
                                         assign mega_menu = true
                                         assign mega_menu_list = false
                                         assign mega_menu_blocks = false
                                         assign shopify_attributes = block.shopify_attributes
-                                    elsif link.handle == mega_menu_list_trigger
+                                    elsif mega_menu_list_trigger != blank and link_handle == mega_menu_list_trigger
                                         assign mega_menu_list = true
                                         assign mega_menu = false
                                         assign mega_menu_blocks = false
                                         assign shopify_attributes = block.shopify_attributes
-                                    elsif link.handle == mega_menu_blocks_trigger
+                                    elsif mega_menu_blocks_trigger != blank and link_handle == mega_menu_blocks_trigger
                                         assign mega_menu_blocks = true
                                         assign mega_menu_list = false
                                         assign mega_menu = false
@@ -54,7 +93,7 @@
                                 %}
                             {% endfor %}
                         {% endif %}
-                        <li class='list-menu-item {% if mega_menu or mega_menu_blocks or mega_menu_list %}list-menu--megamenu {% else %}list-menu--submenu{% endif %}' {{ shopify_attributes }}>
+                        <li class='list-menu-item list-menu--megamenu' {{ shopify_attributes }}>
                             {% if mega_menu %}
                                 {% render 'mega-menu', link: link, blocks: section.blocks %}
                             {% endif %}
@@ -64,64 +103,20 @@
                                 </span>
                             </a>
                             {% if mega_menu == false %}
-                                {% render 'submenu', link: link %}
+                                {% render 'submenu', link: link, external_menu: external_submenu %}
                             {% endif %}
                         </li>
                     
-                    {%- comment -%} SE NÃO TEM SUBMENU NATIVO, RENDERIZA COMO LINK SIMPLES (E INJETA O MENU SUSPENSO NO INÍCIO) {%- endcomment -%}
                     {%- else -%}
-                        {% liquid 
-                            assign is_inicio = false
-                            if link.title == 'INÍCIO' or link.title == 'Início' or link.title == 'Home'
-                                assign is_inicio = true
-                            endif 
-                        %}
-                        
-                        <li class='list-menu-item {% if is_inicio and new_in_menu != blank %}list-menu--submenu list-menu--new-in{% endif %}'>
+                        <li class='list-menu-item'>
                             <a href='{{ link.url }}' class='header__menu-item list-menu__item link focus-inset {%- if link.active %} header__active-menu-item{% endif %}' {% if link.current %} aria-current='page' {% endif %} aria-label='{{ link.title | escape }}'>
                                 <span class='list-menu-line link-hover-line' title='{{ link.title | escape }}'>
                                     {{ link.title | escape }}
                                 </span>
                             </a>
-                            
-                            {%- comment -%} INJETA O MENU DE CATEGORIAS GLOBAIS APENAS NO BOTÃO INÍCIO {%- endcomment -%}
-                            {%- if is_inicio and new_in_menu != blank -%}
-                                <div class="header__submenu new-in-submenu">
-                                    <ul class="list-menu" role="list">
-                                        <li class="list-menu-item">
-                                            <a class="list-menu__item link focus-inset" href="/collections/all">
-                                                <span class="list-menu-line link-hover-line">VER TUDO</span>
-                                            </a>
-                                        </li>
-                                        {%- assign base_links = new_in_menu.links -%}
-                                        {%- if new_in_menu.links.size == 1 and new_in_menu.links[0].links != blank -%}
-                                            {%- assign base_links = new_in_menu.links[0].links -%}
-                                        {%- endif -%}
-
-                                        {%- for l1 in base_links -%}
-                                            <li class="list-menu-item new-in-group">
-                                                <span class="new-in-title">{{ l1.title | escape }}</span>
-                                                {%- if l1.links != blank -%}
-                                                    <ul class="list-menu new-in-children" role="list">
-                                                        {%- for l2 in l1.links -%}
-                                                            <li class="list-menu-item">
-                                                                <a class="list-menu__item link focus-inset" href="{{ l2.url }}">
-                                                                    <span class="list-menu-line link-hover-line">{{ l2.title | escape }}</span>
-                                                                </a>
-                                                            </li>
-                                                        {%- endfor -%}
-                                                    </ul>
-                                                {%- endif -%}
-                                            </li>
-                                        {%- endfor -%}
-                                    </ul>
-                                </div>
-                            {%- endif -%}
                         </li>
                     {%- endif -%}
                 {%- endfor -%}
-
-                {%- comment -%} BOTÃO NEW IN FIXO (LIMPO E APONTANDO PARA A COLEÇÃO NOVA) {%- endcomment -%}
 
             </ul>
         {%- endif -%}

@@ -11,13 +11,12 @@
 
   {% if template.name == 'index' and section.settings.enable_bar %}
     #shopify-section-{{ section.id }} {
-      position: sticky;
-      top: 0;
+      position: relative;
       z-index: 13;
     }
 
     .shopify-section-header-sticky {
-      top: var(--announcement-height);
+      top: 0;
     }
 
     .ammis-announcement__content {

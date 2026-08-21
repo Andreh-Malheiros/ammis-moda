@@ -1,12 +1,10 @@
 {% liquid
-  assign enable_burger_menu = false
-  assign new_in_menu = linklists['new-in']
-
-  for block in section.blocks
-    if block.type == 'burger_menu'
-      assign enable_burger_menu = true
-    endif
-  endfor
+	assign enable_burger_menu = false
+	for block in section.blocks
+		if block.type == 'burger_menu'
+			assign enable_burger_menu = true
+		endif
+	endfor
 %}
 
 {%- if section.settings.menu != blank or enable_burger_menu -%}
@@ -14,24 +12,65 @@
 {%- endif -%}
 
 <div class='menu_left_block'>
-	{% render 'desktop-burger-menu' %}
-
-	{% render 'header-logo', tag: 'h1' %}
+	<div class='header-left-logo__brand'>
+		{% render 'desktop-burger-menu' %}
+		{% render 'header-logo', tag: 'h1' %}
+	</div>
 
 	<nav class='header__inline-menu'>
 		{%- if section.settings.menu != blank -%}
 			<ul class='list-menu list-menu--inline' role='list'>
 				{%- for link in section.settings.menu.links -%}
 					{% liquid
-						assign mega_menu = false
+							assign mega_menu = false
+							assign has_native_submenu = false
+							if link.links != blank
+								assign has_native_submenu = true
+							endif
+							assign has_external_submenu = false
+							assign external_submenu = blank
+							assign link_handle = link.handle | handle | strip
+							assign link_title_handle = link.title | handle | strip
+							assign current_menu_handle = section.settings.menu.handle | strip
+							assign is_new_in_item = false
+							if link_handle == 'inicio' or link_handle == 'home' or link_title_handle == 'inicio' or link_title_handle == 'home'
+								assign is_new_in_item = true
+							endif
+							if has_native_submenu == false and is_new_in_item
+								assign external_submenu = linklists['new-in']
+								if external_submenu != blank and external_submenu.links != blank and external_submenu.handle != current_menu_handle
+									assign has_external_submenu = true
+								else
+									assign external_submenu = blank
+								endif
+							endif
+							assign external_menu_handle = link_title_handle
+							assign external_menu_candidate = linklists[external_menu_handle]
+							if has_native_submenu == false and has_external_submenu == false and external_menu_handle != blank and external_menu_candidate != blank and external_menu_candidate.links != blank and external_menu_candidate.handle != current_menu_handle
+								assign external_submenu = external_menu_candidate
+								assign has_external_submenu = true
+							endif
+							if has_native_submenu == false and has_external_submenu == false and link_handle != blank and link_handle != external_menu_handle
+								assign external_menu_handle = link_handle
+								assign external_menu_candidate = linklists[external_menu_handle]
+								if external_menu_candidate != blank and external_menu_candidate.links != blank and external_menu_candidate.handle != current_menu_handle
+									assign external_submenu = external_menu_candidate
+									assign has_external_submenu = true
+								endif
+							endif
+							assign has_submenu = false
+							if has_native_submenu or has_external_submenu
+								assign has_submenu = true
+							endif
+							assign shopify_attributes = blank
 					%}
-					{%- if link.links != blank -%}
+						{%- if has_submenu -%}
 						{% if section.blocks.size > 0 %}
 							{% for block in section.blocks %}
 								{% liquid
 									assign mega_menu_trigger = block.settings.mega_menu_trigger | handle | strip
 
-									if link.handle == mega_menu_trigger
+									if mega_menu_trigger != blank and link_handle == mega_menu_trigger
 										assign mega_menu = true
 										assign shopify_attributes = block.shopify_attributes
 									endif
@@ -39,7 +78,7 @@
 							{% endfor %}
 						{% endif %}
 						<li
-							class='list-menu-item {% if mega_menu %}list-menu--megamenu {% else %}list-menu--submenu{% endif %}'
+							class='list-menu-item list-menu--megamenu'
 							{{ shopify_attributes }}
 						>
 							{% if mega_menu %}
@@ -61,7 +100,7 @@
 								</span>
 							</a>
 							{% if mega_menu == false %}
-								{% render 'submenu', link: link %}
+								{% render 'submenu', link: link, external_menu: external_submenu %}
 							{% endif %}
 						</li>
 					{%- else -%}
