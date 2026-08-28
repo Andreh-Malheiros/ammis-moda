@@ -209,7 +209,7 @@
       },
       "7322671195855991875": {
         "type": "shopify://apps/discount-mixer/blocks/discount-view/791c666a-e939-4fd3-bdd3-b122066bb588",
-        "disabled": false,
+        "disabled": true,
         "settings": {
           "discounted-price-background-color": "#000000",
           "card-discounted-price-font-size": 16,
