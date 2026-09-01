@@ -31,13 +31,12 @@
             "enable_fullscreen_link": true
           }
         },
-        "slideshow_item_gjAiCC": {
+        "slideshow_item_F6EnkM": {
           "type": "slideshow-item",
-          "disabled": true,
           "settings": {
-            "image": "shopify://shop_images/DESKTOP_S__FRETE.png",
-            "mobile_image": "shopify://shop_images/MOBILE_S__FRETE.png",
-            "overlay_opacity": 0.2,
+            "image": "shopify://shop_images/DESKTOP_3x_c4970e3a-cd54-492c-b474-c9b4694a2a64.png",
+            "mobile_image": "shopify://shop_images/MOBILE__2.png",
+            "overlay_opacity": 0,
             "show_video": false,
             "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
             "description_video": "",
@@ -46,7 +45,7 @@
             "tab_subheading": "",
             "tab_heading": "",
             "button_label": "",
-            "button_link": "shopify://collections/soleil",
+            "button_link": "shopify://collections/euro-summer",
             "button_style": "tertiary",
             "enable_fullscreen_link": true
           }
@@ -70,12 +69,13 @@
             "enable_fullscreen_link": true
           }
         },
-        "slideshow_item_F6EnkM": {
+        "slideshow_item_gjAiCC": {
           "type": "slideshow-item",
+          "disabled": true,
           "settings": {
-            "image": "shopify://shop_images/DESKTOP_3x_c4970e3a-cd54-492c-b474-c9b4694a2a64.png",
-            "mobile_image": "shopify://shop_images/MOBILE__2.png",
-            "overlay_opacity": 0,
+            "image": "shopify://shop_images/DESKTOP_S__FRETE.png",
+            "mobile_image": "shopify://shop_images/MOBILE_S__FRETE.png",
+            "overlay_opacity": 0.2,
             "show_video": false,
             "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
             "description_video": "",
@@ -84,7 +84,7 @@
             "tab_subheading": "",
             "tab_heading": "",
             "button_label": "",
-            "button_link": "shopify://collections/euro-summer",
+            "button_link": "shopify://collections/soleil",
             "button_style": "tertiary",
             "enable_fullscreen_link": true
           }
@@ -132,9 +132,9 @@
       },
       "block_order": [
         "slideshow_item_RTqjtc",
-        "slideshow_item_gjAiCC",
-        "slideshow_item_MfifAE",
         "slideshow_item_F6EnkM",
+        "slideshow_item_MfifAE",
+        "slideshow_item_gjAiCC",
         "slideshow_item_KTNKJ6",
         "slideshow_item_Hw484i"
       ],
