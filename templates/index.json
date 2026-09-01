@@ -33,6 +33,7 @@
         },
         "slideshow_item_gjAiCC": {
           "type": "slideshow-item",
+          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/DESKTOP_S__FRETE.png",
             "mobile_image": "shopify://shop_images/MOBILE_S__FRETE.png",
@@ -71,7 +72,6 @@
         },
         "slideshow_item_F6EnkM": {
           "type": "slideshow-item",
-          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/DESKTOP_3x_c4970e3a-cd54-492c-b474-c9b4694a2a64.png",
             "mobile_image": "shopify://shop_images/MOBILE__2.png",
