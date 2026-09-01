@@ -14,10 +14,9 @@
       "blocks": {
         "slideshow_item_RTqjtc": {
           "type": "slideshow-item",
-          "disabled": true,
           "settings": {
-            "image": "shopify://shop_images/DESKTOP_3.png",
-            "mobile_image": "shopify://shop_images/MOBILE__1.png",
+            "image": "shopify://shop_images/DESKTOP__2x_fda2e0f0-2104-447e-b118-7b5b3fd308be.png",
+            "mobile_image": "shopify://shop_images/MOBILE_2.png",
             "overlay_opacity": 0.2,
             "show_video": false,
             "video_url": "",
