@@ -254,16 +254,6 @@
             "description": ""
           }
         },
-        "product_slide_jDfYeN": {
-          "type": "product_slide",
-          "settings": {
-            "product": "blusa-ipanema",
-            "image": "{{ block.settings.product.featured_image }}",
-            "color_scheme": "",
-            "overlay_opacity": 0,
-            "description": ""
-          }
-        },
         "product_slide_rrxjNH": {
           "type": "product_slide",
           "settings": {
@@ -273,13 +263,23 @@
             "overlay_opacity": 0.1,
             "description": ""
           }
+        },
+        "product_slide_jDfYeN": {
+          "type": "product_slide",
+          "settings": {
+            "product": "calca-enseada",
+            "image": "{{ block.settings.product.featured_image }}",
+            "color_scheme": "",
+            "overlay_opacity": 0,
+            "description": ""
+          }
         }
       },
       "block_order": [
         "product_slide_3Wwhf8",
         "product_slide_kraGFd",
-        "product_slide_jDfYeN",
-        "product_slide_rrxjNH"
+        "product_slide_rrxjNH",
+        "product_slide_jDfYeN"
       ],
       "settings": {
         "image_size": "adapt",
