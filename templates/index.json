@@ -213,7 +213,7 @@
           "casaco-enseada",
           "colete-manaca",
           "camisa-manga-comprida-serra",
-          "blazer-enseada"
+          "camisa-ipe"
         ],
         "products_to_show": 4,
         "image_ratio": "portrait",
@@ -247,7 +247,7 @@
         "product_slide_jDfYeN": {
           "type": "product_slide",
           "settings": {
-            "product": "camisa-ipe",
+            "product": "blusa-ipanema",
             "image": "{{ block.settings.product.featured_image }}",
             "color_scheme": "",
             "overlay_opacity": 0,
