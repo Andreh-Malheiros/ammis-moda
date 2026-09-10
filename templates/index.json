@@ -252,13 +252,13 @@
             "description": ""
           }
         },
-        "product_slide_rrxjNH": {
+        "product_slide_jDfYeN": {
           "type": "product_slide",
           "settings": {
-            "product": "calca-orquidea",
+            "product": "camisa-ipe",
             "image": "{{ block.settings.product.featured_image }}",
-            "color_scheme": "background-2",
-            "overlay_opacity": 0.1,
+            "color_scheme": "",
+            "overlay_opacity": 0,
             "description": ""
           }
         },
@@ -272,22 +272,22 @@
             "description": ""
           }
         },
-        "product_slide_jDfYeN": {
+        "product_slide_rrxjNH": {
           "type": "product_slide",
           "settings": {
-            "product": "camisa-ipe",
+            "product": "calca-orquidea",
             "image": "{{ block.settings.product.featured_image }}",
-            "color_scheme": "",
-            "overlay_opacity": 0,
+            "color_scheme": "background-2",
+            "overlay_opacity": 0.1,
             "description": ""
           }
         }
       },
       "block_order": [
         "product_slide_kraGFd",
-        "product_slide_rrxjNH",
+        "product_slide_jDfYeN",
         "product_slide_3Wwhf8",
-        "product_slide_jDfYeN"
+        "product_slide_rrxjNH"
       ],
       "settings": {
         "image_size": "adapt",
