@@ -245,7 +245,7 @@
         "product_slide_kraGFd": {
           "type": "product_slide",
           "settings": {
-            "product": "body-carneiros",
+            "product": "vestido-enseada",
             "image": "{{ block.settings.product.featured_image }}",
             "color_scheme": "background-2",
             "overlay_opacity": 0,
@@ -275,7 +275,7 @@
         "product_slide_jDfYeN": {
           "type": "product_slide",
           "settings": {
-            "product": "camisa-bordada-ipe",
+            "product": "camisa-ipe",
             "image": "{{ block.settings.product.featured_image }}",
             "color_scheme": "",
             "overlay_opacity": 0,
