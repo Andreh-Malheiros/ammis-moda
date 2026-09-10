@@ -217,11 +217,11 @@
           "blazer-enseada",
           "calca-enseada",
           "blusa-decote-serra",
-          "vestido-enseada",
-          "vestido-duna-curto",
+          "saia-curta-trancoso",
           "camisa-patacho",
           "echarpe-caraiva",
-          "saia-curta-trancoso"
+          "vestido-duna-curto",
+          "vestido-enseada"
         ],
         "products_to_show": 4,
         "image_ratio": "portrait",
@@ -265,7 +265,7 @@
         "product_slide_3Wwhf8": {
           "type": "product_slide",
           "settings": {
-            "product": "vestido-carneiros",
+            "product": "chemise-ipe",
             "image": "{{ block.settings.product.featured_image }}",
             "color_scheme": "",
             "overlay_opacity": 0,
