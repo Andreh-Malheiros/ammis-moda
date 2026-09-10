@@ -218,7 +218,10 @@
           "vestido-duna-curto",
           "echarpe-caraiva",
           "saia-curta-trancoso",
-          "camisa-patacho"
+          "camisa-patacho",
+          "blusa-decote-serra",
+          "calca-enseada",
+          "vestido-enseada"
         ],
         "products_to_show": 4,
         "image_ratio": "portrait",
