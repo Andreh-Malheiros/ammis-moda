@@ -326,9 +326,10 @@
         "category_VbUHmz": {
           "type": "category",
           "settings": {
+            "image": "shopify://shop_images/FOTO_SITE_1080_x_1350_px_-_2026-09-03T171818.711.jpg",
             "title": "Novidades",
             "text": "Os lançamentos mais recentes da curadoria AMMIS.",
-            "link": "shopify://collections/euro-summer",
+            "link": "shopify://collections/soleil",
             "cta_label": "shop now"
           }
         },
