@@ -213,8 +213,8 @@
       const isDesktop = window.matchMedia('(min-width: 1100px)').matches;
       const logoState = this.getDesktopLogoState();
       if (isDesktop) {
-        this.header.classList.add('header--compact', 'shopify-section-header-sticky');
-        this.header.classList.remove('shopify-section-header-hidden');
+        this.header.classList.add('shopify-section-header-sticky');
+        this.header.classList.remove('header--compact', 'shopify-section-header-hidden');
       } else {
         this.header.classList.add('shopify-section-header-hidden', 'shopify-section-header-sticky');
       }
