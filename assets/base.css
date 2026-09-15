@@ -3299,7 +3299,6 @@ body.body--hidden {
     --color-link: 17, 17, 17;
     color: #111111;
     background-color: #fff;
-    padding: 1rem;
   }
 
   .shopify-section-header:is(
