@@ -83,7 +83,7 @@
 {% assign template_base = template | split: '.' | first %}
 
 {% unless template_base == 'customers/login' or template_base == 'customers/register' %}
-  <{% if section.settings.sticky_header_type != 'none' %}sticky-header data-sticky-type="{{ section.settings.sticky_header_type }}"{% else %}div{% endif %} class="header-wrapper {% if section.settings.enable_border %}header--border{% endif %}">
+  <{% if section.settings.sticky_header_type != 'none' %}sticky-header data-sticky-type="{{ section.settings.sticky_header_type }}"{% else %}div{% endif %} class="header-wrapper">
     <header class=" {% if section.settings.sticky_header_type != 'none' and section.settings.header_type == 'center-logo-burger' %} header-always {% endif %} header header--{{ section.settings.header_type }} {% if section.settings.menu != blank %}header--has-menu{% endif %} {% if section.settings.header_animation_type == 'slide' %} header-animation-slide {% endif %} container">
       {% if section.settings.header_type == 'left-logo' %}
         {% render 'header-left-logo' %}
