@@ -3538,7 +3538,7 @@ body.body--hidden {
   display: block;
   height: 0.1rem;
   width: 100%;
-  background-color: rgb(var(--color-border));
+  background-color: transparent !important;
   transition: background var(--duration-short);
   pointer-events: none;
   z-index: 2;
