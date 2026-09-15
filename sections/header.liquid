@@ -147,7 +147,7 @@
         this.header.style.transform = 'translateY(-100%)';
       }
 
-      if (this.headerIsAlwaysSticky && scrollTop > this.header.offsetHeight + 2) {
+      if (this.headerIsAlwaysSticky && scrollTop > this.header.offsetHeight + 1) {
         this.header.classList.remove('color-background-2');
         this.header.style.transition = 'background var(--duration-short)';
         this.header.style.transform = 'translateY(0)';
