@@ -3531,18 +3531,18 @@ body.body--hidden {
   background-color: rgb(var(--color-border));
   border-radius: 2rem;
 }
-.header--border::before {
+/* .header--border::before {
   position: absolute;
   content: "";
   bottom: 0;
   display: block;
-  height: 0rem;
+  height: 0.1rem;
   width: 100%;
   background-color: rgb(var(--color-border));
   transition: background var(--duration-short);
   pointer-events: none;
   z-index: 2;
-}
+} */
 .header--left-logo {
   display: flex;
   align-items: center;
