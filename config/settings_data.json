@@ -38,7 +38,7 @@
     "badge_sale_show": true,
     "badge_sale_type": "percentage",
     "badge_soldout_text_color": "#000000",
-    "badge_custom_show": false,
+    "badge_custom_show": true,
     "on_hover": "hover",
     "type_color_swatch": "standart",
     "swatch_type": "variant_image",
