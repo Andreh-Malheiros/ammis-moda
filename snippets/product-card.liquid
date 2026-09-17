@@ -243,6 +243,7 @@
             {%- elsif product_card_product.compare_at_price > product_card_product.price
               and product_card_product.available
               and settings.badge_sale_show
+              and product_card_product.metafields.custom.badges == blank
             -%}
               <span
                 class="subtitle badge badge--sale {% if settings.badges_background %} badge-transparent {% endif %}"
