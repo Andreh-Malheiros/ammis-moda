@@ -42,6 +42,13 @@
       if (total) total.textContent = formatMoney(basePrice + additions, currency, locale);
     }
 
+    function syncSelectedCards(group) {
+      group.querySelectorAll('[data-configurator-option]').forEach((control) => {
+        const card = control.closest('.product-configurator__choice')?.querySelector('[data-configurator-card]');
+        if (card) card.dataset.selected = control.checked ? 'true' : 'false';
+      });
+    }
+
     function setSelection(group, code, label, extra) {
       const groupCode = group.dataset.groupCode;
       if (!code) {
@@ -49,6 +56,7 @@
       } else {
         state.set(groupCode, { code, label, extra: Number(extra) || 0 });
       }
+      syncSelectedCards(group);
 
       const property = group.querySelector('[data-configurator-property]');
       const privateCode = group.querySelector('[data-configurator-code]');
@@ -83,6 +91,7 @@
         const select = group.querySelector('[data-configurator-select]');
         if (select) select.value = '';
       }
+      syncSelectedCards(group);
 
       const property = group.querySelector('[data-configurator-property]');
       const privateCode = group.querySelector('[data-configurator-code]');
@@ -154,6 +163,7 @@
 
     root.addEventListener('change', (event) => updateFromControl(event.target));
     document.addEventListener('ammis:configurator:selection', (event) => applyPeerSelection(event.detail));
+    root.querySelectorAll('[data-configurator-group]').forEach(syncSelectedCards);
 
     section?.addEventListener('change', (event) => {
       if (event.target.closest?.('variant-radios')) updateBasePrice();

@@ -91,14 +91,14 @@
   border-color: rgb(var(--color-foreground));
 }
 
-.product-configurator__radio:checked + .product-configurator__option {
+.product-configurator .product-configurator__option[data-selected="true"] {
   background-color: rgba(var(--color-foreground), 0.06);
   border: 2px solid rgb(var(--color-foreground));
   box-shadow: inset 0 0 0 1px rgb(var(--color-background));
   padding: calc(0.9rem - 1px) calc(1.2rem - 1px);
 }
 
-.product-configurator__radio:checked + .product-configurator__option::after {
+.product-configurator .product-configurator__option[data-selected="true"]::after {
   align-items: center;
   background: rgb(var(--color-foreground));
   border-radius: 50%;
