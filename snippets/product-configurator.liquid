@@ -87,7 +87,7 @@
                     data-extra-cents="{{ option_extra }}"
                     {% unless option_available %}disabled{% endunless %}
                   >
-                    {{ option_name | escape }}{% if block.settings.show_additions and option_extra > 0 %} +{{ option.price_addition.value | money }}{% endif %}{% unless option_available %} — Indisponível{% endunless %}
+                    {{ option_name | escape }}{% if block.settings.show_additions %} +{{ option_extra | money }}{% endif %}{% unless option_available %} — Indisponível{% endunless %}
                   </option>
                 {% endfor %}
               </select>
@@ -131,8 +131,8 @@
                     {% endif %}
                     <span class="product-configurator__option-copy">
                       <span class="product-configurator__option-name">{{ option_name | escape }}</span>
-                      {% if block.settings.show_additions and option_extra > 0 %}
-                        <span class="product-configurator__option-price">+{{ option.price_addition.value | money }}</span>
+                      {% if block.settings.show_additions %}
+                        <span class="product-configurator__option-price">+{{ option_extra | money }}</span>
                       {% endif %}
                       {% if block.settings.show_descriptions and option.description.value != blank %}
                         <span class="product-configurator__option-description">{{ option.description.value | escape }}</span>
