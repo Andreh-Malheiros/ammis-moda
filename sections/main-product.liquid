@@ -319,6 +319,9 @@
             {%- assign product_form_id = 'product-form-' | append: section.id -%}
             {%- for block in section.blocks -%}
               {%- case block.type -%}
+                {%- when 'product_configurator' -%}
+                  {% render 'product-configurator', product: product, product_form_id: product_form_id, section: section, block: block %}
+
                 {%- when 'text' -%}
                   <div class="product__text subtitle" {{ block.shopify_attributes }}>
                     {% if block.settings.text != blank %}
@@ -1964,6 +1967,66 @@
       "type": "price",
       "name": "t:sections.main-product.blocks.price.name",
       "limit": 1
+    },
+    {
+      "type": "product_configurator",
+      "name": "Configurador de produto",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Personalize sua peça",
+          "label": "Título do configurador"
+        },
+        {
+          "type": "richtext",
+          "id": "intro",
+          "label": "Texto introdutório"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_base_price",
+          "default": true,
+          "label": "Mostrar preço base"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_customization_subtotal",
+          "default": true,
+          "label": "Mostrar subtotal das personalizações"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_summary",
+          "default": true,
+          "label": "Mostrar resumo e total estimado"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_descriptions",
+          "default": true,
+          "label": "Mostrar descrições"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_images",
+          "default": true,
+          "label": "Mostrar imagens das opções"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_additions",
+          "default": true,
+          "label": "Mostrar acréscimos demonstrativos"
+        },
+        {
+          "type": "text",
+          "id": "summary_title",
+          "default": "Sua configuração",
+          "label": "Título do resumo"
+        }
+      ]
     },
     {
       "type": "description",
