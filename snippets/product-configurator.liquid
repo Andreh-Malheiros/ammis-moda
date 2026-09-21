@@ -59,7 +59,11 @@
           aria-describedby="{{ group_error_id }}"
         >
           <legend class="product-configurator__legend">
-            {{ group_title | escape }}{% if group_required %}<span aria-hidden="true"> *</span><span class="visually-hidden"> (obrigatório)</span>{% endif %}
+            <span class="product-configurator__step-number" aria-hidden="true">{{ forloop.index }}</span>
+            <span class="product-configurator__step-copy">
+              <span class="product-configurator__step-label">Etapa {{ forloop.index }}</span>
+              <span class="product-configurator__step-title">Escolha {{ group_title | downcase | escape }}{% if group_required %}<span aria-hidden="true"> *</span><span class="visually-hidden"> (obrigatório)</span>{% endif %}</span>
+            </span>
           </legend>
           {% if block.settings.show_descriptions and group.description.value != blank %}
             <p class="product-configurator__description">{{ group.description.value | escape }}</p>
@@ -155,14 +159,17 @@
     </div>
 
     {% if block.settings.show_summary %}
-      <section class="product-configurator__summary" aria-labelledby="ConfiguratorSummaryTitle-{{ section.id }}-{{ block.id }}">
+      <section class="product-configurator__summary product-configurator__preview" aria-labelledby="ConfiguratorSummaryTitle-{{ section.id }}-{{ block.id }}">
+        <p class="product-configurator__preview-label">Pré-visualização da personalização</p>
         <h3 class="product-configurator__summary-title" id="ConfiguratorSummaryTitle-{{ section.id }}-{{ block.id }}">{{ block.settings.summary_title | escape }}</h3>
+        <p class="product-configurator__product-name"><span>Produto:</span> {{ product.title | escape }}</p>
         <ul class="product-configurator__selection-list" aria-live="polite" aria-atomic="true">
           {% for group in configurator_groups %}
             {% assign group_code = group.code.value | default: group.system.handle %}
             <li data-configurator-selection-row="{{ group_code | escape }}">
-              <span>{{ group.title.value | escape }}</span>
-              <span data-configurator-selection-value>Não selecionado</span>
+              <span class="product-configurator__selection-name">{{ group.title.value | escape }}</span>
+              <span class="product-configurator__selection-value" data-configurator-selection-value>Não selecionado</span>
+              <span class="product-configurator__selection-extra" data-configurator-selection-extra></span>
             </li>
           {% endfor %}
         </ul>

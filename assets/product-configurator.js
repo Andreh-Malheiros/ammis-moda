@@ -49,6 +49,16 @@
       });
     }
 
+    function renderSelectionPreview(groupCode, code, label, extra) {
+      const row = root.querySelector(`[data-configurator-selection-row="${CSS.escape(groupCode)}"]`);
+      if (!row) return;
+
+      const value = row.querySelector('[data-configurator-selection-value]');
+      const addition = row.querySelector('[data-configurator-selection-extra]');
+      if (value) value.textContent = code ? label : 'Não selecionado';
+      if (addition) addition.textContent = code ? `+${formatMoney(Number(extra) || 0, currency, locale)}` : '';
+    }
+
     function setSelection(group, code, label, extra) {
       const groupCode = group.dataset.groupCode;
       if (!code) {
@@ -67,8 +77,7 @@
       if (error) error.hidden = true;
       group.setAttribute('aria-invalid', 'false');
       group.querySelectorAll('[aria-invalid="true"]').forEach((control) => control.setAttribute('aria-invalid', 'false'));
-      const summaryValue = root.querySelector(`[data-configurator-selection-row="${CSS.escape(groupCode)}"] [data-configurator-selection-value]`);
-      if (summaryValue) summaryValue.textContent = code ? label : 'Não selecionado';
+      renderSelectionPreview(groupCode, code, label, extra);
       renderSummary();
 
       document.dispatchEvent(new CustomEvent('ammis:configurator:selection', {
@@ -97,8 +106,7 @@
       const privateCode = group.querySelector('[data-configurator-code]');
       if (property) property.value = detail.code ? detail.label : '';
       if (privateCode) privateCode.value = detail.code || '';
-      const summaryValue = root.querySelector(`[data-configurator-selection-row="${CSS.escape(detail.groupCode)}"] [data-configurator-selection-value]`);
-      if (summaryValue) summaryValue.textContent = detail.code ? detail.label : 'Não selecionado';
+      renderSelectionPreview(detail.groupCode, detail.code, detail.label, detail.extra);
       if (detail.code) state.set(detail.groupCode, { code: detail.code, label: detail.label, extra: Number(detail.extra) || 0 });
       else state.delete(detail.groupCode);
       const error = group.querySelector('[data-configurator-error]');

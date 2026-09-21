@@ -1,4 +1,4 @@
-# Product configurator V1
+# Product configurator V1/V2 visual prototype
 
 Internal storefront prototype for products explicitly configured with Shopify product metafields. It reads the product's metaobject references in Liquid and leaves normal product pages on their existing path.
 
@@ -32,6 +32,12 @@ Group and option sequence follows the corresponding Shopify reference-list order
 - An option with `available = false` cannot be selected. If `available` is blank, the option remains available.
 - Required groups start unselected. Add to cart and buy-now submission are blocked until each required group has a choice; the first invalid group receives focus.
 
+## V2 textual preview
+
+The configurator numbers each group as a step in the order of `custom.configurator_groups`. The final textual preview uses the current product title and renders every group dynamically with its current choice and display-only addition, followed by the existing estimated totals. A group that has not been selected remains labeled `Não selecionado`. The preview does not create or imply a composite product image; real combination imagery can replace the text preview in a future phase.
+
+A read-only check of the live product **BLAZER ITALY CARAIVA** (handle `blazer-italy`, product ID `7957920579686`) on 2026-09-21 returned no `custom.configurator_enabled` or `custom.configurator_groups` metafield. Therefore Cor, Botão, and Tecido are all absent for this product today; the product will remain on the normal PDP path until it is explicitly configured. In particular, the Tecido group must be added to the product's Shopify configuration before it can appear. This prototype does not create that data or invent options.
+
 ## Price and cart properties
 
 `price_addition` is a decimal amount in the shop's currency. The browser converts it to cents for display calculations. The summary shows base price, customization subtotal, and estimated total, and tracks the selected variant's base price when the theme emits a variant change.
@@ -50,4 +56,4 @@ The block has presentation settings for title, introductory copy, base price, cu
 
 Use the existing Draft product **TESTE — Produto Configurável** (ID `8225989787750`) in a future unpublished-theme preview. Its live-read values were verified as base price R$ 199,00; groups Cor, Gola, Botão; available options Branco/Preto/Azul, Tradicional/Italiana/Padre, and Padrão/Madrepérola. Italiana contributes R$ 30 and Madrepérola R$ 25 to the display estimate, so selecting both produces R$ 254,00 before any other nonzero choice.
 
-This local branch is not connected to a Shopify theme. A real storefront/browser preview, cross-device layout review, keyboard interaction review, cart submission, and visual confirmation against the Draft product remain pending until a separately approved unpublished-theme preview. The existing sticky product form keeps its compact controls; its runtime-injected copy receives the selected configuration properties from the main configurator. No Shopify product or metaobject data should be changed for this prototype.
+The V1 visual behavior and cart properties were previously confirmed by the user in the Shopify preview. V2 code changes still require visual review in that preview at desktop, tablet, and mobile widths. The existing sticky product form keeps its compact controls; its runtime-injected copy receives the selected configuration properties from the main configurator. No Shopify product or metaobject data should be changed for this prototype.
