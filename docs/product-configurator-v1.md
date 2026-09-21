@@ -6,7 +6,7 @@ Internal storefront prototype for products explicitly configured with Shopify pr
 
 1. In Shopify Admin, set the product metafield `custom.configurator_enabled` to `true`.
 2. Add one or more `configurator_group` references to `custom.configurator_groups`.
-3. Place the **Configurador de produto** block on the product template. The default product template includes it between variant selection and the existing purchase controls.
+3. Place the **Configurador de produto** block on the product template. The block renders a **Personalizar** trigger before the existing purchase controls and opens the guided configuration in a modal.
 
 The storefront renders the configurator only when the enabled metafield is true and the group list is nonempty. An absent or empty configuration adds no configurator markup or assets.
 
@@ -32,9 +32,11 @@ Group and option sequence follows the corresponding Shopify reference-list order
 - An option with `available = false` cannot be selected. If `available` is blank, the option remains available.
 - Required groups start unselected. Add to cart and buy-now submission are blocked until each required group has a choice; the first invalid group receives focus.
 
-## V2 textual preview
+## V2 modal flow
 
-The configurator numbers each group as a step in the order of `custom.configurator_groups`. The final textual preview uses the current product title and renders every group dynamically with its current choice and display-only addition, followed by the existing estimated totals. A group that has not been selected remains labeled `Não selecionado`. The preview does not create or imply a composite product image; real combination imagery can replace the text preview in a future phase.
+The modal numbers each configured group as a step in the order of `custom.configurator_groups`, followed by a review step. Required choices are validated before continuing and before confirmation. The review renders each current choice and display-only addition, the base price, customization subtotal, estimated total, and an edit action for each group. It uses the product's existing featured image when available, option images only when present, and text when an image is absent. It never creates or implies a composite product image.
+
+If the product has a real `Cor`/`Color` variant option, that option remains selected on the PDP and is summarized in the review; a matching configurator color group is omitted to avoid asking the customer to choose the same color twice. If color exists only as a configurator group, it remains the first modal step. Other groups stay data-driven and do not depend on fixed group names.
 
 A read-only check of the live product **BLAZER ITALY CARAIVA** (handle `blazer-italy`, product ID `7957920579686`) on 2026-09-21 returned no `custom.configurator_enabled` or `custom.configurator_groups` metafield. Therefore Cor, Botão, and Tecido are all absent for this product today; the product will remain on the normal PDP path until it is explicitly configured. In particular, the Tecido group must be added to the product's Shopify configuration before it can appear. This prototype does not create that data or invent options.
 
@@ -50,10 +52,10 @@ The existing Buy now handler first posts `new FormData(this.form)` to Shopify `/
 
 ## Theme Editor
 
-The block has presentation settings for title, introductory copy, base price, customization subtotal, summary, descriptions, images, additions, and summary title. Individual groups and options remain controlled only by Shopify metaobjects.
+The block settings control the title, introductory copy, option descriptions, option images, and option price additions. The final review always shows the base price, customization subtotal, estimated total, and display-only notice. Individual groups and options remain controlled only by Shopify metaobjects.
 
 ## Local demo and limits
 
-Use the existing Draft product **TESTE — Produto Configurável** (ID `8225989787750`) in a future unpublished-theme preview. Its live-read values were verified as base price R$ 199,00; groups Cor, Gola, Botão; available options Branco/Preto/Azul, Tradicional/Italiana/Padre, and Padrão/Madrepérola. Italiana contributes R$ 30 and Madrepérola R$ 25 to the display estimate, so selecting both produces R$ 254,00 before any other nonzero choice.
+Use the isolated product **BLAZER ITALY — TESTE ISOLADO DO CONFIGURADOR** (ID `8226282602598`, handle `blazer-italy-teste-isolado`) in the unpublished-theme preview. It is active but unpublished to sales channels, has one untracked base variant at R$ 199,00, and has no product image. Its required groups are Cor (Preto and Branco), Botão (Dourado 1, Dourado 2, Prateado), and Tecido (Tecido 1 and Tecido 2). All additions on these options are test-only values; for example, Dourado 2 plus Tecido 2 displays R$ 35,00 in additions and an estimated total of R$ 234,00. **These values are for testing only and are not charged at checkout.**
 
-The V1 visual behavior and cart properties were previously confirmed by the user in the Shopify preview. V2 code changes still require visual review in that preview at desktop, tablet, and mobile widths. The existing sticky product form keeps its compact controls; its runtime-injected copy receives the selected configuration properties from the main configurator. No Shopify product or metaobject data should be changed for this prototype.
+The V1 visual behavior and cart properties were previously confirmed by the user in the Shopify preview. The modal implementation requires visual review in the unpublished theme at desktop, tablet, and mobile widths. The existing sticky product form remains unchanged; the runtime-injected copy continues to receive the selected configuration properties from the main configurator. No Shopify product or metaobject data should be changed for this prototype.

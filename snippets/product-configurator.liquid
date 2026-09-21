@@ -12,11 +12,43 @@
 {%- liquid
   assign configurator_enabled = product.metafields.custom.configurator_enabled.value
   assign configurator_groups = product.metafields.custom.configurator_groups.value
+  assign configurator_variant_color_index = -1
+  assign configurator_variant_color_label = ''
+
+  for product_option in product.options
+    assign product_option_handle = product_option | handleize
+    if product_option_handle == 'cor' or product_option_handle == 'color'
+      assign configurator_variant_color_index = forloop.index0
+      assign configurator_variant_color_label = product_option
+    endif
+  endfor
+
+  assign configurator_step_count = 0
+  for group in configurator_groups
+    assign group_code = group.code.value | default: group.system.handle
+    assign group_title = group.title.value | default: group_code
+    assign group_code_handle = group_code | handleize
+    assign group_title_handle = group_title | handleize
+    assign group_uses_variant_color = false
+    if configurator_variant_color_index != -1
+      if group_code_handle == 'cor' or group_code_handle == 'color'
+        assign group_uses_variant_color = true
+      elsif group_title_handle == 'cor' or group_title_handle == 'color'
+        assign group_uses_variant_color = true
+      endif
+    endif
+    unless group_uses_variant_color
+      assign configurator_step_count = configurator_step_count | plus: 1
+    endunless
+  endfor
 -%}
 
-{%- if configurator_enabled == true and configurator_groups != blank -%}
+{%- if configurator_enabled == true and configurator_groups != blank and configurator_step_count > 0 -%}
   {{ 'product-configurator.css' | asset_url | stylesheet_tag }}
   <script src="{{ 'product-configurator.js' | asset_url }}" defer="defer"></script>
+
+  {% capture configurator_title_id %}ConfiguratorTitle-{{ section.id }}-{{ block.id }}{% endcapture %}
+  {% capture configurator_dialog_id %}ConfiguratorDialog-{{ section.id }}-{{ block.id }}{% endcapture %}
 
   <div
     class="product-configurator"
@@ -26,171 +58,294 @@
     data-currency="{{ cart.currency.iso_code | default: shop.currency }}"
     data-locale="{{ request.locale.iso_code }}"
     data-product-form-id="{{ product_form_id }}"
-    data-show-base-price="{{ block.settings.show_base_price }}"
-    data-show-subtotal="{{ block.settings.show_customization_subtotal }}"
-    data-show-summary="{{ block.settings.show_summary }}"
-    aria-labelledby="ConfiguratorTitle-{{ section.id }}-{{ block.id }}"
+    data-group-count="{{ configurator_step_count }}"
+    data-variant-color-index="{{ configurator_variant_color_index }}"
+    data-variant-color-label="{{ configurator_variant_color_label | escape }}"
+    data-step-template="{{ 'products.product.configurator.step' | t: current: '__CURRENT__', total: '__TOTAL__' | escape }}"
+    data-review-label="{{ 'products.product.configurator.review' | t | escape }}"
+    data-continue-label="{{ 'products.product.configurator.continue' | t | escape }}"
+    data-review-button="{{ 'products.product.configurator.review_button' | t | escape }}"
+    data-confirm-announcement="{{ 'products.product.configurator.confirm_announcement' | t | escape }}"
+    data-confirmed-announcement="{{ 'products.product.configurator.confirmed_announcement' | t | escape }}"
     {{ block.shopify_attributes }}
   >
-    <header class="product-configurator__header">
-      <h2 class="product-configurator__title" id="ConfiguratorTitle-{{ section.id }}-{{ block.id }}">
-        {{ block.settings.title | escape }}
-      </h2>
-      {% if block.settings.intro != blank %}
-        <div class="product-configurator__intro rte">{{ block.settings.intro }}</div>
-      {% endif %}
-    </header>
+    <button
+      class="product-configurator__open button button--primary focus-inset"
+      type="button"
+      aria-haspopup="dialog"
+      aria-controls="{{ configurator_dialog_id }}"
+      data-configurator-open
+    >
+      {{ 'products.product.configurator.open' | t }}
+    </button>
+    <p class="product-configurator__confirmation-status" data-configurator-confirmation-status role="status" aria-live="polite" hidden>
+      {{ 'products.product.configurator.confirmation_status' | t }}
+    </p>
 
-    <div class="product-configurator__groups">
-      {% for group in configurator_groups %}
-        {%- assign group_code = group.code.value | default: group.system.handle -%}
-        {%- assign group_title = group.title.value | default: group_code -%}
-        {%- assign group_id = 'ConfiguratorGroup-' | append: section.id | append: '-' | append: block.id | append: '-' | append: group_code | handleize -%}
-        {%- assign group_error_id = group_id | append: '-error' -%}
-        {%- assign group_interface = group.interface_type.value | default: 'buttons' -%}
-        {%- assign group_required = group.required.value -%}
-
-        <fieldset
-          class="product-configurator__group"
-          data-configurator-group
-          data-group-code="{{ group_code | escape }}"
-          data-group-title="{{ group_title | escape }}"
-          data-required="{{ group_required }}"
-          aria-describedby="{{ group_error_id }}"
-        >
-          <legend class="product-configurator__legend">
-            <span class="product-configurator__step-number" aria-hidden="true">{{ forloop.index }}</span>
-            <span class="product-configurator__step-copy">
-              <span class="product-configurator__step-label">Etapa {{ forloop.index }}</span>
-              <span class="product-configurator__step-title">Escolha {{ group_title | downcase | escape }}{% if group_required %}<span aria-hidden="true"> *</span><span class="visually-hidden"> (obrigatório)</span>{% endif %}</span>
-            </span>
-          </legend>
-          {% if block.settings.show_descriptions and group.description.value != blank %}
-            <p class="product-configurator__description">{{ group.description.value | escape }}</p>
-          {% endif %}
-
-          {% if group_interface == 'select' %}
-            <div class="select product-configurator__select-wrap">
-              <select
-                class="select__select"
-                id="{{ group_id }}"
-                data-configurator-select
-                aria-describedby="{{ group_error_id }}"
-                aria-invalid="false"
-              >
-                <option value="">Selecione uma opção</option>
-                {% for option in group.options.value %}
-                  {% assign option_code = option.code.value | default: option.system.handle %}
-                  {% assign option_name = option.name.value | default: option_code %}
-                  {% assign option_extra = option.price_addition.value | times: 100 | round | default: 0 %}
-                  {% assign option_available = true %}
-                  {% if option.available.value == false %}{% assign option_available = false %}{% endif %}
-                  <option
-                    value="{{ option_code | escape }}"
-                    data-option-name="{{ option_name | escape }}"
-                    data-extra-cents="{{ option_extra }}"
-                    {% unless option_available %}disabled{% endunless %}
-                  >
-                    {{ option_name | escape }}{% if block.settings.show_additions %} +{{ option_extra | money }}{% endif %}{% unless option_available %} — Indisponível{% endunless %}
-                  </option>
-                {% endfor %}
-              </select>
-              {% render 'icon-caret' %}
-            </div>
-          {% else %}
-            <div class="product-configurator__options product-configurator__options--{{ group_interface }}" role="radiogroup" aria-labelledby="{{ group_id }}-label">
-              <span class="visually-hidden" id="{{ group_id }}-label">{{ group_title | escape }}</span>
-              {% for option in group.options.value %}
-                {%- assign option_code = option.code.value | default: option.system.handle -%}
-                {%- assign option_name = option.name.value | default: option_code -%}
-                {%- assign option_extra = option.price_addition.value | times: 100 | round | default: 0 -%}
-                {%- assign option_available = true -%}
-                {%- if option.available.value == false -%}{%- assign option_available = false -%}{%- endif -%}
-                {%- assign option_id = group_id | append: '-' | append: option_code | handleize -%}
-                {%- assign option_image = option.image.value -%}
-                {%- assign option_image_alt = option_image.alt | default: option_name -%}
-                <div class="product-configurator__choice{% if group_interface == 'image_cards' %} product-configurator__choice--image{% endif %}{% if group_interface == 'swatches' %} product-configurator__choice--swatch{% endif %}">
-                  <input
-                    class="product-configurator__radio"
-                    type="radio"
-                    id="{{ option_id }}"
-                    name="{{ group_id }}-choice"
-                    value="{{ option_code | escape }}"
-                    data-configurator-option
-                    data-option-name="{{ option_name | escape }}"
-                    data-extra-cents="{{ option_extra }}"
-                    {% unless option_available %}disabled{% endunless %}
-                    aria-describedby="{{ group_error_id }}"
-                    aria-invalid="false"
-                  >
-                  <label class="product-configurator__option" for="{{ option_id }}" data-configurator-card data-selected="false">
-                    {% if group_interface == 'swatches' %}
-                      <span
-                        class="product-configurator__swatch"
-                        {% if option.color.value != blank %}style="--configurator-swatch-color: {{ option.color.value }}"{% endif %}
-                        aria-hidden="true"
-                      ></span>
-                    {% elsif group_interface == 'image_cards' and block.settings.show_images and option.image.value != blank %}
-                      {{ option_image | image_url: width: 640 | image_tag: class: 'product-configurator__image', loading: 'lazy', alt: option_image_alt }}
-                    {% endif %}
-                    <span class="product-configurator__option-copy">
-                      <span class="product-configurator__option-name">{{ option_name | escape }}</span>
-                      {% if block.settings.show_additions %}
-                        <span class="product-configurator__option-price">+{{ option_extra | money }}</span>
-                      {% endif %}
-                      {% if block.settings.show_descriptions and option.description.value != blank %}
-                        <span class="product-configurator__option-description">{{ option.description.value | escape }}</span>
-                      {% endif %}
-                      {% unless option_available %}<span class="product-configurator__unavailable">Indisponível</span>{% endunless %}
-                    </span>
-                  </label>
-                </div>
-              {% endfor %}
-            </div>
-          {% endif %}
-          <p class="product-configurator__error" id="{{ group_error_id }}" data-configurator-error hidden>
-            Selecione uma opção para {{ group_title | escape }}.
-          </p>
-
-          <input type="hidden" name="properties[{{ group_title | escape }}]" value="" data-configurator-property form="{{ product_form_id }}">
-          <input type="hidden" name="properties[_configurator_code_{{ group_code | handleize }}]" value="" data-configurator-code form="{{ product_form_id }}">
-        </fieldset>
-      {% endfor %}
-    </div>
-
-    {% if block.settings.show_summary %}
-      <section class="product-configurator__summary product-configurator__preview" aria-labelledby="ConfiguratorSummaryTitle-{{ section.id }}-{{ block.id }}">
-        <p class="product-configurator__preview-label">Pré-visualização da personalização</p>
-        <h3 class="product-configurator__summary-title" id="ConfiguratorSummaryTitle-{{ section.id }}-{{ block.id }}">{{ block.settings.summary_title | escape }}</h3>
-        <p class="product-configurator__product-name"><span>Produto:</span> {{ product.title | escape }}</p>
-        <ul class="product-configurator__selection-list" aria-live="polite" aria-atomic="true">
-          {% for group in configurator_groups %}
-            {% assign group_code = group.code.value | default: group.system.handle %}
-            <li data-configurator-selection-row="{{ group_code | escape }}">
-              <span class="product-configurator__selection-name">{{ group.title.value | escape }}</span>
-              <span class="product-configurator__selection-value" data-configurator-selection-value>Não selecionado</span>
-              <span class="product-configurator__selection-extra" data-configurator-selection-extra></span>
-            </li>
-          {% endfor %}
-        </ul>
-        <dl class="product-configurator__totals" aria-live="polite" aria-atomic="true">
-          {% if block.settings.show_base_price %}
-            <div class="product-configurator__total-row" data-configurator-base-row>
-              <dt>Preço base</dt><dd data-configurator-base>{{ product.selected_or_first_available_variant.price | money }}</dd>
-            </div>
-          {% endif %}
-          {% if block.settings.show_customization_subtotal %}
-            <div class="product-configurator__total-row" data-configurator-subtotal-row>
-              <dt>Personalizações</dt><dd data-configurator-subtotal>{{ 0 | money }}</dd>
-            </div>
-          {% endif %}
-          <div class="product-configurator__total-row product-configurator__total-row--grand">
-            <dt>Total estimado</dt><dd data-configurator-total>{{ product.selected_or_first_available_variant.price | money }}</dd>
+    <dialog
+      class="product-configurator__dialog"
+      id="{{ configurator_dialog_id }}"
+      data-configurator-dialog
+      aria-labelledby="{{ configurator_title_id }}"
+    >
+      <div class="product-configurator__dialog-surface">
+        <header class="product-configurator__dialog-header">
+          <div>
+            <p class="product-configurator__eyebrow">{{ 'products.product.configurator.eyebrow' | t }}</p>
+            <h2 class="product-configurator__title" id="{{ configurator_title_id }}" tabindex="-1">
+              {{ block.settings.title | escape }}
+            </h2>
+            {% if block.settings.intro != blank %}
+              <div class="product-configurator__intro rte">{{ block.settings.intro }}</div>
+            {% endif %}
           </div>
-        </dl>
-        <p class="product-configurator__display-only">Valor demonstrativo. Adicionais não são cobrados no checkout nesta versão.</p>
-      </section>
-    {% endif %}
+          <button
+            class="product-configurator__close"
+            type="button"
+            aria-label="{{ 'products.product.configurator.close' | t }}"
+            data-configurator-close
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </header>
+
+        <div class="product-configurator__progress-copy" aria-live="polite" data-configurator-progress-copy>
+          {{ 'products.product.configurator.step' | t: current: 1, total: configurator_step_count }}
+        </div>
+        <div
+          class="product-configurator__progress"
+          role="progressbar"
+          aria-label="{{ 'products.product.configurator.progress' | t }}"
+          aria-valuemin="1"
+          aria-valuemax="{{ configurator_step_count }}"
+          aria-valuenow="1"
+          data-configurator-progress
+        >
+          <span data-configurator-progress-bar></span>
+        </div>
+
+        <div class="product-configurator__dialog-body">
+          <div class="product-configurator__groups" data-configurator-steps>
+            {%- assign configurator_step_index = 0 -%}
+            {% for group in configurator_groups %}
+              {%- assign group_code = group.code.value | default: group.system.handle -%}
+              {%- assign group_title = group.title.value | default: group_code -%}
+              {%- assign group_code_handle = group_code | handleize -%}
+              {%- assign group_title_handle = group_title | handleize -%}
+              {%- assign group_uses_variant_color = false -%}
+              {% if configurator_variant_color_index != -1 %}
+                {% if group_code_handle == 'cor' or group_code_handle == 'color' %}
+                  {%- assign group_uses_variant_color = true -%}
+                {% elsif group_title_handle == 'cor' or group_title_handle == 'color' %}
+                  {%- assign group_uses_variant_color = true -%}
+                {% endif %}
+              {% endif %}
+
+              {% unless group_uses_variant_color %}
+                {%- assign configurator_step_index = configurator_step_index | plus: 1 -%}
+                {%- assign group_id = 'ConfiguratorGroup-' | append: section.id | append: '-' | append: block.id | append: '-' | append: group_code | handleize -%}
+                {%- assign group_error_id = group_id | append: '-error' -%}
+                {%- assign group_interface = group.interface_type.value | default: 'buttons' -%}
+                {%- assign group_required = group.required.value -%}
+
+                <fieldset
+                  class="product-configurator__group"
+                  data-configurator-group
+                  data-configurator-step
+                  data-step-index="{{ forloop.index0 }}"
+                  data-group-code="{{ group_code | escape }}"
+                  data-group-title="{{ group_title | escape }}"
+                  data-required="{{ group_required }}"
+                  aria-describedby="{{ group_error_id }}"
+                  {% if configurator_step_index > 1 %}hidden{% endif %}
+                >
+                  <legend class="product-configurator__legend">
+                    <span class="product-configurator__step-number" aria-hidden="true">{{ configurator_step_index }}</span>
+                    <span class="product-configurator__step-copy">
+                      <span class="product-configurator__step-label">{{ 'products.product.configurator.step_label' | t: current: configurator_step_index }}</span>
+                      <span class="product-configurator__step-title">{{ 'products.product.configurator.choose' | t: group: group_title | escape }}{% if group_required %}<span aria-hidden="true"> *</span><span class="visually-hidden"> {{ 'products.product.configurator.required' | t }}</span>{% endif %}</span>
+                    </span>
+                  </legend>
+                  {% if block.settings.show_descriptions and group.description.value != blank %}
+                    <p class="product-configurator__description">{{ group.description.value | escape }}</p>
+                  {% endif %}
+
+                  {% if group_interface == 'select' %}
+                    <div class="select product-configurator__select-wrap">
+                      <select
+                        class="select__select"
+                        id="{{ group_id }}"
+                        data-configurator-select
+                        aria-describedby="{{ group_error_id }}"
+                        aria-invalid="false"
+                      >
+                        <option value="">{{ 'products.product.configurator.select_option' | t }}</option>
+                        {% for option in group.options.value %}
+                          {% assign option_code = option.code.value | default: option.system.handle %}
+                          {% assign option_name = option.name.value | default: option_code %}
+                          {% assign option_extra = option.price_addition.value | times: 100 | round | default: 0 %}
+                          {% assign option_available = true %}
+                          {% if option.available.value == false %}{% assign option_available = false %}{% endif %}
+                          {% assign option_image = option.image.value %}
+                          <option
+                            value="{{ option_code | escape }}"
+                            data-option-name="{{ option_name | escape }}"
+                            data-extra-cents="{{ option_extra }}"
+                            {% if option_image != blank %}data-option-image="{{ option_image | image_url: width: 240 }}" data-option-image-alt="{{ option_image.alt | default: option_name | escape }}"{% endif %}
+                            {% unless option_available %}disabled{% endunless %}
+                          >
+                            {{ option_name | escape }}{% if block.settings.show_additions %} +{{ option_extra | money }}{% endif %}{% unless option_available %} — {{ 'products.product.unavailable' | t }}{% endunless %}
+                          </option>
+                        {% endfor %}
+                      </select>
+                      {% render 'icon-caret' %}
+                    </div>
+                  {% else %}
+                    <div class="product-configurator__options product-configurator__options--{{ group_interface }}" role="radiogroup" aria-labelledby="{{ group_id }}-label">
+                      <span class="visually-hidden" id="{{ group_id }}-label">{{ group_title | escape }}</span>
+                      {% for option in group.options.value %}
+                        {%- assign option_code = option.code.value | default: option.system.handle -%}
+                        {%- assign option_name = option.name.value | default: option_code -%}
+                        {%- assign option_extra = option.price_addition.value | times: 100 | round | default: 0 -%}
+                        {%- assign option_available = true -%}
+                        {%- if option.available.value == false -%}{%- assign option_available = false -%}{%- endif -%}
+                        {%- assign option_id = group_id | append: '-' | append: option_code | handleize -%}
+                        {%- assign option_image = option.image.value -%}
+                        {%- assign option_image_alt = option_image.alt | default: option_name -%}
+                        <div class="product-configurator__choice{% if group_interface == 'image_cards' %} product-configurator__choice--image{% endif %}{% if group_interface == 'swatches' %} product-configurator__choice--swatch{% endif %}">
+                          <input
+                            class="product-configurator__radio"
+                            type="radio"
+                            id="{{ option_id }}"
+                            name="{{ group_id }}-choice"
+                            value="{{ option_code | escape }}"
+                            data-configurator-option
+                            data-option-name="{{ option_name | escape }}"
+                            data-extra-cents="{{ option_extra }}"
+                            {% if option_image != blank %}data-option-image="{{ option_image | image_url: width: 240 }}" data-option-image-alt="{{ option_image_alt | escape }}"{% endif %}
+                            {% unless option_available %}disabled{% endunless %}
+                            aria-describedby="{{ group_error_id }}"
+                            aria-invalid="false"
+                          >
+                          <label class="product-configurator__option" for="{{ option_id }}" data-configurator-card data-selected="false">
+                            {% if group_interface == 'swatches' %}
+                              <span
+                                class="product-configurator__swatch"
+                                {% if option.color.value != blank %}style="--configurator-swatch-color: {{ option.color.value }}"{% endif %}
+                                aria-hidden="true"
+                              ></span>
+                            {% elsif group_interface == 'image_cards' and block.settings.show_images and option.image.value != blank %}
+                              {{ option_image | image_url: width: 640 | image_tag: class: 'product-configurator__image', loading: 'lazy', alt: option_image_alt }}
+                            {% endif %}
+                            <span class="product-configurator__option-copy">
+                              <span class="product-configurator__option-name">{{ option_name | escape }}</span>
+                              {% if block.settings.show_additions %}
+                                <span class="product-configurator__option-price">+{{ option_extra | money }}</span>
+                              {% endif %}
+                              {% if block.settings.show_descriptions and option.description.value != blank %}
+                                <span class="product-configurator__option-description">{{ option.description.value | escape }}</span>
+                              {% endif %}
+                              {% unless option_available %}<span class="product-configurator__unavailable">{{ 'products.product.unavailable' | t }}</span>{% endunless %}
+                            </span>
+                          </label>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                  <p class="product-configurator__error" id="{{ group_error_id }}" data-configurator-error hidden>
+                    {{ 'products.product.configurator.required_error' | t: group: group_title | escape }}
+                  </p>
+
+                  <input type="hidden" name="properties[{{ group_title | escape }}]" value="" data-configurator-property form="{{ product_form_id }}">
+                  <input type="hidden" name="properties[_configurator_code_{{ group_code | handleize }}]" value="" data-configurator-code form="{{ product_form_id }}">
+                </fieldset>
+              {% endunless %}
+            {% endfor %}
+          </div>
+
+          <section
+            class="product-configurator__review"
+            data-configurator-review
+            aria-labelledby="ConfiguratorReviewTitle-{{ section.id }}-{{ block.id }}"
+            hidden
+          >
+            <h3 class="product-configurator__review-title" id="ConfiguratorReviewTitle-{{ section.id }}-{{ block.id }}" data-configurator-review-title tabindex="-1">{{ 'products.product.configurator.review_title' | t }}</h3>
+            <p class="product-configurator__review-intro">{{ 'products.product.configurator.review_intro' | t }}</p>
+
+            <div class="product-configurator__review-card">
+              <div class="product-configurator__review-image">
+                {% if product.featured_media.preview_image != blank %}
+                  {% assign product_image_alt = product.featured_media.preview_image.alt | default: product.title %}
+                  {{ product.featured_media.preview_image | image_url: width: 960 | image_tag: class: 'product-configurator__product-image', loading: 'lazy', alt: product_image_alt }}
+                {% else %}
+                  <div class="product-configurator__image-fallback">{{ 'products.product.configurator.no_product_image' | t }}</div>
+                {% endif %}
+              </div>
+              <div class="product-configurator__review-details">
+                <p class="product-configurator__product-name"><span>{{ 'products.product.configurator.product' | t }}</span> {{ product.title | escape }}</p>
+                {% if configurator_variant_color_index != -1 %}
+                  <p class="product-configurator__variant-color" data-configurator-variant-color hidden>
+                    <span>{{ configurator_variant_color_label | escape }}:</span>
+                    <strong data-configurator-variant-color-value></strong>
+                  </p>
+                {% endif %}
+                <p class="product-configurator__combination-label">{{ 'products.product.configurator.combination' | t }}</p>
+                <ul class="product-configurator__selection-list" aria-live="polite" aria-atomic="true">
+                  {% for group in configurator_groups %}
+                    {%- assign group_code = group.code.value | default: group.system.handle -%}
+                    {%- assign group_title = group.title.value | default: group_code -%}
+                    {%- assign group_code_handle = group_code | handleize -%}
+                    {%- assign group_title_handle = group_title | handleize -%}
+                    {%- assign group_uses_variant_color = false -%}
+                    {% if configurator_variant_color_index != -1 %}
+                      {% if group_code_handle == 'cor' or group_code_handle == 'color' %}
+                        {%- assign group_uses_variant_color = true -%}
+                      {% elsif group_title_handle == 'cor' or group_title_handle == 'color' %}
+                        {%- assign group_uses_variant_color = true -%}
+                      {% endif %}
+                    {% endif %}
+                    {% unless group_uses_variant_color %}
+                      <li class="product-configurator__selection-row" data-configurator-selection-row="{{ group_code | escape }}">
+                        <span class="product-configurator__selection-name">{{ group_title | escape }}</span>
+                        <span class="product-configurator__selection-value" data-configurator-selection-value data-empty-label="{{ 'products.product.configurator.not_selected' | t | escape }}">{{ 'products.product.configurator.not_selected' | t }}</span>
+                        <span class="product-configurator__selection-extra" data-configurator-selection-extra></span>
+                        <img class="product-configurator__selection-image" data-configurator-selection-image alt="" hidden>
+                        <button class="product-configurator__edit" type="button" data-configurator-edit="{{ group_code | escape }}" aria-label="{{ 'products.product.configurator.edit_group' | t: group: group_title | escape }}">{{ 'products.product.configurator.edit' | t }}</button>
+                      </li>
+                    {% endunless %}
+                  {% endfor %}
+                </ul>
+                <dl class="product-configurator__totals" aria-live="polite" aria-atomic="true">
+                  <div class="product-configurator__total-row" data-configurator-base-row>
+                    <dt>{{ 'products.product.configurator.base_price' | t }}</dt><dd data-configurator-base>{{ product.selected_or_first_available_variant.price | money }}</dd>
+                  </div>
+                  <div class="product-configurator__total-row" data-configurator-subtotal-row>
+                    <dt>{{ 'products.product.configurator.customizations' | t }}</dt><dd data-configurator-subtotal>{{ 0 | money }}</dd>
+                  </div>
+                  <div class="product-configurator__total-row product-configurator__total-row--grand">
+                    <dt>{{ 'products.product.configurator.estimated_total' | t }}</dt><dd data-configurator-total>{{ product.selected_or_first_available_variant.price | money }}</dd>
+                  </div>
+                </dl>
+                <p class="product-configurator__display-only">{{ 'products.product.configurator.display_only' | t }}</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <footer class="product-configurator__dialog-footer">
+          <button class="button button--secondary focus-inset" type="button" data-configurator-back hidden>
+            {{ 'products.product.configurator.back' | t }}
+          </button>
+          <button class="button button--primary focus-inset" type="button" data-configurator-next>
+            {{ 'products.product.configurator.continue' | t }}
+          </button>
+          <button class="button button--primary focus-inset" type="button" data-configurator-confirm hidden>
+            {{ 'products.product.configurator.confirm' | t }}
+          </button>
+        </footer>
+      </div>
+    </dialog>
+
     <p class="visually-hidden" data-configurator-announcement aria-live="polite"></p>
   </div>
 {%- endif -%}
