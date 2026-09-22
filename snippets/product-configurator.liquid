@@ -256,7 +256,7 @@
                     {{ 'products.product.configurator.required_error' | t: group: group_title | escape }}
                   </p>
 
-                  <input type="hidden" name="properties[{{ group_title | escape }}]" value="" data-configurator-property form="{{ product_form_id }}">
+                  <input type="hidden" name="properties[Personalização — {{ group_title | escape }}]" value="" data-configurator-property form="{{ product_form_id }}">
                   <input type="hidden" name="properties[_configurator_code_{{ group_code | handleize }}]" value="" data-configurator-code form="{{ product_form_id }}">
                 </fieldset>
               {% endunless %}

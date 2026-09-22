@@ -302,13 +302,13 @@
       const invalid = invalidGroups();
       if (invalid.length) {
         event.preventDefault();
-        event.stopImmediatePropagation();
+        event.stopPropagation();
         showGroupError(invalid[0]);
         return;
       }
       if (!confirmedProducts.has(productId)) {
         event.preventDefault();
-        event.stopImmediatePropagation();
+        event.stopPropagation();
         if (announcement) announcement.textContent = root.dataset.confirmAnnouncement || '';
         openAtStep(groups.length);
         confirmButton?.focus();
