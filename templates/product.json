@@ -9,21 +9,6 @@
  */
 {
   "sections": {
-    "17901036887d2e0bd0": {
-      "type": "apps",
-      "blocks": {
-        "ammis_product_configurator_product_configurator_EiWKpR": {
-          "type": "shopify://apps/ammis-product-configurator/blocks/product-configurator/01a0ca62-c295-7816-bcc8-1a29c996c260",
-          "settings": {}
-        }
-      },
-      "block_order": [
-        "ammis_product_configurator_product_configurator_EiWKpR"
-      ],
-      "settings": {
-        "include_margins": true
-      }
-    },
     "main": {
       "type": "main-product",
       "blocks": {
@@ -166,7 +151,6 @@
   },
   "order": [
     "main",
-    "17901036887d2e0bd0",
     "product-recommendations"
   ]
 }
