@@ -7,7 +7,6 @@
 
   const initialized = new WeakSet();
   const observedSections = new WeakSet();
-  const confirmedProducts = new Set();
   const activeDialogs = new Set();
 
   function formatMoney(cents, currency, locale) {
@@ -41,15 +40,32 @@
     const progressBar = root.querySelector('[data-configurator-progress-bar]');
     const backButton = root.querySelector('[data-configurator-back]');
     const nextButton = root.querySelector('[data-configurator-next]');
-    const confirmButton = root.querySelector('[data-configurator-confirm]');
-    const confirmationStatus = root.querySelector('[data-configurator-confirmation-status]');
+    const addToCartButton = root.querySelector('[data-configurator-add-to-cart]');
+    const addToCartSpinner = root.querySelector('[data-configurator-add-to-cart-spinner]');
+    const cartError = root.querySelector('[data-configurator-cart-error]');
     const announcement = root.querySelector('[data-configurator-announcement]');
     const stepTemplate = root.dataset.stepTemplate || 'Step __CURRENT__ of __TOTAL__';
     const reviewLabel = root.dataset.reviewLabel || 'Review';
     const continueLabel = root.dataset.continueLabel || 'Continue';
     const reviewButtonLabel = root.dataset.reviewButton || 'Review configuration';
+    const addToCartError = root.dataset.addToCartError || 'Unable to add this configuration to your cart. Please try again.';
     let basePrice = Number(root.dataset.basePrice) || 0;
     let currentStep = 0;
+    let allowNativeSubmit = false;
+    let isAddingToCart = false;
+    let addToCartTimeout;
+    let cartUpdateUnsubscribe;
+    let cartErrorUnsubscribe;
+
+    if (
+      !productSection
+      || !dialog
+      || !opener
+      || !groups.length
+      || !addToCartButton
+      || typeof subscribe !== 'function'
+      || typeof PUB_SUB_EVENTS === 'undefined'
+    ) return;
 
     function renderSummary() {
       let additions = 0;
@@ -92,15 +108,6 @@
       }
     }
 
-    function updateConfirmationStatus() {
-      if (confirmationStatus) confirmationStatus.hidden = !confirmedProducts.has(productId);
-    }
-
-    function clearConfirmation() {
-      confirmedProducts.delete(productId);
-      updateConfirmationStatus();
-    }
-
     function setSelection(group, code, label, extra, image, imageAlt) {
       const groupCode = group.dataset.groupCode;
       if (!code) {
@@ -108,7 +115,6 @@
       } else {
         state.set(groupCode, { code, label, extra: Number(extra) || 0, image: image || '', imageAlt: imageAlt || '' });
       }
-      clearConfirmation();
       syncSelectedCards(group);
 
       const property = group.querySelector('[data-configurator-property]');
@@ -133,7 +139,6 @@
       const group = groups.find((item) => item.dataset.groupCode === detail.groupCode);
       if (!group) return;
 
-      clearConfirmation();
       const control = Array.from(group.querySelectorAll('[data-configurator-option], [data-configurator-select]'))
         .find((item) => item.value === detail.code);
       if (control?.matches('[data-configurator-option]')) control.checked = true;
@@ -213,7 +218,7 @@
         nextButton.hidden = currentStep >= groups.length;
         nextButton.textContent = currentStep === groups.length - 1 ? reviewButtonLabel : continueLabel;
       }
-      if (confirmButton) confirmButton.hidden = currentStep !== groups.length;
+      if (addToCartButton) addToCartButton.hidden = currentStep !== groups.length;
 
       if (progressCopy) {
         progressCopy.textContent = currentStep === groups.length
@@ -240,6 +245,7 @@
     }
 
     function closeDialog() {
+      if (isAddingToCart) return;
       if (dialog?.open) dialog.close();
       activeDialogs.delete(dialog);
       if (!activeDialogs.size) document.body.classList.remove('ammis-configurator-modal-open');
@@ -298,7 +304,134 @@
       }
     }
 
+    function showCartError(message = addToCartError) {
+      if (cartError) {
+        cartError.textContent = message;
+        cartError.hidden = false;
+      }
+      if (announcement) announcement.textContent = message;
+    }
+
+    function clearCartError() {
+      if (cartError) {
+        cartError.textContent = '';
+        cartError.hidden = true;
+      }
+      if (announcement) announcement.textContent = '';
+    }
+
+    function setAddToCartLoading(loading) {
+      addToCartButton.disabled = loading;
+      addToCartButton.setAttribute('aria-disabled', String(loading));
+      addToCartButton.setAttribute('aria-busy', String(loading));
+      addToCartButton.classList.toggle('is-loading', loading);
+      if (addToCartSpinner) addToCartSpinner.classList.toggle('hidden', !loading);
+    }
+
+    function removeCartListeners() {
+      cartUpdateUnsubscribe?.();
+      cartErrorUnsubscribe?.();
+      cartUpdateUnsubscribe = undefined;
+      cartErrorUnsubscribe = undefined;
+    }
+
+    function resetAddToCartState() {
+      window.clearTimeout(addToCartTimeout);
+      addToCartTimeout = undefined;
+      removeCartListeners();
+      allowNativeSubmit = false;
+      isAddingToCart = false;
+      setAddToCartLoading(false);
+    }
+
+    function syncProperties(productForm) {
+      groups.forEach((group) => {
+        const selection = state.get(group.dataset.groupCode);
+        const property = group.querySelector('[data-configurator-property]');
+        const privateCode = group.querySelector('[data-configurator-code]');
+        if (property) property.value = selection?.label || '';
+        if (privateCode) privateCode.value = selection?.code || '';
+      });
+
+      const ownedInputs = new Set(root.querySelectorAll('[data-configurator-property], [data-configurator-code]'));
+      return [...productForm.elements].every((input) => {
+        if (!input.name || !input.name.startsWith('properties[') || ownedInputs.has(input)) return true;
+        return ![...ownedInputs].some((ownedInput) => ownedInput.name === input.name);
+      });
+    }
+
+    function activateRequiredPurchaseFlow() {
+      const productForm = document.getElementById(root.dataset.productFormId)
+        || productSection.querySelector('product-form form[data-type="add-to-cart-form"]');
+      const nativeSubmit = productForm?.querySelector('button[type="submit"][name="add"]')
+        || productSection.querySelector('product-form button[type="submit"]');
+      if (!nativeSubmit || typeof productForm?.requestSubmit !== 'function') return false;
+
+      productSection.classList.add('ammis-configurator-purchase-required');
+      root.dataset.configuratorReady = 'true';
+      productSection.querySelectorAll('product-form button[type="submit"], product-form [data-buy-now]').forEach((button) => {
+        button.hidden = true;
+        button.setAttribute('aria-hidden', 'true');
+        if (button.matches('[data-buy-now]')) button.closest('.product-form__checkout')?.setAttribute('hidden', '');
+      });
+      return true;
+    }
+
+    function handleAddToCart() {
+      if (isAddingToCart || !validateRequired()) return;
+
+      const productForm = document.getElementById(root.dataset.productFormId)
+        || productSection.querySelector('product-form form[data-type="add-to-cart-form"]');
+      const nativeSubmit = productForm?.querySelector('button[type="submit"][name="add"]');
+      if (!productForm || !nativeSubmit || typeof productForm.requestSubmit !== 'function') {
+        showCartError();
+        return;
+      }
+      if (!syncProperties(productForm)) {
+        showCartError();
+        return;
+      }
+
+      clearCartError();
+      isAddingToCart = true;
+      setAddToCartLoading(true);
+      const variantId = productForm.querySelector('[name="id"]')?.value;
+
+      if (typeof subscribe !== 'function' || typeof PUB_SUB_EVENTS === 'undefined' || !PUB_SUB_EVENTS.cartUpdate || !PUB_SUB_EVENTS.cartError) {
+        resetAddToCartState();
+        showCartError();
+        return;
+      }
+
+      cartUpdateUnsubscribe = subscribe(PUB_SUB_EVENTS.cartUpdate, (event) => {
+        if (event?.source !== 'product-form' || String(event.productVariantId) !== String(variantId)) return;
+        resetAddToCartState();
+        closeDialog();
+      });
+      cartErrorUnsubscribe = subscribe(PUB_SUB_EVENTS.cartError, (event) => {
+        if (event?.source !== 'product-form' || String(event.productVariantId) !== String(variantId)) return;
+        resetAddToCartState();
+        showCartError(event.message || event.errors || addToCartError);
+      });
+      addToCartTimeout = window.setTimeout(() => {
+        resetAddToCartState();
+        showCartError();
+      }, 15000);
+
+      try {
+        allowNativeSubmit = true;
+        productForm.requestSubmit(nativeSubmit);
+      } catch (error) {
+        resetAddToCartState();
+        showCartError();
+      }
+    }
+
     function guardProductAction(event) {
+      if (allowNativeSubmit) {
+        allowNativeSubmit = false;
+        return;
+      }
       const invalid = invalidGroups();
       if (invalid.length) {
         event.preventDefault();
@@ -306,13 +439,10 @@
         showGroupError(invalid[0]);
         return;
       }
-      if (!confirmedProducts.has(productId)) {
-        event.preventDefault();
-        event.stopPropagation();
-        if (announcement) announcement.textContent = root.dataset.confirmAnnouncement || '';
-        openAtStep(groups.length);
-        confirmButton?.focus();
-      }
+      event.preventDefault();
+      event.stopPropagation();
+      openAtStep(groups.length);
+      addToCartButton.focus();
     }
 
     root.addEventListener('change', (event) => updateFromControl(event.target));
@@ -343,12 +473,9 @@
       }
       setCurrentStep(currentStep + 1, true);
     });
-    confirmButton?.addEventListener('click', () => {
-      if (!validateRequired()) return;
-      confirmedProducts.add(productId);
-      updateConfirmationStatus();
-      if (announcement) announcement.textContent = root.dataset.confirmedAnnouncement || '';
-      closeDialog();
+    addToCartButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      handleAddToCart();
     });
 
     root.addEventListener('click', (event) => {
@@ -360,7 +487,6 @@
 
     section?.addEventListener('change', (event) => {
       if (!event.target.closest?.('variant-radios, variant-selects')) return;
-      clearConfirmation();
       updateBasePrice();
     });
 
@@ -382,7 +508,6 @@
     }
 
     renderSummary();
-    updateConfirmationStatus();
     updateBasePrice();
 
     document.querySelectorAll('[data-product-configurator]').forEach((peer) => {
@@ -406,6 +531,7 @@
     });
 
     setCurrentStep(0);
+    activateRequiredPurchaseFlow();
   }
 
   function initializeWithin(container) {

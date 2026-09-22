@@ -217,10 +217,8 @@
         "back": "Voltar",
         "continue": "Continuar",
         "review_button": "Revisar configuração",
-        "confirm": "Confirmar personalização",
-        "confirm_announcement": "Revise e confirme sua configuração antes de adicionar o produto ao carrinho.",
-        "confirmed_announcement": "Personalização confirmada. Agora você pode adicionar o produto ao carrinho.",
-        "confirmation_status": "Personalização confirmada. Você pode reabrir esta janela para editar suas escolhas.",
+        "add_to_cart": "Adicionar ao carrinho",
+        "add_to_cart_error": "Não foi possível adicionar esta configuração ao carrinho. Suas escolhas continuam salvas; tente novamente.",
         "edit": "Editar",
         "edit_group": "Editar {{ group }}"
       },

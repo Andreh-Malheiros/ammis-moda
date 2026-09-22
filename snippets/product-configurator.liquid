@@ -65,8 +65,7 @@
     data-review-label="{{ 'products.product.configurator.review' | t | escape }}"
     data-continue-label="{{ 'products.product.configurator.continue' | t | escape }}"
     data-review-button="{{ 'products.product.configurator.review_button' | t | escape }}"
-    data-confirm-announcement="{{ 'products.product.configurator.confirm_announcement' | t | escape }}"
-    data-confirmed-announcement="{{ 'products.product.configurator.confirmed_announcement' | t | escape }}"
+    data-add-to-cart-error="{{ 'products.product.configurator.add_to_cart_error' | t | escape }}"
     {{ block.shopify_attributes }}
   >
     <button
@@ -78,10 +77,6 @@
     >
       {{ 'products.product.configurator.open' | t }}
     </button>
-    <p class="product-configurator__confirmation-status" data-configurator-confirmation-status role="status" aria-live="polite" hidden>
-      {{ 'products.product.configurator.confirmation_status' | t }}
-    </p>
-
     <dialog
       class="product-configurator__dialog"
       id="{{ configurator_dialog_id }}"
@@ -339,9 +334,13 @@
           <button class="button button--primary focus-inset" type="button" data-configurator-next>
             {{ 'products.product.configurator.continue' | t }}
           </button>
-          <button class="button button--primary focus-inset" type="button" data-configurator-confirm hidden>
-            {{ 'products.product.configurator.confirm' | t }}
+          <button class="button button--primary focus-inset" type="button" data-configurator-add-to-cart hidden>
+            <span data-configurator-add-to-cart-label>{{ 'products.product.configurator.add_to_cart' | t }}</span>
+            <span class="product-configurator__add-to-cart-spinner loading-overlay__spinner hidden" data-configurator-add-to-cart-spinner aria-hidden="true">
+              {%- render 'icon-loading' -%}
+            </span>
           </button>
+          <p class="product-configurator__cart-error" data-configurator-cart-error role="alert" hidden></p>
         </footer>
       </div>
     </dialog>

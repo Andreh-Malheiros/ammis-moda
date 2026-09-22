@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "general": {
 	  "size": "Size",
@@ -208,10 +217,8 @@
         "back": "Back",
         "continue": "Continue",
         "review_button": "Review configuration",
-        "confirm": "Confirm customization",
-        "confirm_announcement": "Review and confirm your configuration before adding this product to your cart.",
-        "confirmed_announcement": "Customization confirmed. You can now add this product to your cart.",
-        "confirmation_status": "Customization confirmed. You can reopen this dialog to edit your choices.",
+        "add_to_cart": "Add to cart",
+        "add_to_cart_error": "We couldn't add this configuration to your cart. Your selections are still saved; please try again.",
         "edit": "Edit",
         "edit_group": "Edit {{ group }}"
       },
