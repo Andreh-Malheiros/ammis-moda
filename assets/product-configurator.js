@@ -459,6 +459,8 @@
         authorizedSubmitForm = productForm;
         authorizedSubmitForms.add(productForm);
         productForm.requestSubmit(nativeSubmit);
+        authorizedSubmitForms.delete(productForm);
+        if (authorizedSubmitForm === productForm) authorizedSubmitForm = undefined;
       } catch (error) {
         resetAddToCartState();
         showCartError();
@@ -468,11 +470,7 @@
     function guardProductAction(event) {
       const form = event.target instanceof HTMLFormElement ? event.target : event.target?.closest?.('form');
       const authorized = Boolean(form && authorizedSubmitForms.has(form));
-      if (authorized) {
-        authorizedSubmitForms.delete(form);
-        if (authorizedSubmitForm === form) authorizedSubmitForm = undefined;
-        return;
-      }
+      if (authorized) return;
       const invalid = invalidGroups();
       if (invalid.length) {
         event.preventDefault();
