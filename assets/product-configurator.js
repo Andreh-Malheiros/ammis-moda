@@ -360,6 +360,24 @@
       });
     }
 
+    function applyNativePurchaseVisibility() {
+      const nativePurchaseSelectors = [
+        'product-form .product-form__submit',
+        'product-form .product-form__checkout',
+        'product-form .shopify-payment-button',
+        'product-form [data-buy-now]',
+        'product-form button[name="checkout"]',
+        'product-form input[type="submit"][name="add"]'
+      ];
+
+      productSection.classList.add('ammis-configurator-purchase-required');
+      productSection.dataset.configuratorActive = 'true';
+      productSection.querySelectorAll(nativePurchaseSelectors.join(',')).forEach((control) => {
+        control.hidden = true;
+        control.setAttribute('aria-hidden', 'true');
+      });
+    }
+
     function activateRequiredPurchaseFlow() {
       const productForm = document.getElementById(root.dataset.productFormId)
         || productSection.querySelector('product-form form[data-type="add-to-cart-form"]');
@@ -367,13 +385,8 @@
         || productSection.querySelector('product-form button[type="submit"]');
       if (!nativeSubmit || typeof productForm?.requestSubmit !== 'function') return false;
 
-      productSection.classList.add('ammis-configurator-purchase-required');
+      applyNativePurchaseVisibility();
       root.dataset.configuratorReady = 'true';
-      productSection.querySelectorAll('product-form button[type="submit"], product-form [data-buy-now]').forEach((button) => {
-        button.hidden = true;
-        button.setAttribute('aria-hidden', 'true');
-        if (button.matches('[data-buy-now]')) button.closest('.product-form__checkout')?.setAttribute('hidden', '');
-      });
       return true;
     }
 
@@ -500,6 +513,7 @@
     if (productSection && !observedSections.has(productSection)) {
       observedSections.add(productSection);
       const observer = new MutationObserver((records) => {
+        applyNativePurchaseVisibility();
         records.forEach((record) => record.addedNodes.forEach((node) => {
           if (node.nodeType === Node.ELEMENT_NODE) initializeWithin(node);
         }));
