@@ -56,6 +56,15 @@
     let addToCartTimeout;
     let cartUpdateUnsubscribe;
     let cartErrorUnsubscribe;
+    const debugEnabled = Boolean(window.Shopify?.previewMode || window.location.search.includes('ammis_debug'));
+
+    function trace(event, detail = {}) {
+      if (!debugEnabled) return;
+      const entry = { event, at: new Date().toISOString(), ...detail };
+      window.__ammisConfiguratorTrace = window.__ammisConfiguratorTrace || [];
+      window.__ammisConfiguratorTrace.push(entry);
+      console.debug('[AMMIS configurator]', entry);
+    }
 
     if (
       !productSection
@@ -305,11 +314,17 @@
     }
 
     function showCartError(message = addToCartError) {
+      resetAddToCartState();
       if (cartError) {
         cartError.textContent = message;
         cartError.hidden = false;
       }
       if (announcement) announcement.textContent = message;
+      addToCartButton.disabled = false;
+      addToCartButton.removeAttribute('aria-disabled');
+      addToCartButton.removeAttribute('aria-busy');
+      if (dialog?.open && document.activeElement === addToCartButton) backButton?.focus();
+      trace('cart-error-visible', { message, dialogOpen: Boolean(dialog?.open), activeElement: document.activeElement?.id || document.activeElement?.dataset?.configuratorBack || document.activeElement?.tagName });
     }
 
     function clearCartError() {
@@ -391,11 +406,16 @@
     }
 
     function handleAddToCart() {
-      if (isAddingToCart || !validateRequired()) return;
+      trace('cta-handler-start', { isAddingToCart, invalidGroups: invalidGroups().length });
+      if (isAddingToCart || !validateRequired()) {
+        trace('cta-handler-blocked', { isAddingToCart, invalidGroups: invalidGroups().length });
+        return;
+      }
 
       const productForm = document.getElementById(root.dataset.productFormId)
         || productSection.querySelector('product-form form[data-type="add-to-cart-form"]');
       const nativeSubmit = productForm?.querySelector('button[type="submit"][name="add"]');
+      trace('form-resolution', { formId: productForm?.id, hasNativeSubmit: Boolean(nativeSubmit), requestSubmit: typeof productForm?.requestSubmit });
       if (!productForm || !nativeSubmit || typeof productForm.requestSubmit !== 'function') {
         showCartError();
         return;
@@ -409,6 +429,7 @@
       isAddingToCart = true;
       setAddToCartLoading(true);
       const variantId = productForm.querySelector('[name="id"]')?.value;
+      trace('form-data-ready', { variantId, entries: [...new FormData(productForm).entries()] });
 
       if (typeof subscribe !== 'function' || typeof PUB_SUB_EVENTS === 'undefined' || !PUB_SUB_EVENTS.cartUpdate || !PUB_SUB_EVENTS.cartError) {
         resetAddToCartState();
@@ -433,16 +454,21 @@
 
       try {
         allowNativeSubmit = true;
+        trace('request-submit-before', { submitter: nativeSubmit.name, hidden: nativeSubmit.hidden });
         productForm.requestSubmit(nativeSubmit);
+        trace('request-submit-after');
       } catch (error) {
+        trace('request-submit-throw', { name: error?.name, message: error?.message });
         resetAddToCartState();
         showCartError();
       }
     }
 
     function guardProductAction(event) {
+      trace('submit-capture', { submitter: event.submitter?.name, allowNativeSubmit });
       if (allowNativeSubmit) {
         allowNativeSubmit = false;
+        trace('submit-capture-allowed');
         return;
       }
       const invalid = invalidGroups();
@@ -488,6 +514,7 @@
     });
     addToCartButton.addEventListener('click', (event) => {
       event.preventDefault();
+      trace('cta-click');
       handleAddToCart();
     });
 
