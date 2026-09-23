@@ -26,7 +26,7 @@ if (!customElements.get('product-form')) {
 
     onSubmitHandler(evt) {
       evt.preventDefault();
-      
+
       // 1. GARANTIA DE LEITURA DO DRAWER (Obrigatório para o Atacado)
       this.cart = document.querySelector('cart-notification') || document.querySelector('cart-drawer');
 
@@ -90,6 +90,7 @@ const isB2BEnvironment = window.location.pathname.includes('atacado') || documen
           }
         })
         .catch((e) => {
+          publish(PUB_SUB_EVENTS.cartError, { source: 'product-form', productVariantId: formData.get('id'), errors: e?.message, message: e?.message });
           console.error(e);
         })
         .finally(() => {

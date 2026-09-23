@@ -27,6 +27,29 @@
   margin-bottom: 0;
   align-items: center;
 }
+.product-option__group--configurator {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.35rem;
+  align-items: start;
+}
+.product-option__group--configurator .product-option {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, auto) minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: baseline;
+  min-width: 0;
+}
+.product-option__group--configurator .product-option::after {
+  display: none;
+}
+.product-option__group--configurator dt {
+  font-weight: 600;
+}
+.product-option__group--configurator dd {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
 
 .drawer {
   position: fixed;

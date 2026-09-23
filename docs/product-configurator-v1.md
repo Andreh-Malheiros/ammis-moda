@@ -44,7 +44,13 @@ A read-only check of the live product **BLAZER ITALY CARAIVA** (handle `blazer-i
 
 `price_addition` is a decimal amount in the shop's currency. The browser converts it to cents for display calculations. The summary shows base price, customization subtotal, and estimated total, and tracks the selected variant's base price when the theme emits a variant change.
 
-**CUSTOMIZATION PRICE IS DISPLAY-ONLY IN V1.** The frontend estimate does not change the Shopify variant price, checkout price, or server-side price. The current product form receives visible selection properties (`properties[Group title]`) and private identifier properties (`properties[_configurator_code_group]`). Those properties record choices and are never a source of trusted pricing. Real collection of customization charges requires a separately approved future phase.
+**CUSTOMIZATION PRICE IS DISPLAY-ONLY IN V1.** The frontend estimate does not change the Shopify variant price, checkout price, or server-side price. The current product form receives visible selection properties (`properties[Personalização — Group title]`) and private identifier properties (`properties[_configurator_code_group]`). Cart surfaces strip the `Personalização — ` prefix when presenting the label to customers. Those properties record choices and are never a source of trusted pricing. Real collection of customization charges requires a separately approved future phase.
+
+### V1.2 single purchase flow
+
+When the configurator is initialized successfully for a configured product, the runtime hides the native Add to cart and Buy now CTAs while preserving the quantity selector and variant selector. The review action delegates to the existing product-form AJAX flow, so the item is added with its variant, quantity, and line item properties before the cart drawer is opened. If initialization cannot complete, the native product form remains visible as the safe fallback. Common products are not affected.
+
+Buy now remains out of scope for configurable products in V1.2. The native dynamic checkout action is hidden to prevent bypassing required personalization; adapting direct purchase requires a separately approved checkout/property contract.
 
 ### Buy now handoff limitation
 

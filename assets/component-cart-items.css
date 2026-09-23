@@ -1,6 +1,30 @@
 #main-cart-items .product-option__group {
   margin-top: 0.4rem;
 }
+#main-cart-items .product-option__group--configurator {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.35rem;
+  align-items: start;
+}
+#main-cart-items .product-option__group--configurator .product-option {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, auto) minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: baseline;
+  min-width: 0;
+}
+#main-cart-items .product-option__group--configurator .product-option::after {
+  display: none;
+}
+#main-cart-items .product-option__group--configurator dt {
+  font-weight: 600;
+}
+#main-cart-items .product-option__group--configurator dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
 #main-cart-items .quantity {
   width: 8rem;
   height: 3.6rem;

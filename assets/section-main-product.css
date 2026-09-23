@@ -2894,6 +2894,28 @@ details.accordion-item summary:focus {
   gap: 1.2rem;
 }
 
+/* A valid configurator owns purchase. Keep native forms for requestSubmit(),
+ * but hide every native purchase affordance before first paint. */
+.ammis-configurator-purchase-required .product-form__submit,
+.ammis-configurator-purchase-required .product-form__checkout,
+.ammis-configurator-purchase-required .shopify-payment-button,
+.ammis-configurator-purchase-required [data-buy-now],
+.ammis-configurator-purchase-required button[name="checkout"],
+.ammis-configurator-purchase-required input[type="submit"][name="add"] {
+  display: none !important;
+}
+
+.ammis-configurator-purchase-required .product-form__buttons-row {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.ammis-configurator-purchase-required .product-form__quantity {
+  flex: 0 1 10rem;
+  max-width: 10rem;
+  width: 10rem;
+}
+
 .product-form__buttons-row {
   display: grid;
   grid-template-columns: 10rem minmax(0, 1fr);

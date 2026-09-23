@@ -28,6 +28,43 @@
       assign notify_me = true
     endif
   endfor
+
+  assign configurator_active = false
+  assign configurator_enabled = product.metafields.custom.configurator_enabled.value
+  assign configurator_groups = product.metafields.custom.configurator_groups.value
+  assign configurator_variant_color_index = -1
+
+  for product_option in product.options
+    assign product_option_handle = product_option | handleize
+    if product_option_handle == 'cor' or product_option_handle == 'color'
+      assign configurator_variant_color_index = forloop.index0
+    endif
+  endfor
+
+  assign configurator_step_count = 0
+  for group in configurator_groups
+    assign group_code = group.code.value | default: group.system.handle
+    assign group_title = group.title.value | default: group_code
+    assign group_code_handle = group_code | handleize
+    assign group_title_handle = group_title | handleize
+    assign group_uses_variant_color = false
+
+    if configurator_variant_color_index != -1
+      if group_code_handle == 'cor' or group_code_handle == 'color'
+        assign group_uses_variant_color = true
+      elsif group_title_handle == 'cor' or group_title_handle == 'color'
+        assign group_uses_variant_color = true
+      endif
+    endif
+
+    unless group_uses_variant_color
+      assign configurator_step_count = configurator_step_count | plus: 1
+    endunless
+  endfor
+
+  if configurator_enabled == true and configurator_groups != blank and configurator_step_count > 0
+    assign configurator_active = true
+  endif
 -%}
 
 {%- if first_3d_model -%}
@@ -52,7 +89,8 @@
   id="MainProduct-{{ section.id }}"
   data-section="{{ section.id }}"
   data-color="dark"
-  class="{% if section.settings.gallery_type == 'static_column_aside' or section.settings.gallery_type == 'two_column_aside' %}{% if section.settings.header_overlay == true %}section--have-overlay{% endif %}{% endif %}"
+  data-configurator-active="{{ configurator_active }}"
+  class="{% if configurator_active %}ammis-configurator-purchase-required {% endif %}{% if section.settings.gallery_type == 'static_column_aside' or section.settings.gallery_type == 'two_column_aside' %}{% if section.settings.header_overlay == true %}section--have-overlay{% endif %}{% endif %}"
 >
   <div class="product {% if product.media.size > 0 %}row{% else %}product--no-media{% endif %}">
     <div
