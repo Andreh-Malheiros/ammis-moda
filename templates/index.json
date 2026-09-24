@@ -12,15 +12,14 @@
     "slideshow_97kWbf": {
       "type": "slideshow",
       "blocks": {
-        "slideshow_item_RTqjtc": {
+        "slideshow_item_F6EnkM": {
           "type": "slideshow-item",
-          "disabled": true,
           "settings": {
-            "image": "shopify://shop_images/DESKTOP_2x_f0dfe17d-9184-447e-b018-0ec4a8a6ae90.png",
-            "mobile_image": "shopify://shop_images/MOBILE__3.png",
-            "overlay_opacity": 0.2,
+            "image": "shopify://shop_images/DESKTOP_3x_c4970e3a-cd54-492c-b474-c9b4694a2a64.png",
+            "mobile_image": "shopify://shop_images/MOBILE__2.png",
+            "overlay_opacity": 0,
             "show_video": false,
-            "video_url": "",
+            "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
             "description_video": "",
             "heading": "",
             "description": "",
@@ -32,14 +31,33 @@
             "enable_fullscreen_link": true
           }
         },
-        "slideshow_item_F6EnkM": {
+        "slideshow_item_Hw484i": {
           "type": "slideshow-item",
           "settings": {
-            "image": "shopify://shop_images/DESKTOP_3x_c4970e3a-cd54-492c-b474-c9b4694a2a64.png",
-            "mobile_image": "shopify://shop_images/MOBILE__2.png",
+            "image": "shopify://shop_images/DESKTOP_TAM_2x_3d5b0a5a-d6c7-4863-a3c4-e2a3de51bdaf.png",
+            "mobile_image": "shopify://shop_images/MOBILE_3.png",
             "overlay_opacity": 0,
             "show_video": false,
             "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+            "description_video": "",
+            "heading": "",
+            "description": "",
+            "tab_subheading": "",
+            "tab_heading": "",
+            "button_label": "",
+            "button_link": "shopify://collections/soleil",
+            "button_style": "tertiary",
+            "enable_fullscreen_link": true
+          }
+        },
+        "slideshow_item_RTqjtc": {
+          "type": "slideshow-item",
+          "settings": {
+            "image": "shopify://shop_images/DESKTOP_2x_f0dfe17d-9184-447e-b018-0ec4a8a6ae90.png",
+            "mobile_image": "shopify://shop_images/MOBILE__3.png",
+            "overlay_opacity": 0.2,
+            "show_video": false,
+            "video_url": "",
             "description_video": "",
             "heading": "",
             "description": "",
@@ -110,34 +128,15 @@
             "button_style": "simple",
             "enable_fullscreen_link": true
           }
-        },
-        "slideshow_item_Hw484i": {
-          "type": "slideshow-item",
-          "settings": {
-            "image": "shopify://shop_images/DESKTOP_TAM_2x_3d5b0a5a-d6c7-4863-a3c4-e2a3de51bdaf.png",
-            "mobile_image": "shopify://shop_images/MOBILE_3.png",
-            "overlay_opacity": 0,
-            "show_video": false,
-            "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
-            "description_video": "",
-            "heading": "",
-            "description": "",
-            "tab_subheading": "",
-            "tab_heading": "",
-            "button_label": "",
-            "button_link": "shopify://collections/soleil",
-            "button_style": "tertiary",
-            "enable_fullscreen_link": true
-          }
         }
       },
       "block_order": [
-        "slideshow_item_RTqjtc",
         "slideshow_item_F6EnkM",
+        "slideshow_item_Hw484i",
+        "slideshow_item_RTqjtc",
         "slideshow_item_MfifAE",
         "slideshow_item_gjAiCC",
-        "slideshow_item_KTNKJ6",
-        "slideshow_item_Hw484i"
+        "slideshow_item_KTNKJ6"
       ],
       "name": "t:sections.slideshow.name",
       "settings": {
