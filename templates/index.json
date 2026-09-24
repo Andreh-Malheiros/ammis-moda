@@ -16,8 +16,8 @@
           "type": "slideshow-item",
           "disabled": true,
           "settings": {
-            "image": "shopify://shop_images/DESKTOP__2x_fda2e0f0-2104-447e-b118-7b5b3fd308be.png",
-            "mobile_image": "shopify://shop_images/MOBILE_2.png",
+            "image": "shopify://shop_images/DESKTOP_2x_f0dfe17d-9184-447e-b018-0ec4a8a6ae90.png",
+            "mobile_image": "shopify://shop_images/MOBILE__3.png",
             "overlay_opacity": 0.2,
             "show_video": false,
             "video_url": "",
