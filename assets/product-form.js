@@ -27,6 +27,16 @@ if (!customElements.get('product-form')) {
     onSubmitHandler(evt) {
       evt.preventDefault();
 
+      const debugEnabled = Boolean(window.Shopify?.previewMode || window.location.search.includes('ammis_debug'));
+      const trace = (event, detail = {}) => {
+        if (!debugEnabled) return;
+        const entry = { event, at: new Date().toISOString(), ...detail };
+        window.__ammisProductFormTrace = window.__ammisProductFormTrace || [];
+        window.__ammisProductFormTrace.push(entry);
+        console.debug('[AMMIS product-form]', entry);
+      };
+      trace('submit-handler-start', { formId: this.form?.id, submitter: evt.submitter?.name, variantId: this.form?.querySelector('[name="id"]')?.value });
+
       // 1. GARANTIA DE LEITURA DO DRAWER (Obrigatório para o Atacado)
       this.cart = document.querySelector('cart-notification') || document.querySelector('cart-drawer');
 
@@ -58,10 +68,12 @@ const isB2BEnvironment = window.location.pathname.includes('atacado') || documen
         this.cart.setActiveElement(document.activeElement);
       }
       config.body = formData;
+      trace('cart-request-before', { url: routes.cart_add_url, entries: [...formData.entries()] });
 
       fetch(`${routes.cart_add_url}`, config)
         .then((response) => response.json())
         .then((response) => {
+          trace('cart-response', { status: response.status || 200, description: response.description, sections: response.sections ? Object.keys(response.sections) : [] });
           if (response.status) {
             publish(PUB_SUB_EVENTS.cartError, {source: 'product-form', productVariantId: formData.get('id'), errors: response.description, message: response.message});
             this.handleErrorMessage(response.description);
@@ -90,6 +102,7 @@ const isB2BEnvironment = window.location.pathname.includes('atacado') || documen
           }
         })
         .catch((e) => {
+          trace('cart-request-error', { name: e?.name, message: e?.message });
           publish(PUB_SUB_EVENTS.cartError, { source: 'product-form', productVariantId: formData.get('id'), errors: e?.message, message: e?.message });
           console.error(e);
         })
