@@ -1,0 +1,141 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {
+            "heading_size": "h1"
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "inventory": {
+          "type": "inventory",
+          "disabled": true,
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button",
+            "pill_group": true,
+            "show_size_guide": true,
+            "size_guide_text": "Tamanhos",
+            "size_guide_header": "",
+            "size_guide_description": "",
+            "page": ""
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_quantity": true,
+            "show_gift_card_recipient": false,
+            "notification_modal": true,
+            "modal_button_label": "Me Avise",
+            "heading": "Notificação",
+            "description": "Infelizmente, o produto está fora de estoque. Entre em contato conosco para nos avisar quando estiver disponível.",
+            "button_label": "SAC",
+            "button_link": "shopify://pages/contato",
+            "description_2": "Sugerimos que você confira produtos similares, talvez encontre algo adequado para você.",
+            "button_label_2": "Ver Produtos Similares",
+            "button_link_2": "shopify://collections/all"
+          }
+        },
+        "description_Knmqeg": {
+          "type": "description",
+          "settings": {
+            "description": ""
+          }
+        },
+        "accordion_kwBEzw": {
+          "type": "accordion",
+          "settings": {
+            "heading_1": "Composição",
+            "heading_2": "Medidas e Fit"
+          }
+        },
+        "share": {
+          "type": "share",
+          "settings": {
+            "show_social_icons": true,
+            "show_share_facebook": true,
+            "show_share_twitter": true,
+            "show_share_pinterest": true,
+            "show_share_copy": true
+          }
+        },
+        "floated_form": {
+          "type": "floated_form",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_quantity": false
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "price",
+        "inventory",
+        "variant_picker",
+        "buy_buttons",
+        "description_Knmqeg",
+        "accordion_kwBEzw",
+        "share",
+        "floated_form"
+      ],
+      "settings": {
+        "gallery_type": "thumbs_aside",
+        "desktop_alignment": "right",
+        "mobile_alignment": "before",
+        "slider_direction": "vertical",
+        "image_ratio": "portrait",
+        "image_fit": "cover",
+        "enable_full_screen": false,
+        "header_overlay": false
+      }
+    },
+    "product-recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "subheading": "",
+        "heading": "Você também pode gostar",
+        "description": "",
+        "heading_size": "h1",
+        "products_limit": 4,
+        "products_to_show": 4,
+        "image_ratio": "portrait",
+        "image_fit": "cover",
+        "show_vendor": false,
+        "show_color_count": true,
+        "show_size_count": false,
+        "show_collection": false,
+        "show_desc": false,
+        "columns_mobile": "2",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "simple",
+        "margin_top": "s",
+        "margin_bottom": "m"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "product-recommendations"
+  ]
+}
