@@ -222,6 +222,23 @@
         "edit": "Editar",
         "edit_group": "Editar {{ group }}"
       },
+      "configurable_pdp": {
+        "title": "Personalize sua peça",
+        "from_price": "A partir de",
+        "price_estimate": "Estimativa visual",
+        "possible_additions": "Possíveis acréscimos",
+        "no_addition": "Sem acréscimo",
+        "steps": "Etapas da personalização",
+        "start_step": "Começar por {{ step }}",
+        "locked_step": "Disponível após a etapa anterior",
+        "modal_eyebrow": "Etapa 1",
+        "modal_title": "Comece por {{ step }}",
+        "modal_intro": "Este é o ponto de partida para personalizar sua peça.",
+        "modal_pending": "As próximas telas de personalização serão adicionadas na próxima etapa.",
+        "close": "Fechar",
+        "no_image": "Não há imagem disponível para este produto.",
+        "unavailable": "Este produto ainda não está configurado para personalização."
+      },
       "media": {
         "open_featured_media": "Open featured media in gallery view",
         "open_media": "Open media {{ index }} in gallery view",

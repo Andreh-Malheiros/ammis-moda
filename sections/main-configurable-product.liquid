@@ -1,0 +1,223 @@
+{{ 'section-configurable-product.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'configurable-product-initial.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign configurator_enabled = product.metafields.custom.configurator_enabled.value
+  assign configurator_groups = product.metafields.custom.configurator_groups.value
+  assign configurator_ready = false
+  assign configurator_group_count = 0
+  assign configurator_has_color_group = false
+  assign first_group_title = ''
+  assign base_price = product.price_min
+  assign total_min_addition = 0
+
+  if configurator_enabled == true and configurator_groups != blank
+    for group in configurator_groups
+      assign group_code = group.code.value | default: group.system.handle
+      assign group_title = group.title.value | default: group_code
+      assign group_code_handle = group_code | handleize
+      assign group_title_handle = group_title | handleize
+      assign configurator_group_count = configurator_group_count | plus: 1
+      if configurator_group_count == 1
+        assign first_group_title = group_title
+      endif
+
+      if group_code_handle == 'cor' or group_code_handle == 'color' or group_title_handle == 'cor' or group_title_handle == 'color'
+        assign configurator_has_color_group = true
+      endif
+
+      assign group_min_addition = nil
+      for option in group.options.value
+        assign option_available = true
+        if option.available.value == false
+          assign option_available = false
+        endif
+        if option_available
+          assign option_extra = option.price_addition.value | default: 0 | times: 100 | round
+          if group_min_addition == blank or option_extra < group_min_addition
+            assign group_min_addition = option_extra
+          endif
+        endif
+      endfor
+      if group_min_addition != blank and group.required.value != false
+        assign total_min_addition = total_min_addition | plus: group_min_addition
+      endif
+    endfor
+    if configurator_group_count > 0
+      assign configurator_ready = true
+    endif
+  endif
+
+  assign lowest_possible_price = base_price | plus: total_min_addition
+  capture dialog_id
+    echo 'ConfigurableProductDialog-'
+    echo section.id
+  endcapture
+  capture dialog_title_id
+    echo 'ConfigurableProductDialogTitle-'
+    echo section.id
+  endcapture
+-%}
+
+<section
+  id="ConfigurableProduct-{{ section.id }}"
+  class="configurable-product"
+  data-configurable-pdp
+  data-section-id="{{ section.id }}"
+  data-product-id="{{ product.id }}"
+  data-estimated-price="{{ lowest_possible_price }}"
+>
+  {% if configurator_ready %}
+    <div class="configurable-product__layout page-width">
+      <div class="configurable-product__media">
+        {% if product.featured_media.preview_image != blank %}
+          {% assign product_image_alt = product.featured_media.preview_image.alt | default: product.title %}
+          {{ product.featured_media.preview_image | image_url: width: 1200 | image_tag: class: 'configurable-product__image', loading: 'eager', alt: product_image_alt }}
+        {% else %}
+          <div class="configurable-product__image-fallback" role="img" aria-label="{{ 'products.product.configurable_pdp.no_image' | t | escape }}">
+            {{ 'products.product.configurable_pdp.no_image' | t }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="configurable-product__content">
+        <p class="configurable-product__eyebrow">{{ 'products.product.configurator.eyebrow' | t }}</p>
+        <h1 class="configurable-product__heading">{{ 'products.product.configurable_pdp.title' | t }}</h1>
+        <p class="configurable-product__product-name">{{ product.title | escape }}</p>
+
+        <div class="configurable-product__price" aria-label="{{ 'products.product.configurable_pdp.price_estimate' | t | escape }}">
+          <span class="configurable-product__price-label">{{ 'products.product.configurable_pdp.from_price' | t }}</span>
+          <strong class="configurable-product__price-value">{{ lowest_possible_price | money }}</strong>
+          <span class="configurable-product__price-note">{{ 'products.product.configurable_pdp.price_estimate' | t }}</span>
+        </div>
+
+        <section class="configurable-product__summary" aria-labelledby="ConfigurableProductSummary-{{ section.id }}">
+          <h2 id="ConfigurableProductSummary-{{ section.id }}" class="configurable-product__section-heading">
+            {{ 'products.product.configurable_pdp.possible_additions' | t }}
+          </h2>
+          <ul class="configurable-product__addition-list" role="list">
+            {% for group in configurator_groups %}
+              {% assign group_code = group.code.value | default: group.system.handle %}
+              {% assign group_title = group.title.value | default: group_code %}
+              <li class="configurable-product__addition-group">
+                <span class="configurable-product__addition-title">{{ group_title | escape }}</span>
+                <ul class="configurable-product__option-list" role="list">
+                  {% for option in group.options.value %}
+                    {% assign option_available = true %}
+                    {% if option.available.value == false %}{% assign option_available = false %}{% endif %}
+                    {% if option_available %}
+                      {% assign option_name = option.name.value | default: option.code.value | default: option.system.handle %}
+                      {% assign option_extra = option.price_addition.value | default: 0 | times: 100 | round %}
+                      <li class="configurable-product__option-row">
+                        <span>{{ option_name | escape }}</span>
+                        <span>
+                          {% if option_extra > 0 %}+{{ option_extra | money }}{% else %}{{ 'products.product.configurable_pdp.no_addition' | t }}{% endif %}
+                        </span>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              </li>
+            {% endfor %}
+          </ul>
+          <p class="configurable-product__display-note">{{ 'products.product.configurator.display_only' | t }}</p>
+        </section>
+
+        <section class="configurable-product__steps" aria-labelledby="ConfigurableProductSteps-{{ section.id }}">
+          <h2 id="ConfigurableProductSteps-{{ section.id }}" class="configurable-product__section-heading">
+            {{ 'products.product.configurable_pdp.steps' | t }}
+          </h2>
+          <ol class="configurable-product__step-list">
+            {% assign step_number = 0 %}
+            {% for group in configurator_groups %}
+              {% assign group_code = group.code.value | default: group.system.handle %}
+              {% assign group_title = group.title.value | default: group_code %}
+              {% assign step_number = step_number | plus: 1 %}
+              <li class="configurable-product__step-item{% if step_number == 1 %} configurable-product__step-item--active{% else %} configurable-product__step-item--locked{% endif %}">
+                <span class="configurable-product__step-number" aria-hidden="true">{{ step_number }}</span>
+                {% if step_number == 1 %}
+                  <button
+                    type="button"
+                    class="configurable-product__step-action"
+                    data-configurable-start
+                    aria-haspopup="dialog"
+                    aria-controls="{{ dialog_id }}"
+                  >
+                    <span class="configurable-product__step-title">{{ group_title | escape }}</span>
+                    <span class="configurable-product__step-hint">{{ 'products.product.configurable_pdp.start_step' | t: step: group_title | escape }}</span>
+                  </button>
+                {% else %}
+                  <span class="configurable-product__step-copy" aria-disabled="true">
+                    <span class="configurable-product__step-title">{{ group_title | escape }}</span>
+                    <span class="configurable-product__step-hint">{{ 'products.product.configurable_pdp.locked_step' | t }}</span>
+                  </span>
+                {% endif %}
+              </li>
+            {% endfor %}
+            {% for product_option in product.options %}
+              {% assign product_option_handle = product_option | handleize %}
+              {% assign is_duplicate_color = false %}
+              {% if configurator_has_color_group %}
+                {% if product_option_handle == 'cor' or product_option_handle == 'color' %}
+                  {% assign is_duplicate_color = true %}
+                {% endif %}
+              {% endif %}
+              {% unless is_duplicate_color %}
+                {% assign step_number = step_number | plus: 1 %}
+                <li class="configurable-product__step-item configurable-product__step-item--locked">
+                  <span class="configurable-product__step-number" aria-hidden="true">{{ step_number }}</span>
+                  <span class="configurable-product__step-copy" aria-disabled="true">
+                    <span class="configurable-product__step-title">{{ product_option | escape }}</span>
+                    <span class="configurable-product__step-hint">{{ 'products.product.configurable_pdp.locked_step' | t }}</span>
+                  </span>
+                </li>
+              {% endunless %}
+            {% endfor %}
+          </ol>
+        </section>
+      </div>
+    </div>
+
+    <dialog
+      id="{{ dialog_id }}"
+      class="configurable-product__dialog"
+      data-configurable-dialog
+      aria-labelledby="{{ dialog_title_id }}"
+    >
+      <div class="configurable-product__dialog-surface">
+        <header class="configurable-product__dialog-header">
+          <div>
+            <p class="configurable-product__eyebrow">{{ 'products.product.configurable_pdp.modal_eyebrow' | t }}</p>
+            <h2 id="{{ dialog_title_id }}" class="configurable-product__dialog-title" tabindex="-1">
+              {{ 'products.product.configurable_pdp.modal_title' | t: step: first_group_title | escape }}
+            </h2>
+          </div>
+          <button type="button" class="configurable-product__dialog-close" data-configurable-close aria-label="{{ 'products.product.configurator.close' | t | escape }}">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </header>
+        <div class="configurable-product__dialog-body">
+          <span class="configurable-product__dialog-step">1</span>
+          <p>{{ 'products.product.configurable_pdp.modal_intro' | t }}</p>
+          <p class="configurable-product__display-note">{{ 'products.product.configurable_pdp.modal_pending' | t }}</p>
+        </div>
+        <footer class="configurable-product__dialog-footer">
+          <button type="button" class="button button--secondary" data-configurable-close>
+            {{ 'products.product.configurable_pdp.close' | t }}
+          </button>
+        </footer>
+      </div>
+    </dialog>
+  {% else %}
+    <div class="configurable-product__unavailable page-width">
+      {{ 'products.product.configurable_pdp.unavailable' | t }}
+    </div>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "PDP configurável — inicial",
+  "settings": []
+}
+{% endschema %}

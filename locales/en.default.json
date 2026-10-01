@@ -213,6 +213,23 @@
         "edit": "Edit",
         "edit_group": "Edit {{ group }}"
       },
+      "configurable_pdp": {
+        "title": "Personalize your piece",
+        "from_price": "Starting at",
+        "price_estimate": "Visual estimate",
+        "possible_additions": "Possible additions",
+        "no_addition": "No addition",
+        "steps": "Customization steps",
+        "start_step": "Start with {{ step }}",
+        "locked_step": "Available after the previous step",
+        "modal_eyebrow": "Step 1",
+        "modal_title": "Start with {{ step }}",
+        "modal_intro": "This is the starting point for your customization.",
+        "modal_pending": "The next customization screens will be added in the next stage.",
+        "close": "Close",
+        "no_image": "No product image is available.",
+        "unavailable": "This product is not configured for customization yet."
+      },
       "media": {
         "open_featured_media": "Open featured media in gallery view",
         "open_media": "Open media {{ index }} in gallery view",
