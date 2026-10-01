@@ -33,6 +33,7 @@
         },
         "slideshow_item_Hw484i": {
           "type": "slideshow-item",
+          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/DESKTOP_TAM_2x_3d5b0a5a-d6c7-4863-a3c4-e2a3de51bdaf.png",
             "mobile_image": "shopify://shop_images/MOBILE_3.png",
