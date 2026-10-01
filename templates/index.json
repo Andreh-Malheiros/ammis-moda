@@ -52,7 +52,6 @@
         },
         "slideshow_item_RTqjtc": {
           "type": "slideshow-item",
-          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/DESKTOP_2x_1.png",
             "mobile_image": "shopify://shop_images/MOBILE_4.png",
