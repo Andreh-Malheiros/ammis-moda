@@ -211,10 +211,10 @@
         "description": "",
         "heading_size": "h1",
         "product_list": [
+          "blusa-renda-vereda",
           "casaco-enseada",
           "colete-manaca",
-          "camisa-manga-comprida-serra",
-          "camisa-ipe"
+          "camisa-manga-comprida-serra"
         ],
         "products_to_show": 4,
         "image_ratio": "portrait",
@@ -267,6 +267,7 @@
         },
         "product_slide_jDfYeN": {
           "type": "product_slide",
+          "disabled": true,
           "settings": {
             "product": "calca-enseada",
             "image": "{{ block.settings.product.featured_image }}",
