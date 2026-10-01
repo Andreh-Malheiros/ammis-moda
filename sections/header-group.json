@@ -31,7 +31,6 @@
     },
     "announcement-bar": {
       "type": "announcement-bar",
-      "disabled": true,
       "settings": {
         "enable_bar": true,
         "height": 45,
