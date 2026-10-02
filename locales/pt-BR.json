@@ -236,7 +236,9 @@
         "almost_there": "Estamos quase lá",
         "size_chart": "Tabela de medidas",
         "chosen": "Escolhido",
-        "select_card": "Selecionar"
+        "select_card": "Selecionar",
+        "read_more": "Ler mais…",
+        "read_less": "Ler menos"
       },
       "configurable_pdp": {
         "title": "Personalize sua peça",

@@ -569,6 +569,14 @@
     return !!group && group.options.some((option) => option.priceAdditionCents > 0 || isNonEmptyString(option.description));
   }
 
+  function toggleOptionDescription(description, button, labels) {
+    const expanded = !description.classList.contains('configurable-product__option-description--expanded');
+    description.classList.toggle('configurable-product__option-description--expanded', expanded);
+    button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    button.textContent = expanded ? labels.less : labels.more;
+    return expanded;
+  }
+
   function parseStepMessages(raw) {
     if (!Array.isArray(raw)) return [];
     return raw
@@ -997,8 +1005,14 @@
     }
 
     handleClick(event) {
-      const element = event.target instanceof Element ? event.target.closest('[data-configurable-start], [data-configurable-close], [data-configurable-back], [data-configurable-next], [data-configurable-clear], [data-configurable-edit], [data-configurable-submit], [data-configurable-zoom-open], [data-configurable-zoom-image-trigger], [data-configurable-zoom-close], [data-configurable-zoom-in], [data-configurable-zoom-out], [data-configurable-zoom-photo]') : null;
+      const element = event.target instanceof Element ? event.target.closest('[data-configurable-start], [data-configurable-close], [data-configurable-back], [data-configurable-next], [data-configurable-clear], [data-configurable-edit], [data-configurable-submit], [data-configurable-zoom-open], [data-configurable-zoom-image-trigger], [data-configurable-zoom-close], [data-configurable-zoom-in], [data-configurable-zoom-out], [data-configurable-zoom-photo], [data-configurable-expand]') : null;
       if (!element || !this.root.contains(element)) return;
+      if (element.matches('[data-configurable-expand]')) {
+        event.preventDefault();
+        const description = element.parentElement?.querySelector('.configurable-product__option-description');
+        if (!description) return;
+        return toggleOptionDescription(description, element, { more: translated(this.root, 'labelReadMore', 'Read more…'), less: translated(this.root, 'labelReadLess', 'Read less') });
+      }
       if (element.matches('[data-configurable-start]')) return this.openDialog();
       if (element.matches('[data-configurable-close]')) return this.closeDialog();
       if (element.matches('[data-configurable-back]')) return this.goBack();
@@ -1673,7 +1687,16 @@
             state.append(makeElement('span', 'configurable-product__option-state-on', translated(this.root, 'labelChosen', 'Selected')), makeElement('span', 'configurable-product__option-state-off', translated(this.root, 'labelSelectCard', 'Select')));
             content.append(state);
           }
-          if (option.description) content.append(makeElement('span', 'configurable-product__option-description', option.description));
+          if (option.description) {
+            content.append(makeElement('span', 'configurable-product__option-description', option.description));
+            if (detailed) {
+              const expand = makeElement('button', 'configurable-product__option-expand-btn', translated(this.root, 'labelReadMore', 'Read more…'));
+              expand.type = 'button';
+              expand.dataset.configurableExpand = '';
+              expand.setAttribute('aria-expanded', 'false');
+              content.append(expand);
+            }
+          }
           label.append(input, content);
           list.append(label);
         });
@@ -2146,6 +2169,7 @@
     isNextInactive,
     resolveOptionCardImage,
     groupHasDetails,
+    toggleOptionDescription,
     parseStepMessages,
     pickStepMessages,
     buildCombinationName,

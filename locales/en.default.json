@@ -236,7 +236,9 @@
         "almost_there": "Almost there",
         "size_chart": "Size chart",
         "chosen": "Selected",
-        "select_card": "Select"
+        "select_card": "Select",
+        "read_more": "Read more…",
+        "read_less": "Read less"
       },
       "configurable_pdp": {
         "title": "Personalize your piece",

@@ -400,3 +400,29 @@ test('zoom choices omit groups without selection and are empty without choices',
     { title: 'Tamanho', value: '36' }
   ]);
 });
+
+test('fabric description is clamped to two lines only below 750px', () => {
+  const css = require('node:fs').readFileSync(require('node:path').join(__dirname, '../assets/section-configurable-product.css'), 'utf8');
+  const marker = css.indexOf('Fabric option description');
+  const tail = css.slice(marker);
+  const mobile = tail.slice(tail.indexOf('@media screen and (max-width: 749px)'));
+  assert.match(mobile, /option-description\s*\{[^}]*line-clamp:\s*2/);
+  assert.match(mobile, /option-description--expanded\s*\{[^}]*line-clamp:\s*unset/);
+  assert.doesNotMatch(css.slice(0, marker), /line-clamp:\s*2/);
+  assert.match(tail.slice(0, tail.indexOf('@media')), /option-expand-btn\s*\{\s*display:\s*none/);
+});
+
+test('toggleOptionDescription expands, collapses and updates button state', () => {
+  const classes = new Set();
+  const description = { classList: { contains: (c) => classes.has(c), toggle: (c, on) => (on ? classes.add(c) : classes.delete(c)) } };
+  const attrs = {};
+  const button = { setAttribute: (k, v) => { attrs[k] = v; }, textContent: '' };
+  const labels = { more: 'Ler mais…', less: 'Ler menos' };
+  assert.equal(api.toggleOptionDescription(description, button, labels), true);
+  assert.ok(classes.has('configurable-product__option-description--expanded'));
+  assert.equal(attrs['aria-expanded'], 'true');
+  assert.equal(button.textContent, 'Ler menos');
+  assert.equal(api.toggleOptionDescription(description, button, labels), false);
+  assert.equal(classes.size, 0);
+  assert.equal(button.textContent, 'Ler mais…');
+});

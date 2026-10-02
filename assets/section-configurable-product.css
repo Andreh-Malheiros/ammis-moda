@@ -2060,3 +2060,51 @@ body.configurable-product-scroll-locked {
     transition: none;
   }
 }
+
+/* Fabric option description: clamp and "read more" toggle (mobile only) */
+.configurable-product__option-expand-btn {
+  display: none;
+}
+
+@media screen and (max-width: 749px) {
+  .configurable-product__option-grid--list .configurable-product__option-card-content {
+    grid-template-areas: "image" "copy" "description" "expand" "state";
+  }
+
+  .configurable-product__option-grid--list .configurable-product__option-description {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .configurable-product__option-grid--list .configurable-product__option-description--expanded {
+    display: block;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+  }
+
+  .configurable-product__option-expand-btn {
+    display: inline-block;
+    grid-area: expand;
+    justify-self: start;
+    min-height: 4.4rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 1.2rem;
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
+    cursor: pointer;
+  }
+
+  .configurable-product__option-expand-btn:focus-visible {
+    outline: 0.2rem solid rgb(var(--color-foreground));
+    outline-offset: 0.2rem;
+  }
+}
