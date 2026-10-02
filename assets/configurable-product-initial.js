@@ -1046,16 +1046,17 @@
     renderFormState() {
       const reviewValid = validateStep('review', this.state, this.payload).valid;
       const onReview = this.state.currentStepId === 'review';
+      const formOwned = this.hasOwnedProductForm();
       setHidden(this.refs.productFormElement, !onReview);
       if (this.refs.submit) {
-        const canSubmit = onReview && reviewValid && this.state.cartState !== 'submitting' && this.hasOwnedProductForm();
+        const canSubmit = onReview && reviewValid && this.state.cartState !== 'submitting' && formOwned;
         this.refs.submit.disabled = !canSubmit;
         this.refs.submit.setAttribute('aria-disabled', canSubmit ? 'false' : 'true');
       }
       if (this.refs.variantId) this.refs.variantId.value = findSelectedVariant(this.state, this.payload)?.id || '';
       if (this.refs.quantity) this.refs.quantity.value = '1';
       this.syncFormProperties();
-      if (this.state.cartState === 'error') {
+      if (this.state.cartState === 'error' || (onReview && !formOwned)) {
         setHidden(this.refs.formError, false);
         if (this.refs.formErrorMessage) this.refs.formErrorMessage.textContent = this.state.cartError || translated(this.root, 'labelCartError', 'Unable to add this configuration.');
       } else {
