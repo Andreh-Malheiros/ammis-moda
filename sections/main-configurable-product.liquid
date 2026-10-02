@@ -35,6 +35,7 @@
   data-label-review-intro="{{ 'products.product.configurator.review_intro' | t | escape }}"
   data-label-review-button="{{ 'products.product.configurator.review_button' | t | escape }}"
   data-label-add-to-cart="{{ 'products.product.configurator.add_to_cart' | t | escape }}"
+  data-label-price-strategy-pending="{{ 'products.product.configurator.price_strategy_pending' | t | escape }}"
   data-label-edit="{{ 'products.product.configurator.edit' | t | escape }}"
   data-label-edit-group="{{ 'products.product.configurator.edit_group' | t: group: '__GROUP__' | escape }}"
   data-label-cart-error="{{ 'products.product.configurator.add_to_cart_error' | t | escape }}"
@@ -105,6 +106,8 @@
         type="button"
         class="button button--primary configurable-product__start"
         data-configurable-start
+        disabled
+        aria-disabled="true"
         aria-haspopup="dialog"
         aria-controls="{{ configurable_dialog_id }}"
       >
@@ -175,13 +178,18 @@
             <span class="loading-overlay__spinner hidden" aria-hidden="true" data-configurable-spinner></span>
           </button>
         {% endform %}
+        <p class="configurable-product__price-gate configurable-product__display-note" data-configurable-price-gate hidden role="status" aria-live="polite">
+          {{ 'products.product.configurator.price_strategy_pending' | t }}
+        </p>
       </product-form>
 
       <div class="configurable-product__zoom" data-configurable-zoom hidden role="dialog" aria-modal="true" aria-labelledby="ConfigurableProductZoomTitle-{{ section.id }}">
         <div class="configurable-product__zoom-surface">
           <h3 id="ConfigurableProductZoomTitle-{{ section.id }}" class="visually-hidden">{{ 'products.product.configurator.zoom' | t }}</h3>
           <button type="button" class="configurable-product__dialog-close" data-configurable-zoom-close aria-label="{{ 'products.product.configurator.close' | t | escape }}"><span aria-hidden="true">&times;</span></button>
-          <img data-configurable-zoom-image alt="">
+          {% if product_image != blank %}
+            <img data-configurable-zoom-image src="{{ product_image | image_url: width: 2000 }}" alt="{{ product_image.alt | default: product.title | escape }}" loading="lazy">
+          {% endif %}
         </div>
       </div>
     </div>

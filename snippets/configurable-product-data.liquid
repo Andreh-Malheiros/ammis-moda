@@ -9,7 +9,11 @@
   assign product_handle = product.handle | strip
   assign product_title = product.title | strip
   assign payload_locale = request.locale.iso_code | strip
-  assign payload_currency = cart.currency.iso_code | default: shop.currency | strip
+  assign payload_currency = cart.currency.iso_code | default: shop.currency | strip | upcase
+  assign store_currency = shop.currency | strip | upcase
+  if payload_currency != store_currency
+    assign payload_currency = blank
+  endif
   assign product_image = product.featured_media.preview_image
   assign size_option_name = nil
 
@@ -55,7 +59,7 @@
           "title": {% if group_title != blank %}{{ group_title | json }}{% else %}null{% endif %},
           "code": {% if group_code != blank %}{{ group_code | json }}{% else %}null{% endif %},
           "description": {% if group_description != blank %}{{ group_description | json }}{% else %}null{% endif %},
-          "required": {% if group.required.value == blank or group.required.value == true %}true{% else %}false{% endif %},
+          "required": {% if group.required.value == false %}false{% else %}true{% endif %},
           "interfaceType": {% if group_interface != blank %}{{ group_interface | json }}{% else %}{{ 'buttons' | json }}{% endif %},
           "order": {% if group_order_valid %}{{ group_order_value | plus: 0 | json }}{% else %}null{% endif %},
           "sourceIndex": {{ forloop.index0 }},

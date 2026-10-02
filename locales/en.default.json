@@ -218,6 +218,7 @@
         "continue": "Continue",
         "review_button": "Review configuration",
         "add_to_cart": "Add to cart",
+        "price_strategy_pending": "Add to cart will be available after the real pricing strategy is approved.",
         "add_to_cart_error": "We couldn't add this configuration to your cart. Your selections are still saved; please try again.",
         "edit": "Edit",
         "edit_group": "Edit {{ group }}",

@@ -218,6 +218,7 @@
         "continue": "Continuar",
         "review_button": "Revisar configuração",
         "add_to_cart": "Adicionar ao carrinho",
+        "price_strategy_pending": "A adição ao carrinho ficará disponível após a aprovação da estratégia de preço real.",
         "add_to_cart_error": "Não foi possível adicionar esta configuração ao carrinho. Suas escolhas continuam salvas; tente novamente.",
         "edit": "Editar",
         "edit_group": "Editar {{ group }}",
