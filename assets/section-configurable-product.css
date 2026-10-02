@@ -800,12 +800,30 @@
 }
 
 .configurable-product__zoom {
-  position: absolute;
-  z-index: 2;
   inset: 0;
+  width: 100vw;
+  max-width: none;
+  height: 100vh;
+  max-height: none;
+  margin: 0;
+  padding: 2rem;
+  border: 0;
+  background: rgba(0, 0, 0, 0.82);
+  color: white;
+}
+
+.configurable-product__zoom[open] {
   display: grid;
   place-items: center;
-  padding: 2rem;
+}
+
+@supports (height: 100dvh) {
+  .configurable-product__zoom {
+    height: 100dvh;
+  }
+}
+
+.configurable-product__zoom::backdrop {
   background: rgba(0, 0, 0, 0.82);
 }
 
@@ -829,6 +847,7 @@
   z-index: 1;
   top: 0;
   right: 0;
+  background: transparent;
   color: white;
 }
 

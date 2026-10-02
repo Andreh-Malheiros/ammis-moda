@@ -778,7 +778,6 @@
       this.pendingVariantId = null;
       this.pendingFocus = null;
       this.focusStepAfterRender = false;
-      this.zoomIsolationSnapshot = null;
       this.lockHeld = false;
       this.mounted = false;
       this.refs = {};
@@ -920,8 +919,9 @@
       if (this.refs.dialog) {
         this.refs.dialog.addEventListener('cancel', (event) => this.handleCancel(event), options);
         this.refs.dialog.addEventListener('close', () => this.handleDialogClose(), options);
-        this.refs.dialog.addEventListener('keydown', (event) => this.handleDialogKeydown(event), options);
         this.refs.dialog.addEventListener('click', (event) => this.handleDialogBackdropClick(event), options);
+        this.refs.zoom?.addEventListener('cancel', (event) => this.handleZoomCancel(event), options);
+        this.refs.zoom?.addEventListener('click', (event) => this.handleZoomBackdropClick(event), options);
       }
       if (this.refs.form) {
         this.refs.form.addEventListener('submit', (event) => this.handleFormSubmit(event), { ...(options || {}), capture: true });
@@ -962,7 +962,7 @@
       if (element.matches('[data-configurable-next]')) return this.goNext();
       if (element.matches('[data-configurable-clear]')) return this.clearSelection(element.dataset.groupCode);
       if (element.matches('[data-configurable-edit]')) return this.editStep(element.dataset.stepId);
-      if (element.matches('[data-configurable-zoom-open], [data-configurable-zoom-image-trigger]')) return this.openZoom();
+      if (element.matches('[data-configurable-zoom-open], [data-configurable-zoom-image-trigger]')) return this.openZoom(element);
       if (element.matches('[data-configurable-zoom-close]')) return this.closeZoom();
       if (element.matches('[data-configurable-submit]')) {
         event.preventDefault();
@@ -1019,34 +1019,16 @@
 
     handleCancel(event) {
       event.preventDefault();
-      if (this.state?.isZoomOpen) {
-        this.closeZoom();
-        return;
-      }
       this.closeDialog();
     }
 
-    handleDialogKeydown(event) {
-      if (!this.state?.isZoomOpen) return;
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        event.stopPropagation();
-        this.closeZoom();
-        return;
-      }
-      if (event.key === 'Tab') {
-        const focusable = this.getFocusable(this.refs.zoom);
-        if (!focusable.length) return;
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-        if (event.shiftKey && document.activeElement === first) {
-          event.preventDefault();
-          last.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault();
-          first.focus();
-        }
-      }
+    handleZoomCancel(event) {
+      event.preventDefault();
+      this.closeZoom();
+    }
+
+    handleZoomBackdropClick(event) {
+      if (event.target === this.refs.zoom) this.closeZoom();
     }
 
     getFocusable(container) {
@@ -1106,66 +1088,46 @@
         this.state.isZoomOpen = false;
       }
       this.closeZoom(true);
-      if (this.returnFocusTarget && this.returnFocusTarget.isConnected) this.returnFocusTarget.focus();
+      if (this.returnFocusTarget && this.returnFocusTarget.isConnected) this.returnFocusTarget.focus({ preventScroll: true });
       this.returnFocusTarget = null;
     }
 
-    openZoom() {
-      if (!this.refs.dialog?.open) this.openDialog();
-      if (!this.refs.dialog?.open) return;
+    openZoom(trigger) {
+      if (!this.payload || !this.refs.zoom || typeof this.refs.zoom.showModal !== 'function' || this.refs.zoom.open) return;
       const image = resolveImage(this.state?.selectedOptions || {}, this.payload, this.imageIndex, this.failedImageSources).image;
-      if (!image || !this.refs.zoom || !this.refs.zoomSurface) return;
+      if (!image || !this.refs.zoomSurface) return;
       if (!this.refs.zoomImage) {
         this.refs.zoomImage = makeElement('img');
         this.refs.zoomImage.dataset.configurableZoomImage = '';
         this.refs.zoomSurface.append(this.refs.zoomImage);
       }
-      this.zoomReturnFocusTarget = document.activeElement;
+      this.zoomReturnFocusTarget = trigger instanceof Element ? trigger : document.activeElement;
       applyMediaAttributes(this.refs.zoomImage, image);
       this.refs.zoomImage.alt = image.alt || this.payload.product.title;
       this.refs.zoomImage.loading = 'eager';
-      this.setZoomIsolation(true);
-      this.refs.zoom.hidden = false;
+      try {
+        this.refs.zoom.showModal();
+      } catch (error) {
+        return;
+      }
+      if (!this.zoomLockHeld) {
+        lockDocument();
+        this.zoomLockHeld = true;
+      }
       this.state.isZoomOpen = true;
       this.refs.zoomClose?.focus();
     }
 
     closeZoom(force = false) {
-      if (!this.refs.zoom || (!this.state?.isZoomOpen && !force)) return;
-      this.refs.zoom.hidden = true;
-      this.setZoomIsolation(false);
-      if (this.state) this.state.isZoomOpen = false;
-      if (!force && this.zoomReturnFocusTarget?.isConnected) this.zoomReturnFocusTarget.focus();
-      this.zoomReturnFocusTarget = null;
-    }
-
-    setZoomIsolation(isolated) {
-      const surface = this.refs.dialog?.querySelector('.configurable-product__dialog-surface');
-      if (!surface) return;
-      if (!isolated) {
-        (this.zoomIsolationSnapshot || []).forEach(({ element, ariaHidden, inert }) => {
-          if (ariaHidden === null) element.removeAttribute('aria-hidden');
-          else element.setAttribute('aria-hidden', ariaHidden);
-          if (inert) element.setAttribute('inert', '');
-          else element.removeAttribute('inert');
-          if ('inert' in element) element.inert = inert;
-        });
-        this.zoomIsolationSnapshot = null;
-        return;
+      if (!this.refs.zoom || (!this.state?.isZoomOpen && !force && !this.refs.zoom.open)) return;
+      if (this.refs.zoom.open) this.refs.zoom.close();
+      if (this.zoomLockHeld) {
+        unlockDocument();
+        this.zoomLockHeld = false;
       }
-      if (this.zoomIsolationSnapshot) return;
-      this.zoomIsolationSnapshot = [...surface.children]
-        .filter((element) => element !== this.refs.zoom)
-        .map((element) => ({
-          element,
-          ariaHidden: element.getAttribute('aria-hidden'),
-          inert: element.hasAttribute('inert') || element.inert === true
-        }));
-      this.zoomIsolationSnapshot.forEach(({ element }) => {
-        element.setAttribute('aria-hidden', 'true');
-        element.setAttribute('inert', '');
-        if ('inert' in element) element.inert = true;
-      });
+      if (this.state) this.state.isZoomOpen = false;
+      if (!force && this.zoomReturnFocusTarget?.isConnected) this.zoomReturnFocusTarget.focus({ preventScroll: true });
+      this.zoomReturnFocusTarget = null;
     }
 
     goBack() {

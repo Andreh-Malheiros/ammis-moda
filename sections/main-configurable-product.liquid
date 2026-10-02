@@ -384,21 +384,22 @@
           </div>
         </div>
       </div>
-
-      <div class="configurable-product__zoom" data-configurable-zoom hidden role="dialog" aria-modal="true" aria-labelledby="ConfigurableProductZoomTitle-{{ section.id }}">
-        <div class="configurable-product__zoom-surface">
-          <h3 id="ConfigurableProductZoomTitle-{{ section.id }}" class="visually-hidden">{{ 'products.product.configurator.zoom' | t }}</h3>
-          <button type="button" class="configurable-product__dialog-close" data-configurable-zoom-close aria-label="{{ 'products.product.configurator.close' | t | escape }}"><span aria-hidden="true">&times;</span></button>
-          {% if product_image != blank %}
-            {%- capture zoom_image_html -%}
-              {{ product_image | image_url: width: 2000 | image_tag: loading: 'lazy', alt: product_image.alt | default: product.title }}
-            {%- endcapture -%}
-            {{ zoom_image_html | replace: '<img ', '<img data-configurable-zoom-image ' }}
-          {% endif %}
-        </div>
-      </div>
     </div>
   </dialog>
+
+  <dialog class="configurable-product__zoom" data-configurable-zoom aria-labelledby="ConfigurableProductZoomTitle-{{ section.id }}">
+    <div class="configurable-product__zoom-surface">
+      <h3 id="ConfigurableProductZoomTitle-{{ section.id }}" class="visually-hidden">{{ 'products.product.configurator.zoom' | t }}</h3>
+      <button type="button" class="configurable-product__dialog-close" data-configurable-zoom-close aria-label="{{ 'products.product.configurator.close' | t | escape }}"><span aria-hidden="true">&times;</span></button>
+      {% if product_image != blank %}
+        {%- capture zoom_image_html -%}
+          {{ product_image | image_url: width: 2000 | image_tag: loading: 'lazy', alt: product_image.alt | default: product.title }}
+        {%- endcapture -%}
+        {{ zoom_image_html | replace: '<img ', '<img data-configurable-zoom-image ' }}
+      {% endif %}
+    </div>
+  </dialog>
+
 </section>
 
 {% schema %}
