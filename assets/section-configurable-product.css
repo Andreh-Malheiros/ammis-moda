@@ -481,6 +481,19 @@
   margin: 0;
 }
 
+.configurable-product__review-image {
+  margin: 0;
+  background: var(--configurable-border);
+}
+
+.configurable-product__review-image-element {
+  display: block;
+  width: 100%;
+  max-height: min(45vh, 32rem);
+  max-height: min(45dvh, 32rem);
+  object-fit: contain;
+}
+
 .configurable-product__review-list,
 .configurable-product__review-prices {
   display: grid;

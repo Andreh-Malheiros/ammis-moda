@@ -75,6 +75,56 @@ test('normalizes Aurora-shaped payload and derives one starting price', () => {
   assert.deepEqual(result.payload.groups.map((group) => group.code), ['tecido', 'cor']);
 });
 
+test('builds contract step fields and validates the complete configuration', () => {
+  const normalized = api.normalizePayload(payloadFixture()).payload;
+  const state = api.createInitialState(normalized);
+  const steps = api.buildSteps(normalized);
+  assert.deepEqual(steps.map((step) => step.kind), ['group', 'group', 'variant', 'review']);
+  assert.deepEqual(steps.map((step) => step.position), [0, 1, 2, 3]);
+  assert.equal(steps[0].sourceCode, 'tecido');
+  assert.equal(steps[2].sourceCode, 'tamanho');
+  assert.equal(api.validateConfiguration(state, normalized).status, 'invalid');
+  state.selectedOptions.tecido = 'cru';
+  state.selectedOptions.cor = 'azul';
+  state.selectedVariantId = 'v34';
+  assert.equal(api.validateConfiguration(state, normalized).status, 'ready');
+});
+
+test('accepts a generic three-group five-size forty-image-state dataset', () => {
+  const fixture = payloadFixture();
+  fixture.groups.push({
+    title: 'Fecho',
+    code: 'fecho',
+    description: null,
+    required: true,
+    interfaceType: 'buttons',
+    order: 3,
+    sourceIndex: 2,
+    options: [
+      { name: 'Um', code: 'um', description: null, image: null, color: null, priceAdditionCents: 0, available: true, order: null, sourceIndex: 0 },
+      { name: 'Dois', code: 'dois', description: null, image: null, color: null, priceAdditionCents: 0, available: true, order: null, sourceIndex: 1 },
+      { name: 'Três', code: 'tres', description: null, image: null, color: null, priceAdditionCents: 0, available: true, order: null, sourceIndex: 2 }
+    ]
+  });
+  fixture.variants.push(
+    { id: 'v38', title: '38', selectedOptions: [{ name: 'Tamanho', value: '38' }], sizeValue: '38', priceCents: 146700, available: true },
+    { id: 'v40', title: '40', selectedOptions: [{ name: 'Tamanho', value: '40' }], sizeValue: '40', priceCents: 146700, available: true },
+    { id: 'v42', title: '42', selectedOptions: [{ name: 'Tamanho', value: '42' }], sizeValue: '42', priceCents: 146700, available: true }
+  );
+  fixture.imageStates = Array.from({ length: 40 }, (_, index) => ({
+    selections: index === 0 ? [] : [{ groupCode: 'tecido', optionCode: index % 2 ? 'cru' : 'capra' }],
+    image: media(`state-${index}.jpg`),
+    position: index,
+    sourceIndex: index
+  }));
+  const result = api.normalizePayload(fixture);
+  assert.equal(result.valid, true);
+  assert.equal(result.payload.groups.length, 3);
+  assert.equal(result.payload.variants.length, 5);
+  assert.equal(result.payload.imageStates.length, 40);
+  assert.deepEqual(api.buildSteps(result.payload).map((step) => step.sourceCode), ['tecido', 'cor', 'fecho', 'tamanho', null]);
+});
+
 test('derives selected additions and estimated total from normalized data', () => {
   const normalized = api.normalizePayload(payloadFixture()).payload;
   const state = api.createInitialState(normalized);

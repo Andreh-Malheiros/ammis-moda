@@ -329,14 +329,38 @@
 
   function buildSteps(payload) {
     if (!payload) return [];
-    const groupSteps = payload.groups.map((group) => ({
+    const groupSteps = payload.groups.map((group, index) => ({
       id: `group:${group.code}`,
+      kind: 'group',
       type: 'group',
       groupCode: group.code,
+      sourceCode: group.code,
       title: group.title,
-      required: group.required
+      required: group.required,
+      position: index,
+      options: group.options
     }));
-    return [...groupSteps, { id: 'variant:size', type: 'variant', title: payload.sizeOptionName, required: true }, { id: 'review', type: 'review', title: 'Review', required: true }];
+    const variantStep = {
+      id: 'variant:size',
+      kind: 'variant',
+      type: 'variant',
+      title: payload.sizeOptionName,
+      required: true,
+      sourceCode: normalizeCode(payload.sizeOptionName) || null,
+      position: groupSteps.length,
+      options: payload.variants
+    };
+    const reviewStep = {
+      id: 'review',
+      kind: 'review',
+      type: 'review',
+      title: 'Review',
+      required: true,
+      sourceCode: null,
+      position: groupSteps.length + 1,
+      options: []
+    };
+    return [...groupSteps, variantStep, reviewStep];
   }
 
   function resolveVariantBySize(sizeValue, payload) {
@@ -404,21 +428,31 @@
       if (!variant.available) return { valid: false, code: 'UNAVAILABLE_VARIANT' };
       return { valid: true };
     }
-    for (const group of payload.groups) {
-      if (group.required && !group.options.some((option) => option.available && option.code === state.selectedOptions[group.code])) {
-        return { valid: false, code: 'REQUIRED_SELECTION', groupCode: group.code };
-      }
-    }
+    const configuration = validateConfiguration(state, payload);
+    const firstError = configuration.errors[0];
+    return firstError ? { valid: false, code: firstError.code, groupCode: firstError.groupCode } : { valid: true };
+  }
+
+  function validateConfiguration(state, payload) {
+    if (!payload || !state) return { valid: false, status: 'invalid', errors: [{ code: 'INVALID_CONFIGURATION' }] };
+    const errors = [];
+    payload.groups.forEach((group) => {
+      if (!group.required) return;
+      const selected = group.options.find((option) => option.code === state.selectedOptions[group.code] && option.available);
+      if (!selected) errors.push({ code: 'REQUIRED_SELECTION', groupCode: group.code });
+    });
     const variant = findSelectedVariant(state, payload);
-    if (!variant || !variant.available) return { valid: false, code: 'REQUIRED_SIZE' };
-    return { valid: true };
+    if (!variant) errors.push({ code: 'REQUIRED_SIZE' });
+    else if (!variant.available) errors.push({ code: 'UNAVAILABLE_VARIANT' });
+    const unsupported = errors.some((error) => error.code === 'UNSUPPORTED_VARIANT_CONFIGURATION');
+    return { valid: errors.length === 0, status: unsupported ? 'unsupported' : errors.length ? 'invalid' : 'ready', errors };
   }
 
   function deriveCompletedSteps(state, payload) {
     return buildSteps(payload).filter((step) => validateStep(step.id, state, payload).valid && step.id !== 'review').map((step) => step.id);
   }
 
-  function deriveReview(state, payload) {
+  function deriveReview(state, payload, imageIndex) {
     const variant = findSelectedVariant(state, payload);
     return {
       productTitle: payload.product.title,
@@ -432,7 +466,7 @@
       basePriceCents: deriveBasePrice(state, payload),
       selectedAdditionsCents: deriveSelectedAdditions(state.selectedOptions, payload),
       estimatedTotalCents: deriveEstimatedTotal(state, payload),
-      image: resolveImage(state.selectedOptions, payload)
+      image: resolveImage(state.selectedOptions, payload, imageIndex || indexImageStates(payload))
     };
   }
 
@@ -543,6 +577,20 @@
     element.hidden = hidden;
   }
 
+  function applyMediaAttributes(element, media) {
+    if (!element || !media) return;
+    element.src = media.src;
+    element.alt = media.alt || '';
+    if (media.width) element.width = media.width;
+    else element.removeAttribute('width');
+    if (media.height) element.height = media.height;
+    else element.removeAttribute('height');
+    if (media.srcset) element.srcset = media.srcset;
+    else element.removeAttribute('srcset');
+    if (media.sizes) element.sizes = media.sizes;
+    else element.removeAttribute('sizes');
+  }
+
   function lockDocument() {
     if (!document.documentElement || !document.body) return;
     if (scrollLockCount === 0) {
@@ -608,6 +656,7 @@
       this.pendingVariantId = null;
       this.pendingFocus = null;
       this.focusStepAfterRender = false;
+      this.zoomIsolationSnapshot = null;
       this.lockHeld = false;
       this.mounted = false;
       this.refs = {};
@@ -720,9 +769,18 @@
       this.detachCartSubscriptions();
       const subscribeFunction = typeof host.subscribe === 'function' ? host.subscribe : null;
       if (!subscribeFunction) return false;
-      this.unsubscribeCartUpdate = subscribeFunction(CART_UPDATE_EVENT, (data) => this.handleCartUpdate(data));
-      this.unsubscribeCartError = subscribeFunction(CART_ERROR_EVENT, (data) => this.handleCartError(data));
-      return true;
+      try {
+        this.unsubscribeCartUpdate = subscribeFunction(CART_UPDATE_EVENT, (data) => this.handleCartUpdate(data));
+        this.unsubscribeCartError = subscribeFunction(CART_ERROR_EVENT, (data) => this.handleCartError(data));
+        if (typeof this.unsubscribeCartUpdate !== 'function' || typeof this.unsubscribeCartError !== 'function') {
+          this.detachCartSubscriptions();
+          return false;
+        }
+        return true;
+      } catch (error) {
+        this.detachCartSubscriptions();
+        return false;
+      }
     }
 
     detachCartSubscriptions() {
@@ -757,6 +815,7 @@
         const optionCode = target.value;
         if (!groupCode || !optionCode || target.disabled) return;
         this.state.selectedOptions[groupCode] = optionCode;
+        delete this.state.validationErrors[`group:${groupCode}`];
         this.pendingFocus = { type: 'group', groupCode, optionCode };
         this.reconcileState();
         this.state.cartError = null;
@@ -766,6 +825,7 @@
         if (target.disabled) return;
         const result = resolveVariantBySize(target.dataset.sizeValue, this.payload);
         this.state.selectedVariantId = result.status === 'selected' ? result.variant.id : null;
+        delete this.state.validationErrors['variant:size'];
         this.pendingFocus = { type: 'size', sizeValue: target.dataset.sizeValue };
         this.reconcileState();
         this.state.cartError = null;
@@ -781,12 +841,14 @@
     handleAssetError(event) {
       const target = event.target;
       if (!(target instanceof HTMLImageElement) || !target.currentSrc && !target.src) return;
-      if (!target.matches('[data-configurable-main-image], [data-configurable-zoom-image]')) return;
+      if (!target.matches('[data-configurable-main-image], [data-configurable-zoom-image], [data-configurable-review-image]')) return;
       const source = target.currentSrc || target.src;
       this.failedImageSources.add(source);
       if (this.currentImageSource) this.failedImageSources.add(this.currentImageSource);
       if (target.matches('[data-configurable-main-image]')) {
         this.applyImage(resolveImage(this.state?.selectedOptions || {}, this.payload, this.imageIndex, this.failedImageSources));
+      } else if (target.matches('[data-configurable-review-image]') && this.state?.currentStepId === 'review') {
+        this.renderCurrentStep();
       }
     }
 
@@ -889,8 +951,10 @@
         this.refs.zoomSurface.append(this.refs.zoomImage);
       }
       this.zoomReturnFocusTarget = document.activeElement;
-      this.refs.zoomImage.src = image.src;
+      applyMediaAttributes(this.refs.zoomImage, image);
       this.refs.zoomImage.alt = image.alt || this.payload.product.title;
+      this.refs.zoomImage.loading = 'eager';
+      this.setZoomIsolation(true);
       this.refs.zoom.hidden = false;
       this.state.isZoomOpen = true;
       this.refs.zoomClose?.focus();
@@ -899,9 +963,39 @@
     closeZoom(force = false) {
       if (!this.refs.zoom || (!this.state?.isZoomOpen && !force)) return;
       this.refs.zoom.hidden = true;
+      this.setZoomIsolation(false);
       if (this.state) this.state.isZoomOpen = false;
       if (!force && this.zoomReturnFocusTarget?.isConnected) this.zoomReturnFocusTarget.focus();
       this.zoomReturnFocusTarget = null;
+    }
+
+    setZoomIsolation(isolated) {
+      const surface = this.refs.dialog?.querySelector('.configurable-product__dialog-surface');
+      if (!surface) return;
+      if (!isolated) {
+        (this.zoomIsolationSnapshot || []).forEach(({ element, ariaHidden, inert }) => {
+          if (ariaHidden === null) element.removeAttribute('aria-hidden');
+          else element.setAttribute('aria-hidden', ariaHidden);
+          if (inert) element.setAttribute('inert', '');
+          else element.removeAttribute('inert');
+          if ('inert' in element) element.inert = inert;
+        });
+        this.zoomIsolationSnapshot = null;
+        return;
+      }
+      if (this.zoomIsolationSnapshot) return;
+      this.zoomIsolationSnapshot = [...surface.children]
+        .filter((element) => element !== this.refs.zoom)
+        .map((element) => ({
+          element,
+          ariaHidden: element.getAttribute('aria-hidden'),
+          inert: element.hasAttribute('inert') || element.inert === true
+        }));
+      this.zoomIsolationSnapshot.forEach(({ element }) => {
+        element.setAttribute('aria-hidden', 'true');
+        element.setAttribute('inert', '');
+        if ('inert' in element) element.inert = true;
+      });
     }
 
     goBack() {
@@ -921,8 +1015,9 @@
       const validation = validateStep(this.state.currentStepId, this.state, this.payload);
       if (!validation.valid) {
         this.state.validationErrors[this.state.currentStepId] = validation.code;
-        this.announceValidation(validation);
         this.renderState();
+        this.announceValidation(validation);
+        this.focusInvalidControl(this.state.currentStepId, validation);
         return;
       }
       if (currentIndex < steps.length - 1) {
@@ -971,6 +1066,20 @@
       } else {
         this.setLive(translated(this.root, 'labelError', 'This configuration cannot continue.'));
       }
+    }
+
+    focusInvalidControl(stepId, validation) {
+      const groupCode = validation.groupCode || (stepId.startsWith('group:') ? stepId.slice('group:'.length) : null);
+      let control = null;
+      if (groupCode) {
+        control = [...this.refs.stepContent.querySelectorAll('[data-configurable-option-input], [data-configurable-option-select]')]
+          .find((candidate) => candidate.dataset.groupCode === groupCode && !candidate.disabled);
+      } else if (stepId === 'variant:size') {
+        control = this.refs.stepContent.querySelector('[data-configurable-size-input]:not([disabled])');
+      } else {
+        control = this.refs.stepContent.querySelector('input:not([disabled]), select:not([disabled]), button:not([disabled]), .configurable-product__review-title');
+      }
+      control?.focus();
     }
 
     renderOverview() {
@@ -1089,7 +1198,7 @@
       setHidden(this.refs.back, steps.indexOf(current) === 0);
       setHidden(this.refs.next, current.type === 'review');
       if (this.refs.next) this.refs.next.textContent = current.type === 'review' ? translated(this.root, 'labelReview', 'Review') : translated(this.root, 'labelContinue', 'Continue');
-      if (this.refs.live && this.state.isOpen) this.refs.live.textContent = replaceTokens(translated(this.root, 'labelStep', 'Step __CURRENT__ of __TOTAL__'), { current: steps.indexOf(current) + 1, total: steps.length });
+      if (this.refs.live && this.state.isOpen && !this.state.validationErrors[current.id]) this.refs.live.textContent = replaceTokens(translated(this.root, 'labelStep', 'Step __CURRENT__ of __TOTAL__'), { current: steps.indexOf(current) + 1, total: steps.length });
     }
 
     createGroupStep(step) {
@@ -1142,11 +1251,9 @@
           const content = makeElement('span', 'configurable-product__option-card-content');
           if (option.image && ['image_cards', 'buttons'].includes(group.interfaceType)) {
             const image = makeElement('img', 'configurable-product__option-image');
-            image.src = option.image.src;
+            applyMediaAttributes(image, option.image);
             image.alt = option.image.alt || option.name;
             image.loading = 'lazy';
-            if (option.image.width) image.width = option.image.width;
-            if (option.image.height) image.height = option.image.height;
             content.append(image);
           }
           if (group.interfaceType === 'swatches' && option.color) {
@@ -1216,12 +1323,24 @@
     }
 
     renderReview() {
-      const review = deriveReview(this.state, this.payload);
+      const review = deriveReview(this.state, this.payload, this.imageIndex);
       const wrapper = makeElement('section', 'configurable-product__review-content');
       const reviewTitle = makeElement('h3', 'configurable-product__review-title', translated(this.root, 'labelReviewTitle', 'Review your configuration'));
       reviewTitle.tabIndex = -1;
       wrapper.append(reviewTitle);
       wrapper.append(makeElement('p', 'configurable-product__review-intro', translated(this.root, 'labelReviewIntro', 'Check your selections before adding this product to your cart.')));
+      const reviewImage = makeElement('figure', 'configurable-product__review-image');
+      if (review.image?.image) {
+        const image = makeElement('img', 'configurable-product__review-image-element');
+        image.dataset.configurableReviewImage = '';
+        applyMediaAttributes(image, review.image.image);
+        image.alt = review.image.image.alt || this.payload.product.title;
+        image.loading = 'lazy';
+        reviewImage.append(image);
+      } else {
+        reviewImage.append(makeElement('p', 'configurable-product__display-note', translated(this.root, 'labelNoImage', 'No image available.')));
+      }
+      wrapper.append(reviewImage);
       const list = makeElement('dl', 'configurable-product__review-list');
       review.groups.forEach((group) => {
         const name = makeElement('dt', '', group.title);
@@ -1254,11 +1373,12 @@
       const reviewValid = validateStep('review', this.state, this.payload).valid;
       const onReview = this.state.currentStepId === 'review';
       const formOwned = this.hasOwnedProductForm();
+      const cartBridgeAvailable = this.hasCartBridge();
       const priceGateOpen = REAL_PRICE_STRATEGY_APPROVED;
       setHidden(this.refs.productFormElement, !onReview);
       setHidden(this.refs.priceGate, !(onReview && reviewValid && !priceGateOpen));
       if (this.refs.submit) {
-        const canSubmit = onReview && reviewValid && priceGateOpen && this.state.cartState !== 'submitting' && formOwned;
+        const canSubmit = onReview && reviewValid && priceGateOpen && this.state.cartState !== 'submitting' && formOwned && cartBridgeAvailable;
         if (this.state.cartState !== 'submitting') {
           this.refs.submit.disabled = !canSubmit;
           this.refs.submit.setAttribute('aria-disabled', canSubmit ? 'false' : 'true');
@@ -1267,7 +1387,7 @@
       if (this.refs.variantId) this.refs.variantId.value = findSelectedVariant(this.state, this.payload)?.id || '';
       if (this.refs.quantity) this.refs.quantity.value = '1';
       this.syncFormProperties();
-      if (this.state.cartState === 'error' || (onReview && priceGateOpen && !formOwned)) {
+      if (this.state.cartState === 'error' || (onReview && priceGateOpen && (!formOwned || !cartBridgeAvailable))) {
         setHidden(this.refs.formError, false);
         if (this.refs.formErrorMessage) this.refs.formErrorMessage.textContent = this.state.cartError || translated(this.root, 'labelCartError', 'Unable to add this configuration.');
       } else {
@@ -1279,6 +1399,10 @@
       if (!this.refs.productFormElement || !this.refs.form || !this.refs.submit || !this.refs.variantId || !this.refs.quantity) return false;
       const expectedId = `ConfigurableProductForm-${this.sectionId}`;
       return this.refs.form.id === expectedId && this.refs.form.closest('[data-configurable-pdp]') === this.root && Boolean(host.customElements?.get?.('product-form'));
+    }
+
+    hasCartBridge() {
+      return typeof host.subscribe === 'function';
     }
 
     syncFormProperties() {
@@ -1413,12 +1537,8 @@
           this.refs.image.dataset.configurableMainImage = '';
           this.refs.imageFigure.insertBefore(this.refs.image, this.refs.zoomOpen || null);
         }
-        this.refs.image.src = image.src;
+        applyMediaAttributes(this.refs.image, image);
         this.refs.image.alt = image.alt || this.payload.product.title;
-        if (image.width) this.refs.image.width = image.width; else this.refs.image.removeAttribute('width');
-        if (image.height) this.refs.image.height = image.height; else this.refs.image.removeAttribute('height');
-        if (image.srcset) this.refs.image.srcset = image.srcset; else this.refs.image.removeAttribute('srcset');
-        if (image.sizes) this.refs.image.sizes = image.sizes; else this.refs.image.removeAttribute('sizes');
         setHidden(this.refs.image, false);
         setHidden(this.refs.imageFallback, true);
         setHidden(this.refs.zoomOpen, false);
@@ -1536,6 +1656,7 @@
     sortByOrderAndSourceIndex,
     normalizePayload,
     buildSteps,
+    validateConfiguration,
     validateStep,
     resolveVariantBySize,
     deriveStartingPrice,
