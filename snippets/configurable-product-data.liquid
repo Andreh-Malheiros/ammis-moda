@@ -1,0 +1,187 @@
+{% doc %}
+  Emits the normalized JSON payload for a configurable product section.
+  @param {product} product - The product whose metafields and variants are normalized.
+{% enddoc %}
+{%- liquid
+  assign configurator_enabled = product.metafields.custom.configurator_enabled.value
+  assign configurator_groups = product.metafields.custom.configurator_groups.value
+  assign configurator_image_states = product.metafields.custom.configurator_image_states.value
+  assign product_handle = product.handle | strip
+  assign product_title = product.title | strip
+  assign payload_locale = request.locale.iso_code | strip
+  assign payload_currency = cart.currency.iso_code | default: shop.currency | strip
+  assign product_image = product.featured_media.preview_image
+  assign size_option_name = nil
+
+  for product_option in product.options
+    assign product_option_handle = product_option | handleize
+    if product_option_handle == 'tamanho' or product_option_handle == 'size'
+      assign size_option_name = product_option | strip
+    endif
+  endfor
+
+  if product_title == blank
+    assign product_title = product_handle
+  endif
+-%}
+{
+  "version": 1,
+  "locale": {% if payload_locale != blank %}{{ payload_locale | json }}{% else %}null{% endif %},
+  "currency": {% if payload_currency != blank %}{{ payload_currency | json }}{% else %}null{% endif %},
+  "product": {
+    "id": {% if product.id != blank %}{{ product.id | append: '' | json }}{% else %}null{% endif %},
+    "title": {% if product_title != blank %}{{ product_title | json }}{% else %}null{% endif %},
+    "handle": {% if product_handle != blank %}{{ product_handle | json }}{% else %}null{% endif %},
+    "featuredImage": {% if product_image != blank %}{% capture product_srcset %}{{ product_image | image_url: width: 480 }} 480w, {{ product_image | image_url: width: 800 }} 800w, {{ product_image | image_url: width: 1200 }} 1200w{% endcapture %}{"src": {{ product_image | image_url: width: 1200 | json }}, "alt": {% if product_image.alt != blank %}{{ product_image.alt | json }}{% elsif product_title != blank %}{{ product_title | json }}{% else %}null{% endif %}, "width": {% if product_image.width != blank %}{{ product_image.width | plus: 0 | json }}{% else %}null{% endif %}, "height": {% if product_image.height != blank %}{{ product_image.height | plus: 0 | json }}{% else %}null{% endif %}, "srcset": {{ product_srcset | strip | json }}, "sizes": {{ '(min-width: 1100px) 50vw, 100vw' | json }}}{% else %}null{% endif %},
+    "configuratorEnabled": {% if configurator_enabled == true %}true{% else %}false{% endif %}
+  },
+  "groups": [
+    {% if configurator_groups != blank %}
+      {% for group in configurator_groups %}
+        {% assign group_code_source = group.code.value | default: group.system.handle %}
+        {% assign group_code = group_code_source | strip | downcase %}
+        {% assign group_title = group.title.value | default: group_code %}
+        {% assign group_title = group_title | strip %}
+        {% assign group_description = group.description.value | strip %}
+        {% assign group_interface = group.interface_type.value | default: 'buttons' | strip | downcase %}
+        {% assign group_order_field = group.order %}
+        {% assign group_order_value = group_order_field.value %}
+        {% assign group_order_valid = false %}
+        {% if group_order_value != blank and group_order_field.type == 'number_integer' %}
+          {% assign group_order_valid = true %}
+        {% endif %}
+        {% unless forloop.first %},{% endunless %}
+        {
+          "title": {% if group_title != blank %}{{ group_title | json }}{% else %}null{% endif %},
+          "code": {% if group_code != blank %}{{ group_code | json }}{% else %}null{% endif %},
+          "description": {% if group_description != blank %}{{ group_description | json }}{% else %}null{% endif %},
+          "required": {% if group.required.value == blank or group.required.value == true %}true{% else %}false{% endif %},
+          "interfaceType": {% if group_interface != blank %}{{ group_interface | json }}{% else %}{{ 'buttons' | json }}{% endif %},
+          "order": {% if group_order_valid %}{{ group_order_value | plus: 0 | json }}{% else %}null{% endif %},
+          "sourceIndex": {{ forloop.index0 }},
+          "options": [
+            {% assign group_options = group.options.value %}
+            {% if group_options != blank %}
+              {% for option in group_options %}
+                {% assign option_code_source = option.code.value | default: option.system.handle %}
+                {% assign option_code = option_code_source | strip | downcase %}
+                {% assign option_name = option.name.value | default: option_code %}
+                {% assign option_name = option_name | strip %}
+                {% assign option_description = option.description.value | strip %}
+                {% assign option_image = option.image.value %}
+                {% assign option_color = option.color.value | strip %}
+                {% assign option_price_field = option.price_addition %}
+                {% assign option_price_raw = option_price_field.value %}
+                {% assign option_price_valid = false %}
+                {% assign option_price_cents = nil %}
+                {% if option_price_field == blank or option_price_raw == blank %}
+                  {% assign option_price_valid = true %}
+                  {% assign option_price_cents = 0 %}
+                {% elsif option_price_field.type == 'number_decimal' %}
+                  {% assign option_price_scaled = option_price_raw | times: 100 %}
+                  {% assign option_price_rounded = option_price_scaled | round %}
+                  {% if option_price_scaled == option_price_rounded and option_price_scaled >= 0 %}
+                    {% assign option_price_valid = true %}
+                    {% assign option_price_cents = option_price_rounded %}
+                  {% endif %}
+                {% endif %}
+                {% assign option_order_field = option.order %}
+                {% assign option_order_value = option_order_field.value %}
+                {% assign option_order_valid = false %}
+                {% if option_order_value != blank and option_order_field.type == 'number_integer' %}
+                  {% assign option_order_valid = true %}
+                {% endif %}
+                {% unless forloop.first %},{% endunless %}
+                {
+                  "name": {% if option_name != blank %}{{ option_name | json }}{% else %}null{% endif %},
+                  "code": {% if option_code != blank %}{{ option_code | json }}{% else %}null{% endif %},
+                  "description": {% if option_description != blank %}{{ option_description | json }}{% else %}null{% endif %},
+                  "image": {% if option_image != blank %}{% capture option_srcset %}{{ option_image | image_url: width: 320 }} 320w, {{ option_image | image_url: width: 480 }} 480w, {{ option_image | image_url: width: 800 }} 800w{% endcapture %}{"src": {{ option_image | image_url: width: 800 | json }}, "alt": {% if option_image.alt != blank %}{{ option_image.alt | json }}{% elsif option_name != blank %}{{ option_name | json }}{% else %}null{% endif %}, "width": {% if option_image.width != blank %}{{ option_image.width | plus: 0 | json }}{% else %}null{% endif %}, "height": {% if option_image.height != blank %}{{ option_image.height | plus: 0 | json }}{% else %}null{% endif %}, "srcset": {{ option_srcset | strip | json }}, "sizes": {{ '(min-width: 750px) 25vw, 50vw' | json }}}{% else %}null{% endif %},
+                  "color": {% if option_color != blank %}{{ option_color | json }}{% else %}null{% endif %},
+                  "priceAdditionCents": {% if option_price_valid %}{{ option_price_cents | json }}{% else %}null{% endif %},
+                  "available": {% if option.available.value == false %}false{% else %}true{% endif %},
+                  "order": {% if option_order_valid %}{{ option_order_value | plus: 0 | json }}{% else %}null{% endif %},
+                  "sourceIndex": {{ forloop.index0 }}
+                }
+              {% endfor %}
+            {% endif %}
+          ]
+        }
+      {% endfor %}
+    {% endif %}
+  ],
+  "variants": [
+    {% for variant in product.variants %}
+        {% unless forloop.first %},{% endunless %}
+        {% assign size_value = nil %}
+        {% if size_option_name != blank %}
+          {% for product_option in product.options %}
+            {% assign product_option_handle = product_option | handleize %}
+            {% if product_option_handle == 'tamanho' or product_option_handle == 'size' %}
+              {% assign size_value = variant.options[forloop.index0] %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        {
+          "id": {% if variant.id != blank %}{{ variant.id | append: '' | json }}{% else %}null{% endif %},
+          "title": {% if variant.title != blank %}{{ variant.title | json }}{% else %}null{% endif %},
+          "selectedOptions": [
+            {% for product_option in product.options %}
+              {% unless forloop.first %},{% endunless %}
+              {
+                "name": {{ product_option | json }},
+                "value": {% if variant.options[forloop.index0] != blank %}{{ variant.options[forloop.index0] | json }}{% else %}null{% endif %}
+              }
+            {% endfor %}
+          ],
+          "sizeValue": {% if size_value != blank %}{{ size_value | json }}{% else %}null{% endif %},
+          "priceCents": {% if variant.price != blank %}{{ variant.price | plus: 0 | json }}{% else %}null{% endif %},
+          "available": {% if variant.available %}true{% else %}false{% endif %}
+        }
+    {% endfor %}
+  ],
+  "imageStates": [
+    {% if configurator_image_states != blank %}
+      {% for image_state in configurator_image_states %}
+        {% assign image_state_image = image_state.image.value %}
+        {% assign image_state_position_field = image_state.position %}
+        {% assign image_state_position_value = image_state_position_field.value %}
+        {% assign image_state_position_valid = false %}
+        {% if image_state_position_value != blank and image_state_position_field.type == 'number_integer' %}
+          {% assign image_state_position_valid = true %}
+        {% endif %}
+        {% unless forloop.first %},{% endunless %}
+        {
+          "selections": [
+            {% assign image_selection_started = false %}
+            {% if configurator_groups != blank %}
+              {% for group in configurator_groups %}
+                {% assign image_group_code_source = group.code.value | default: group.system.handle %}
+                {% assign image_group_code = image_group_code_source | strip | downcase %}
+                {% assign image_group_title = group.title.value | default: image_group_code %}
+                {% assign image_group_title_handle = image_group_title | handleize %}
+                {% assign image_option_code_source = blank %}
+                {% if image_group_code == 'tecido' or image_group_title_handle == 'tecido' %}
+                  {% assign image_option_code_source = image_state.fabric.value %}
+                {% elsif image_group_code == 'cor' or image_group_code == 'color' or image_group_title_handle == 'cor' or image_group_title_handle == 'color' %}
+                  {% assign image_option_code_source = image_state.color.value %}
+                {% elsif image_group_code == 'botao' or image_group_code == 'button' or image_group_title_handle == 'botao' or image_group_title_handle == 'button' %}
+                  {% assign image_option_code_source = image_state.button.value %}
+                {% endif %}
+                {% assign image_option_code = image_option_code_source | strip | downcase %}
+                {% if image_group_code != blank and image_option_code != blank %}
+                  {% unless image_selection_started %}{% assign image_selection_started = true %}{% else %},{% endunless %}
+                  {"groupCode": {{ image_group_code | json }}, "optionCode": {{ image_option_code | json }}}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          ],
+          "image": {% if image_state_image != blank %}{% capture image_state_srcset %}{{ image_state_image | image_url: width: 480 }} 480w, {{ image_state_image | image_url: width: 800 }} 800w, {{ image_state_image | image_url: width: 1200 }} 1200w{% endcapture %}{"src": {{ image_state_image | image_url: width: 1200 | json }}, "alt": {% if image_state_image.alt != blank %}{{ image_state_image.alt | json }}{% elsif product_title != blank %}{{ product_title | json }}{% else %}null{% endif %}, "width": {% if image_state_image.width != blank %}{{ image_state_image.width | plus: 0 | json }}{% else %}null{% endif %}, "height": {% if image_state_image.height != blank %}{{ image_state_image.height | plus: 0 | json }}{% else %}null{% endif %}, "srcset": {{ image_state_srcset | strip | json }}, "sizes": {{ '(min-width: 1100px) 50vw, 100vw' | json }}}{% else %}null{% endif %},
+          "position": {% if image_state_position_valid %}{{ image_state_position_value | plus: 0 | json }}{% else %}null{% endif %},
+          "sourceIndex": {{ forloop.index0 }}
+        }
+      {% endfor %}
+    {% endif %}
+  ],
+  "sizeOptionName": {% if size_option_name != blank %}{{ size_option_name | json }}{% else %}null{% endif %}
+}

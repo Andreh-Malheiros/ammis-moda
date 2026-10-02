@@ -220,7 +220,11 @@
         "add_to_cart": "Adicionar ao carrinho",
         "add_to_cart_error": "Não foi possível adicionar esta configuração ao carrinho. Suas escolhas continuam salvas; tente novamente.",
         "edit": "Editar",
-        "edit_group": "Editar {{ group }}"
+        "edit_group": "Editar {{ group }}",
+        "clear": "Limpar seleção",
+        "optional": "opcional",
+        "unavailable": "Indisponível",
+        "zoom": "Ampliar imagem"
       },
       "configurable_pdp": {
         "title": "Personalize sua peça",

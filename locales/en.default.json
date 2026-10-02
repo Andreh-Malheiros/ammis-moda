@@ -220,7 +220,11 @@
         "add_to_cart": "Add to cart",
         "add_to_cart_error": "We couldn't add this configuration to your cart. Your selections are still saved; please try again.",
         "edit": "Edit",
-        "edit_group": "Edit {{ group }}"
+        "edit_group": "Edit {{ group }}",
+        "clear": "Clear selection",
+        "optional": "optional",
+        "unavailable": "Unavailable",
+        "zoom": "Zoom image"
       },
       "configurable_pdp": {
         "title": "Personalize your piece",
