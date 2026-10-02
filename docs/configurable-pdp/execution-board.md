@@ -69,3 +69,14 @@ Estado: EXTERNAL_RENDERING_BLOCKED / CODE_UNCHANGED.
 - O endpoint `myshopify.com` redireciona para `ammismoda.com.br`; os headers reconhecem `theme=151273406566`, mas a resposta final não entrega o HTML renderizado e as tentativas com `-L` retornam `429`.
 - O leitor web externo marcou a URL do preview como inacessível. `shopify theme dev` não foi executado porque faria upload inicial/reconciliação do tema inteiro e não seria uma validação read-only restrita.
 - Não houve alteração de código, Shopify, preview, MAIN ou arquivos protegidos nesta auditoria.
+
+## Checkpoint de renderização do preview efêmero — 2026-10-02
+
+Estado: RENDERED_PAYLOAD_CONFIRMED / BROWSER_INTERACTION_PENDING.
+
+- `shopify theme preview --theme 151273406566 --overrides {}` gerou um preview efêmero sem upload do working tree e sem tocar no MAIN. URL retornada: `https://yi4jx9o5arp9ofydhntlm2kb5s6z4-63422333030.shopifypreview.com`.
+- A rota da Aurora com `?view=product-configuravel-main` respondeu `HTTP 200`; o HTML referencia `main-configurable-product`, `assets/configurable-product-initial.js` e `assets/section-configurable-product.css` no preview.
+- O payload emitido pelo Liquid foi extraído do container `data-configurable-payload` e validado com `JSON.parse`: `version=1`, `locale=pt-BR`, `currency=BRL`, produto configurável habilitado, 3 grupos com 3 opções, 5 variantes nativas (`34`, `36`, `38`, `40`, `42`), 40 estados de imagem e estado inicial com `selections=[]`.
+- O HTML renderizado contém imagem inicial, nome da Aurora, título `Personalize sua peça`, `A partir de`, resumo de acréscimos e a sequência de etapas. O CTA inicial é `Personalizar`; a marcação do botão começa desabilitada até a inicialização do controller, mantendo o fail-closed quando a configuração não está disponível.
+- Esta prova confirma renderização server-side e contrato do payload, mas não substitui browser real: interação da etapa Tecido, foco/teclado, console, rede, responsividade e comportamento em dispositivo continuam pendentes devido às limitações de browser registradas acima.
+- Nenhum arquivo do tema foi alterado nesta sondagem, nenhum dado Shopify foi escrito e nenhum tema foi publicado.
