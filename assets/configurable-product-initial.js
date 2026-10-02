@@ -363,6 +363,15 @@
     return [...groupSteps, variantStep, reviewStep];
   }
 
+  function selectFeaturedGroup(payload) {
+    if (!payload || !Array.isArray(payload.groups)) return null;
+    return payload.groups.find((group) => group.options.some((option) => option.priceAdditionCents > 0)) || null;
+  }
+
+  function buildOverviewSteps(payload) {
+    return buildSteps(payload).filter((step) => step.kind !== 'review');
+  }
+
   function resolveVariantBySize(sizeValue, payload) {
     if (!payload || !isNonEmptyString(sizeValue)) return { status: 'missing', variant: null };
     const matches = payload.variants.filter((variant) => normalizeCode(variant.sizeValue) === normalizeCode(sizeValue));
@@ -708,6 +717,7 @@
       this.refs.title = query('[data-configurable-product-title]');
       this.refs.startingPrice = query('[data-configurable-starting-price]');
       this.refs.summary = query('[data-configurable-summary]');
+      this.refs.summarySection = query('[data-configurable-summary-section]');
       this.refs.overviewSteps = query('[data-configurable-overview-steps]');
       this.refs.imageFigure = query('[data-configurable-visual]');
       this.refs.image = query('[data-configurable-main-image]');
@@ -1097,37 +1107,49 @@
     renderSummary() {
       if (!this.refs.summary) return;
       this.refs.summary.replaceChildren();
-      const list = makeElement('ul', 'configurable-product__addition-list');
-      this.payload.groups.forEach((group) => {
-        const groupItem = makeElement('li', 'configurable-product__addition-group');
-        groupItem.append(makeElement('h3', 'configurable-product__addition-title', group.title));
-        const options = makeElement('ul', 'configurable-product__option-list');
-        group.options.forEach((option) => {
-          const item = makeElement('li', 'configurable-product__option-row');
-          item.append(makeElement('span', '', option.name));
-          const addition = option.available && option.priceAdditionCents > 0 ? `+${this.formatMoney(option.priceAdditionCents)}` : translated(this.root, 'labelNoAddition', 'No addition');
-          const amount = makeElement('span', '', addition);
-          if (!option.available) amount.append(` — ${translated(this.root, 'labelUnavailable', 'Unavailable')}`);
-          item.append(amount);
-          options.append(item);
-        });
-        groupItem.append(options);
-        list.append(groupItem);
+      const group = this.root.dataset.showFeaturedGroup === 'false' ? null : selectFeaturedGroup(this.payload);
+      setHidden(this.refs.summarySection, !group);
+      if (!group) return;
+      const head = makeElement('div', 'configurable-product__featured-head');
+      head.append(
+        makeElement('h3', 'configurable-product__addition-title', group.title),
+        makeElement('p', 'configurable-product__display-note', translated(this.root, 'labelDisplayOnly', 'Visual estimate only.'))
+      );
+      const list = makeElement('ul', 'configurable-product__featured-list');
+      group.options.forEach((option) => {
+        const item = makeElement('li', 'configurable-product__featured-option');
+        if (option.image && option.image.src) {
+          const thumb = makeElement('img', 'configurable-product__featured-thumb');
+          applyMediaAttributes(thumb, option.image);
+          thumb.alt = '';
+          thumb.loading = 'lazy';
+          item.append(thumb);
+        } else if (option.color) {
+          const swatch = makeElement('span', 'configurable-product__featured-thumb configurable-product__swatch');
+          swatch.style.setProperty('--configurable-swatch-color', option.color);
+          swatch.setAttribute('aria-hidden', 'true');
+          item.append(swatch);
+        }
+        const copy = makeElement('span', 'configurable-product__featured-copy');
+        copy.append(makeElement('span', 'configurable-product__featured-name', option.name));
+        const addition = option.available && option.priceAdditionCents > 0 ? `+${this.formatMoney(option.priceAdditionCents)}` : translated(this.root, 'labelNoAddition', 'No addition');
+        const amount = makeElement('span', 'configurable-product__featured-addition', addition);
+        if (!option.available) amount.append(` — ${translated(this.root, 'labelUnavailable', 'Unavailable')}`);
+        copy.append(amount);
+        item.append(copy);
+        list.append(item);
       });
-      this.refs.summary.append(list, makeElement('p', 'configurable-product__display-note', translated(this.root, 'labelDisplayOnly', 'Visual estimate only.')));
+      this.refs.summary.append(head, list);
     }
 
     renderOverviewSteps() {
       if (!this.refs.overviewSteps) return;
       this.refs.overviewSteps.replaceChildren();
-      buildSteps(this.payload).forEach((step, index) => {
+      buildOverviewSteps(this.payload).forEach((step, index) => {
         const item = makeElement('li', 'configurable-product__step-item');
         item.dataset.stepId = step.id;
         item.append(makeElement('span', 'configurable-product__step-number', String(index + 1)));
-        const copy = makeElement('span', 'configurable-product__step-copy');
-        copy.append(makeElement('span', 'configurable-product__step-title', step.id === 'review' ? translated(this.root, 'labelReview', 'Review') : step.title));
-        copy.append(makeElement('span', 'configurable-product__step-hint', step.required ? translated(this.root, 'labelRequired', 'Required') : translated(this.root, 'labelOptional', 'Optional')));
-        item.append(copy);
+        item.append(makeElement('span', 'configurable-product__step-title', step.title));
         this.refs.overviewSteps.append(item);
       });
     }
@@ -1656,6 +1678,8 @@
     sortByOrderAndSourceIndex,
     normalizePayload,
     buildSteps,
+    buildOverviewSteps,
+    selectFeaturedGroup,
     validateConfiguration,
     validateStep,
     resolveVariantBySize,

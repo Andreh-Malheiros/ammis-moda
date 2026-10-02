@@ -242,3 +242,17 @@ test('does not resolve an unavailable native size variant', () => {
   const normalized = api.normalizePayload(fixture).payload;
   assert.deepEqual(api.resolveVariantBySize('36', normalized), { status: 'unavailable', variant: null });
 });
+
+test('selects the first group with a positive addition as the featured group', () => {
+  const payload = payloadFixture();
+  assert.equal(api.selectFeaturedGroup(payload).code, 'tecido');
+  payload.groups[0].options.forEach((option) => { option.priceAdditionCents = 0; });
+  assert.equal(api.selectFeaturedGroup(payload), null);
+  payload.groups[1].options[0].priceAdditionCents = 1000;
+  assert.equal(api.selectFeaturedGroup(payload).code, 'cor');
+});
+
+test('overview steps omit the review step and keep group then size order', () => {
+  const ids = api.buildOverviewSteps(payloadFixture()).map((step) => step.id);
+  assert.deepEqual(ids, ['group:tecido', 'group:cor', 'variant:size']);
+});

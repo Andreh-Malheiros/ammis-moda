@@ -7,12 +7,17 @@
   assign configurable_data_id = 'ConfigurableProductData-' | append: section.id
   assign configurable_form_id = 'ConfigurableProductForm-' | append: section.id
   assign product_image = product.featured_media.preview_image
+  assign eyebrow_text = section.settings.eyebrow | default: 'products.product.configurator.eyebrow' | t
+  assign heading_text = section.settings.heading | default: 'products.product.configurable_pdp.title' | t
+  assign start_label_text = section.settings.start_label | default: 'products.product.configurator.open' | t
 -%}
 
 <section
   id="ConfigurableProduct-{{ section.id }}"
-  class="configurable-product"
+  class="configurable-product color-{{ section.settings.color_scheme }} background"
+  style="--configurable-media-width: {{ section.settings.media_width }}%; --configurable-panel-radius: {{ section.settings.panel_radius }}px;"
   data-configurable-pdp
+  data-show-featured-group="{{ section.settings.show_featured_group }}"
   data-section-id="{{ section.id }}"
   data-product-id="{{ product.id }}"
   data-configurator-enabled="{% if configurator_enabled == true %}true{% else %}false{% endif %}"
@@ -57,63 +62,80 @@
     <div class="configurable-product__media">
       <figure class="configurable-product__figure" data-configurable-visual>
         {% if product_image != blank %}
-          <img
-            class="configurable-product__image"
-            data-configurable-main-image
-            src="{{ product_image | image_url: width: 1200 }}"
-            {% if product_image.width != blank %}width="{{ product_image.width }}"{% endif %}
-            {% if product_image.height != blank %}height="{{ product_image.height }}"{% endif %}
-            alt="{{ product_image.alt | default: product.title | escape }}"
-            loading="eager"
-          >
+          {%- capture main_image_html -%}
+            {{
+              product_image
+              | image_url: width: 1200
+              | image_tag:
+                class: 'configurable-product__image',
+                widths: '600, 900, 1200',
+                sizes: '(min-width: 990px) 40vw, 100vw',
+                loading: 'eager',
+                fetchpriority: 'high',
+                alt: product_image.alt | default: product.title
+            }}
+          {%- endcapture -%}
+          {{ main_image_html | replace: '<img ', '<img data-configurable-main-image ' }}
         {% else %}
           <div class="configurable-product__image-fallback" data-configurable-image-fallback role="img" aria-label="{{ 'products.product.configurable_pdp.no_image' | t | escape }}">
             {{ 'products.product.configurable_pdp.no_image' | t }}
           </div>
         {% endif %}
-        <button type="button" class="configurable-product__zoom-trigger" data-configurable-zoom-open hidden>
-          {{ 'products.product.configurator.zoom' | t }}
-        </button>
       </figure>
+      <button type="button" class="configurable-product__zoom-trigger" data-configurable-zoom-open hidden>
+        {{ 'products.product.configurator.zoom' | t }}
+      </button>
     </div>
 
     <div class="configurable-product__content">
-      <p class="configurable-product__eyebrow">{{ 'products.product.configurator.eyebrow' | t }}</p>
-      <h1 class="configurable-product__heading">{{ 'products.product.configurable_pdp.title' | t }}</h1>
-      <p class="configurable-product__product-name" data-configurable-product-title>{{ product.title | escape }}</p>
+      <header class="configurable-product__header">
+        {%- if eyebrow_text != blank -%}
+          <p class="configurable-product__eyebrow">{{ eyebrow_text | escape }}</p>
+        {%- endif -%}
+        <h1 class="configurable-product__heading h1">{{ heading_text | escape }}</h1>
+        <div class="configurable-product__header-row">
+          <div class="configurable-product__intro">
+            <p class="configurable-product__product-name" data-configurable-product-title>{{ product.title | escape }}</p>
+            {%- if section.settings.intro != blank -%}
+              <div class="configurable-product__intro-text rte">{{ section.settings.intro | newline_to_br }}</div>
+            {%- endif -%}
+          </div>
+          <div class="configurable-product__price" aria-live="polite">
+            <span class="configurable-product__price-label">{{ 'products.product.configurable_pdp.from_price' | t }}</span>
+            <strong class="configurable-product__price-value" data-configurable-starting-price>—</strong>
+          </div>
+        </div>
+      </header>
 
-      <div class="configurable-product__price" aria-live="polite">
-        <span class="configurable-product__price-label">{{ 'products.product.configurable_pdp.from_price' | t }}</span>
-        <strong class="configurable-product__price-value" data-configurable-starting-price>—</strong>
-        <span class="configurable-product__price-note">{{ 'products.product.configurable_pdp.price_estimate' | t }}</span>
+      <div class="configurable-product__panel">
+        <section class="configurable-product__summary" aria-labelledby="ConfigurableProductSummary-{{ section.id }}" data-configurable-summary-section hidden>
+          <h2 id="ConfigurableProductSummary-{{ section.id }}" class="visually-hidden">
+            {{ 'products.product.configurable_pdp.possible_additions' | t }}
+          </h2>
+          <div data-configurable-summary></div>
+        </section>
+
+        <section class="configurable-product__steps" aria-labelledby="ConfigurableProductSteps-{{ section.id }}">
+          <h2 id="ConfigurableProductSteps-{{ section.id }}" class="visually-hidden">
+            {{ 'products.product.configurable_pdp.steps' | t }}
+          </h2>
+          <ol class="configurable-product__step-list" data-configurable-overview-steps></ol>
+        </section>
+
+        <button
+          type="button"
+          class="button button--primary configurable-product__start"
+          data-configurable-start
+          disabled
+          aria-disabled="true"
+          aria-haspopup="dialog"
+          aria-controls="{{ configurable_dialog_id }}"
+        >
+          <span>{{ start_label_text | escape }}</span>
+          <svg class="configurable-product__start-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></svg>
+        </button>
+        <p class="configurable-product__status" data-configurable-status role="status" aria-live="polite" hidden></p>
       </div>
-
-      <section class="configurable-product__summary" aria-labelledby="ConfigurableProductSummary-{{ section.id }}">
-        <h2 id="ConfigurableProductSummary-{{ section.id }}" class="configurable-product__section-heading">
-          {{ 'products.product.configurable_pdp.possible_additions' | t }}
-        </h2>
-        <div data-configurable-summary></div>
-      </section>
-
-      <section class="configurable-product__steps" aria-labelledby="ConfigurableProductSteps-{{ section.id }}">
-        <h2 id="ConfigurableProductSteps-{{ section.id }}" class="configurable-product__section-heading">
-          {{ 'products.product.configurable_pdp.steps' | t }}
-        </h2>
-        <ol class="configurable-product__step-list" data-configurable-overview-steps></ol>
-      </section>
-
-      <button
-        type="button"
-        class="button button--primary configurable-product__start"
-        data-configurable-start
-        disabled
-        aria-disabled="true"
-        aria-haspopup="dialog"
-        aria-controls="{{ configurable_dialog_id }}"
-      >
-        {{ 'products.product.configurator.open' | t }}
-      </button>
-      <p class="configurable-product__status" data-configurable-status role="status" aria-live="polite" hidden></p>
     </div>
   </div>
 
@@ -199,6 +221,63 @@
 {% schema %}
 {
   "name": "Configurable PDP",
-  "settings": []
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "info": "Leave empty to use the translated default."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Leave empty to use the translated default."
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro text",
+      "info": "Leave empty to hide."
+    },
+    {
+      "type": "text",
+      "id": "start_label",
+      "label": "Button label",
+      "info": "Leave empty to use the translated default."
+    },
+    {
+      "type": "range",
+      "id": "media_width",
+      "label": "Image width (desktop)",
+      "min": 30,
+      "max": 60,
+      "step": 5,
+      "unit": "%",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "panel_radius",
+      "label": "Panel and image radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "show_featured_group",
+      "label": "Show featured group",
+      "default": true
+    }
+  ]
 }
 {% endschema %}
