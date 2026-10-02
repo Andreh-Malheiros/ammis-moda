@@ -1248,10 +1248,7 @@
       setHidden(this.refs.summarySection, !group);
       if (!group) return;
       const head = makeElement('div', 'configurable-product__featured-head');
-      head.append(
-        makeElement('h3', 'configurable-product__addition-title', group.title),
-        makeElement('p', 'configurable-product__display-note', translated(this.root, 'labelDisplayOnly', 'Visual estimate only.'))
-      );
+      head.append(makeElement('h3', 'configurable-product__addition-title', group.title));
       const list = makeElement('ul', 'configurable-product__featured-list');
       group.options.forEach((option) => {
         const item = makeElement('li', 'configurable-product__featured-option');
@@ -1276,7 +1273,7 @@
         item.append(copy);
         list.append(item);
       });
-      this.refs.summary.append(head, list);
+      this.refs.summary.append(head, list, makeElement('p', 'configurable-product__display-note configurable-product__featured-note', translated(this.root, 'labelDisplayOnly', 'Visual estimate only.')));
     }
 
     renderOverviewSteps() {

@@ -168,7 +168,6 @@
               {%- assign ssr_featured_title = ssr_featured.title.value | default: ssr_featured.code.value | default: ssr_featured.system.handle -%}
               <div class="configurable-product__featured-head">
                 <h3 class="configurable-product__addition-title">{{ ssr_featured_title | strip | escape }}</h3>
-                <p class="configurable-product__display-note">{{ 'products.product.configurator.display_only' | t }}</p>
               </div>
               <ul class="configurable-product__featured-list">
                 {%- for ssr_option in ssr_featured.options.value -%}
@@ -198,6 +197,7 @@
                   </li>
                 {%- endfor -%}
               </ul>
+              <p class="configurable-product__display-note configurable-product__featured-note">{{ 'products.product.configurator.display_only' | t }}</p>
             {%- endif -%}
           </div>
         </section>

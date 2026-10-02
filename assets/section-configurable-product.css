@@ -897,28 +897,6 @@ body.configurable-product-scroll-locked {
     border-bottom: 0;
   }
 
-  .configurable-product__featured-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.8rem;
-  }
-
-  .configurable-product__featured-option {
-    padding: 0.6rem 1.2rem;
-    border: 1px solid var(--configurable-border);
-    border-radius: 999px;
-  }
-
-  .configurable-product__featured-thumb {
-    display: none;
-  }
-
-  .configurable-product__featured-copy {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 0.6rem;
-  }
-
   .configurable-product__header-row {
     gap: 1.2rem;
   }
@@ -1631,4 +1609,86 @@ body.configurable-product-scroll-locked {
 
 .configurable-product__progress {
   pointer-events: none;
+}
+
+/* Featured group layout (title | note on desktop, mini card grid on mobile) */
+.configurable-product__summary [data-configurable-summary] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 1.6rem;
+  row-gap: 0;
+  align-items: baseline;
+}
+
+.configurable-product__featured-head {
+  display: block;
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.configurable-product__featured-note {
+  grid-column: 2;
+  grid-row: 1;
+  text-align: right;
+}
+
+.configurable-product__featured-list {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+@media screen and (max-width: 749px) {
+  .configurable-product__summary [data-configurable-summary] {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.2rem;
+  }
+
+  .configurable-product__featured-note {
+    grid-column: 1;
+    grid-row: 3;
+    text-align: left;
+    line-height: 1.5;
+  }
+
+  .configurable-product__featured-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(96px, 100%), 1fr));
+    gap: 0.8rem;
+  }
+
+  .configurable-product__featured-option {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.8rem;
+    padding: 0.8rem;
+    border: 1px solid var(--configurable-border);
+    border-radius: calc(var(--configurable-panel-radius, 0) * 0.8);
+  }
+
+  .configurable-product__featured-thumb {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    border: 0;
+    border-radius: calc(var(--configurable-panel-radius, 0) * 0.6);
+    object-fit: cover;
+    object-position: 50% 20%;
+  }
+
+  .configurable-product__featured-thumb.configurable-product__swatch {
+    height: auto;
+  }
+
+  .configurable-product__featured-copy {
+    display: grid;
+    gap: 0.2rem;
+    font-size: 1.2rem;
+    line-height: 1.3;
+  }
+
+  .configurable-product__featured-name {
+    overflow-wrap: anywhere;
+  }
 }
