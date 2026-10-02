@@ -82,3 +82,13 @@ Estado: RENDERED_PAYLOAD_CONFIRMED / BROWSER_INTERACTION_PENDING.
 - Os assets minificados servidos pelo CDN têm tamanho/checksum diferentes por transformação de entrega; os source maps do preview foram lidos sem escrita e seus `sourcesContent` têm MD5 idêntico aos arquivos locais: JS `722ad65d40b3d151d50c568b9a0086d4` e CSS `77635b45d73e5bb9db9b7a6761b770bd`.
 - Esta prova confirma renderização server-side e contrato do payload, mas não substitui browser real: interação da etapa Tecido, foco/teclado, console, rede, responsividade e comportamento em dispositivo continuam pendentes devido às limitações de browser registradas acima.
 - Nenhum arquivo do tema foi alterado nesta sondagem, nenhum dado Shopify foi escrito e nenhum tema foi publicado.
+
+## Checkpoint de auditoria de conclusão — 2026-10-02
+
+Estado: PREVIEW_RENDERED / INTERACTIVE_BROWSER_PENDING.
+
+- O preview efêmero `vkju2kzviwsx6p4pxkday6p414o3a-63422333030` respondeu `HTTP 200` com User-Agent de navegador na rota `product-configuravel-main`.
+- O smoke test sobre o HTML renderizado passou: payload JSON válido, Aurora com 3 grupos/3 opções, 5 tamanhos, 40 image states, seção própria, product form com ownership por `section.id`, scripts globais esperados e CTA de carrinho somente dentro do dialog/form oculto.
+- O payload renderizado foi normalizado pelas funções reais com `valid=true`, sem erros e `startingPriceCents=146700`. Os source maps dos assets do preview continuam com MD5 idêntico aos arquivos locais.
+- O harness local foi ampliado para 15 testes, cobrindo versão incompatível, grupo opcional vazio, seleção válida sem imagem, colisões/fallback de image state e variante indisponível; todos passaram.
+- O browser real continua não executável neste ambiente por bibliotecas do Chromium ausentes. Portanto, interação, console, rede, foco/teclado, Theme Editor e viewport/dispositivo ainda não são evidência concluída.
