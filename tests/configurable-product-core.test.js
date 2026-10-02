@@ -182,3 +182,63 @@ test('builds the contracted visible and private properties', () => {
 test('keeps real price strategy closed in this V1', () => {
   assert.equal(api.REAL_PRICE_STRATEGY_APPROVED, false);
 });
+
+test('fails closed for an unsupported payload version', () => {
+  const fixture = payloadFixture();
+  fixture.version = 2;
+  const result = api.normalizePayload(fixture);
+  assert.equal(result.valid, false);
+  assert.deepEqual(result.errors, ['UNSUPPORTED_PAYLOAD_VERSION']);
+});
+
+test('omits an optional group without valid options', () => {
+  const fixture = payloadFixture();
+  fixture.groups.push({
+    title: 'Extra',
+    code: 'extra',
+    description: null,
+    required: false,
+    interfaceType: 'buttons',
+    order: 3,
+    sourceIndex: 2,
+    options: [
+      { name: 'Indisponível', code: 'unavailable', description: null, image: null, color: null, priceAdditionCents: 0, available: false, order: null, sourceIndex: 0 }
+    ]
+  });
+  const result = api.normalizePayload(fixture);
+  assert.equal(result.valid, true);
+  assert.equal(result.payload.groups.some((group) => group.code === 'extra'), false);
+  assert.equal(api.buildSteps(result.payload).some((step) => step.id === 'group:extra'), false);
+});
+
+test('keeps a valid selection when its image state has no media', () => {
+  const fixture = payloadFixture();
+  fixture.imageStates = fixture.imageStates.map((state) => state.selections.length === 2 ? { ...state, image: null } : state);
+  const normalized = api.normalizePayload(fixture);
+  assert.equal(normalized.valid, true);
+  const state = api.createInitialState(normalized.payload);
+  state.selectedOptions.tecido = 'capra';
+  state.selectedOptions.cor = 'azul';
+  state.selectedVariantId = 'v34';
+  assert.equal(api.validateConfiguration(state, normalized.payload).status, 'ready');
+  assert.equal(api.resolveImage(state.selectedOptions, normalized.payload).image.src, 'capra.jpg');
+});
+
+test('resolves image collisions by position/sourceIndex and skips failed media', () => {
+  const fixture = payloadFixture();
+  fixture.imageStates.push(
+    { selections: [{ groupCode: 'tecido', optionCode: 'capra' }], image: media('capra-late.jpg'), position: 2, sourceIndex: 3 },
+    { selections: [{ groupCode: 'tecido', optionCode: 'capra' }], image: media('capra-first.jpg'), position: 1, sourceIndex: 4 }
+  );
+  const normalized = api.normalizePayload(fixture).payload;
+  const index = api.indexImageStates(normalized);
+  assert.equal(api.resolveImage({ tecido: 'capra' }, normalized, index).image.src, 'capra-first.jpg');
+  assert.equal(api.resolveImage({ tecido: 'capra' }, normalized, index, new Set(['capra-first.jpg'])).image.src, 'capra-late.jpg');
+});
+
+test('does not resolve an unavailable native size variant', () => {
+  const fixture = payloadFixture();
+  fixture.variants[1] = { ...fixture.variants[1], available: false };
+  const normalized = api.normalizePayload(fixture).payload;
+  assert.deepEqual(api.resolveVariantBySize('36', normalized), { status: 'unavailable', variant: null });
+});
