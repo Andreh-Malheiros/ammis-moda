@@ -144,73 +144,89 @@
     class="configurable-product__dialog"
     data-configurable-dialog
     aria-labelledby="ConfigurableProductDialogTitle-{{ section.id }}"
-    aria-describedby="ConfigurableProductDialogDescription-{{ section.id }}"
   >
     <div class="configurable-product__dialog-surface">
       <header class="configurable-product__dialog-header">
-        <div>
-          <p class="configurable-product__eyebrow">{{ 'products.product.configurator.eyebrow' | t }}</p>
-          <h2 id="ConfigurableProductDialogTitle-{{ section.id }}" class="configurable-product__dialog-title" tabindex="-1">
+        <div class="configurable-product__dialog-heading">
+          <p class="configurable-product__progress-label" data-configurable-progress-label></p>
+          <h2 id="ConfigurableProductDialogTitle-{{ section.id }}" class="configurable-product__dialog-title" data-configurable-dialog-title tabindex="-1">
             {{ 'products.product.configurator.review_title' | t }}
           </h2>
-          <p id="ConfigurableProductDialogDescription-{{ section.id }}" class="configurable-product__dialog-description">
-            {{ 'products.product.configurator.review_intro' | t }}
-          </p>
         </div>
+        <ol class="configurable-product__step-list configurable-product__dialog-trail" data-configurable-dialog-steps></ol>
         <button type="button" class="configurable-product__dialog-close" data-configurable-close aria-label="{{ 'products.product.configurator.close' | t | escape }}">
+          <span class="configurable-product__dialog-close-text">{{ 'products.product.configurable_pdp.close' | t }}</span>
           <span aria-hidden="true">&times;</span>
         </button>
+        <div class="configurable-product__progress" data-configurable-progress role="progressbar" aria-label="{{ 'products.product.configurator.progress' | t | escape }}" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1">
+          <span class="configurable-product__progress-track"><span data-configurable-progress-bar></span></span>
+        </div>
       </header>
+      <p class="configurable-product__live visually-hidden" data-configurable-live aria-live="polite"></p>
 
-      <div class="configurable-product__progress" data-configurable-progress role="progressbar" aria-label="{{ 'products.product.configurator.progress' | t | escape }}" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1">
-        <span class="configurable-product__progress-label" data-configurable-progress-label></span>
-        <span class="configurable-product__progress-track"><span data-configurable-progress-bar></span></span>
-      </div>
-      <p class="configurable-product__live" data-configurable-live aria-live="polite"></p>
-
-      <div class="configurable-product__dialog-body" data-configurable-dialog-body>
-        <div data-configurable-step-content></div>
-        <div data-configurable-review hidden></div>
-      </div>
-
-      <footer class="configurable-product__dialog-footer">
-        <button type="button" class="button button--secondary" data-configurable-back hidden>
-          {{ 'products.product.configurator.back' | t }}
-        </button>
-        <button type="button" class="button button--primary" data-configurable-next>
-          {{ 'products.product.configurator.continue' | t }}
-        </button>
-      </footer>
-
-      <product-form
-        class="product-form configurable-product__product-form"
-        data-configurable-product-form
-        data-hide-errors="false"
-        hidden
-      >
-        {% form 'product', product, id: configurable_form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' %}
-          <div class="product-form__error-message-wrapper" role="alert" hidden data-configurable-form-error>
-            <span class="product-form__error-message" data-configurable-form-error-message></span>
+      <div class="configurable-product__dialog-body">
+        <div class="configurable-product__dialog-media">
+          <figure class="configurable-product__dialog-figure" data-configurable-dialog-visual>
+            <p class="configurable-product__display-note" data-configurable-dialog-image-fallback hidden>{{ 'products.product.configurable_pdp.no_image' | t }}</p>
+          </figure>
+          <div class="configurable-product__dialog-media-meta">
+            <p class="configurable-product__combination-name" data-configurable-combination-name></p>
+            <button type="button" class="configurable-product__dialog-zoom" data-configurable-zoom-open data-configurable-dialog-zoom hidden>
+              {{ 'products.product.configurator.zoom_photo' | t }}
+            </button>
           </div>
-          <input type="hidden" name="id" value="" data-configurable-variant-id>
-          <input type="hidden" name="quantity" value="1" data-configurable-quantity>
-          <div data-configurable-properties></div>
-          <button type="submit" name="add" class="button button--primary configurable-product__submit" aria-disabled="true" disabled data-configurable-submit>
-            <span>{{ 'products.product.configurator.add_to_cart' | t }}</span>
-            <span class="loading-overlay__spinner hidden" aria-hidden="true" data-configurable-spinner></span>
-          </button>
-        {% endform %}
-        <p class="configurable-product__price-gate configurable-product__display-note" data-configurable-price-gate hidden role="status" aria-live="polite">
-          {{ 'products.product.configurator.price_strategy_pending' | t }}
-        </p>
-      </product-form>
+        </div>
+
+        <div class="configurable-product__dialog-panel">
+          <div class="configurable-product__dialog-panel-inner">
+            <div class="configurable-product__dialog-panel-content" data-configurable-dialog-body>
+              <div data-configurable-step-content></div>
+              <div data-configurable-review hidden></div>
+          <product-form
+            class="product-form configurable-product__product-form"
+            data-configurable-product-form
+            data-hide-errors="false"
+            hidden
+          >
+            {% form 'product', product, id: configurable_form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' %}
+              <div class="product-form__error-message-wrapper" role="alert" hidden data-configurable-form-error>
+                <span class="product-form__error-message" data-configurable-form-error-message></span>
+              </div>
+              <input type="hidden" name="id" value="" data-configurable-variant-id>
+              <input type="hidden" name="quantity" value="1" data-configurable-quantity>
+              <div data-configurable-properties></div>
+              <button type="submit" name="add" class="button button--primary configurable-product__submit" aria-disabled="true" disabled data-configurable-submit>
+                <span>{{ 'products.product.configurator.add_to_cart' | t }}</span>
+                <span class="loading-overlay__spinner hidden" aria-hidden="true" data-configurable-spinner></span>
+              </button>
+            {% endform %}
+            <p class="configurable-product__price-gate configurable-product__display-note" data-configurable-price-gate hidden role="status" aria-live="polite">
+              {{ 'products.product.configurator.price_strategy_pending' | t }}
+            </p>
+          </product-form>
+            </div>
+            <footer class="configurable-product__dialog-footer">
+              <button type="button" class="button button--secondary configurable-product__back" data-configurable-back hidden>
+                <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4M10 6l-6 6 6 6"/></svg>
+                <span class="configurable-product__back-text">{{ 'products.product.configurator.back' | t }}</span>
+              </button>
+              <button type="button" class="button button--primary configurable-product__next" data-configurable-next>
+                {{ 'products.product.configurator.continue' | t }}
+              </button>
+            </footer>
+          </div>
+        </div>
+      </div>
 
       <div class="configurable-product__zoom" data-configurable-zoom hidden role="dialog" aria-modal="true" aria-labelledby="ConfigurableProductZoomTitle-{{ section.id }}">
         <div class="configurable-product__zoom-surface">
           <h3 id="ConfigurableProductZoomTitle-{{ section.id }}" class="visually-hidden">{{ 'products.product.configurator.zoom' | t }}</h3>
           <button type="button" class="configurable-product__dialog-close" data-configurable-zoom-close aria-label="{{ 'products.product.configurator.close' | t | escape }}"><span aria-hidden="true">&times;</span></button>
           {% if product_image != blank %}
-            <img data-configurable-zoom-image src="{{ product_image | image_url: width: 2000 }}" alt="{{ product_image.alt | default: product.title | escape }}" loading="lazy">
+            {%- capture zoom_image_html -%}
+              {{ product_image | image_url: width: 2000 | image_tag: loading: 'lazy', alt: product_image.alt | default: product.title }}
+            {%- endcapture -%}
+            {{ zoom_image_html | replace: '<img ', '<img data-configurable-zoom-image ' }}
           {% endif %}
         </div>
       </div>

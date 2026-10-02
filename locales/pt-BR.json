@@ -215,7 +215,7 @@
         "select_option": "Selecione uma opção",
         "required_error": "Selecione uma opção para {{ group }}.",
         "back": "Voltar",
-        "continue": "Continuar",
+        "continue": "Avançar",
         "review_button": "Revisar configuração",
         "add_to_cart": "Adicionar ao carrinho",
         "price_strategy_pending": "A adição ao carrinho ficará disponível após a aprovação da estratégia de preço real.",
@@ -225,7 +225,8 @@
         "clear": "Limpar seleção",
         "optional": "opcional",
         "unavailable": "Indisponível",
-        "zoom": "Ampliar imagem"
+        "zoom": "Ampliar imagem",
+        "zoom_photo": "Ampliar foto"
       },
       "configurable_pdp": {
         "title": "Personalize sua peça",

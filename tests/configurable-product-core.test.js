@@ -256,3 +256,27 @@ test('overview steps omit the review step and keep group then size order', () =>
   const ids = api.buildOverviewSteps(payloadFixture()).map((step) => step.id);
   assert.deepEqual(ids, ['group:tecido', 'group:cor', 'variant:size']);
 });
+
+test('step counter excludes the review step and the review has its own marker', () => {
+  const payload = payloadFixture();
+  assert.deepEqual(api.deriveStepCounter('group:tecido', payload), { current: 1, total: 3, isReview: false });
+  assert.deepEqual(api.deriveStepCounter('variant:size', payload), { current: 3, total: 3, isReview: false });
+  assert.deepEqual(api.deriveStepCounter('review', payload), { current: 3, total: 3, isReview: true });
+});
+
+test('dialog title follows the current step and falls back to the review title', () => {
+  const payload = payloadFixture();
+  assert.equal(api.deriveStepTitle('group:cor', payload, 'Revise'), 'Cor');
+  assert.equal(api.deriveStepTitle('variant:size', payload, 'Revise'), 'Tamanho');
+  assert.equal(api.deriveStepTitle('review', payload, 'Revise'), 'Revise');
+});
+
+test('next is inactive until the required selection of the current step exists', () => {
+  const payload = payloadFixture();
+  const state = api.createInitialState(payload);
+  assert.equal(api.isNextInactive(state, payload), true);
+  state.selectedOptions.tecido = 'capra';
+  assert.equal(api.isNextInactive(state, payload), false);
+  state.currentStepId = 'review';
+  assert.equal(api.isNextInactive(state, payload), false);
+});

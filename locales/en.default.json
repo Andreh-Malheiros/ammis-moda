@@ -225,7 +225,8 @@
         "clear": "Clear selection",
         "optional": "optional",
         "unavailable": "Unavailable",
-        "zoom": "Zoom image"
+        "zoom": "Zoom image",
+        "zoom_photo": "Zoom photo"
       },
       "configurable_pdp": {
         "title": "Personalize your piece",

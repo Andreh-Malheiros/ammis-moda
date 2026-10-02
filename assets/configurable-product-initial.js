@@ -372,6 +372,24 @@
     return buildSteps(payload).filter((step) => step.kind !== 'review');
   }
 
+  function deriveStepCounter(stepId, payload) {
+    const overview = buildOverviewSteps(payload);
+    const index = overview.findIndex((step) => step.id === stepId);
+    if (index === -1) return { current: overview.length, total: overview.length, isReview: stepId === 'review' };
+    return { current: index + 1, total: overview.length, isReview: false };
+  }
+
+  function deriveStepTitle(stepId, payload, reviewTitle = '') {
+    if (stepId === 'review') return reviewTitle;
+    const step = buildSteps(payload).find((candidate) => candidate.id === stepId);
+    return step ? step.title : '';
+  }
+
+  function isNextInactive(state, payload) {
+    if (!state || state.currentStepId === 'review') return false;
+    return !validateStep(state.currentStepId, state, payload).valid;
+  }
+
   function resolveVariantBySize(sizeValue, payload) {
     if (!payload || !isNonEmptyString(sizeValue)) return { status: 'missing', variant: null };
     const matches = payload.variants.filter((variant) => normalizeCode(variant.sizeValue) === normalizeCode(sizeValue));
@@ -719,6 +737,12 @@
       this.refs.summary = query('[data-configurable-summary]');
       this.refs.summarySection = query('[data-configurable-summary-section]');
       this.refs.overviewSteps = query('[data-configurable-overview-steps]');
+      this.refs.dialogSteps = query('[data-configurable-dialog-steps]');
+      this.refs.dialogFigure = query('[data-configurable-dialog-visual]');
+      this.refs.dialogImage = query('[data-configurable-dialog-image]');
+      this.refs.dialogImageFallback = query('[data-configurable-dialog-image-fallback]');
+      this.refs.dialogZoomOpen = query('[data-configurable-dialog-zoom]');
+      this.refs.combinationName = query('[data-configurable-combination-name]');
       this.refs.imageFigure = query('[data-configurable-visual]');
       this.refs.image = query('[data-configurable-main-image]');
       this.refs.imageFallback = query('[data-configurable-image-fallback]');
@@ -744,7 +768,7 @@
       this.refs.zoomSurface = query('.configurable-product__zoom-surface');
       this.refs.zoomImage = query('[data-configurable-zoom-image]');
       this.refs.zoomClose = query('[data-configurable-zoom-close]');
-      this.refs.dialogTitle = query('.configurable-product__dialog-title');
+      this.refs.dialogTitle = query('[data-configurable-dialog-title]');
     }
 
     parsePayload() {
@@ -851,11 +875,11 @@
     handleAssetError(event) {
       const target = event.target;
       if (!(target instanceof HTMLImageElement) || !target.currentSrc && !target.src) return;
-      if (!target.matches('[data-configurable-main-image], [data-configurable-zoom-image], [data-configurable-review-image]')) return;
+      if (!target.matches('[data-configurable-main-image], [data-configurable-dialog-image], [data-configurable-zoom-image], [data-configurable-review-image]')) return;
       const source = target.currentSrc || target.src;
       this.failedImageSources.add(source);
       if (this.currentImageSource) this.failedImageSources.add(this.currentImageSource);
-      if (target.matches('[data-configurable-main-image]')) {
+      if (target.matches('[data-configurable-main-image], [data-configurable-dialog-image]')) {
         this.applyImage(resolveImage(this.state?.selectedOptions || {}, this.payload, this.imageIndex, this.failedImageSources));
       } else if (target.matches('[data-configurable-review-image]') && this.state?.currentStepId === 'review') {
         this.renderCurrentStep();
@@ -1143,14 +1167,16 @@
     }
 
     renderOverviewSteps() {
-      if (!this.refs.overviewSteps) return;
-      this.refs.overviewSteps.replaceChildren();
-      buildOverviewSteps(this.payload).forEach((step, index) => {
-        const item = makeElement('li', 'configurable-product__step-item');
-        item.dataset.stepId = step.id;
-        item.append(makeElement('span', 'configurable-product__step-number', String(index + 1)));
-        item.append(makeElement('span', 'configurable-product__step-title', step.title));
-        this.refs.overviewSteps.append(item);
+      [this.refs.overviewSteps, this.refs.dialogSteps].forEach((list) => {
+        if (!list) return;
+        list.replaceChildren();
+        buildOverviewSteps(this.payload).forEach((step, index) => {
+          const item = makeElement('li', 'configurable-product__step-item');
+          item.dataset.stepId = step.id;
+          item.append(makeElement('span', 'configurable-product__step-number', String(index + 1)));
+          item.append(makeElement('span', 'configurable-product__step-title', step.title));
+          list.append(item);
+        });
       });
     }
 
@@ -1186,25 +1212,34 @@
     renderOverviewStepsState() {
       const completed = new Set(deriveCompletedSteps(this.state, this.payload));
       const current = this.state.currentStepId;
-      this.refs.overviewSteps?.querySelectorAll('[data-step-id]').forEach((item) => {
+      this.root.querySelectorAll('[data-configurable-overview-steps] [data-step-id], [data-configurable-dialog-steps] [data-step-id]').forEach((item) => {
         item.classList.toggle('configurable-product__step-item--current', item.dataset.stepId === current);
         item.classList.toggle('configurable-product__step-item--completed', completed.has(item.dataset.stepId));
-        item.setAttribute('aria-current', item.dataset.stepId === current ? 'step' : 'false');
+        if (item.dataset.stepId === current) item.setAttribute('aria-current', 'step');
+        else item.removeAttribute('aria-current');
       });
     }
 
     renderProgress() {
-      const steps = buildSteps(this.payload);
-      const currentIndex = Math.max(0, steps.findIndex((step) => step.id === this.state.currentStepId));
-      const current = steps[currentIndex] || steps[0];
-      if (!current) return;
-      const label = replaceTokens(translated(this.root, 'labelStep', 'Step __CURRENT__ of __TOTAL__'), { current: currentIndex + 1, total: steps.length });
+      const counter = deriveStepCounter(this.state.currentStepId, this.payload);
+      if (!counter.total) return;
+      const label = counter.isReview
+        ? translated(this.root, 'labelReview', 'Review')
+        : replaceTokens(translated(this.root, 'labelStep', 'Step __CURRENT__ of __TOTAL__'), { current: counter.current, total: counter.total });
       if (this.refs.progressLabel) this.refs.progressLabel.textContent = label;
       if (this.refs.progress) {
-        this.refs.progress.setAttribute('aria-valuemax', String(steps.length));
-        this.refs.progress.setAttribute('aria-valuenow', String(currentIndex + 1));
+        this.refs.progress.setAttribute('aria-valuemax', String(counter.total));
+        this.refs.progress.setAttribute('aria-valuenow', String(counter.current));
       }
-      if (this.refs.progressBar) this.refs.progressBar.style.transform = `scaleX(${(currentIndex + 1) / steps.length})`;
+      if (this.refs.progressBar) this.refs.progressBar.style.transform = `scaleX(${counter.current / counter.total})`;
+    }
+
+    deriveCombinationName() {
+      const names = this.payload.groups
+        .map((group) => group.options.find((option) => option.code === this.state.selectedOptions[group.code]))
+        .filter(Boolean)
+        .map((option) => option.name);
+      return names.length ? names.join(' · ') : this.payload.product.title;
     }
 
     renderCurrentStep() {
@@ -1219,8 +1254,22 @@
       if (current.type === 'review') this.renderReview();
       setHidden(this.refs.back, steps.indexOf(current) === 0);
       setHidden(this.refs.next, current.type === 'review');
-      if (this.refs.next) this.refs.next.textContent = current.type === 'review' ? translated(this.root, 'labelReview', 'Review') : translated(this.root, 'labelContinue', 'Continue');
-      if (this.refs.live && this.state.isOpen && !this.state.validationErrors[current.id]) this.refs.live.textContent = replaceTokens(translated(this.root, 'labelStep', 'Step __CURRENT__ of __TOTAL__'), { current: steps.indexOf(current) + 1, total: steps.length });
+      if (this.refs.next) {
+        this.refs.next.textContent = translated(this.root, 'labelContinue', 'Continue');
+        const inactive = isNextInactive(this.state, this.payload);
+        this.refs.next.classList.toggle('is-inactive', inactive);
+        if (inactive) this.refs.next.setAttribute('aria-disabled', 'true');
+        else this.refs.next.removeAttribute('aria-disabled');
+      }
+      const title = deriveStepTitle(current.id, this.payload, translated(this.root, 'labelReviewTitle', 'Review your configuration'));
+      if (this.refs.dialogTitle) this.refs.dialogTitle.textContent = title;
+      if (this.refs.combinationName) this.refs.combinationName.textContent = this.deriveCombinationName();
+      if (this.refs.live && this.state.isOpen && !this.state.validationErrors[current.id]) {
+        const counter = deriveStepCounter(current.id, this.payload);
+        this.refs.live.textContent = counter.isReview
+          ? title
+          : `${replaceTokens(translated(this.root, 'labelStep', 'Step __CURRENT__ of __TOTAL__'), { current: counter.current, total: counter.total })}: ${title}`;
+      }
     }
 
     createGroupStep(step) {
@@ -1551,24 +1600,39 @@
 
     applyImage(result) {
       const image = result?.image || null;
-      if (!this.refs.imageFigure) return;
-      if (image) {
-        this.currentImageSource = image.src;
-        if (!this.refs.image) {
-          this.refs.image = makeElement('img', 'configurable-product__image');
-          this.refs.image.dataset.configurableMainImage = '';
-          this.refs.imageFigure.insertBefore(this.refs.image, this.refs.zoomOpen || null);
+      if (this.refs.imageFigure) {
+        if (image) {
+          if (!this.refs.image) {
+            this.refs.image = makeElement('img', 'configurable-product__image');
+            this.refs.image.dataset.configurableMainImage = '';
+            this.refs.imageFigure.insertBefore(this.refs.image, this.refs.zoomOpen || null);
+          }
+          applyMediaAttributes(this.refs.image, image);
+          this.refs.image.alt = image.alt || this.payload.product.title;
+          setHidden(this.refs.image, false);
+        } else {
+          setHidden(this.refs.image, true);
         }
-        applyMediaAttributes(this.refs.image, image);
-        this.refs.image.alt = image.alt || this.payload.product.title;
-        setHidden(this.refs.image, false);
-        setHidden(this.refs.imageFallback, true);
-        setHidden(this.refs.zoomOpen, false);
-      } else {
-        this.currentImageSource = null;
-        setHidden(this.refs.image, true);
-        setHidden(this.refs.imageFallback, false);
-        setHidden(this.refs.zoomOpen, true);
+        setHidden(this.refs.imageFallback, !!image);
+        setHidden(this.refs.zoomOpen, !image);
+      }
+      this.currentImageSource = image ? image.src : null;
+      if (this.refs.dialogFigure) {
+        if (image) {
+          if (!this.refs.dialogImage) {
+            this.refs.dialogImage = makeElement('img', 'configurable-product__dialog-image');
+            this.refs.dialogImage.dataset.configurableDialogImage = '';
+            this.refs.dialogFigure.prepend(this.refs.dialogImage);
+          }
+          applyMediaAttributes(this.refs.dialogImage, image);
+          if (image.width && image.height) this.refs.dialogFigure.style.setProperty('--configurable-image-ratio', String(image.width / image.height));
+          this.refs.dialogImage.alt = image.alt || this.payload.product.title;
+          setHidden(this.refs.dialogImage, false);
+        } else {
+          setHidden(this.refs.dialogImage, true);
+        }
+        setHidden(this.refs.dialogImageFallback, !!image);
+        setHidden(this.refs.dialogZoomOpen, !image);
       }
     }
 
@@ -1679,6 +1743,9 @@
     normalizePayload,
     buildSteps,
     buildOverviewSteps,
+    deriveStepCounter,
+    deriveStepTitle,
+    isNextInactive,
     selectFeaturedGroup,
     validateConfiguration,
     validateStep,
