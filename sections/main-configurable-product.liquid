@@ -6,6 +6,28 @@
   assign configurable_dialog_id = 'ConfigurableProductDialog-' | append: section.id
   assign configurable_data_id = 'ConfigurableProductData-' | append: section.id
   assign configurable_base_name = product.metafields.custom.configurator_base_name.value
+  assign ssr_groups = product.metafields.custom.configurator_groups.value
+  assign ssr_size_name = ''
+  for product_option in product.options
+    assign product_option_handle = product_option | handleize
+    if product_option_handle == 'tamanho' or product_option_handle == 'size'
+      assign ssr_size_name = product_option | strip
+    endif
+  endfor
+  assign ssr_featured = nil
+  if configurator_enabled == true and section.settings.show_featured_group
+    for ssr_group in ssr_groups
+      if ssr_featured == nil
+        for ssr_option in ssr_group.options.value
+          assign ssr_addition = ssr_option.price_addition.value | times: 100 | round
+          if ssr_addition > 0
+            assign ssr_featured = ssr_group
+            break
+          endif
+        endfor
+      endif
+    endfor
+  endif
   assign configurable_form_id = 'ConfigurableProductForm-' | append: section.id
   assign product_image = product.featured_media.preview_image
   assign eyebrow_text = section.settings.eyebrow | default: 'products.product.configurator.eyebrow' | t
@@ -109,7 +131,7 @@
           </div>
         {% endif %}
       </figure>
-      <button type="button" class="configurable-product__zoom-trigger" data-configurable-zoom-open hidden>
+      <button type="button" class="configurable-product__zoom-trigger" data-configurable-zoom-open{% if product_image == blank %} hidden{% endif %}>
         {{ 'products.product.configurator.zoom' | t }}
       </button>
     </div>
@@ -135,18 +157,68 @@
       </header>
 
       <div class="configurable-product__panel">
-        <section class="configurable-product__summary" aria-labelledby="ConfigurableProductSummary-{{ section.id }}" data-configurable-summary-section hidden>
+        <section class="configurable-product__summary" aria-labelledby="ConfigurableProductSummary-{{ section.id }}" data-configurable-summary-section{% if ssr_featured == nil %} hidden{% endif %}>
           <h2 id="ConfigurableProductSummary-{{ section.id }}" class="visually-hidden">
             {{ 'products.product.configurable_pdp.possible_additions' | t }}
           </h2>
-          <div data-configurable-summary></div>
+          <div data-configurable-summary>
+            {%- if ssr_featured != nil -%}
+              {%- assign ssr_featured_title = ssr_featured.title.value | default: ssr_featured.code.value | default: ssr_featured.system.handle -%}
+              <div class="configurable-product__featured-head">
+                <h3 class="configurable-product__addition-title">{{ ssr_featured_title | strip | escape }}</h3>
+                <p class="configurable-product__display-note">{{ 'products.product.configurator.display_only' | t }}</p>
+              </div>
+              <ul class="configurable-product__featured-list">
+                {%- for ssr_option in ssr_featured.options.value -%}
+                  {%- assign ssr_addition = ssr_option.price_addition.value | times: 100 | round -%}
+                  {%- assign ssr_option_image = ssr_option.image.value -%}
+                  <li class="configurable-product__featured-option">
+                    {%- if ssr_option_image != blank -%}
+                      <img class="configurable-product__featured-thumb" src="{{ ssr_option_image | image_url: width: 800 }}" srcset="{{ ssr_option_image | image_url: width: 320 }} 320w, {{ ssr_option_image | image_url: width: 480 }} 480w, {{ ssr_option_image | image_url: width: 800 }} 800w" sizes="(min-width: 750px) 25vw, 50vw" width="{{ ssr_option_image.width }}" height="{{ ssr_option_image.height }}" alt="" loading="lazy">
+                    {%- elsif ssr_option.color.value != blank -%}
+                      <span class="configurable-product__featured-thumb configurable-product__swatch" style="--configurable-swatch-color: {{ ssr_option.color.value | escape }}" aria-hidden="true"></span>
+                    {%- endif -%}
+                    <span class="configurable-product__featured-copy">
+                      <span class="configurable-product__featured-name">{{ ssr_option.name.value | escape }}</span>
+                      {%- liquid
+                        if ssr_option.available.value == false
+                          assign ssr_unavailable_label = 'products.product.configurator.unavailable' | t
+                          assign ssr_addition_label = 'products.product.configurable_pdp.no_addition' | t | append: ' — ' | append: ssr_unavailable_label
+                        elsif ssr_addition > 0
+                          assign ssr_money = ssr_addition | money
+                          assign ssr_addition_label = ssr_money | replace: ' ', '&nbsp;' | prepend: '+'
+                        else
+                          assign ssr_addition_label = 'products.product.configurable_pdp.no_addition' | t
+                        endif
+                      -%}
+                      <span class="configurable-product__featured-addition">{{ ssr_addition_label }}</span>
+                    </span>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </div>
         </section>
 
         <section class="configurable-product__steps" aria-labelledby="ConfigurableProductSteps-{{ section.id }}">
           <h2 id="ConfigurableProductSteps-{{ section.id }}" class="visually-hidden">
             {{ 'products.product.configurable_pdp.steps' | t }}
           </h2>
-          <ol class="configurable-product__step-list" data-configurable-overview-steps></ol>
+          <ol class="configurable-product__step-list" data-configurable-overview-steps>
+            {%- assign ssr_step_index = 0 -%}
+            {%- if configurator_enabled == true -%}
+              {%- for ssr_group in ssr_groups -%}
+                {%- if ssr_group.options.value != blank -%}
+                  {%- assign ssr_step_index = ssr_step_index | plus: 1 -%}
+                  <li class="configurable-product__step-item"><span class="configurable-product__step-number">{{ ssr_step_index }}</span><span class="configurable-product__step-title">{{ ssr_group.title.value | default: ssr_group.code.value | default: ssr_group.system.handle | strip | escape }}</span></li>
+                {%- endif -%}
+              {%- endfor -%}
+              {%- if ssr_size_name != blank and ssr_step_index > 0 -%}
+                {%- assign ssr_step_index = ssr_step_index | plus: 1 -%}
+                <li class="configurable-product__step-item"><span class="configurable-product__step-number">{{ ssr_step_index }}</span><span class="configurable-product__step-title">{{ ssr_size_name | escape }}</span></li>
+              {%- endif -%}
+            {%- endif -%}
+          </ol>
         </section>
 
         <button

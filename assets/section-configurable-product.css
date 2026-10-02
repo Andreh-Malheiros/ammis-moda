@@ -134,9 +134,7 @@
 
 .configurable-product__price-note,
 .configurable-product__display-note,
-.configurable-product__option-description,
-.configurable-product__dialog-description,
-.configurable-product__review-intro {
+.configurable-product__option-description {
   color: var(--configurable-muted);
   letter-spacing: 0;
   text-transform: none;
@@ -590,16 +588,6 @@
   line-height: 1.1;
 }
 
-.configurable-product__required-mark {
-  display: block;
-  margin-top: 0.5rem;
-  color: var(--configurable-muted);
-  font-size: 1.2rem;
-  font-weight: 400;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 .configurable-product__option-description {
   margin: 0 0 1.25rem;
 }
@@ -712,10 +700,6 @@
 .configurable-product__review-content {
   display: grid;
   gap: 1rem;
-}
-
-.configurable-product__review-intro {
-  margin: 0;
 }
 
 .configurable-product__review-image {
@@ -1133,10 +1117,12 @@ body.configurable-product-scroll-locked {
 }
 
 .configurable-product__dialog-trail .configurable-product__step-item--completed:not(.configurable-product__step-item--current) .configurable-product__step-number {
-  font-size: 0;
+  color: transparent;
 }
 
 .configurable-product__dialog-trail .configurable-product__step-item--completed:not(.configurable-product__step-item--current) .configurable-product__step-number::before {
+  position: absolute;
+  color: rgb(var(--color-background));
   font-size: 1.4rem;
   content: '\2713';
 }
