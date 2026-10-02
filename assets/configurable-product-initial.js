@@ -574,7 +574,7 @@
     return raw
       .map((item) => ({
         groupCode: normalizeCode(item && item.groupCode),
-        kind: item && item.kind === 'support' ? 'support' : 'call',
+        kind: item && item.kind === 'instrucao' ? 'instruction' : (item && item.kind === 'support' ? 'support' : 'call'),
         text: isNonEmptyString(item && item.text) ? item.text.trim() : ''
       }))
       .filter((item) => item.groupCode && item.text);
@@ -590,6 +590,24 @@
     const call = pick('call');
     const support = pick('support');
     return call || support ? { call, support } : null;
+  }
+
+  function findStepInstruction(messages, groupCode) {
+    const code = normalizeCode(groupCode);
+    const match = messages.find((message) => message.groupCode === code && message.kind === 'instruction');
+    return match ? match.text : null;
+  }
+
+  function shouldAnimateStepChange(previousStepId, nextStepId, motionEnabled) {
+    return !!motionEnabled && !!previousStepId && previousStepId !== nextStepId;
+  }
+
+  function shouldCrossfadeImage(currentSrc, nextSrc, motionEnabled) {
+    return !!motionEnabled && !!currentSrc && !!nextSrc && currentSrc !== nextSrc;
+  }
+
+  function shouldFillNext(previousStepId, stepId, wasInactive, isInactive, motionEnabled) {
+    return !!motionEnabled && previousStepId === stepId && !!wasInactive && !isInactive;
   }
 
   function buildCombinationName(baseName, payload, selectedOptions) {
@@ -628,7 +646,6 @@
       selectedOptions: Object.create(null),
       selectedVariantId: null,
       isZoomOpen: false,
-      isSizeChartOpen: false,
       stepMessages: Object.create(null),
       validationErrors: Object.create(null),
       cartState: 'idle',
@@ -825,6 +842,7 @@
       this.refs.dialogTitle = query('[data-configurable-dialog-title]');
       this.refs.messages = query('[data-configurable-messages]');
       this.refs.sizeChart = query('[data-configurable-size-chart]');
+      this.refs.productDescription = query('[data-configurable-product-description]');
     }
 
     parsePayload() {
@@ -837,6 +855,19 @@
       } catch (error) {
         this.payloadResult = { valid: false, errors: ['INVALID_PAYLOAD_JSON'], warnings: [], payload: null };
       }
+    }
+
+    motionEnabled() {
+      if (this.root.dataset.animations === 'false') return false;
+      return !(typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    }
+
+    playOnce(element, className) {
+      if (!element) return;
+      element.classList.remove(className);
+      void element.offsetWidth;
+      element.classList.add(className);
+      element.addEventListener('animationend', () => element.classList.remove(className), { once: true });
     }
 
     parseMessages() {
@@ -922,6 +953,7 @@
         this.state.selectedOptions[groupCode] = optionCode;
         delete this.state.validationErrors[`group:${groupCode}`];
         this.pendingFocus = { type: 'group', groupCode, optionCode };
+        this.justSelected = { type: 'group', groupCode, optionCode };
         this.reconcileState();
         this.state.cartError = null;
         if (this.state.cartState === 'error') this.state.cartState = 'idle';
@@ -932,6 +964,7 @@
         this.state.selectedVariantId = result.status === 'selected' ? result.variant.id : null;
         delete this.state.validationErrors['variant:size'];
         this.pendingFocus = { type: 'size', sizeValue: target.dataset.sizeValue };
+        this.justSelected = { type: 'size', sizeValue: target.dataset.sizeValue };
         this.reconcileState();
         this.state.cartError = null;
         if (this.state.cartState === 'error') this.state.cartState = 'idle';
@@ -1013,6 +1046,7 @@
         return;
       }
       this.state.isOpen = true;
+      this.lastStepId = null;
       this.enterStep(this.state.currentStepId);
       if (!this.lockHeld) {
         lockDocument();
@@ -1033,6 +1067,9 @@
     }
 
     handleDialogClose() {
+      this.lastStepId = null;
+      this.settleDialogImage();
+      this.imageToken = (this.imageToken || 0) + 1;
       if (this.lockHeld) {
         unlockDocument();
         this.lockHeld = false;
@@ -1279,7 +1316,8 @@
       }
       if (this.focusStepAfterRender) {
         this.focusStepAfterRender = false;
-        const control = this.refs.stepContent?.querySelector('input:not([disabled]), select:not([disabled]), button:not([disabled]), .configurable-product__review-title');
+        const container = this.state.currentStepId === 'review' ? this.refs.review : this.refs.stepContent;
+        const control = container?.querySelector('input:not([disabled]), select:not([disabled]), button:not([disabled]), .configurable-product__review-title');
         control?.focus();
       }
     }
@@ -1320,6 +1358,8 @@
       this.refs.stepContent.replaceChildren();
       this.refs.review.replaceChildren();
       setHidden(this.refs.review, current.type !== 'review');
+      const animateStep = shouldAnimateStepChange(this.lastStepId, current.id, this.state.isOpen && this.motionEnabled());
+      this.animateStepNow = animateStep;
       if (current.type === 'group') {
         const message = this.createStepMessage(current);
         if (message) this.refs.stepContent.append(message);
@@ -1327,11 +1367,18 @@
       }
       if (current.type === 'variant') this.refs.stepContent.append(this.createVariantStep(current));
       if (current.type === 'review') this.renderReview();
+      if (animateStep) this.playOnce(current.type === 'review' ? this.refs.review : this.refs.stepContent, 'is-entering');
+      this.lastStepId = current.id;
+      this.justSelected = null;
+      this.animateStepNow = false;
       setHidden(this.refs.back, steps.indexOf(current) === 0);
       setHidden(this.refs.next, current.type === 'review');
       if (this.refs.next) {
-        this.refs.next.textContent = translated(this.root, 'labelContinue', 'Continue');
+        this.refs.next.replaceChildren(makeElement('span', '', translated(this.root, 'labelContinue', 'Continue')));
         const inactive = isNextInactive(this.state, this.payload);
+        if (shouldFillNext(this.lastNextStepId, current.id, this.lastNextInactive, inactive, this.state.isOpen && this.motionEnabled())) this.playOnce(this.refs.next, 'is-filling');
+        this.lastNextStepId = current.id;
+        this.lastNextInactive = inactive;
         this.refs.next.classList.toggle('is-inactive', inactive);
         if (inactive) this.refs.next.setAttribute('aria-disabled', 'true');
         else this.refs.next.removeAttribute('aria-disabled');
@@ -1350,7 +1397,7 @@
     createStepMessage(step) {
       const messages = this.state.stepMessages[step.id];
       if (!messages) return null;
-      const card = makeElement('div', 'configurable-product__step-message');
+      const card = makeElement('div', `configurable-product__step-message${this.animateStepNow ? ' is-entering' : ''}`);
       card.dataset.configurableStepMessage = '';
       if (messages.call) card.append(makeElement('p', 'configurable-product__step-message-call', messages.call));
       if (messages.support) card.append(makeElement('p', 'configurable-product__step-message-support', messages.support));
@@ -1378,7 +1425,7 @@
       const detailed = groupHasDetails(group);
       const fieldset = makeElement('fieldset', `configurable-product__option-step configurable-product__option-step--${group.interfaceType}${detailed ? ' configurable-product__option-step--detailed' : ''}`);
       fieldset.dataset.groupCode = group.code;
-      fieldset.append(this.createStepHead(replaceTokens(translated(this.root, 'labelChoose', 'Choose __GROUP__'), { group: group.title }), group.required));
+      fieldset.append(this.createStepHead(findStepInstruction(this.stepMessages || [], group.code) || replaceTokens(translated(this.root, 'labelChoose', 'Choose __GROUP__'), { group: group.title }), group.required));
       fieldset.append(this.createPriceNote());
       if (group.description) fieldset.append(makeElement('p', 'configurable-product__option-description', group.description));
       const controlId = `ConfigurableOption-${this.sectionId}-${group.code}`;
@@ -1405,6 +1452,7 @@
         group.options.forEach((option, index) => {
           const id = `${controlId}-${index}`;
           const label = makeElement('label', 'configurable-product__option-card');
+          if (this.justSelected && this.justSelected.type === 'group' && this.justSelected.groupCode === group.code && this.justSelected.optionCode === option.code && this.motionEnabled()) label.classList.add('is-just-selected');
           label.htmlFor = id;
           label.dataset.optionCode = option.code;
           const input = makeElement('input');
@@ -1433,10 +1481,19 @@
             content.append(swatch);
           }
           const copy = makeElement('span', 'configurable-product__option-copy');
-          copy.append(makeElement('span', 'configurable-product__option-name', option.name));
+          const nameRow = makeElement('span', 'configurable-product__option-name', option.name);
+          nameRow.append(makeElement('span', 'configurable-product__option-check', ' \u2713'));
+          nameRow.lastChild.setAttribute('aria-hidden', 'true');
+          copy.append(nameRow);
           if (option.priceAdditionCents > 0) copy.append(makeElement('span', 'configurable-product__option-price', `+${this.formatMoney(option.priceAdditionCents)}`));
           if (!option.available) copy.append(makeElement('span', 'configurable-product__option-unavailable', translated(this.root, 'labelUnavailable', 'Unavailable')));
           content.append(copy);
+          if (detailed) {
+            const state = makeElement('span', 'configurable-product__option-state');
+            state.setAttribute('aria-hidden', 'true');
+            state.append(makeElement('span', 'configurable-product__option-state-on', translated(this.root, 'labelChosen', 'Selected')), makeElement('span', 'configurable-product__option-state-off', translated(this.root, 'labelSelectCard', 'Select')));
+            content.append(state);
+          }
           if (option.description) content.append(makeElement('span', 'configurable-product__option-description', option.description));
           label.append(input, content);
           list.append(label);
@@ -1462,7 +1519,7 @@
 
     createVariantStep(step) {
       const fieldset = makeElement('fieldset', 'configurable-product__option-step configurable-product__option-step--variant');
-      fieldset.append(this.createStepHead(replaceTokens(translated(this.root, 'labelChoose', 'Choose __GROUP__'), { group: step.title }), true));
+      fieldset.append(this.createStepHead(findStepInstruction(this.stepMessages || [], step.sourceCode) || replaceTokens(translated(this.root, 'labelChoose', 'Choose __GROUP__'), { group: step.title }), true));
       fieldset.append(this.createPriceNote());
       fieldset.append(makeElement('p', 'configurable-product__almost-there', translated(this.root, 'labelAlmostThere', 'Almost there')));
       const list = makeElement('div', 'configurable-product__option-grid configurable-product__option-grid--sizes');
@@ -1474,6 +1531,7 @@
         const result = resolveVariantBySize(sizeValue, this.payload);
         const id = `ConfigurableSize-${this.sectionId}-${index}`;
         const label = makeElement('label', 'configurable-product__option-card configurable-product__size-card');
+        if (this.justSelected && this.justSelected.type === 'size' && this.justSelected.sizeValue === sizeValue && this.motionEnabled()) label.classList.add('is-just-selected');
         label.htmlFor = id;
         const input = makeElement('input');
         input.type = 'radio';
@@ -1510,6 +1568,12 @@
       reviewTitle.tabIndex = -1;
       wrapper.append(reviewTitle);
       wrapper.append(makeElement('p', 'configurable-product__review-name', this.deriveCombinationName()));
+      const descriptionHtml = this.refs.productDescription ? this.refs.productDescription.innerHTML : '';
+      if (hasSizeChart(descriptionHtml)) {
+        const description = makeElement('div', 'configurable-product__review-description rte');
+        description.innerHTML = descriptionHtml;
+        wrapper.append(description);
+      }
       const reviewImage = makeElement('figure', 'configurable-product__review-image');
       if (review.image?.image) {
         const image = makeElement('img', 'configurable-product__review-image-element');
@@ -1728,15 +1792,22 @@
       }
       this.currentImageSource = image ? image.src : null;
       if (this.refs.dialogFigure) {
+        this.settleDialogImage();
         if (image) {
           if (!this.refs.dialogImage) {
             this.refs.dialogImage = makeElement('img', 'configurable-product__dialog-image');
             this.refs.dialogImage.dataset.configurableDialogImage = '';
             this.refs.dialogFigure.prepend(this.refs.dialogImage);
+            applyMediaAttributes(this.refs.dialogImage, image);
+            this.refs.dialogImage.alt = image.alt || this.payload.product.title;
+          } else if (shouldCrossfadeImage(this.refs.dialogImage.getAttribute('src'), image.src, this.state?.isOpen && this.motionEnabled())) {
+            this.crossfadeDialogImage(image);
+          } else {
+            this.imageToken = (this.imageToken || 0) + 1;
+            applyMediaAttributes(this.refs.dialogImage, image);
+            this.refs.dialogImage.alt = image.alt || this.payload.product.title;
           }
-          applyMediaAttributes(this.refs.dialogImage, image);
           if (image.width && image.height) this.refs.dialogFigure.style.setProperty('--configurable-image-ratio', String(image.width / image.height));
-          this.refs.dialogImage.alt = image.alt || this.payload.product.title;
           setHidden(this.refs.dialogImage, false);
         } else {
           setHidden(this.refs.dialogImage, true);
@@ -1744,6 +1815,43 @@
         setHidden(this.refs.dialogImageFallback, !!image);
         setHidden(this.refs.dialogZoomOpen, !image);
       }
+    }
+
+    settleDialogImage() {
+      const incoming = this.refs.dialogFigure?.querySelector('.configurable-product__dialog-image--incoming');
+      if (!incoming) return;
+      this.imageToken = (this.imageToken || 0) + 1;
+      if (this.refs.dialogImage && this.refs.dialogImage !== incoming) this.refs.dialogImage.remove();
+      incoming.classList.remove('configurable-product__dialog-image--incoming');
+      incoming.dataset.configurableDialogImage = '';
+      this.refs.dialogImage = incoming;
+    }
+
+    crossfadeDialogImage(image) {
+      const figure = this.refs.dialogFigure;
+      const previous = this.refs.dialogImage;
+      const token = (this.imageToken = (this.imageToken || 0) + 1);
+      const next = makeElement('img', 'configurable-product__dialog-image configurable-product__dialog-image--incoming');
+      applyMediaAttributes(next, image);
+      next.alt = image.alt || this.payload.product.title;
+      const reveal = () => {
+        if (token !== this.imageToken || !previous.isConnected) return;
+        figure.append(next);
+        next.addEventListener('animationend', () => {
+          if (token !== this.imageToken) return;
+          previous.remove();
+          next.classList.remove('configurable-product__dialog-image--incoming');
+          next.dataset.configurableDialogImage = '';
+          this.refs.dialogImage = next;
+        }, { once: true });
+      };
+      const fallback = () => {
+        if (token !== this.imageToken) return;
+        applyMediaAttributes(previous, image);
+        previous.alt = image.alt || this.payload.product.title;
+      };
+      if (typeof next.decode === 'function') next.decode().then(reveal, fallback);
+      else next.addEventListener('load', reveal, { once: true });
     }
 
     applyFailureClasses() {
@@ -1861,6 +1969,10 @@
     parseStepMessages,
     pickStepMessages,
     buildCombinationName,
+    findStepInstruction,
+    shouldAnimateStepChange,
+    shouldCrossfadeImage,
+    shouldFillNext,
     hasSizeChart,
     selectFeaturedGroup,
     validateConfiguration,

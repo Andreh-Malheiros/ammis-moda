@@ -228,7 +228,9 @@
         "zoom": "Zoom image",
         "zoom_photo": "Zoom photo",
         "almost_there": "Almost there",
-        "size_chart": "Size chart"
+        "size_chart": "Size chart",
+        "chosen": "Selected",
+        "select_card": "Select"
       },
       "configurable_pdp": {
         "title": "Personalize your piece",

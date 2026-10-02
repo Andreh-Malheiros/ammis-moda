@@ -2,14 +2,48 @@
   "sections": {
     "main": {
       "type": "main-configurable-product",
-      "settings": {},
+      "settings": {
+        "panel_radius": 20
+      },
       "blocks": {
         "step_message_call_1": {
           "type": "step_message",
           "settings": {
             "group_code": "botao",
             "kind": "call",
+            "text": "Arrasou na escolha! Vamos deixar sua peça ainda mais especial."
+          }
+        },
+        "step_message_call_2": {
+          "type": "step_message",
+          "settings": {
+            "group_code": "botao",
+            "kind": "call",
             "text": "Está ficando com a sua cara. Escolha agora o detalhe final."
+          }
+        },
+        "step_message_call_3": {
+          "type": "step_message",
+          "settings": {
+            "group_code": "botao",
+            "kind": "call",
+            "text": "Seu estilo, suas escolhas. Vamos selecionar o botão?"
+          }
+        },
+        "step_message_call_4": {
+          "type": "step_message",
+          "settings": {
+            "group_code": "botao",
+            "kind": "call",
+            "text": "A personalização está quase completa. Qual botão combina mais?"
+          }
+        },
+        "step_message_call_5": {
+          "type": "step_message",
+          "settings": {
+            "group_code": "botao",
+            "kind": "call",
+            "text": "Mais um detalhe para tornar essa peça única para você."
           }
         },
         "step_message_support_1": {
@@ -19,11 +53,87 @@
             "kind": "support",
             "text": "Os detalhes fazem toda a diferença."
           }
+        },
+        "step_message_support_2": {
+          "type": "step_message",
+          "settings": {
+            "group_code": "botao",
+            "kind": "support",
+            "text": "Escolha com calma: a peça já está tomando forma."
+          }
+        },
+        "step_message_support_3": {
+          "type": "step_message",
+          "settings": {
+            "group_code": "botao",
+            "kind": "support",
+            "text": "Pense na combinação que mais combina com o seu estilo."
+          }
+        },
+        "step_message_support_4": {
+          "type": "step_message",
+          "settings": {
+            "group_code": "botao",
+            "kind": "support",
+            "text": "Sua escolha completa o visual da peça."
+          }
+        },
+        "step_message_support_5": {
+          "type": "step_message",
+          "settings": {
+            "group_code": "botao",
+            "kind": "support",
+            "text": "Agora falta pouco para ver sua combinação completa."
+          }
+        },
+        "step_instruction_tecido": {
+          "type": "step_message",
+          "settings": {
+            "group_code": "tecido",
+            "kind": "instrucao",
+            "text": "Selecione o tecido desejado"
+          }
+        },
+        "step_instruction_cor": {
+          "type": "step_message",
+          "settings": {
+            "group_code": "cor",
+            "kind": "instrucao",
+            "text": "Escolha a cor"
+          }
+        },
+        "step_instruction_botao": {
+          "type": "step_message",
+          "settings": {
+            "group_code": "botao",
+            "kind": "instrucao",
+            "text": "Escolha seu botão favorito"
+          }
+        },
+        "step_instruction_tamanho": {
+          "type": "step_message",
+          "settings": {
+            "group_code": "tamanho",
+            "kind": "instrucao",
+            "text": "Selecione seu tamanho"
+          }
         }
       },
       "block_order": [
         "step_message_call_1",
-        "step_message_support_1"
+        "step_message_call_2",
+        "step_message_call_3",
+        "step_message_call_4",
+        "step_message_call_5",
+        "step_message_support_1",
+        "step_message_support_2",
+        "step_message_support_3",
+        "step_message_support_4",
+        "step_message_support_5",
+        "step_instruction_tecido",
+        "step_instruction_cor",
+        "step_instruction_botao",
+        "step_instruction_tamanho"
       ]
     }
   },

@@ -538,9 +538,31 @@
   flex: 1 1 auto;
 }
 
-.configurable-product__next.is-inactive {
+.configurable-product__next {
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(var(--color-foreground), 0.12);
+}
+
+.configurable-product__next::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: rgba(var(--color-button));
+  content: '';
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+.configurable-product__next.is-inactive,
+.configurable-product__next.is-inactive:focus {
+  background-color: rgba(var(--color-foreground), 0.12);
+  color: var(--configurable-muted);
   cursor: not-allowed;
-  opacity: 0.45;
+}
+
+.configurable-product__next.is-inactive::before {
+  transform: scaleX(0);
 }
 
 .configurable-product__review-image {
@@ -1100,7 +1122,8 @@ body.configurable-product-scroll-locked {
 @media (prefers-reduced-motion: reduce) {
   .configurable-product__progress-track [data-configurable-progress-bar],
   .configurable-product__option-card,
-  .configurable-product__next {
+  .configurable-product__next,
+  .configurable-product .button {
     transition: none;
   }
 
@@ -1201,6 +1224,7 @@ body.configurable-product-scroll-locked {
   height: auto;
   aspect-ratio: 1;
   object-fit: cover;
+  object-position: 50% 20%;
 }
 
 .configurable-product__option-copy {
@@ -1373,4 +1397,222 @@ body.configurable-product-scroll-locked {
 
 .configurable-product__dialog-footer {
   align-items: flex-start;
+}
+
+/* Closing pass — radius, selection marks, mobile handle */
+.configurable-product__option-card,
+.configurable-product__step-message {
+  border-radius: calc(var(--configurable-panel-radius, 0) * 0.8);
+}
+
+.configurable-product__option-image {
+  border-radius: calc(var(--configurable-panel-radius, 0) * 0.6);
+}
+
+.configurable-product__option-check {
+  display: none;
+}
+
+.configurable-product__option-card:has(input:checked) .configurable-product__option-check {
+  display: inline;
+}
+
+.configurable-product__option-state {
+  grid-area: state;
+  align-self: center;
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.configurable-product__option-state-on,
+.configurable-product__option-card:has(input:checked) .configurable-product__option-state-off {
+  display: none;
+}
+
+.configurable-product__option-card:has(input:checked) .configurable-product__option-state-on {
+  display: inline;
+}
+
+.configurable-product__option-grid--list .configurable-product__option-card-content {
+  grid-template-columns: 9rem minmax(0, 1fr) auto;
+  grid-template-areas: "image copy state" "image description state";
+}
+
+.configurable-product__review-description {
+  margin: 0 0 1.6rem;
+  font-size: 1.4rem;
+  line-height: 1.5;
+}
+
+.configurable-product__panel-handle {
+  display: none;
+}
+
+@media screen and (max-width: 989px) {
+  .configurable-product__panel-handle {
+    display: block;
+    flex: 0 0 auto;
+    width: 4rem;
+    height: 0.4rem;
+    margin: 1rem auto 0;
+    border-radius: 999px;
+    background: var(--configurable-border);
+  }
+
+  .configurable-product__option-grid--list .configurable-product__option-card-content {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "image" "copy" "description" "state";
+  }
+
+  .configurable-product__dialog-zoom {
+    right: 1.2rem;
+    left: auto;
+    transform: none;
+  }
+}
+
+/* Motion — transform/opacity only; effects exist only when motion is allowed */
+.configurable-product {
+  --configurable-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --configurable-duration-step: 400ms;
+  --configurable-duration-fill: 450ms;
+  --configurable-duration-select: 200ms;
+}
+
+.configurable-product__dialog-figure {
+  position: relative;
+}
+
+@keyframes configurable-sheet-in {
+  from {
+    opacity: 0.6;
+    transform: translateY(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes configurable-backdrop-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes configurable-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.6rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes configurable-message-in {
+  from {
+    opacity: 0;
+    transform: translateY(-1.6rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes configurable-image-in {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes configurable-fill {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes configurable-select-pop {
+  from {
+    transform: scale(0.97);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+.configurable-product__dialog-image--incoming {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .configurable-product--motion .configurable-product__dialog[open] {
+    animation: configurable-sheet-in var(--duration-xl, 600ms) var(--configurable-ease) both;
+  }
+
+  .configurable-product--motion .configurable-product__dialog[open]::backdrop {
+    animation: configurable-backdrop-in var(--duration-xl, 600ms) ease both;
+  }
+
+  .configurable-product--motion [data-configurable-step-content].is-entering,
+  .configurable-product--motion [data-configurable-review].is-entering {
+    animation: configurable-step-in var(--configurable-duration-step) var(--configurable-ease) both;
+    will-change: transform, opacity;
+  }
+
+  .configurable-product--motion .configurable-product__step-message.is-entering {
+    animation: configurable-message-in var(--duration-long, 500ms) var(--configurable-ease) both;
+    will-change: transform, opacity;
+  }
+
+  .configurable-product--motion .configurable-product__dialog-image--incoming {
+    animation: configurable-image-in var(--duration-xl, 600ms) var(--configurable-ease) both;
+    will-change: transform, opacity;
+  }
+
+  .configurable-product--motion .configurable-product__next.is-filling::before {
+    animation: configurable-fill var(--configurable-duration-fill) var(--configurable-ease) both;
+    will-change: transform;
+  }
+
+  .configurable-product--motion .configurable-product__option-card.is-just-selected {
+    animation: configurable-select-pop var(--configurable-duration-select) var(--configurable-ease);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .configurable-product *,
+  .configurable-product *::before,
+  .configurable-product *::after {
+    transition: none !important;
+  }
+}
+
+.configurable-product:not(.configurable-product--motion) *,
+.configurable-product:not(.configurable-product--motion) *::before,
+.configurable-product:not(.configurable-product--motion) *::after {
+  transition: none !important;
 }

@@ -228,7 +228,9 @@
         "zoom": "Ampliar imagem",
         "zoom_photo": "Ampliar foto",
         "almost_there": "Estamos quase lá",
-        "size_chart": "Tabela de medidas"
+        "size_chart": "Tabela de medidas",
+        "chosen": "Escolhido",
+        "select_card": "Selecionar"
       },
       "configurable_pdp": {
         "title": "Personalize sua peça",

@@ -15,9 +15,10 @@
 
 <section
   id="ConfigurableProduct-{{ section.id }}"
-  class="configurable-product color-{{ section.settings.color_scheme }} background"
+  class="configurable-product color-{{ section.settings.color_scheme }} background{% if section.settings.enable_animations %} configurable-product--motion{% endif %}"
   style="--configurable-media-width: {{ section.settings.media_width }}%; --configurable-panel-radius: {{ section.settings.panel_radius }}px;"
   data-configurable-pdp
+  data-animations="{{ section.settings.enable_animations }}"
   data-show-featured-group="{{ section.settings.show_featured_group }}"
   data-section-id="{{ section.id }}"
   data-product-id="{{ product.id }}"
@@ -55,6 +56,8 @@
   data-label-optional="{{ 'products.product.configurator.optional' | t | escape }}"
   data-label-almost-there="{{ 'products.product.configurator.almost_there' | t | escape }}"
   data-label-size-chart="{{ 'products.product.configurator.size_chart' | t | escape }}"
+  data-label-chosen="{{ 'products.product.configurator.chosen' | t | escape }}"
+  data-label-select-card="{{ 'products.product.configurator.select_card' | t | escape }}"
 >
   <script
     type="application/json"
@@ -75,6 +78,11 @@
   {%- assign size_chart_page = section.settings.size_chart_page -%}
   {%- if size_chart_page != blank and size_chart_page.content != blank -%}
     <div hidden data-configurable-size-chart>{{ size_chart_page.content }}</div>
+  {%- endif -%}
+
+  {%- assign product_description_text = product.description | strip_html | strip -%}
+  {%- if product_description_text != blank -%}
+    <div hidden data-configurable-product-description>{{ product.description }}</div>
   {%- endif -%}
 
   <div class="configurable-product__layout page-width">
@@ -198,6 +206,7 @@
 
         <div class="configurable-product__dialog-panel">
           <div class="configurable-product__dialog-panel-inner">
+            <span class="configurable-product__panel-handle" aria-hidden="true"></span>
             <div class="configurable-product__dialog-panel-content" data-configurable-dialog-body>
               <div data-configurable-step-content></div>
               <div data-configurable-review hidden></div>
@@ -315,6 +324,13 @@
       "default": true
     },
     {
+      "type": "checkbox",
+      "id": "enable_animations",
+      "label": "Enable animations",
+      "info": "Animations are always off for visitors who prefer reduced motion.",
+      "default": true
+    },
+    {
       "type": "page",
       "id": "size_chart_page",
       "label": "Size chart page",
@@ -330,7 +346,7 @@
           "type": "text",
           "id": "group_code",
           "label": "Group code",
-          "info": "Code of the group (e.g. the button group) whose step shows this message."
+          "info": "Group code (e.g. botao). For the size step use the size option code (e.g. tamanho)."
         },
         {
           "type": "select",
@@ -338,7 +354,8 @@
           "label": "Kind",
           "options": [
             { "value": "call", "label": "Call" },
-            { "value": "support", "label": "Support" }
+            { "value": "support", "label": "Support" },
+            { "value": "instrucao", "label": "Step instruction (1 per group)" }
           ],
           "default": "call"
         },

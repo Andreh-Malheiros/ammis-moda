@@ -323,3 +323,30 @@ test('groups with prices or descriptions render as a detailed list', () => {
   assert.equal(api.groupHasDetails(payload.groups[0]), true);
   assert.equal(api.groupHasDetails(payload.groups[1]), false);
 });
+
+test('step instructions are parsed by kind, found per group and never drawn as call/support', () => {
+  const messages = api.parseStepMessages([
+    { groupCode: 'tecido', kind: 'instrucao', text: 'Selecione o tecido desejado' },
+    { groupCode: 'botao', kind: 'instrucao', text: 'Escolha seu botão favorito' },
+    { groupCode: 'botao', kind: 'call', text: 'C' },
+    { groupCode: 'botao', kind: 'support', text: 'S' }
+  ]);
+  assert.equal(api.findStepInstruction(messages, 'Tecido'), 'Selecione o tecido desejado');
+  assert.equal(api.findStepInstruction(messages, 'cor'), null);
+  assert.deepEqual(api.pickStepMessages(messages, 'botao', () => 0), { call: 'C', support: 'S' });
+  assert.equal(api.pickStepMessages(messages, 'tecido', () => 0), null);
+});
+
+test('effects fire only on the right triggers', () => {
+  assert.equal(api.shouldAnimateStepChange('group:tecido', 'group:cor', true), true);
+  assert.equal(api.shouldAnimateStepChange('group:cor', 'group:cor', true), false);
+  assert.equal(api.shouldAnimateStepChange(null, 'group:tecido', true), false);
+  assert.equal(api.shouldAnimateStepChange('group:tecido', 'group:cor', false), false);
+  assert.equal(api.shouldCrossfadeImage('a.jpg', 'b.jpg', true), true);
+  assert.equal(api.shouldCrossfadeImage('a.jpg', 'a.jpg', true), false);
+  assert.equal(api.shouldCrossfadeImage('a.jpg', 'b.jpg', false), false);
+  assert.equal(api.shouldFillNext('group:cor', 'group:cor', true, false, true), true);
+  assert.equal(api.shouldFillNext('group:cor', 'group:cor', false, true, true), false);
+  assert.equal(api.shouldFillNext('group:tecido', 'group:cor', true, false, true), false);
+  assert.equal(api.shouldFillNext('group:cor', 'group:cor', true, false, false), false);
+});
