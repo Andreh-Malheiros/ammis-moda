@@ -88,6 +88,9 @@
   data-label-option-count-one="{{ 'products.product.configurable_pdp.step_option_count' | t: count: 1 | replace: '1', '__COUNT__' | escape }}"
   data-label-option-count-other="{{ 'products.product.configurable_pdp.step_option_count' | t: count: 2 | replace: '2', '__COUNT__' | escape }}"
   data-label-size-range="{{ 'products.product.configurable_pdp.step_size_range' | t: first: '__FIRST__', last: '__LAST__' | escape }}"
+  data-label-zoom-hint-in="{{ 'products.product.configurator.zoom_hint_in' | t | escape }}"
+  data-label-zoom-hint-out="{{ 'products.product.configurator.zoom_hint_out' | t | escape }}"
+  data-label-zoom-level="{{ 'products.product.configurator.zoom_level' | t: level: '__LEVEL__' | escape }}"
   data-label-chosen="{{ 'products.product.configurator.chosen' | t | escape }}"
   data-label-select-card="{{ 'products.product.configurator.select_card' | t | escape }}"
 >
@@ -108,6 +111,11 @@
   </script>
 
   {%- assign size_chart_page = section.settings.size_chart_page -%}
+  {%- if product_image != blank and product_image.width > 0 and product_image.height > 0 -%}
+    {%- assign zoom_ratio = product_image.width | times: 1.0 | divided_by: product_image.height | round: 4 -%}
+  {%- else -%}
+    {%- assign zoom_ratio = 0.75 -%}
+  {%- endif -%}
   {%- if size_chart_page != blank and size_chart_page.content != blank -%}
     <div hidden data-configurable-size-chart>{{ size_chart_page.content }}</div>
   {%- endif -%}
@@ -387,18 +395,55 @@
     </div>
   </dialog>
 
-  <dialog class="configurable-product__zoom" data-configurable-zoom aria-labelledby="ConfigurableProductZoomTitle-{{ section.id }}">
-    <div class="configurable-product__zoom-surface">
-      <h3 id="ConfigurableProductZoomTitle-{{ section.id }}" class="visually-hidden">{{ 'products.product.configurator.zoom' | t }}</h3>
-      <button type="button" class="configurable-product__dialog-close" data-configurable-zoom-close aria-label="{{ 'products.product.configurator.close' | t | escape }}"><span aria-hidden="true">&times;</span></button>
-      {% if product_image != blank %}
-        {%- capture zoom_image_html -%}
-          {{ product_image | image_url: width: 2000 | image_tag: loading: 'lazy', alt: product_image.alt | default: product.title }}
-        {%- endcapture -%}
-        {{ zoom_image_html | replace: '<img ', '<img data-configurable-zoom-image ' }}
-      {% endif %}
+  <dialog class="configurable-product__zoom" data-configurable-zoom aria-labelledby="ConfigurableProductZoomTitle-{{ section.id }}" style="--configurable-zoom-ratio: {{ zoom_ratio }}">
+  {%- capture zoom_controls_html -%}
+    <button type="button" class="configurable-product__zoom-button" data-configurable-zoom-out aria-label="{{ 'products.product.configurator.zoom_out' | t | escape }}">
+      <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 12h14"/></svg>
+    </button>
+    <span class="configurable-product__zoom-level" data-configurable-zoom-level aria-hidden="true">1&times;</span>
+    <button type="button" class="configurable-product__zoom-button" data-configurable-zoom-in aria-label="{{ 'products.product.configurator.zoom_in' | t | escape }}">
+      <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg>
+    </button>
+  {%- endcapture -%}
+  <div class="configurable-product__zoom-viewer">
+    <header class="configurable-product__zoom-header">
+      <div class="configurable-product__zoom-heading">
+        <p class="configurable-product__zoom-title" id="ConfigurableProductZoomTitle-{{ section.id }}">{{ product.title | escape }}</p>
+        <p class="configurable-product__zoom-combination configurable-product__zoom-combination--header" data-configurable-zoom-combination></p>
+      </div>
+      <button type="button" class="configurable-product__zoom-close" data-configurable-zoom-close aria-label="{{ 'products.product.configurable_pdp.close' | t | escape }}">
+        <span class="configurable-product__zoom-close-text">{{ 'products.product.configurable_pdp.close' | t }}</span>
+        <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+    <div class="configurable-product__zoom-stage-wrap">
+      <div class="configurable-product__zoom-stage">
+        <button type="button" class="configurable-product__zoom-photo" data-configurable-zoom-photo aria-label="{{ 'products.product.configurator.zoom_toggle' | t | escape }}">
+          <span class="configurable-product__zoom-clip" data-configurable-zoom-clip>
+            {%- if product_image != blank -%}
+              {%- capture zoom_image_html -%}
+                {{ product_image | image_url: width: 2000 | image_tag: loading: 'lazy', alt: product_image.alt | default: product.title, draggable: 'false' }}
+              {%- endcapture -%}
+              {{ zoom_image_html | replace: '<img ', '<img data-configurable-zoom-image ' }}
+            {%- endif -%}
+          </span>
+        </button>
+        <div class="configurable-product__zoom-controls configurable-product__zoom-controls--stage">{{ zoom_controls_html }}</div>
+      </div>
     </div>
-  </dialog>
+    <footer class="configurable-product__zoom-footer">
+      <div class="configurable-product__zoom-controls configurable-product__zoom-controls--footer">
+        {{ zoom_controls_html }}
+        <span class="configurable-product__zoom-hint" data-configurable-zoom-hint>{{ 'products.product.configurator.zoom_hint_in' | t }}</span>
+      </div>
+      <div class="configurable-product__zoom-meta" data-configurable-zoom-meta hidden>
+        <p class="configurable-product__zoom-combination configurable-product__zoom-combination--footer" data-configurable-zoom-combination></p>
+        <ul class="configurable-product__zoom-choices" data-configurable-zoom-choices></ul>
+      </div>
+    </footer>
+    <p class="visually-hidden" aria-live="polite" data-configurable-zoom-live></p>
+  </div>
+</dialog>
 
 </section>
 

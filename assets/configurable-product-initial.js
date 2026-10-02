@@ -645,6 +645,39 @@
     return [base, ...names].join(' ');
   }
 
+  const ZOOM_MAX_LEVEL = 2;
+  const ZOOM_DEFAULT_RATIO = 3 / 4;
+
+  function toggleZoomLevel(level) {
+    return level >= ZOOM_MAX_LEVEL ? 1 : ZOOM_MAX_LEVEL;
+  }
+
+  function clampPan(x, y, level, width, height) {
+    const minX = Math.min(0, width * (1 - level));
+    const minY = Math.min(0, height * (1 - level));
+    return { x: Math.min(0, Math.max(minX, x)), y: Math.min(0, Math.max(minY, y)) };
+  }
+
+  function zoomOriginPan(pointX, pointY, level, width, height) {
+    return clampPan(pointX * (1 - level), pointY * (1 - level), level, width, height);
+  }
+
+  function computeStageRatio(media) {
+    if (media && Number(media.width) > 0 && Number(media.height) > 0) return Number(media.width) / Number(media.height);
+    return ZOOM_DEFAULT_RATIO;
+  }
+
+  function buildZoomChoices(payload, state) {
+    const choices = [];
+    payload.groups.forEach((group) => {
+      const option = group.options.find((candidate) => candidate.code === state.selectedOptions[group.code]);
+      if (option) choices.push({ title: group.title, value: option.name });
+    });
+    const variant = findSelectedVariant(state, payload);
+    if (variant && isNonEmptyString(variant.sizeValue)) choices.push({ title: payload.sizeOptionName || '', value: variant.sizeValue });
+    return choices;
+  }
+
   function hasSizeChart(content) {
     return isNonEmptyString(content);
   }
@@ -862,7 +895,12 @@
       this.refs.formErrorMessage = query('[data-configurable-form-error-message]');
       this.refs.priceGate = query('[data-configurable-price-gate]');
       this.refs.zoom = query('[data-configurable-zoom]');
-      this.refs.zoomSurface = query('.configurable-product__zoom-surface');
+      this.refs.zoomStage = query('.configurable-product__zoom-stage');
+      this.refs.zoomPhoto = query('[data-configurable-zoom-photo]');
+      this.refs.zoomClip = query('[data-configurable-zoom-clip]');
+      this.refs.zoomMeta = query('[data-configurable-zoom-meta]');
+      this.refs.zoomChoices = query('[data-configurable-zoom-choices]');
+      this.refs.zoomLive = query('[data-configurable-zoom-live]');
       this.refs.zoomImage = query('[data-configurable-zoom-image]');
       this.refs.zoomClose = query('[data-configurable-zoom-close]');
       this.refs.dialogTitle = query('[data-configurable-dialog-title]');
@@ -922,6 +960,11 @@
         this.refs.dialog.addEventListener('click', (event) => this.handleDialogBackdropClick(event), options);
         this.refs.zoom?.addEventListener('cancel', (event) => this.handleZoomCancel(event), options);
         this.refs.zoom?.addEventListener('click', (event) => this.handleZoomBackdropClick(event), options);
+        this.refs.zoom?.addEventListener('keydown', (event) => this.handleZoomKeydown(event), options);
+        this.refs.zoomPhoto?.addEventListener('pointerdown', (event) => this.handleZoomPointerDown(event), options);
+        this.refs.zoomPhoto?.addEventListener('pointermove', (event) => this.handleZoomPointerMove(event), options);
+        this.refs.zoomPhoto?.addEventListener('pointerup', (event) => this.handleZoomPointerUp(event), options);
+        this.refs.zoomPhoto?.addEventListener('pointercancel', (event) => this.handleZoomPointerUp(event), options);
       }
       if (this.refs.form) {
         this.refs.form.addEventListener('submit', (event) => this.handleFormSubmit(event), { ...(options || {}), capture: true });
@@ -954,7 +997,7 @@
     }
 
     handleClick(event) {
-      const element = event.target instanceof Element ? event.target.closest('[data-configurable-start], [data-configurable-close], [data-configurable-back], [data-configurable-next], [data-configurable-clear], [data-configurable-edit], [data-configurable-submit], [data-configurable-zoom-open], [data-configurable-zoom-image-trigger], [data-configurable-zoom-close]') : null;
+      const element = event.target instanceof Element ? event.target.closest('[data-configurable-start], [data-configurable-close], [data-configurable-back], [data-configurable-next], [data-configurable-clear], [data-configurable-edit], [data-configurable-submit], [data-configurable-zoom-open], [data-configurable-zoom-image-trigger], [data-configurable-zoom-close], [data-configurable-zoom-in], [data-configurable-zoom-out], [data-configurable-zoom-photo]') : null;
       if (!element || !this.root.contains(element)) return;
       if (element.matches('[data-configurable-start]')) return this.openDialog();
       if (element.matches('[data-configurable-close]')) return this.closeDialog();
@@ -964,6 +1007,9 @@
       if (element.matches('[data-configurable-edit]')) return this.editStep(element.dataset.stepId);
       if (element.matches('[data-configurable-zoom-open], [data-configurable-zoom-image-trigger]')) return this.openZoom(element);
       if (element.matches('[data-configurable-zoom-close]')) return this.closeZoom();
+      if (element.matches('[data-configurable-zoom-in]')) return this.setZoomLevel(ZOOM_MAX_LEVEL);
+      if (element.matches('[data-configurable-zoom-out]')) return this.setZoomLevel(1);
+      if (element.matches('[data-configurable-zoom-photo]')) return this.handleZoomPhotoClick(event);
       if (element.matches('[data-configurable-submit]')) {
         event.preventDefault();
         return this.requestNativeSubmit();
@@ -1028,7 +1074,9 @@
     }
 
     handleZoomBackdropClick(event) {
-      if (event.target === this.refs.zoom) this.closeZoom();
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target === this.refs.zoom || target.matches('.configurable-product__zoom-viewer, .configurable-product__zoom-stage-wrap, .configurable-product__zoom-header, .configurable-product__zoom-footer, .configurable-product__zoom-heading')) this.closeZoom();
     }
 
     getFocusable(container) {
@@ -1095,16 +1143,20 @@
     openZoom(trigger) {
       if (!this.payload || !this.refs.zoom || typeof this.refs.zoom.showModal !== 'function' || this.refs.zoom.open) return;
       const image = resolveImage(this.state?.selectedOptions || {}, this.payload, this.imageIndex, this.failedImageSources).image;
-      if (!image || !this.refs.zoomSurface) return;
+      if (!image || !this.refs.zoomClip) return;
       if (!this.refs.zoomImage) {
         this.refs.zoomImage = makeElement('img');
         this.refs.zoomImage.dataset.configurableZoomImage = '';
-        this.refs.zoomSurface.append(this.refs.zoomImage);
+        this.refs.zoomClip.append(this.refs.zoomImage);
       }
       this.zoomReturnFocusTarget = trigger instanceof Element ? trigger : document.activeElement;
       applyMediaAttributes(this.refs.zoomImage, image);
       this.refs.zoomImage.alt = image.alt || this.payload.product.title;
       this.refs.zoomImage.loading = 'eager';
+      this.zoomView = { level: 1, x: 0, y: 0, drag: null, skipClick: false };
+      if (this.refs.zoomLive) this.refs.zoomLive.textContent = '';
+      this.renderZoomState(false);
+      this.renderZoomMeta();
       try {
         this.refs.zoom.showModal();
       } catch (error) {
@@ -1125,9 +1177,142 @@
         unlockDocument();
         this.zoomLockHeld = false;
       }
+      this.zoomView = null;
       if (this.state) this.state.isZoomOpen = false;
       if (!force && this.zoomReturnFocusTarget?.isConnected) this.zoomReturnFocusTarget.focus({ preventScroll: true });
       this.zoomReturnFocusTarget = null;
+    }
+
+    renderZoomMeta() {
+      const choices = buildZoomChoices(this.payload, this.state);
+      const hasChoices = choices.length > 0;
+      const name = this.deriveCombinationName();
+      this.refs.zoom.querySelectorAll('[data-configurable-zoom-combination]').forEach((element) => {
+        element.textContent = hasChoices ? name : '';
+        element.hidden = !hasChoices;
+      });
+      this.refs.zoomChoices.replaceChildren();
+      choices.forEach((choice) => {
+        const item = makeElement('li', 'configurable-product__zoom-choice');
+        item.append(makeElement('span', 'configurable-product__zoom-choice-title', choice.title), makeElement('span', 'configurable-product__zoom-choice-value', choice.value));
+        this.refs.zoomChoices.append(item);
+      });
+      if (this.refs.zoomMeta) this.refs.zoomMeta.hidden = !hasChoices;
+    }
+
+    renderZoomState(announce) {
+      const view = this.zoomView;
+      if (!view || !this.refs.zoomClip) return;
+      this.refs.zoomClip.style.transform = view.level === 1 ? '' : `translate(${view.x}px, ${view.y}px) scale(${view.level})`;
+      this.refs.zoomStage?.classList.toggle('is-zoomed', view.level > 1);
+      this.refs.zoom.querySelectorAll('[data-configurable-zoom-level]').forEach((element) => { element.textContent = `${view.level}\u00d7`; });
+      this.refs.zoom.querySelectorAll('[data-configurable-zoom-hint]').forEach((element) => {
+        element.textContent = view.level > 1 ? translated(this.root, 'labelZoomHintOut', 'Click to zoom out') : translated(this.root, 'labelZoomHintIn', 'Click to zoom in');
+      });
+      this.refs.zoom.querySelectorAll('[data-configurable-zoom-in]').forEach((button) => button.setAttribute('aria-disabled', view.level >= ZOOM_MAX_LEVEL ? 'true' : 'false'));
+      this.refs.zoom.querySelectorAll('[data-configurable-zoom-out]').forEach((button) => button.setAttribute('aria-disabled', view.level <= 1 ? 'true' : 'false'));
+      if (announce && this.refs.zoomLive) this.refs.zoomLive.textContent = replaceTokens(translated(this.root, 'labelZoomLevel', 'zoom __LEVEL__x'), { level: view.level });
+    }
+
+    zoomStageSize() {
+      const rect = this.refs.zoomPhoto.getBoundingClientRect();
+      return { width: rect.width, height: rect.height, left: rect.left, top: rect.top };
+    }
+
+    setZoomLevel(level, point) {
+      const view = this.zoomView;
+      if (!view || level === view.level) return;
+      const size = this.zoomStageSize();
+      const origin = point || { x: size.width / 2, y: size.height / 2 };
+      view.level = level;
+      const pan = level === 1 ? { x: 0, y: 0 } : zoomOriginPan(origin.x, origin.y, level, size.width, size.height);
+      view.x = pan.x;
+      view.y = pan.y;
+      this.renderZoomState(true);
+    }
+
+    handleZoomPointerDown(event) {
+      const view = this.zoomView;
+      if (!view || (event.pointerType === 'mouse' && event.button !== 0)) return;
+      view.drag = { id: event.pointerId, startX: event.clientX, startY: event.clientY, originX: view.x, originY: view.y, moved: false };
+      this.refs.zoomPhoto.setPointerCapture?.(event.pointerId);
+    }
+
+    handleZoomPointerMove(event) {
+      const view = this.zoomView;
+      const drag = view?.drag;
+      if (!drag || drag.id !== event.pointerId) return;
+      const dx = event.clientX - drag.startX;
+      const dy = event.clientY - drag.startY;
+      if (!drag.moved && Math.hypot(dx, dy) < 4) return;
+      drag.moved = true;
+      if (view.level <= 1) return;
+      const size = this.zoomStageSize();
+      const pan = clampPan(drag.originX + dx, drag.originY + dy, view.level, size.width, size.height);
+      view.x = pan.x;
+      view.y = pan.y;
+      this.refs.zoomStage?.classList.add('is-dragging');
+      this.renderZoomState(false);
+    }
+
+    handleZoomPointerUp(event) {
+      const view = this.zoomView;
+      const drag = view?.drag;
+      if (!drag || drag.id !== event.pointerId) return;
+      view.drag = null;
+      this.refs.zoomStage?.classList.remove('is-dragging');
+      this.refs.zoomPhoto.releasePointerCapture?.(event.pointerId);
+      view.skipClick = true;
+      if (drag.moved) return;
+      const size = this.zoomStageSize();
+      this.setZoomLevel(toggleZoomLevel(view.level), { x: event.clientX - size.left, y: event.clientY - size.top });
+    }
+
+    handleZoomPhotoClick(event) {
+      const view = this.zoomView;
+      if (!view) return;
+      if (view.skipClick) {
+        view.skipClick = false;
+        return;
+      }
+      this.setZoomLevel(toggleZoomLevel(view.level));
+    }
+
+    handleZoomKeydown(event) {
+      const view = this.zoomView;
+      if (!view || event.defaultPrevented) return;
+      if (event.key === 'Tab') {
+        const focusable = this.getFocusable(this.refs.zoom);
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const active = document.activeElement;
+        if (event.shiftKey && (active === first || !this.refs.zoom.contains(active))) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && (active === last || !this.refs.zoom.contains(active))) {
+          event.preventDefault();
+          first.focus();
+        }
+        return;
+      }
+      if (event.key === '+' || event.key === '=') {
+        event.preventDefault();
+        this.setZoomLevel(ZOOM_MAX_LEVEL);
+      } else if (event.key === '-' || event.key === '_') {
+        event.preventDefault();
+        this.setZoomLevel(1);
+      } else if (view.level > 1 && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+        event.preventDefault();
+        const size = this.zoomStageSize();
+        const step = 0.1;
+        const dx = event.key === 'ArrowLeft' ? size.width * step : (event.key === 'ArrowRight' ? -size.width * step : 0);
+        const dy = event.key === 'ArrowUp' ? size.height * step : (event.key === 'ArrowDown' ? -size.height * step : 0);
+        const pan = clampPan(view.x + dx, view.y + dy, view.level, size.width, size.height);
+        view.x = pan.x;
+        view.y = pan.y;
+        this.renderZoomState(false);
+      }
     }
 
     goBack() {
@@ -1971,6 +2156,11 @@
     shouldCrossfadeImage,
     shouldFillNext,
     hasSizeChart,
+    toggleZoomLevel,
+    clampPan,
+    zoomOriginPan,
+    computeStageRatio,
+    buildZoomChoices,
     selectFeaturedGroup,
     validateConfiguration,
     validateStep,

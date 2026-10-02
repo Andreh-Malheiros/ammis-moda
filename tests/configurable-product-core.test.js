@@ -365,3 +365,38 @@ test('step summaries: option count, size range, single size and per-group overri
   assert.equal(api.deriveStepSummary(steps[1], payload, messages, labels), '1 opção');
   assert.deepEqual(api.pickStepMessages(messages, 'tecido', () => 0), null);
 });
+
+test('zoom level toggles between 1x and 2x', () => {
+  assert.equal(api.toggleZoomLevel(1), 2);
+  assert.equal(api.toggleZoomLevel(2), 1);
+});
+
+test('zoom pan is clamped to the stage and anchored at the clicked point', () => {
+  assert.deepEqual(api.clampPan(50, 50, 2, 400, 600), { x: 0, y: 0 });
+  assert.deepEqual(api.clampPan(-900, -900, 2, 400, 600), { x: -400, y: -600 });
+  assert.deepEqual(api.clampPan(-120, -80, 2, 400, 600), { x: -120, y: -80 });
+  assert.deepEqual(api.clampPan(10, 10, 1, 400, 600), { x: 0, y: 0 });
+  assert.deepEqual(api.zoomOriginPan(100, 200, 2, 400, 600), { x: -100, y: -200 });
+  assert.deepEqual(api.zoomOriginPan(400, 600, 2, 400, 600), { x: -400, y: -600 });
+});
+
+test('stage ratio derives from the main photo with a 3/4 fallback', () => {
+  assert.equal(api.computeStageRatio({ width: 1200, height: 1712 }), 1200 / 1712);
+  assert.equal(api.computeStageRatio({ width: 0, height: 100 }), 0.75);
+  assert.equal(api.computeStageRatio(null), 0.75);
+});
+
+test('zoom choices omit groups without selection and are empty without choices', () => {
+  const payload = payloadFixture();
+  const state = api.createInitialState(payload);
+  assert.deepEqual(api.buildZoomChoices(payload, state), []);
+  state.selectedOptions.tecido = 'capra';
+  assert.deepEqual(api.buildZoomChoices(payload, state), [{ title: 'Tecido', value: 'Capra' }]);
+  state.selectedOptions.cor = 'azul';
+  state.selectedVariantId = 'v36';
+  assert.deepEqual(api.buildZoomChoices(payload, state), [
+    { title: 'Tecido', value: 'Capra' },
+    { title: 'Cor', value: 'Azul' },
+    { title: 'Tamanho', value: '36' }
+  ]);
+});
