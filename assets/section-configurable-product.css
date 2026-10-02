@@ -45,7 +45,6 @@
   display: block;
   width: 100%;
   height: auto;
-  object-fit: cover;
 }
 
 .configurable-product__image-fallback,
@@ -725,18 +724,6 @@ body.configurable-product-scroll-locked {
     align-items: stretch;
     padding-top: 4rem;
     padding-bottom: 6rem;
-  }
-
-  .configurable-product__figure {
-    position: relative;
-    flex: 1 1 auto;
-    min-height: 48rem;
-  }
-
-  .configurable-product__image {
-    position: absolute;
-    inset: 0;
-    height: 100%;
   }
 }
 
