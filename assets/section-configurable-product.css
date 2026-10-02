@@ -603,6 +603,10 @@ body.configurable-product-scroll-locked {
   overflow: hidden;
 }
 
+body.configurable-product-scroll-locked {
+  overscroll-behavior: none;
+}
+
 @keyframes configurable-product-spin {
   to {
     transform: rotate(360deg);

@@ -10,6 +10,7 @@
   const CART_ERROR_EVENT = 'cart-error';
   const rootRegistry = new Map();
   let scrollLockCount = 0;
+  let scrollLockSnapshot = null;
   let lifecycleInstalled = false;
 
   if (host[REGISTRY_KEY] && typeof host[REGISTRY_KEY].mountAll === 'function') {
@@ -543,18 +544,52 @@
   }
 
   function lockDocument() {
-    scrollLockCount += 1;
-    if (scrollLockCount === 1) {
+    if (!document.documentElement || !document.body) return;
+    if (scrollLockCount === 0) {
+      const body = document.body;
+      const scrollTop = window.scrollY || window.pageYOffset || 0;
+      const scrollLeft = window.scrollX || window.pageXOffset || 0;
+      scrollLockSnapshot = {
+        scrollTop,
+        scrollLeft,
+        position: body.style.position,
+        top: body.style.top,
+        left: body.style.left,
+        width: body.style.width,
+        lockOffset: body.style.getPropertyValue('--configurable-product-scroll-lock-top'),
+        lockOffsetPriority: body.style.getPropertyPriority('--configurable-product-scroll-lock-top')
+      };
       document.documentElement.classList.add('configurable-product-scroll-locked');
-      document.body.classList.add('configurable-product-scroll-locked');
+      body.classList.add('configurable-product-scroll-locked');
+      body.style.setProperty('--configurable-product-scroll-lock-top', `${scrollTop}px`);
+      body.style.position = 'fixed';
+      body.style.top = 'calc(-1 * var(--configurable-product-scroll-lock-top))';
+      body.style.left = '0';
+      body.style.width = '100%';
     }
+    scrollLockCount += 1;
   }
 
   function unlockDocument() {
     scrollLockCount = Math.max(0, scrollLockCount - 1);
     if (scrollLockCount === 0 && document.documentElement && document.body) {
+      const body = document.body;
+      const snapshot = scrollLockSnapshot;
       document.documentElement.classList.remove('configurable-product-scroll-locked');
-      document.body.classList.remove('configurable-product-scroll-locked');
+      body.classList.remove('configurable-product-scroll-locked');
+      if (snapshot) {
+        body.style.position = snapshot.position;
+        body.style.top = snapshot.top;
+        body.style.left = snapshot.left;
+        body.style.width = snapshot.width;
+        if (snapshot.lockOffset) {
+          body.style.setProperty('--configurable-product-scroll-lock-top', snapshot.lockOffset, snapshot.lockOffsetPriority);
+        } else {
+          body.style.removeProperty('--configurable-product-scroll-lock-top');
+        }
+        window.scrollTo(snapshot.scrollLeft, snapshot.scrollTop);
+      }
+      scrollLockSnapshot = null;
     }
   }
 
