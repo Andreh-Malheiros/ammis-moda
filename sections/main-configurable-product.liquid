@@ -5,6 +5,7 @@
   assign configurator_enabled = product.metafields.custom.configurator_enabled.value
   assign configurable_dialog_id = 'ConfigurableProductDialog-' | append: section.id
   assign configurable_data_id = 'ConfigurableProductData-' | append: section.id
+  assign configurable_base_name = product.metafields.custom.configurator_base_name.value
   assign configurable_form_id = 'ConfigurableProductForm-' | append: section.id
   assign product_image = product.featured_media.preview_image
   assign eyebrow_text = section.settings.eyebrow | default: 'products.product.configurator.eyebrow' | t
@@ -20,6 +21,7 @@
   data-show-featured-group="{{ section.settings.show_featured_group }}"
   data-section-id="{{ section.id }}"
   data-product-id="{{ product.id }}"
+  data-base-name="{{ configurable_base_name | escape }}"
   data-configurator-enabled="{% if configurator_enabled == true %}true{% else %}false{% endif %}"
   data-label-starting-price="{{ 'products.product.configurable_pdp.from_price' | t | escape }}"
   data-label-no-addition="{{ 'products.product.configurable_pdp.no_addition' | t | escape }}"
@@ -51,12 +53,29 @@
   data-label-close="{{ 'products.product.configurator.close' | t | escape }}"
   data-label-clear="{{ 'products.product.configurator.clear' | t | escape }}"
   data-label-optional="{{ 'products.product.configurator.optional' | t | escape }}"
+  data-label-almost-there="{{ 'products.product.configurator.almost_there' | t | escape }}"
+  data-label-size-chart="{{ 'products.product.configurator.size_chart' | t | escape }}"
 >
   <script
     type="application/json"
     id="{{ configurable_data_id }}"
     data-configurable-payload
   >{% render 'configurable-product-data', product: product %}</script>
+
+  <script type="application/json" data-configurable-messages>
+    [
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'step_message' -%}
+          {"groupCode": {{ block.settings.group_code | json }}, "kind": {{ block.settings.kind | json }}, "text": {{ block.settings.text | json }}}{% unless forloop.last %},{% endunless %}
+        {%- endif -%}
+      {%- endfor -%}
+    ]
+  </script>
+
+  {%- assign size_chart_page = section.settings.size_chart_page -%}
+  {%- if size_chart_page != blank and size_chart_page.content != blank -%}
+    <div hidden data-configurable-size-chart>{{ size_chart_page.content }}</div>
+  {%- endif -%}
 
   <div class="configurable-product__layout page-width">
     <div class="configurable-product__media">
@@ -182,7 +201,17 @@
             <div class="configurable-product__dialog-panel-content" data-configurable-dialog-body>
               <div data-configurable-step-content></div>
               <div data-configurable-review hidden></div>
-          <product-form
+
+            </div>
+            <footer class="configurable-product__dialog-footer">
+              <button type="button" class="button button--secondary configurable-product__back" data-configurable-back hidden>
+                <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4M10 6l-6 6 6 6"/></svg>
+                <span class="configurable-product__back-text">{{ 'products.product.configurator.back' | t }}</span>
+              </button>
+              <button type="button" class="button button--primary configurable-product__next" data-configurable-next>
+                {{ 'products.product.configurator.continue' | t }}
+              </button>
+              <product-form
             class="product-form configurable-product__product-form"
             data-configurable-product-form
             data-hide-errors="false"
@@ -204,15 +233,6 @@
               {{ 'products.product.configurator.price_strategy_pending' | t }}
             </p>
           </product-form>
-            </div>
-            <footer class="configurable-product__dialog-footer">
-              <button type="button" class="button button--secondary configurable-product__back" data-configurable-back hidden>
-                <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4M10 6l-6 6 6 6"/></svg>
-                <span class="configurable-product__back-text">{{ 'products.product.configurator.back' | t }}</span>
-              </button>
-              <button type="button" class="button button--primary configurable-product__next" data-configurable-next>
-                {{ 'products.product.configurator.continue' | t }}
-              </button>
             </footer>
           </div>
         </div>
@@ -293,6 +313,41 @@
       "id": "show_featured_group",
       "label": "Show featured group",
       "default": true
+    },
+    {
+      "type": "page",
+      "id": "size_chart_page",
+      "label": "Size chart page",
+      "info": "Page content shown as an accordion in the size step. Leave empty to hide."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step_message",
+      "name": "Step message",
+      "settings": [
+        {
+          "type": "text",
+          "id": "group_code",
+          "label": "Group code",
+          "info": "Code of the group (e.g. the button group) whose step shows this message."
+        },
+        {
+          "type": "select",
+          "id": "kind",
+          "label": "Kind",
+          "options": [
+            { "value": "call", "label": "Call" },
+            { "value": "support", "label": "Support" }
+          ],
+          "default": "call"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
     }
   ]
 }

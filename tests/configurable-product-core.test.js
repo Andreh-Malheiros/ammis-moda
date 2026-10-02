@@ -280,3 +280,46 @@ test('next is inactive until the required selection of the current step exists',
   state.currentStepId = 'review';
   assert.equal(api.isNextInactive(state, payload), false);
 });
+
+test('option card images use only the previous groups plus the card option', () => {
+  const payload = payloadFixture();
+  const index = api.indexImageStates(payload);
+  const src = (group, option, selected) => api.resolveOptionCardImage(group, option, selected, payload, index).src;
+  assert.equal(src('tecido', 'capra', { cor: 'azul' }), 'capra.jpg');
+  assert.equal(src('cor', 'azul', { tecido: 'capra' }), 'capra-azul.jpg');
+  assert.equal(src('cor', 'azul', { tecido: 'capra', cor: 'verde' }), 'capra-azul.jpg');
+});
+
+test('step messages: parse, stable pick, and nothing for groups without blocks', () => {
+  const messages = api.parseStepMessages([
+    { groupCode: 'Botao', kind: 'call', text: 'A' },
+    { groupCode: 'botao', kind: 'call', text: 'B' },
+    { groupCode: 'botao', kind: 'support', text: 'S' },
+    { groupCode: 'botao', kind: 'call', text: '   ' },
+    { groupCode: '', kind: 'call', text: 'X' }
+  ]);
+  assert.equal(messages.length, 3);
+  assert.deepEqual(api.pickStepMessages(messages, 'botao', () => 0), { call: 'A', support: 'S' });
+  assert.deepEqual(api.pickStepMessages(messages, 'botao', () => 0.99), { call: 'B', support: 'S' });
+  assert.equal(api.pickStepMessages(messages, 'cor', () => 0), null);
+  assert.equal(api.pickStepMessages([], 'botao', () => 0), null);
+});
+
+test('combination name uses the base name metafield when present', () => {
+  const payload = payloadFixture();
+  assert.equal(api.buildCombinationName('', payload, {}), 'Calça Aurora');
+  assert.equal(api.buildCombinationName('Calça Aurora Linho', payload, { tecido: 'capra', cor: 'azul' }), 'Calça Aurora Linho Capra Azul');
+  assert.equal(api.buildCombinationName(null, payload, { tecido: 'cru' }), 'Calça Aurora Cru');
+});
+
+test('size chart is hidden when the page content is empty', () => {
+  assert.equal(api.hasSizeChart(''), false);
+  assert.equal(api.hasSizeChart('   '), false);
+  assert.equal(api.hasSizeChart('<table></table>'), true);
+});
+
+test('groups with prices or descriptions render as a detailed list', () => {
+  const payload = payloadFixture();
+  assert.equal(api.groupHasDetails(payload.groups[0]), true);
+  assert.equal(api.groupHasDetails(payload.groups[1]), false);
+});

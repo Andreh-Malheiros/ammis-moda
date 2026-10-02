@@ -554,6 +554,57 @@
     return { image: null, source: 'none', signature: '[]' };
   }
 
+  function resolveOptionCardImage(groupCode, optionCode, selectedOptions, payload, imageIndex = indexImageStates(payload), failedSources = new Set()) {
+    const selections = {};
+    for (const group of payload.groups) {
+      if (group.code === groupCode) break;
+      if (isNonEmptyString(selectedOptions[group.code])) selections[group.code] = selectedOptions[group.code];
+    }
+    selections[groupCode] = optionCode;
+    const result = resolveImage(selections, payload, imageIndex, failedSources);
+    return result.image || null;
+  }
+
+  function groupHasDetails(group) {
+    return !!group && group.options.some((option) => option.priceAdditionCents > 0 || isNonEmptyString(option.description));
+  }
+
+  function parseStepMessages(raw) {
+    if (!Array.isArray(raw)) return [];
+    return raw
+      .map((item) => ({
+        groupCode: normalizeCode(item && item.groupCode),
+        kind: item && item.kind === 'support' ? 'support' : 'call',
+        text: isNonEmptyString(item && item.text) ? item.text.trim() : ''
+      }))
+      .filter((item) => item.groupCode && item.text);
+  }
+
+  function pickStepMessages(messages, groupCode, random = Math.random) {
+    const code = normalizeCode(groupCode);
+    const pick = (kind) => {
+      const pool = messages.filter((message) => message.groupCode === code && message.kind === kind);
+      if (!pool.length) return null;
+      return pool[Math.min(pool.length - 1, Math.floor(random() * pool.length))].text;
+    };
+    const call = pick('call');
+    const support = pick('support');
+    return call || support ? { call, support } : null;
+  }
+
+  function buildCombinationName(baseName, payload, selectedOptions) {
+    const base = isNonEmptyString(baseName) ? baseName.trim() : payload.product.title;
+    const names = payload.groups
+      .map((group) => group.options.find((option) => option.code === selectedOptions[group.code]))
+      .filter(Boolean)
+      .map((option) => option.name);
+    return [base, ...names].join(' ');
+  }
+
+  function hasSizeChart(content) {
+    return isNonEmptyString(content);
+  }
+
   function buildCartProperties(state, payload) {
     const properties = { _configurator_version: String(SUPPORTED_PAYLOAD_VERSION) };
     payload.groups.forEach((group) => {
@@ -578,6 +629,7 @@
       selectedVariantId: null,
       isZoomOpen: false,
       isSizeChartOpen: false,
+      stepMessages: Object.create(null),
       validationErrors: Object.create(null),
       cartState: 'idle',
       cartError: null
@@ -710,6 +762,8 @@
         }
         this.payload = this.payloadResult.payload;
         this.state = createInitialState(this.payload);
+        this.parseMessages();
+        this.enterStep(this.state.currentStepId);
         this.imageIndex = indexImageStates(this.payload);
         this.renderOverview();
         this.attachListeners();
@@ -769,6 +823,8 @@
       this.refs.zoomImage = query('[data-configurable-zoom-image]');
       this.refs.zoomClose = query('[data-configurable-zoom-close]');
       this.refs.dialogTitle = query('[data-configurable-dialog-title]');
+      this.refs.messages = query('[data-configurable-messages]');
+      this.refs.sizeChart = query('[data-configurable-size-chart]');
     }
 
     parsePayload() {
@@ -781,6 +837,21 @@
       } catch (error) {
         this.payloadResult = { valid: false, errors: ['INVALID_PAYLOAD_JSON'], warnings: [], payload: null };
       }
+    }
+
+    parseMessages() {
+      this.stepMessages = [];
+      if (!this.refs.messages) return;
+      try {
+        this.stepMessages = parseStepMessages(JSON.parse(this.refs.messages.textContent || '[]'));
+      } catch (error) {
+        this.stepMessages = [];
+      }
+    }
+
+    enterStep(stepId) {
+      if (!this.state || !stepId || !stepId.startsWith('group:')) return;
+      this.state.stepMessages[stepId] = pickStepMessages(this.stepMessages || [], stepId.slice('group:'.length));
     }
 
     attachListeners() {
@@ -942,6 +1013,7 @@
         return;
       }
       this.state.isOpen = true;
+      this.enterStep(this.state.currentStepId);
       if (!this.lockHeld) {
         lockDocument();
         this.lockHeld = true;
@@ -1037,6 +1109,7 @@
       const currentIndex = steps.findIndex((step) => step.id === this.state.currentStepId);
       if (currentIndex > 0) {
         this.state.currentStepId = steps[currentIndex - 1].id;
+        this.enterStep(this.state.currentStepId);
         this.state.validationErrors = Object.create(null);
         this.focusStepAfterRender = true;
         this.renderState();
@@ -1056,6 +1129,7 @@
       }
       if (currentIndex < steps.length - 1) {
         this.state.currentStepId = steps[currentIndex + 1].id;
+        this.enterStep(this.state.currentStepId);
         this.state.validationErrors = Object.create(null);
         this.focusStepAfterRender = true;
         this.renderState();
@@ -1065,6 +1139,7 @@
     editStep(stepId) {
       if (!buildSteps(this.payload).some((step) => step.id === stepId)) return;
       this.state.currentStepId = stepId;
+      this.enterStep(stepId);
       this.state.validationErrors = Object.create(null);
       this.focusStepAfterRender = true;
       this.renderState();
@@ -1235,11 +1310,7 @@
     }
 
     deriveCombinationName() {
-      const names = this.payload.groups
-        .map((group) => group.options.find((option) => option.code === this.state.selectedOptions[group.code]))
-        .filter(Boolean)
-        .map((option) => option.name);
-      return names.length ? names.join(' · ') : this.payload.product.title;
+      return buildCombinationName(this.root.dataset.baseName, this.payload, this.state.selectedOptions);
     }
 
     renderCurrentStep() {
@@ -1249,7 +1320,11 @@
       this.refs.stepContent.replaceChildren();
       this.refs.review.replaceChildren();
       setHidden(this.refs.review, current.type !== 'review');
-      if (current.type === 'group') this.refs.stepContent.append(this.createGroupStep(current));
+      if (current.type === 'group') {
+        const message = this.createStepMessage(current);
+        if (message) this.refs.stepContent.append(message);
+        this.refs.stepContent.append(this.createGroupStep(current));
+      }
       if (current.type === 'variant') this.refs.stepContent.append(this.createVariantStep(current));
       if (current.type === 'review') this.renderReview();
       setHidden(this.refs.back, steps.indexOf(current) === 0);
@@ -1272,16 +1347,39 @@
       }
     }
 
-    createGroupStep(step) {
-      const group = this.payload.groups.find((candidate) => candidate.code === step.groupCode);
-      const fieldset = makeElement('fieldset', `configurable-product__option-step configurable-product__option-step--${group.interfaceType}`);
-      fieldset.dataset.groupCode = group.code;
+    createStepMessage(step) {
+      const messages = this.state.stepMessages[step.id];
+      if (!messages) return null;
+      const card = makeElement('div', 'configurable-product__step-message');
+      card.dataset.configurableStepMessage = '';
+      if (messages.call) card.append(makeElement('p', 'configurable-product__step-message-call', messages.call));
+      if (messages.support) card.append(makeElement('p', 'configurable-product__step-message-support', messages.support));
+      return card;
+    }
+
+    createStepHead(legendText, required) {
       const legend = makeElement('legend', 'configurable-product__option-legend');
       legend.tabIndex = -1;
-      legend.append(makeElement('span', 'configurable-product__step-label', replaceTokens(translated(this.root, 'labelChoose', 'Choose __GROUP__'), { group: group.title })));
-      if (group.required) legend.append(makeElement('span', 'configurable-product__required-mark', ` * ${translated(this.root, 'labelRequired', 'Required')}`));
-      else legend.append(makeElement('span', 'configurable-product__required-mark', ` (${translated(this.root, 'labelOptional', 'Optional')})`));
-      fieldset.append(legend);
+      legend.append(makeElement('span', 'configurable-product__step-label', legendText));
+      legend.append(makeElement('span', 'visually-hidden', ` ${translated(this.root, required ? 'labelRequired' : 'labelOptional', required ? 'Required' : 'Optional')}`));
+      return legend;
+    }
+
+    createPriceNote() {
+      const total = deriveEstimatedTotal(this.state, this.payload);
+      const cents = total === null ? deriveStartingPrice(this.payload) : total;
+      const price = makeElement('span', 'configurable-product__step-price', cents === null ? '' : this.formatMoney(cents));
+      price.dataset.configurableStepPrice = '';
+      return price;
+    }
+
+    createGroupStep(step) {
+      const group = this.payload.groups.find((candidate) => candidate.code === step.groupCode);
+      const detailed = groupHasDetails(group);
+      const fieldset = makeElement('fieldset', `configurable-product__option-step configurable-product__option-step--${group.interfaceType}${detailed ? ' configurable-product__option-step--detailed' : ''}`);
+      fieldset.dataset.groupCode = group.code;
+      fieldset.append(this.createStepHead(replaceTokens(translated(this.root, 'labelChoose', 'Choose __GROUP__'), { group: group.title }), group.required));
+      fieldset.append(this.createPriceNote());
       if (group.description) fieldset.append(makeElement('p', 'configurable-product__option-description', group.description));
       const controlId = `ConfigurableOption-${this.sectionId}-${group.code}`;
       if (group.interfaceType === 'select') {
@@ -1303,7 +1401,7 @@
         });
         fieldset.append(select);
       } else {
-        const list = makeElement('div', 'configurable-product__option-grid');
+        const list = makeElement('div', `configurable-product__option-grid${detailed ? ' configurable-product__option-grid--list' : ''}`);
         group.options.forEach((option, index) => {
           const id = `${controlId}-${index}`;
           const label = makeElement('label', 'configurable-product__option-card');
@@ -1320,10 +1418,11 @@
           input.disabled = !option.available;
           if (!option.available) label.classList.add('is-unavailable');
           const content = makeElement('span', 'configurable-product__option-card-content');
-          if (option.image && ['image_cards', 'buttons'].includes(group.interfaceType)) {
+          const cardImage = resolveOptionCardImage(group.code, option.code, this.state.selectedOptions, this.payload, this.imageIndex, this.failedImageSources) || option.image;
+          if (cardImage && ['image_cards', 'buttons'].includes(group.interfaceType)) {
             const image = makeElement('img', 'configurable-product__option-image');
-            applyMediaAttributes(image, option.image);
-            image.alt = option.image.alt || option.name;
+            applyMediaAttributes(image, cardImage);
+            image.alt = '';
             image.loading = 'lazy';
             content.append(image);
           }
@@ -1333,9 +1432,11 @@
             swatch.setAttribute('aria-hidden', 'true');
             content.append(swatch);
           }
-          content.append(makeElement('span', 'configurable-product__option-name', option.name));
-          if (option.priceAdditionCents > 0) content.append(makeElement('span', 'configurable-product__option-price', `+${this.formatMoney(option.priceAdditionCents)}`));
-          if (!option.available) content.append(makeElement('span', 'configurable-product__option-unavailable', translated(this.root, 'labelUnavailable', 'Unavailable')));
+          const copy = makeElement('span', 'configurable-product__option-copy');
+          copy.append(makeElement('span', 'configurable-product__option-name', option.name));
+          if (option.priceAdditionCents > 0) copy.append(makeElement('span', 'configurable-product__option-price', `+${this.formatMoney(option.priceAdditionCents)}`));
+          if (!option.available) copy.append(makeElement('span', 'configurable-product__option-unavailable', translated(this.root, 'labelUnavailable', 'Unavailable')));
+          content.append(copy);
           if (option.description) content.append(makeElement('span', 'configurable-product__option-description', option.description));
           label.append(input, content);
           list.append(label);
@@ -1361,9 +1462,9 @@
 
     createVariantStep(step) {
       const fieldset = makeElement('fieldset', 'configurable-product__option-step configurable-product__option-step--variant');
-      const legend = makeElement('legend', 'configurable-product__option-legend', replaceTokens(translated(this.root, 'labelChoose', 'Choose __GROUP__'), { group: step.title }));
-      legend.tabIndex = -1;
-      fieldset.append(legend);
+      fieldset.append(this.createStepHead(replaceTokens(translated(this.root, 'labelChoose', 'Choose __GROUP__'), { group: step.title }), true));
+      fieldset.append(this.createPriceNote());
+      fieldset.append(makeElement('p', 'configurable-product__almost-there', translated(this.root, 'labelAlmostThere', 'Almost there')));
       const list = makeElement('div', 'configurable-product__option-grid configurable-product__option-grid--sizes');
       const values = [];
       this.payload.variants.forEach((variant) => {
@@ -1390,16 +1491,25 @@
       });
       fieldset.append(list);
       if (this.state.validationErrors[step.id]) fieldset.append(makeElement('p', 'configurable-product__field-error', translated(this.root, 'labelSelectOption', 'Select an option')));
+      const chartContent = this.refs.sizeChart ? this.refs.sizeChart.innerHTML : '';
+      if (hasSizeChart(chartContent)) {
+        const details = makeElement('details', 'configurable-product__size-chart');
+        details.append(makeElement('summary', 'configurable-product__size-chart-summary', translated(this.root, 'labelSizeChart', 'Size chart')));
+        const body = makeElement('div', 'configurable-product__size-chart-body rte');
+        body.innerHTML = chartContent;
+        details.append(body);
+        fieldset.append(details);
+      }
       return fieldset;
     }
 
     renderReview() {
       const review = deriveReview(this.state, this.payload, this.imageIndex);
       const wrapper = makeElement('section', 'configurable-product__review-content');
-      const reviewTitle = makeElement('h3', 'configurable-product__review-title', translated(this.root, 'labelReviewTitle', 'Review your configuration'));
+      const reviewTitle = makeElement('h3', 'configurable-product__review-title visually-hidden', translated(this.root, 'labelReviewTitle', 'Review your configuration'));
       reviewTitle.tabIndex = -1;
       wrapper.append(reviewTitle);
-      wrapper.append(makeElement('p', 'configurable-product__review-intro', translated(this.root, 'labelReviewIntro', 'Check your selections before adding this product to your cart.')));
+      wrapper.append(makeElement('p', 'configurable-product__review-name', this.deriveCombinationName()));
       const reviewImage = makeElement('figure', 'configurable-product__review-image');
       if (review.image?.image) {
         const image = makeElement('img', 'configurable-product__review-image-element');
@@ -1746,6 +1856,12 @@
     deriveStepCounter,
     deriveStepTitle,
     isNextInactive,
+    resolveOptionCardImage,
+    groupHasDetails,
+    parseStepMessages,
+    pickStepMessages,
+    buildCombinationName,
+    hasSizeChart,
     selectFeaturedGroup,
     validateConfiguration,
     validateStep,

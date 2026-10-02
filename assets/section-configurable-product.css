@@ -1121,3 +1121,256 @@ body.configurable-product-scroll-locked {
 .configurable-product__dialog-trail .configurable-product__step-item:not(.configurable-product__step-item--current):not(.configurable-product__step-item--completed) {
   color: var(--configurable-muted);
 }
+
+/* Screen 2B — step content */
+.configurable-product__option-step {
+  position: relative;
+  min-width: 0;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  border: 0;
+}
+
+.configurable-product__option-legend {
+  float: left;
+  width: 100%;
+  margin: 0 0 2rem;
+  padding: 0 12rem 0 0;
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+.configurable-product__option-legend + * {
+  clear: both;
+}
+
+.configurable-product__step-price {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.configurable-product__almost-there {
+  margin: 0 0 1.6rem;
+  color: var(--configurable-muted);
+  font-size: 1.6rem;
+}
+
+.configurable-product__option-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.2rem;
+  width: 100%;
+}
+
+.configurable-product__option-grid--list {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.configurable-product__option-card {
+  border: 1px solid var(--configurable-border);
+  border-radius: var(--configurable-panel-radius, 0);
+  background: transparent;
+}
+
+.configurable-product__option-card:has(input:checked) {
+  border-color: rgb(var(--color-foreground));
+  background: transparent;
+  box-shadow: 0 0 0 1px rgb(var(--color-foreground));
+}
+
+.configurable-product__option-card:has(input:focus-visible) {
+  outline: 0.2rem solid rgb(var(--color-foreground));
+  outline-offset: 0.3rem;
+}
+
+.configurable-product__option-card-content {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1.2rem;
+  font-size: 1.4rem;
+}
+
+.configurable-product__option-image {
+  width: 100%;
+  max-height: none;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.configurable-product__option-copy {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.configurable-product__option-grid--list .configurable-product__option-card-content {
+  grid-template-columns: 9rem minmax(0, 1fr);
+  grid-template-areas: "image copy" "image description";
+  align-items: center;
+  gap: 0.4rem 1.6rem;
+}
+
+.configurable-product__option-grid--list .configurable-product__option-image {
+  grid-area: image;
+  aspect-ratio: 1;
+}
+
+.configurable-product__option-grid--list .configurable-product__option-copy {
+  grid-area: copy;
+}
+
+.configurable-product__option-grid--list .configurable-product__option-description {
+  grid-area: description;
+  margin: 0;
+}
+
+.configurable-product__option-grid--sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.configurable-product__size-card {
+  min-width: 6.4rem;
+  min-height: 4.4rem;
+  border-radius: 999px;
+  text-align: center;
+}
+
+.configurable-product__size-card .configurable-product__option-name {
+  padding: 0 1.6rem;
+  font-size: 1.4rem;
+}
+
+.configurable-product__size-chart {
+  margin-top: 2.4rem;
+  border-top: 1px solid var(--configurable-border);
+}
+
+.configurable-product__size-chart-summary {
+  padding: 1.6rem 0;
+  cursor: pointer;
+  font-size: 1.4rem;
+}
+
+.configurable-product__size-chart-body {
+  overflow-x: auto;
+  font-size: 1.4rem;
+}
+
+.configurable-product__step-message {
+  margin: 0 0 2rem;
+  padding: 1.6rem 2rem;
+  border-radius: var(--configurable-panel-radius, 0);
+  background: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+}
+
+.configurable-product__step-message p {
+  margin: 0;
+  color: inherit;
+}
+
+.configurable-product__step-message-call {
+  font-size: 1.8rem;
+  line-height: 1.3;
+}
+
+.configurable-product__step-message-support {
+  margin-top: 0.4rem !important;
+  font-size: 1.4rem;
+  opacity: 0.85;
+}
+
+.configurable-product__review-name {
+  margin: 0 0 1.6rem;
+  font-size: 1.8rem;
+  line-height: 1.3;
+}
+
+.configurable-product__review-prices {
+  padding: 1.6rem;
+  border: 1px solid var(--configurable-border);
+}
+
+.configurable-product__dialog-footer .configurable-product__product-form {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+}
+
+.configurable-product__dialog-footer .configurable-product__submit {
+  width: 100%;
+  min-height: 4.4rem;
+}
+
+.configurable-product__dialog-footer .configurable-product__price-gate {
+  margin: 0.8rem 0 0;
+  font-size: 1.2rem;
+}
+
+@media screen and (max-width: 989px) {
+  .configurable-product__dialog-panel {
+    position: static;
+  }
+
+  .configurable-product__option-legend {
+    font-size: 1.8rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .configurable-product__option-grid {
+    gap: 0.8rem;
+  }
+
+  .configurable-product__option-card-content {
+    gap: 0.4rem;
+    padding: 0.8rem;
+    font-size: 1.2rem;
+  }
+
+  .configurable-product__option-grid--list {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 0.8rem;
+    scroll-snap-type: x proximity;
+  }
+
+  .configurable-product__option-grid--list .configurable-product__option-card {
+    flex: 0 0 16rem;
+    scroll-snap-align: start;
+  }
+
+  .configurable-product__option-grid--list .configurable-product__option-card-content {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "image" "copy" "description";
+  }
+
+  .configurable-product__step-message {
+    position: absolute;
+    z-index: 2;
+    top: calc(max(1.2rem, env(safe-area-inset-top)) + 6.8rem);
+    right: 1.2rem;
+    left: 1.2rem;
+    margin: 0;
+    padding: 1.2rem 1.6rem;
+  }
+
+  .configurable-product__step-message-call {
+    font-size: 1.6rem;
+  }
+
+  .configurable-product__step-message-support {
+    font-size: 1.2rem;
+  }
+}
+
+.configurable-product__dialog-footer {
+  align-items: flex-start;
+}

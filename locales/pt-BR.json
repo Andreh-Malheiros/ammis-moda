@@ -226,7 +226,9 @@
         "optional": "opcional",
         "unavailable": "Indisponível",
         "zoom": "Ampliar imagem",
-        "zoom_photo": "Ampliar foto"
+        "zoom_photo": "Ampliar foto",
+        "almost_there": "Estamos quase lá",
+        "size_chart": "Tabela de medidas"
       },
       "configurable_pdp": {
         "title": "Personalize sua peça",

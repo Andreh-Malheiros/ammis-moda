@@ -226,7 +226,9 @@
         "optional": "optional",
         "unavailable": "Unavailable",
         "zoom": "Zoom image",
-        "zoom_photo": "Zoom photo"
+        "zoom_photo": "Zoom photo",
+        "almost_there": "Almost there",
+        "size_chart": "Size chart"
       },
       "configurable_pdp": {
         "title": "Personalize your piece",

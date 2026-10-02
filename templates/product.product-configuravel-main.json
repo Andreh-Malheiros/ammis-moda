@@ -2,8 +2,32 @@
   "sections": {
     "main": {
       "type": "main-configurable-product",
-      "settings": {}
+      "settings": {},
+      "blocks": {
+        "step_message_call_1": {
+          "type": "step_message",
+          "settings": {
+            "group_code": "botao",
+            "kind": "call",
+            "text": "Está ficando com a sua cara. Escolha agora o detalhe final."
+          }
+        },
+        "step_message_support_1": {
+          "type": "step_message",
+          "settings": {
+            "group_code": "botao",
+            "kind": "support",
+            "text": "Os detalhes fazem toda a diferença."
+          }
+        }
+      },
+      "block_order": [
+        "step_message_call_1",
+        "step_message_support_1"
+      ]
     }
   },
-  "order": ["main"]
+  "order": [
+    "main"
+  ]
 }
