@@ -1602,3 +1602,33 @@ body.configurable-product-scroll-locked {
 .configurable-product:not(.configurable-product--motion) *::after {
   transition: none !important;
 }
+
+/* Image as zoom trigger */
+.configurable-product__image-button {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: zoom-in;
+  font: inherit;
+  line-height: 0;
+}
+
+.configurable-product__image-button:focus-visible {
+  outline: 0.2rem solid rgb(var(--color-foreground));
+  outline-offset: -0.4rem;
+}
+
+@media screen and (max-width: 989px) {
+  .configurable-product__dialog-figure .configurable-product__image-button {
+    height: 100%;
+  }
+}
+
+.configurable-product__progress {
+  pointer-events: none;
+}

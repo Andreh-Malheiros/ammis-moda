@@ -124,7 +124,9 @@
                 alt: product_image.alt | default: product.title
             }}
           {%- endcapture -%}
-          {{ main_image_html | replace: '<img ', '<img data-configurable-main-image ' }}
+          <button type="button" class="configurable-product__image-button" data-configurable-zoom-image-trigger aria-haspopup="dialog" aria-label="{{ 'products.product.configurator.zoom' | t | escape }}">
+            {{ main_image_html | replace: '<img ', '<img data-configurable-main-image ' }}
+          </button>
         {% else %}
           <div class="configurable-product__image-fallback" data-configurable-image-fallback role="img" aria-label="{{ 'products.product.configurable_pdp.no_image' | t | escape }}">
             {{ 'products.product.configurable_pdp.no_image' | t }}
@@ -266,6 +268,7 @@
       <div class="configurable-product__dialog-body">
         <div class="configurable-product__dialog-media">
           <figure class="configurable-product__dialog-figure" data-configurable-dialog-visual>
+            <button type="button" class="configurable-product__image-button" data-configurable-zoom-image-trigger data-configurable-dialog-image-host aria-label="{{ 'products.product.configurator.zoom' | t | escape }}" hidden></button>
             <p class="configurable-product__display-note" data-configurable-dialog-image-fallback hidden>{{ 'products.product.configurable_pdp.no_image' | t }}</p>
           </figure>
           <div class="configurable-product__dialog-media-meta">

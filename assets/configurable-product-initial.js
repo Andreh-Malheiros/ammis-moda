@@ -810,6 +810,7 @@
       this.refs.overviewSteps = query('[data-configurable-overview-steps]');
       this.refs.dialogSteps = query('[data-configurable-dialog-steps]');
       this.refs.dialogFigure = query('[data-configurable-dialog-visual]');
+      this.refs.dialogImageHost = query('[data-configurable-dialog-image-host]');
       this.refs.dialogImage = query('[data-configurable-dialog-image]');
       this.refs.dialogImageFallback = query('[data-configurable-dialog-image-fallback]');
       this.refs.dialogZoomOpen = query('[data-configurable-dialog-zoom]');
@@ -927,7 +928,7 @@
     }
 
     handleClick(event) {
-      const element = event.target instanceof Element ? event.target.closest('[data-configurable-start], [data-configurable-close], [data-configurable-back], [data-configurable-next], [data-configurable-clear], [data-configurable-edit], [data-configurable-submit], [data-configurable-zoom-open], [data-configurable-zoom-close]') : null;
+      const element = event.target instanceof Element ? event.target.closest('[data-configurable-start], [data-configurable-close], [data-configurable-back], [data-configurable-next], [data-configurable-clear], [data-configurable-edit], [data-configurable-submit], [data-configurable-zoom-open], [data-configurable-zoom-image-trigger], [data-configurable-zoom-close]') : null;
       if (!element || !this.root.contains(element)) return;
       if (element.matches('[data-configurable-start]')) return this.openDialog();
       if (element.matches('[data-configurable-close]')) return this.closeDialog();
@@ -935,7 +936,7 @@
       if (element.matches('[data-configurable-next]')) return this.goNext();
       if (element.matches('[data-configurable-clear]')) return this.clearSelection(element.dataset.groupCode);
       if (element.matches('[data-configurable-edit]')) return this.editStep(element.dataset.stepId);
-      if (element.matches('[data-configurable-zoom-open]')) return this.openZoom();
+      if (element.matches('[data-configurable-zoom-open], [data-configurable-zoom-image-trigger]')) return this.openZoom();
       if (element.matches('[data-configurable-zoom-close]')) return this.closeZoom();
       if (element.matches('[data-configurable-submit]')) {
         event.preventDefault();
@@ -1779,7 +1780,7 @@
           if (!this.refs.image) {
             this.refs.image = makeElement('img', 'configurable-product__image');
             this.refs.image.dataset.configurableMainImage = '';
-            this.refs.imageFigure.insertBefore(this.refs.image, this.refs.zoomOpen || null);
+            this.refs.imageFigure.append(this.refs.image);
           }
           applyMediaAttributes(this.refs.image, image);
           this.refs.image.alt = image.alt || this.payload.product.title;
@@ -1797,7 +1798,7 @@
           if (!this.refs.dialogImage) {
             this.refs.dialogImage = makeElement('img', 'configurable-product__dialog-image');
             this.refs.dialogImage.dataset.configurableDialogImage = '';
-            this.refs.dialogFigure.prepend(this.refs.dialogImage);
+            (this.refs.dialogImageHost || this.refs.dialogFigure).prepend(this.refs.dialogImage);
             applyMediaAttributes(this.refs.dialogImage, image);
             this.refs.dialogImage.alt = image.alt || this.payload.product.title;
           } else if (shouldCrossfadeImage(this.refs.dialogImage.getAttribute('src'), image.src, this.state?.isOpen && this.motionEnabled())) {
@@ -1813,6 +1814,7 @@
           setHidden(this.refs.dialogImage, true);
         }
         setHidden(this.refs.dialogImageFallback, !!image);
+        setHidden(this.refs.dialogImageHost, !image);
         setHidden(this.refs.dialogZoomOpen, !image);
       }
     }
@@ -1836,7 +1838,7 @@
       next.alt = image.alt || this.payload.product.title;
       const reveal = () => {
         if (token !== this.imageToken || !previous.isConnected) return;
-        figure.append(next);
+        (this.refs.dialogImageHost || figure).append(next);
         next.addEventListener('animationend', () => {
           if (token !== this.imageToken) return;
           previous.remove();
