@@ -60,3 +60,12 @@ Estado: QA_FIXES_PREVIEW_SYNCED / BROWSER_VALIDATION_PENDING.
 - O preview autorizado `151273406566` recebeu somente `assets/configurable-product-initial.js` e `assets/section-configurable-product.css`, via `theme push --theme 151273406566 --nodelete --only ...`; retorno do CLI: upload concluído.
 - Leitura GraphQL posterior confirmou `role=UNPUBLISHED`, `processing=false`, `processingFailed=false`, `userErrors=[]`; os MD5 locais e remotos coincidem: JS `722ad65d40b3d151d50c568b9a0086d4`; CSS `77635b45d73e5bb9db9b7a6761b770bd`.
 - Não há evidência de browser, console, rede, payload Liquid renderizado ou teste visual porque o storefront respondeu `429`, não há ferramenta/browser utilizável neste ambiente e o Theme Check não produziu saída antes de timeout; o validador local também carece de `@shopify/theme-check-common`.
+
+## Auditoria de disponibilidade browser/renderização — 2026-10-02
+
+Estado: EXTERNAL_RENDERING_BLOCKED / CODE_UNCHANGED.
+
+- O único Chromium local disponível é o Playwright Chromium; `ldd` confirmou bibliotecas ausentes (`libnspr4`, `libnss3`, GTK, Cairo, Pango, entre outras). Nenhuma dependência foi instalada.
+- O endpoint `myshopify.com` redireciona para `ammismoda.com.br`; os headers reconhecem `theme=151273406566`, mas a resposta final não entrega o HTML renderizado e as tentativas com `-L` retornam `429`.
+- O leitor web externo marcou a URL do preview como inacessível. `shopify theme dev` não foi executado porque faria upload inicial/reconciliação do tema inteiro e não seria uma validação read-only restrita.
+- Não houve alteração de código, Shopify, preview, MAIN ou arquivos protegidos nesta auditoria.
