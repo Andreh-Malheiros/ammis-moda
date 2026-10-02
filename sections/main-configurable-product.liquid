@@ -14,6 +14,13 @@
       assign ssr_size_name = product_option | strip
     endif
   endfor
+  assign ssr_size_values = ''
+  for product_option_with_values in product.options_with_values
+    assign ssr_option_handle = product_option_with_values.name | handleize
+    if ssr_option_handle == 'tamanho' or ssr_option_handle == 'size'
+      assign ssr_size_values = product_option_with_values.values
+    endif
+  endfor
   assign ssr_featured = nil
   if configurator_enabled == true and section.settings.show_featured_group
     for ssr_group in ssr_groups
@@ -78,6 +85,9 @@
   data-label-optional="{{ 'products.product.configurator.optional' | t | escape }}"
   data-label-almost-there="{{ 'products.product.configurator.almost_there' | t | escape }}"
   data-label-size-chart="{{ 'products.product.configurator.size_chart' | t | escape }}"
+  data-label-option-count-one="{{ 'products.product.configurable_pdp.step_option_count' | t: count: 1 | replace: '1', '__COUNT__' | escape }}"
+  data-label-option-count-other="{{ 'products.product.configurable_pdp.step_option_count' | t: count: 2 | replace: '2', '__COUNT__' | escape }}"
+  data-label-size-range="{{ 'products.product.configurable_pdp.step_size_range' | t: first: '__FIRST__', last: '__LAST__' | escape }}"
   data-label-chosen="{{ 'products.product.configurator.chosen' | t | escape }}"
   data-label-select-card="{{ 'products.product.configurator.select_card' | t | escape }}"
 >
@@ -212,16 +222,69 @@
               {%- for ssr_group in ssr_groups -%}
                 {%- if ssr_group.options.value != blank -%}
                   {%- assign ssr_step_index = ssr_step_index | plus: 1 -%}
-                  <li class="configurable-product__step-item"><span class="configurable-product__step-number">{{ ssr_step_index }}</span><span class="configurable-product__step-title">{{ ssr_group.title.value | default: ssr_group.code.value | default: ssr_group.system.handle | strip | escape }}</span></li>
+                  {%- assign ssr_group_code = ssr_group.code.value | default: ssr_group.system.handle | strip | downcase -%}
+                  {%- assign ssr_summary = 'products.product.configurable_pdp.step_option_count' | t: count: ssr_group.options.value.size -%}
+                  {%- for block in section.blocks -%}
+                    {%- if block.type == 'step_message' and block.settings.kind == 'resumo' and block.settings.text != blank -%}
+                      {%- assign ssr_block_code = block.settings.group_code | strip | downcase -%}
+                      {%- if ssr_block_code == ssr_group_code -%}{%- assign ssr_summary = block.settings.text | strip -%}{%- break -%}{%- endif -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                  <li class="configurable-product__step-item"><span class="configurable-product__step-number">{{ ssr_step_index }}</span><span class="configurable-product__step-title">{{ ssr_group.title.value | default: ssr_group.code.value | default: ssr_group.system.handle | strip | escape }}</span><span class="configurable-product__step-summary">{{ ssr_summary | escape }}</span></li>
                 {%- endif -%}
               {%- endfor -%}
               {%- if ssr_size_name != blank and ssr_step_index > 0 -%}
                 {%- assign ssr_step_index = ssr_step_index | plus: 1 -%}
-                <li class="configurable-product__step-item"><span class="configurable-product__step-number">{{ ssr_step_index }}</span><span class="configurable-product__step-title">{{ ssr_size_name | escape }}</span></li>
+                {%- assign ssr_size_code = ssr_size_name | strip | downcase -%}
+                {%- assign ssr_size_summary = '' -%}
+                {%- if ssr_size_values.size == 1 -%}
+                  {%- assign ssr_size_summary = ssr_size_values.first -%}
+                {%- elsif ssr_size_values.size > 1 -%}
+                  {%- assign ssr_size_summary = 'products.product.configurable_pdp.step_size_range' | t: first: ssr_size_values.first, last: ssr_size_values.last -%}
+                {%- endif -%}
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'step_message' and block.settings.kind == 'resumo' and block.settings.text != blank -%}
+                    {%- assign ssr_block_code = block.settings.group_code | strip | downcase -%}
+                    {%- if ssr_block_code == ssr_size_code -%}{%- assign ssr_size_summary = block.settings.text | strip -%}{%- break -%}{%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+                <li class="configurable-product__step-item"><span class="configurable-product__step-number">{{ ssr_step_index }}</span><span class="configurable-product__step-title">{{ ssr_size_name | escape }}</span>{% if ssr_size_summary != blank %}<span class="configurable-product__step-summary">{{ ssr_size_summary | escape }}</span>{% endif %}</li>
               {%- endif -%}
             {%- endif -%}
           </ol>
         </section>
+
+        {%- assign details_description = product.description | strip_html | strip -%}
+        {%- assign has_details = false -%}
+        {%- if section.settings.show_description and details_description != blank -%}{%- assign has_details = true -%}{%- endif -%}
+        {%- if size_chart_page != blank and size_chart_page.content != blank -%}{%- assign has_details = true -%}{%- endif -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'detail' and block.settings.content != blank -%}{%- assign has_details = true -%}{%- endif -%}
+        {%- endfor -%}
+        {%- if has_details -%}
+          <div class="configurable-product__details" data-configurable-details>
+            {%- if section.settings.show_description and details_description != blank -%}
+              <details class="configurable-product__detail">
+                <summary class="configurable-product__detail-summary">{{ 'products.product.configurable_pdp.details_description' | t }}</summary>
+                <div class="configurable-product__detail-body rte">{{ product.description }}</div>
+              </details>
+            {%- endif -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'detail' and block.settings.content != blank -%}
+                <details class="configurable-product__detail" {{ block.shopify_attributes }}>
+                  <summary class="configurable-product__detail-summary">{{ block.settings.title | default: '—' | escape }}</summary>
+                  <div class="configurable-product__detail-body rte">{{ block.settings.content }}</div>
+                </details>
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if size_chart_page != blank and size_chart_page.content != blank -%}
+              <details class="configurable-product__detail">
+                <summary class="configurable-product__detail-summary">{{ 'products.product.configurator.size_chart' | t }}</summary>
+                <div class="configurable-product__detail-body rte">{{ size_chart_page.content }}</div>
+              </details>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
 
         <button
           type="button"
@@ -400,6 +463,12 @@
     },
     {
       "type": "checkbox",
+      "id": "show_description",
+      "label": "Show product description in the details accordion",
+      "default": true
+    },
+    {
+      "type": "checkbox",
       "id": "enable_animations",
       "label": "Enable animations",
       "info": "Animations are always off for visitors who prefer reduced motion.",
@@ -413,6 +482,23 @@
     }
   ],
   "blocks": [
+    {
+      "type": "detail",
+      "name": "Detail",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "info": "Can be connected to a metafield with dynamic sources. Empty content is not shown."
+        }
+      ]
+    },
     {
       "type": "step_message",
       "name": "Step message",
@@ -430,7 +516,8 @@
           "options": [
             { "value": "call", "label": "Call" },
             { "value": "support", "label": "Support" },
-            { "value": "instrucao", "label": "Step instruction (1 per group)" }
+            { "value": "instrucao", "label": "Step instruction (1 per group)" },
+            { "value": "resumo", "label": "Step summary under the step label (1 per group)" }
           ],
           "default": "call"
         },

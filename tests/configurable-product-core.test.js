@@ -350,3 +350,18 @@ test('effects fire only on the right triggers', () => {
   assert.equal(api.shouldFillNext('group:tecido', 'group:cor', true, false, true), false);
   assert.equal(api.shouldFillNext('group:cor', 'group:cor', true, false, false), false);
 });
+
+test('step summaries: option count, size range, single size and per-group override', () => {
+  const payload = payloadFixture();
+  const labels = { optionOne: '__COUNT__ opção', optionOther: '__COUNT__ opções', sizeRange: '__FIRST__ ao __LAST__' };
+  const steps = api.buildOverviewSteps(payload);
+  assert.equal(api.deriveStepSummary(steps[0], payload, [], labels), '2 opções');
+  assert.equal(api.deriveStepSummary(steps[1], payload, [], labels), '1 opção');
+  assert.equal(api.deriveStepSummary(steps[2], payload, [], labels), '34 ao 36');
+  const single = { ...payload, variants: [payload.variants[0]] };
+  assert.equal(api.deriveStepSummary(api.buildOverviewSteps(single)[2], single, [], labels), '34');
+  const messages = api.parseStepMessages([{ groupCode: 'tecido', kind: 'resumo', text: 'Linho, couro e mais' }]);
+  assert.equal(api.deriveStepSummary(steps[0], payload, messages, labels), 'Linho, couro e mais');
+  assert.equal(api.deriveStepSummary(steps[1], payload, messages, labels), '1 opção');
+  assert.deepEqual(api.pickStepMessages(messages, 'tecido', () => 0), null);
+});

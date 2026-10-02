@@ -247,7 +247,10 @@
         "modal_pending": "As próximas telas de personalização serão adicionadas na próxima etapa.",
         "close": "Fechar",
         "no_image": "Não há imagem disponível para este produto.",
-        "unavailable": "Este produto ainda não está configurado para personalização."
+        "unavailable": "Este produto ainda não está configurado para personalização.",
+        "step_option_count": { "one": "{{ count }} opção", "other": "{{ count }} opções" },
+        "step_size_range": "{{ first }} ao {{ last }}",
+        "details_description": "Descrição"
       },
       "media": {
         "open_featured_media": "Open featured media in gallery view",

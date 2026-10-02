@@ -3,7 +3,8 @@
     "main": {
       "type": "main-configurable-product",
       "settings": {
-        "panel_radius": 20
+        "panel_radius": 20,
+        "show_description": true
       },
       "blocks": {
         "step_message_call_1": {

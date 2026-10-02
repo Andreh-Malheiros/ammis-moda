@@ -247,7 +247,10 @@
         "modal_pending": "The next customization screens will be added in the next stage.",
         "close": "Close",
         "no_image": "No product image is available.",
-        "unavailable": "This product is not configured for customization yet."
+        "unavailable": "This product is not configured for customization yet.",
+        "step_option_count": { "one": "{{ count }} option", "other": "{{ count }} options" },
+        "step_size_range": "{{ first }} to {{ last }}",
+        "details_description": "Description"
       },
       "media": {
         "open_featured_media": "Open featured media in gallery view",

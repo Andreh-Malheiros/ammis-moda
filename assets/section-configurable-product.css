@@ -1692,3 +1692,73 @@ body.configurable-product-scroll-locked {
     overflow-wrap: anywhere;
   }
 }
+
+/* Step summaries and product details (initial panel) */
+.configurable-product__step-summary {
+  color: var(--configurable-muted);
+  font-size: 1.2rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.configurable-product__details {
+  display: grid;
+  min-width: 0;
+  border-top: 1px solid var(--configurable-border);
+}
+
+.configurable-product__detail {
+  border-bottom: 1px solid var(--configurable-border);
+}
+
+.configurable-product__detail-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.6rem;
+  padding: 1.6rem 0;
+  cursor: pointer;
+  font-size: 1.4rem;
+  letter-spacing: 0.06em;
+  list-style: none;
+  text-transform: uppercase;
+}
+
+.configurable-product__detail-summary::-webkit-details-marker {
+  display: none;
+}
+
+.configurable-product__detail-summary::after {
+  flex: 0 0 auto;
+  font-size: 2rem;
+  line-height: 1;
+  content: '+';
+}
+
+.configurable-product__detail[open] > .configurable-product__detail-summary::after {
+  content: '\2212';
+}
+
+.configurable-product__detail-summary:focus-visible {
+  outline: 0.2rem solid rgb(var(--color-foreground));
+  outline-offset: 0.2rem;
+}
+
+.configurable-product__detail-body {
+  padding: 0 0 1.6rem;
+  font-size: 1.4rem;
+  line-height: 1.5;
+  overflow-x: auto;
+}
+
+@media screen and (max-width: 989px) {
+  .configurable-product__details {
+    order: 5;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .configurable-product--motion .configurable-product__detail[open] > .configurable-product__detail-body {
+    animation: configurable-step-in var(--configurable-duration-step) var(--configurable-ease) both;
+  }
+}

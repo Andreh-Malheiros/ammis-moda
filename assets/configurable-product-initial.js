@@ -574,7 +574,7 @@
     return raw
       .map((item) => ({
         groupCode: normalizeCode(item && item.groupCode),
-        kind: item && item.kind === 'instrucao' ? 'instruction' : (item && item.kind === 'support' ? 'support' : 'call'),
+        kind: item && item.kind === 'instrucao' ? 'instruction' : (item && item.kind === 'resumo' ? 'summary' : (item && item.kind === 'support' ? 'support' : 'call')),
         text: isNonEmptyString(item && item.text) ? item.text.trim() : ''
       }))
       .filter((item) => item.groupCode && item.text);
@@ -596,6 +596,32 @@
     const code = normalizeCode(groupCode);
     const match = messages.find((message) => message.groupCode === code && message.kind === 'instruction');
     return match ? match.text : null;
+  }
+
+  function findStepSummaryOverride(messages, groupCode) {
+    const code = normalizeCode(groupCode);
+    const match = messages.find((message) => message.groupCode === code && message.kind === 'summary');
+    return match ? match.text : null;
+  }
+
+  function deriveStepSummary(step, payload, messages, labels = {}) {
+    const override = findStepSummaryOverride(messages || [], step.sourceCode);
+    if (override) return override;
+    if (step.kind === 'group') {
+      const count = step.options.length;
+      const template = count === 1 ? (labels.optionOne || '__COUNT__ option') : (labels.optionOther || '__COUNT__ options');
+      return template.replace('__COUNT__', String(count));
+    }
+    if (step.kind === 'variant') {
+      const sizes = [];
+      payload.variants.forEach((variant) => {
+        if (isNonEmptyString(variant.sizeValue) && !sizes.some((value) => normalizeCode(value) === normalizeCode(variant.sizeValue))) sizes.push(variant.sizeValue);
+      });
+      if (!sizes.length) return '';
+      if (sizes.length === 1) return sizes[0];
+      return (labels.sizeRange || '__FIRST__ - __LAST__').replace('__FIRST__', sizes[0]).replace('__LAST__', sizes[sizes.length - 1]);
+    }
+    return '';
   }
 
   function shouldAnimateStepChange(previousStepId, nextStepId, motionEnabled) {
@@ -1285,6 +1311,14 @@
           item.dataset.stepId = step.id;
           item.append(makeElement('span', 'configurable-product__step-number', String(index + 1)));
           item.append(makeElement('span', 'configurable-product__step-title', step.title));
+          if (list === this.refs.overviewSteps) {
+            const summary = deriveStepSummary(step, this.payload, this.stepMessages, {
+              optionOne: translated(this.root, 'labelOptionCountOne', ''),
+              optionOther: translated(this.root, 'labelOptionCountOther', ''),
+              sizeRange: translated(this.root, 'labelSizeRange', '')
+            });
+            if (summary) item.append(makeElement('span', 'configurable-product__step-summary', summary));
+          }
           list.append(item);
         });
       });
@@ -1969,6 +2003,8 @@
     pickStepMessages,
     buildCombinationName,
     findStepInstruction,
+    findStepSummaryOverride,
+    deriveStepSummary,
     shouldAnimateStepChange,
     shouldCrossfadeImage,
     shouldFillNext,
