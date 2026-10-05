@@ -330,10 +330,10 @@
         "category_DAADkA": {
           "type": "category",
           "settings": {
-            "image": "shopify://shop_images/FOTO_SITE_1080_x_1350_px_64.jpg",
+            "image": "shopify://shop_images/Jaqueta_feminina_off_white_em_couro_de_cabra.jpg",
             "title": "Casacos & Jaquetas",
-            "text": "Peças que transformam seu inverno em estilo.",
-            "link": "shopify://collections/casaco",
+            "text": "",
+            "link": "shopify://collections/soleil",
             "cta_label": "shop now"
           }
         },
