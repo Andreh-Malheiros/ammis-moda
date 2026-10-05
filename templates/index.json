@@ -202,6 +202,70 @@
         "shadow_intensity": 22
       }
     },
+    "ammis_category_grid_8b4PmG": {
+      "type": "ammis-category-grid",
+      "blocks": {
+        "category_VbUHmz": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/FOTO_SITE_1080_x_1350_px_-_2026-09-03T171818.711.jpg",
+            "title": "Novidades",
+            "text": "",
+            "link": "shopify://collections/soleil",
+            "cta_label": "shop now"
+          }
+        },
+        "category_DAADkA": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/Jaqueta_feminina_off_white_em_couro_de_cabra.jpg",
+            "title": "Casacos & Jaquetas",
+            "text": "",
+            "link": "shopify://collections/casaco",
+            "cta_label": "shop now"
+          }
+        },
+        "category_DK37Aa": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/FOTO_SITE_1080_x_1350_px_-_2026-09-09T181123.857.jpg",
+            "title": "Alfaiataria",
+            "text": "O luxo da alfaiataria feita por verdadeiros alfaiates.",
+            "link": "shopify://collections/alfaiataria",
+            "cta_label": "shop now"
+          }
+        }
+      },
+      "block_order": [
+        "category_VbUHmz",
+        "category_DAADkA",
+        "category_DK37Aa"
+      ],
+      "name": "AMMIS - Categorias",
+      "settings": {
+        "heading": "EXPLORE POR CATEGORIAS",
+        "subheading": "<p>Peças selecionadas por silhueta, ocasião e presença.</p>",
+        "heading_alignment": "center",
+        "color_scheme": "background-1",
+        "full_width": true,
+        "max_width": 1500,
+        "columns_desktop": "4",
+        "columns_mobile": "2",
+        "content_position": "bottom",
+        "card_text_alignment": "center",
+        "overlay_opacity": 0,
+        "card_ratio_desktop": 125,
+        "card_ratio_mobile": 150,
+        "title_size": 35,
+        "subtitle_size": 16,
+        "card_title_size": 20,
+        "card_text_size": 13,
+        "gap_desktop": 18,
+        "gap_mobile": 0,
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
     "popular_products_Wgftz6": {
       "type": "popular-products",
       "name": "t:sections.popular-products.presets.name",
@@ -312,70 +376,6 @@
         "show_desc": false,
         "margin_top": "no-indent",
         "margin_bottom": "no-indent"
-      }
-    },
-    "ammis_category_grid_8b4PmG": {
-      "type": "ammis-category-grid",
-      "blocks": {
-        "category_VbUHmz": {
-          "type": "category",
-          "settings": {
-            "image": "shopify://shop_images/FOTO_SITE_1080_x_1350_px_-_2026-09-03T171818.711.jpg",
-            "title": "Novidades",
-            "text": "",
-            "link": "shopify://collections/soleil",
-            "cta_label": "shop now"
-          }
-        },
-        "category_DAADkA": {
-          "type": "category",
-          "settings": {
-            "image": "shopify://shop_images/Jaqueta_feminina_off_white_em_couro_de_cabra.jpg",
-            "title": "Casacos & Jaquetas",
-            "text": "",
-            "link": "shopify://collections/casaco",
-            "cta_label": "shop now"
-          }
-        },
-        "category_DK37Aa": {
-          "type": "category",
-          "settings": {
-            "image": "shopify://shop_images/FOTO_SITE_1080_x_1350_px_-_2026-09-09T181123.857.jpg",
-            "title": "Alfaiataria",
-            "text": "O luxo da alfaiataria feita por verdadeiros alfaiates.",
-            "link": "shopify://collections/alfaiataria",
-            "cta_label": "shop now"
-          }
-        }
-      },
-      "block_order": [
-        "category_VbUHmz",
-        "category_DAADkA",
-        "category_DK37Aa"
-      ],
-      "name": "AMMIS - Categorias",
-      "settings": {
-        "heading": "EXPLORE POR CATEGORIAS",
-        "subheading": "<p>Peças selecionadas por silhueta, ocasião e presença.</p>",
-        "heading_alignment": "center",
-        "color_scheme": "background-1",
-        "full_width": true,
-        "max_width": 1500,
-        "columns_desktop": "4",
-        "columns_mobile": "2",
-        "content_position": "bottom",
-        "card_text_alignment": "center",
-        "overlay_opacity": 0,
-        "card_ratio_desktop": 125,
-        "card_ratio_mobile": 150,
-        "title_size": 35,
-        "subtitle_size": 16,
-        "card_title_size": 20,
-        "card_text_size": 13,
-        "gap_desktop": 18,
-        "gap_mobile": 0,
-        "padding_top": 64,
-        "padding_bottom": 64
       }
     },
     "product-slider": {
@@ -598,9 +598,9 @@
   "order": [
     "slideshow_97kWbf",
     "home_sticky_video_fQHDGT",
+    "ammis_category_grid_8b4PmG",
     "popular_products_Wgftz6",
     "product_slider_myRt9j",
-    "ammis_category_grid_8b4PmG",
     "product-slider",
     "slideshow_Jf4tqd",
     "ammis_instagram_showcase_bFzVET"
