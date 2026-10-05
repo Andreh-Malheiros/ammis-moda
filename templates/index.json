@@ -238,7 +238,7 @@
         "product_slide_3Wwhf8": {
           "type": "product_slide",
           "settings": {
-            "product": "chemise-ipe",
+            "product": "casaco-enseada",
             "image": "{{ block.settings.product.featured_image }}",
             "color_scheme": "",
             "overlay_opacity": 0,
@@ -248,7 +248,7 @@
         "product_slide_kraGFd": {
           "type": "product_slide",
           "settings": {
-            "product": "vestido-enseada",
+            "product": "blazer-italy",
             "image": "{{ block.settings.product.featured_image }}",
             "color_scheme": "background-2",
             "overlay_opacity": 0,
