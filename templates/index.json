@@ -215,16 +215,6 @@
             "cta_label": "shop now"
           }
         },
-        "category_DK37Aa": {
-          "type": "category",
-          "settings": {
-            "image": "shopify://shop_images/FOTO_SITE_1080_x_1350_px_-_2026-09-09T181123.857.jpg",
-            "title": "ALFAIATARIA",
-            "text": "",
-            "link": "shopify://collections/alfaiataria",
-            "cta_label": "shop now"
-          }
-        },
         "category_DAADkA": {
           "type": "category",
           "settings": {
@@ -234,12 +224,22 @@
             "link": "shopify://collections/last-chance",
             "cta_label": "shop now"
           }
+        },
+        "category_DK37Aa": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/Blazer_feminino_de_alfaiataria_acinturado_com_bot_es_dourados_personalizados.jpg",
+            "title": "ALFAIATARIA",
+            "text": "",
+            "link": "shopify://collections/alfaiataria",
+            "cta_label": "shop now"
+          }
         }
       },
       "block_order": [
         "category_VbUHmz",
-        "category_DK37Aa",
-        "category_DAADkA"
+        "category_DAADkA",
+        "category_DK37Aa"
       ],
       "name": "AMMIS - Categorias",
       "settings": {
