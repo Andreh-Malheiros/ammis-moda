@@ -322,7 +322,7 @@
           "settings": {
             "image": "shopify://shop_images/FOTO_SITE_1080_x_1350_px_-_2026-09-03T171818.711.jpg",
             "title": "Novidades",
-            "text": "Os lançamentos mais recentes da curadoria AMMIS.",
+            "text": "",
             "link": "shopify://collections/soleil",
             "cta_label": "shop now"
           }
@@ -333,7 +333,7 @@
             "image": "shopify://shop_images/Jaqueta_feminina_off_white_em_couro_de_cabra.jpg",
             "title": "Casacos & Jaquetas",
             "text": "",
-            "link": "shopify://collections/soleil",
+            "link": "shopify://collections/casaco",
             "cta_label": "shop now"
           }
         },
