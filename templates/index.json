@@ -215,16 +215,6 @@
             "cta_label": "shop now"
           }
         },
-        "category_DAADkA": {
-          "type": "category",
-          "settings": {
-            "image": "shopify://shop_images/Jaqueta_feminina_off_white_em_couro_de_cabra.jpg",
-            "title": "Casacos & Jaquetas",
-            "text": "",
-            "link": "shopify://collections/casaco",
-            "cta_label": "shop now"
-          }
-        },
         "category_DK37Aa": {
           "type": "category",
           "settings": {
@@ -234,12 +224,22 @@
             "link": "shopify://collections/alfaiataria",
             "cta_label": "shop now"
           }
+        },
+        "category_DAADkA": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/Jaqueta_feminina_off_white_em_couro_de_cabra.jpg",
+            "title": "Last Chance",
+            "text": "",
+            "link": "shopify://collections/outlet",
+            "cta_label": "shop now"
+          }
         }
       },
       "block_order": [
         "category_VbUHmz",
-        "category_DAADkA",
-        "category_DK37Aa"
+        "category_DK37Aa",
+        "category_DAADkA"
       ],
       "name": "AMMIS - Categorias",
       "settings": {
