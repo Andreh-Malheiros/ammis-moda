@@ -252,7 +252,6 @@
                 {% if settings.badge_sale_type == 'sale' %}
                   {{- 'products.product.on_sale' | t -}}
                 {% else %}
-                  {{- 'products.product.on_sale' | t -}}
                   <span>
                     {{
                       product_card_product.compare_at_price
@@ -260,7 +259,7 @@
                       | times: 100
                       | divided_by: product_card_product.compare_at_price
                     -}}
-                    %
+                    % {{ 'products.product.on_sale' | t }}
                   </span>
                 {% endif %}
               </span>
