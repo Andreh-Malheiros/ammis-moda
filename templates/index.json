@@ -35,8 +35,8 @@
           "type": "slideshow-item",
           "disabled": true,
           "settings": {
-            "image": "shopify://shop_images/DESKTOP_TAM_2x_3d5b0a5a-d6c7-4863-a3c4-e2a3de51bdaf.png",
-            "mobile_image": "shopify://shop_images/MOBILE_3.png",
+            "image": "shopify://shop_images/DESKTOP_4.png",
+            "mobile_image": "shopify://shop_images/MOBILE__4.png",
             "overlay_opacity": 0,
             "show_video": false,
             "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
@@ -46,7 +46,7 @@
             "tab_subheading": "",
             "tab_heading": "",
             "button_label": "",
-            "button_link": "shopify://collections/soleil",
+            "button_link": "shopify://collections/outlet",
             "button_style": "tertiary",
             "enable_fullscreen_link": true
           }
