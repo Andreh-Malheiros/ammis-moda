@@ -184,7 +184,7 @@
       "shop": "Shop",
       "back": "Collection",
       "add_to_cart": "Add to Cart",
-      "on_sale": "OUTLET",
+      "on_sale": "OFF",
       "sku": "SKU",
       "choose_product_options": "Choose options for {{ product_name }}",
       "product_variants": "Product variants",
