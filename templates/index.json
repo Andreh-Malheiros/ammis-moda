@@ -33,6 +33,7 @@
         },
         "slideshow_item_Hw484i": {
           "type": "slideshow-item",
+          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/DESKTOP_4.png",
             "mobile_image": "shopify://shop_images/MOBILE__4.png",
@@ -54,7 +55,7 @@
           "type": "slideshow-item",
           "settings": {
             "image": "shopify://shop_images/DESKTOP_GIF.gif",
-            "mobile_image": "shopify://shop_images/MOBILE_4.png",
+            "mobile_image": "shopify://shop_images/MOBILE_GIF.gif",
             "overlay_opacity": 0.2,
             "show_video": false,
             "video_url": "",
