@@ -13,11 +13,25 @@
     "wholesale_hero": {
       "type": "wholesale-hero",
       "name": "Hero Atacado AMMIS",
-      "settings": {}
+      "settings": {
+        "eyebrow": "ATACADO AMMIS",
+        "heading": "Parceria comercial AMMIS",
+        "text": "Conheça a experiência de atacado e escolha o melhor caminho para sua loja.",
+        "image": "shopify://shop_images/Ammis_Lookbook_OUT263298.png",
+        "image_alt": "Atacado AMMIS",
+        "overlay_opacity": 35,
+        "text_tone": "light",
+        "content_alignment": "left",
+        "content_position": "center",
+        "primary_button_label": "Quero me cadastrar",
+        "primary_button_link": "",
+        "commercial_button_label": "Falar com o comercial",
+        "commercial_button_link": "",
+        "partnership_button_label": "Conhecer a parceria"
+      }
     },
     "wholesale_partnership": {
       "type": "wholesale-partnership",
-      "name": "Parceria AMMIS",
       "blocks": {
         "principle_acompanhamento": {
           "type": "principle",
@@ -54,16 +68,38 @@
         "principle_producao",
         "principle_relacao"
       ],
-      "settings": {}
+      "name": "Parceria AMMIS",
+      "settings": {
+        "eyebrow": "A parceria AMMIS",
+        "heading": "Uma parceria comercial próxima e autoral",
+        "text": "A AMMIS trabalha ao lado de cada parceiro para construir um mix com identidade, flexibilidade e visão de longo prazo.",
+        "cta_label": "Falar com o comercial",
+        "cta_link": ""
+      }
     },
     "wholesale_commercial_model": {
       "type": "wholesale-commercial-model",
       "name": "Modelo comercial AMMIS",
-      "settings": {}
+      "settings": {
+        "eyebrow": "Modelo comercial",
+        "heading": "Um calendário pensado para o seu negócio",
+        "text": "O planejamento das coleções organiza vendas e entregas para que o parceiro componha o mix com clareza.",
+        "summer_label": "Verão",
+        "summer_sale_label": "Venda",
+        "summer_sale_value": "Abril",
+        "summer_delivery_label": "Entregas / faturamento",
+        "summer_delivery_value": "Agosto, setembro, outubro e novembro",
+        "winter_label": "Inverno",
+        "winter_sale_label": "Venda",
+        "winter_sale_value": "Outubro",
+        "winter_delivery_label": "Entregas / faturamento",
+        "winter_delivery_value": "Fevereiro, março, abril e maio",
+        "complementary_label": "Também trabalhamos com",
+        "complementary_text": "Alto Verão, Euro Summer e entregas complementares, conforme a coleção e o planejamento comercial."
+      }
     },
     "wholesale_commercial_guidance": {
       "type": "wholesale-commercial-guidance",
-      "name": "Curadoria e produção AMMIS",
       "blocks": {
         "guidance_market": {
           "type": "guidance",
@@ -108,11 +144,15 @@
         "guidance_production",
         "guidance_support"
       ],
-      "settings": {}
+      "name": "Curadoria e produção AMMIS",
+      "settings": {
+        "eyebrow": "Curadoria comercial",
+        "heading": "O pedido começa com uma boa leitura",
+        "text": "O time comercial orienta a construção do pedido a partir do perfil da loja, do comportamento das clientes e das oportunidades da coleção."
+      }
     },
     "wholesale_strengths": {
       "type": "wholesale-strengths",
-      "name": "Fortalezas AMMIS",
       "blocks": {
         "strength_exclusivity": {
           "type": "strength",
@@ -207,11 +247,18 @@
         "value_consistency",
         "value_alignment"
       ],
-      "settings": {}
+      "name": "Fortalezas AMMIS",
+      "settings": {
+        "eyebrow": "Fortalezas AMMIS",
+        "heading": "Códigos autorais, feitos para permanecer",
+        "text": "Uma combinação de design, matéria-prima e trabalho especializado que dá consistência ao produto e à parceria.",
+        "values_eyebrow": "Valores da parceria",
+        "values_heading": "Relações consistentes começam nos detalhes",
+        "values_text": "Atenção às necessidades de cada parceiro, qualidade em cada etapa e alinhamento com a identidade da marca."
+      }
     },
     "wholesale_partnership_paths": {
       "type": "wholesale-partnership-paths",
-      "name": "Evolução e formas de pedido",
       "blocks": {
         "opportunity_exclusivity": {
           "type": "opportunity",
@@ -280,7 +327,15 @@
         "order_media",
         "order_personal"
       ],
-      "settings": {}
+      "name": "Evolução e formas de pedido",
+      "settings": {
+        "eyebrow": "Possibilidades de evolução",
+        "heading": "Uma parceria que pode crescer com a sua loja",
+        "text": "Conforme a estratégia e o potencial comercial, novas possibilidades podem ser construídas ao longo da relação.",
+        "order_eyebrow": "Faça seu pedido do seu jeito",
+        "order_heading": "O relacionamento comercial vai além do catálogo online",
+        "order_text": "Escolha o formato que melhor acompanha o momento da sua loja e a construção do seu mix."
+      }
     },
     "main": {
       "type": "main-page",
@@ -292,7 +347,6 @@
     },
     "slideshow_tGPdzb": {
       "type": "slideshow",
-      "disabled": true,
       "blocks": {
         "slideshow_item_NNKChX": {
           "type": "slideshow-item",
@@ -335,6 +389,7 @@
         "slideshow_item_NNKChX",
         "slideshow_item_Hwtj8M"
       ],
+      "disabled": true,
       "custom_css": [],
       "name": "t:sections.slideshow.name",
       "settings": {
@@ -360,7 +415,14 @@
         "title": "Catálogo Atacado",
         "collection": "inverno-27",
         "branding_book_pdf": "https://cdn.shopify.com/s/files/1/0634/2233/3030/files/BRANDING_BOOK_compressed.pdf?v=1773849110",
-        "branding_book_text": "Baixar Branding Book AMMIS"
+        "branding_book_text": "Baixar Branding Book AMMIS",
+        "access_eyebrow": "Área exclusiva para parceiros AMMIS",
+        "access_heading": "Acesse o catálogo de atacado",
+        "access_description": "Faça login para visualizar produtos, preços e condições comerciais.",
+        "login_button_label": "Fazer login",
+        "partner_signup_text": "Ainda não é parceiro?",
+        "partner_signup_button_label": "Conhecer cadastro de revendedores",
+        "partner_signup_link": ""
       }
     }
   },
