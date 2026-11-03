@@ -10,6 +10,7 @@
 		show_vendor: true
 	%}
 {% endcomment %}
+{% unless product_card_product.tags contains 'atacado' %}
 {% if loop_index == blank %}
 	{% assign loop_index = 2 %}
 {% endif %}
@@ -349,3 +350,4 @@
 	</div>
 	<a href="{{ product_card_product.url | default: '#' }}" class="link link--overlay card-wrapper__link--overlay js-color-swatches-link" aria-label="{{ 'accessibility.product_link' | t }}"></a>
 </div>
+{% endunless %}

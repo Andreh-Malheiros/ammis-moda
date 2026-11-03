@@ -11,6 +11,8 @@
   {% render 'product-card', show_vendor: section.settings.show_vendor %}
 {% endcomment %}
 
+{% unless product_card_product.tags contains 'atacado' %}
+
 {%- if settings.quickview_show or settings.show_on_mobile -%}
   {%- assign first_3d_model = product_card_product.media | where: 'media_type', 'model' | first -%}
   {%- if first_3d_model -%}
@@ -675,3 +677,4 @@
     ></a>
   {% endif %}
 </div>
+{% endunless %}
