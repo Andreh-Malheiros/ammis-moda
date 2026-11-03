@@ -48,12 +48,14 @@
           {% for block in order_blocks %}
             <article class="wholesale-partnership-paths__order-option" {{ block.shopify_attributes }}>
               <span class="wholesale-partnership-paths__order-mark" aria-hidden="true">↗</span>
-              {% if block.settings.heading != blank %}
-                <h4>{{ block.settings.heading | escape }}</h4>
-              {% endif %}
-              {% if block.settings.text != blank %}
-                <p>{{ block.settings.text | escape }}</p>
-              {% endif %}
+              <div class="wholesale-partnership-paths__order-option-content">
+                {% if block.settings.heading != blank %}
+                  <h4>{{ block.settings.heading | escape }}</h4>
+                {% endif %}
+                {% if block.settings.text != blank %}
+                  <p>{{ block.settings.text | escape }}</p>
+                {% endif %}
+              </div>
             </article>
           {% endfor %}
         </div>
