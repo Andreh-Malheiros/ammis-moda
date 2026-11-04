@@ -944,6 +944,14 @@
                       </div>
                     {% endif %}
 
+                    {% if template.suffix == 'b2b-readonly' and customer == blank %}
+                      <a
+                        href="{{ routes.storefront_login_url }}?return_to={{ request.path | url_encode }}"
+                        class="button button--tertiary focus-inset"
+                      >
+                        Entrar para adicionar ao carrinho
+                      </a>
+                    {% else %}
                     <product-form class="product-form" data-hide-errors="{{ gift_card_recipient_feature_active }}">
                       <div class="product-form__error-message-wrapper" role="alert" hidden>
                         <svg
@@ -1096,6 +1104,7 @@
                         </div>
                       {%- endform -%}
                     </product-form>
+                    {% endif %}
                   </div>
 
                 {%- when 'pickup_availability' -%}
