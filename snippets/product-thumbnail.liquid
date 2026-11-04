@@ -14,6 +14,11 @@
     %}
 {% endcomment %}
 {% liquid
+  assign image_loading = 'lazy'
+  if lazy_load == false or position == 'featured'
+    assign image_loading = 'eager'
+  endif
+
   case section.settings.gallery_type
     when "thumbs_aside" or "single_aside"
       assign padding_bottom = 136.0
@@ -44,7 +49,7 @@
       <span class="product__media-icon motion-reduce">{% render 'icon-play' %}</span>
       <div class="product__media media" style="padding-top: {{ 1 | divided_by: media.preview_image.aspect_ratio | times: 100 }}%;">
         {{ media.preview_image | image_url: width: 1946 | image_tag:
-          loading: 'lazy',
+          loading: image_loading,
           widths: widths,
           sizes: sizes
         }}
@@ -53,7 +58,7 @@
   {%- else -%}
     <div class="product__media media" style="padding-top: {{ 1 | divided_by: media.preview_image.aspect_ratio | times: 100 }}%;">
       {{ media.preview_image | image_url: width: media.preview_image.width | image_tag:
-        loading: 'lazy',
+        loading: image_loading,
         widths: widths,
         sizes: sizes
       }}
@@ -117,7 +122,7 @@
 
   <div class="product__media">
       {{ media.preview_image | image_url: width: media.preview_image.width | image_tag:
-      loading: 'lazy',
+      loading: image_loading,
       widths: widths,
       sizes: sizes,
       class: class
@@ -152,7 +157,7 @@
     </span>
 
     {{ media.preview_image | image_url: width: 1946 | image_tag:
-      loading: 'lazy',
+      loading: image_loading,
       widths: '246, 493, 600, 713, 823, 990, 1100, 1206, 1346, 1426, 1646, 1946',
       sizes: sizes
     }}
