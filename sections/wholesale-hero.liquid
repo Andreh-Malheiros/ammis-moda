@@ -3,6 +3,14 @@
   if hero_image == blank and section.settings.mobile_image != blank
     assign hero_image = section.settings.mobile_image
   endif
+  assign primary_button_link = section.settings.primary_button_link
+  if primary_button_link == blank
+    assign primary_button_link = '/pages/revendedor#cadastro-revendedor'
+  endif
+  assign commercial_button_link = section.settings.commercial_button_link
+  if commercial_button_link == blank
+    assign commercial_button_link = '/pages/contato'
+  endif
 -%}
 
 <section
@@ -52,27 +60,15 @@
 
       <div class="wholesale-hero__actions" aria-label="Acessos do atacado AMMIS">
         {%- if section.settings.primary_button_label != blank -%}
-          {%- if section.settings.primary_button_link != blank -%}
-            <a class="wholesale-hero__cta wholesale-hero__cta--primary" href="{{ section.settings.primary_button_link | escape }}">
-              {{ section.settings.primary_button_label | escape }}
-            </a>
-          {%- else -%}
-            <span class="wholesale-hero__cta wholesale-hero__cta--primary wholesale-hero__cta--disabled" aria-disabled="true">
-              {{ section.settings.primary_button_label | escape }}
-            </span>
-          {%- endif -%}
+          <a class="wholesale-hero__cta wholesale-hero__cta--primary" href="{{ primary_button_link | escape }}">
+            {{ section.settings.primary_button_label | escape }}
+          </a>
         {%- endif -%}
 
         {%- if section.settings.commercial_button_label != blank -%}
-          {%- if section.settings.commercial_button_link != blank -%}
-            <a class="wholesale-hero__cta wholesale-hero__cta--secondary" href="{{ section.settings.commercial_button_link | escape }}">
-              {{ section.settings.commercial_button_label | escape }}
-            </a>
-          {%- else -%}
-            <span class="wholesale-hero__cta wholesale-hero__cta--secondary wholesale-hero__cta--disabled" aria-disabled="true">
-              {{ section.settings.commercial_button_label | escape }}
-            </span>
-          {%- endif -%}
+          <a class="wholesale-hero__cta wholesale-hero__cta--secondary" href="{{ commercial_button_link | escape }}">
+            {{ section.settings.commercial_button_label | escape }}
+          </a>
         {%- endif -%}
 
         {%- if section.settings.partnership_button_label != blank -%}
@@ -92,6 +88,9 @@
     position: relative;
     isolation: isolate;
     display: flex;
+    width: calc(100% + 4rem);
+    margin-left: -2rem;
+    margin-right: -2rem;
     min-height: clamp(42rem, 64vh, 64rem);
     overflow: hidden;
     background: rgb(var(--color-background));
@@ -456,7 +455,7 @@
       "type": "url",
       "id": "primary_button_link",
       "label": "Link: Quero me cadastrar",
-      "info": "Deixe vazio até confirmar a página de destino."
+      "info": "Se vazio, direciona para o formulário de cadastro de lojista."
     },
     {
       "type": "text",
@@ -468,7 +467,7 @@
       "type": "url",
       "id": "commercial_button_link",
       "label": "Link: Falar com o comercial",
-      "info": "Configure o destino comercial quando o link oficial estiver definido."
+      "info": "Se vazio, direciona para a página de contato AMMIS."
     },
     {
       "type": "text",
