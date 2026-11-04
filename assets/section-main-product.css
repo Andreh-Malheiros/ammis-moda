@@ -3024,3 +3024,42 @@ details.accordion-item summary:focus {
     padding-left: 1.2rem;
   }
 }
+
+/* Keep wholesale product photos fully visible within the viewport. */
+body.template-product-b2b-readonly .product__media-list.media_size-auto {
+  --wholesale-product-media-max-height: min(80vh, calc(100vh - var(--countdown-height, 0px) - var(--announcement-height, 0px) - var(--header-height, 0px) - 8rem));
+  max-height: var(--wholesale-product-media-max-height);
+}
+
+body.template-product-b2b-readonly .product__media-list.media_size-auto .product__media-item,
+body.template-product-b2b-readonly .product__media-list.media_size-auto .product__media {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: var(--wholesale-product-media-max-height);
+  padding-top: 0 !important;
+}
+
+body.template-product-b2b-readonly .product__media-list.media_size-auto .product__media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.template-product-b2b-readonly .product__media-list.media_size-auto .product__media img {
+  position: static !important;
+  inset: auto !important;
+  display: block;
+  width: auto !important;
+  max-width: 100%;
+  height: auto !important;
+  max-height: var(--wholesale-product-media-max-height);
+  object-fit: contain;
+  object-position: center;
+}
+
+@supports (height: 100svh) {
+  body.template-product-b2b-readonly .product__media-list.media_size-auto {
+    --wholesale-product-media-max-height: min(80svh, calc(100svh - var(--countdown-height, 0px) - var(--announcement-height, 0px) - var(--header-height, 0px) - 8rem));
+    max-height: var(--wholesale-product-media-max-height);
+  }
+}

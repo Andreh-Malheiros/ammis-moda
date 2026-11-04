@@ -28,20 +28,6 @@
           "type": "price",
           "settings": {}
         },
-        "yagi_automatic_discount_helper_auto_discounted_price_product_CeEyWT": {
-          "type": "shopify://apps/yagi-automatic-discount-helper/blocks/auto_discounted_price_product/f78e1611-40b5-4fae-be5c-b92cdb0947ec",
-          "settings": {
-            "show_sale_text": false,
-            "sale_text": "",
-            "hide_original_price": true,
-            "use_compare_at_price": true,
-            "require_login": false,
-            "hide_for_b2b": false,
-            "show_vat_price": false,
-            "deny_vat_price": false,
-            "fix_change_variant_price": false
-          }
-        },
         "inventory": {
           "type": "inventory",
           "disabled": true,
@@ -112,7 +98,6 @@
         "custom_liquid_X7Xkaj",
         "title",
         "price",
-        "yagi_automatic_discount_helper_auto_discounted_price_product_CeEyWT",
         "inventory",
         "variant_picker",
         "buy_buttons",
@@ -126,8 +111,8 @@
         "desktop_alignment": "right",
         "mobile_alignment": "before",
         "slider_direction": "vertical",
-        "image_ratio": "portrait",
-        "image_fit": "cover",
+        "image_ratio": "auto",
+        "image_fit": "contain",
         "enable_full_screen": false,
         "header_overlay": false
       }
