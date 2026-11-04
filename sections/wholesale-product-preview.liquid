@@ -21,29 +21,7 @@
     {%- if preview_collection != blank and preview_collection.products_count > 0 -%}
       <div class="wholesale-product-preview__grid">
         {%- for product in preview_collection.products limit: 16 -%}
-          <article class="wholesale-product-preview__card">
-            <a class="wholesale-product-preview__image-link" href="{{ product.url }}" aria-label="Ver {{ product.title | escape }}">
-              {%- if product.featured_image != blank -%}
-                {{
-                  product.featured_image
-                  | image_url: width: 720
-                  | image_tag:
-                    loading: 'lazy',
-                    widths: '320, 480, 640, 720',
-                    sizes: '(min-width: 990px) 25vw, (min-width: 750px) 50vw, 50vw',
-                    class: 'wholesale-product-preview__image',
-                    alt: product.title
-                }}
-              {%- else -%}
-                {{ 'product-1' | placeholder_svg_tag: 'wholesale-product-preview__image wholesale-product-preview__placeholder' }}
-              {%- endif -%}
-            </a>
-
-            <h2 class="wholesale-product-preview__title">
-              <a href="{{ product.url }}">{{ product.title | escape }}</a>
-            </h2>
-            <p class="wholesale-product-preview__price">{{ product.price | money }}</p>
-          </article>
+          {% render 'wholesale-product-card', product: product, card_id: section.id %}
         {%- endfor -%}
       </div>
 
@@ -89,47 +67,6 @@
     gap: 2.4rem 1.8rem;
   }
 
-  #shopify-section-{{ section.id }} .wholesale-product-preview__card {
-    min-width: 0;
-  }
-
-  #shopify-section-{{ section.id }} .wholesale-product-preview__image-link {
-    display: block;
-    overflow: hidden;
-    aspect-ratio: 3 / 4;
-    background: #f5f3f0;
-  }
-
-  #shopify-section-{{ section.id }} .wholesale-product-preview__image {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 250ms ease;
-  }
-
-  #shopify-section-{{ section.id }} .wholesale-product-preview__image-link:hover .wholesale-product-preview__image {
-    transform: scale(1.03);
-  }
-
-  #shopify-section-{{ section.id }} .wholesale-product-preview__title {
-    margin: 1.2rem 0 0.5rem;
-    font-family: var(--font-heading-family);
-    font-size: 1.5rem;
-    font-weight: 500;
-    line-height: 1.35;
-  }
-
-  #shopify-section-{{ section.id }} .wholesale-product-preview__title a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  #shopify-section-{{ section.id }} .wholesale-product-preview__price {
-    margin: 0;
-    font-size: 1.4rem;
-    font-weight: 600;
-  }
 
   #shopify-section-{{ section.id }} .wholesale-product-preview__button {
     display: inline-flex;
@@ -183,12 +120,10 @@
     }
 
     #shopify-section-{{ section.id }} .wholesale-product-preview__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 2rem 1rem;
     }
 
-    #shopify-section-{{ section.id }} .wholesale-product-preview__title {
-      font-size: 1.3rem;
-    }
 
     #shopify-section-{{ section.id }} .wholesale-product-preview__button {
       width: 100%;
