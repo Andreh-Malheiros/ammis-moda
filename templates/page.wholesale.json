@@ -424,9 +424,18 @@
         "partner_signup_button_label": "Conhecer cadastro de revendedores",
         "partner_signup_link": ""
       }
+    },
+    "wholesale_product_preview": {
+      "type": "wholesale-product-preview",
+      "name": "Prévia catálogo atacado",
+      "settings": {
+        "collection": "inverno-27",
+        "catalog_pdf": "https://drive.google.com/file/d/1HuY2-ac-ATTgXx9J7lKmpRJylnmrKRJn/view?usp=sharing"
+      }
     }
   },
   "order": [
+    "wholesale_product_preview",
     "wholesale_hero",
     "wholesale_partnership",
     "wholesale_commercial_model",
