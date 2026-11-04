@@ -28,6 +28,15 @@
       {%- endif -%}
     {%- endfor -%}
   {%- endif -%}
+  {%- assign empty_cart_button_url = routes.all_products_collection_url -%}
+  {%- if is_b2b_cart -%}
+    {%- assign wholesale_page = pages['atacado'] -%}
+    {%- if wholesale_page != blank -%}
+      {%- assign empty_cart_button_url = wholesale_page.url -%}
+    {%- else -%}
+      {%- assign empty_cart_button_url = '/pages/atacado' -%}
+    {%- endif -%}
+  {%- endif -%}
   <div id="CartDrawer" class="cart-drawer {% if settings.notification %} notification {% endif %}">
     <div id="CartDrawer-Overlay" class="cart-drawer__overlay"></div>
     <div
@@ -142,7 +151,7 @@
               <p class="cart__empty-dec secondary_text">{{ settings.empty_cart_dec }}</p>
             </div>
             <a
-              href="{{ routes.all_products_collection_url }}"
+              href="{{ empty_cart_button_url }}"
               class="button button--{{ settings.cart_button_style }} focus-inset"
             >
               <span> {{ 'general.cart.button_label' | t }} </span>
