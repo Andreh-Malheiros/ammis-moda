@@ -3025,41 +3025,37 @@ details.accordion-item summary:focus {
   }
 }
 
-/* Keep wholesale product photos fully visible within the viewport. */
-body.template-product-b2b-readonly .product__media-list.media_size-auto {
+/* Reserve the wholesale gallery before images or Swiper finish loading. */
+body.template-product-b2b-readonly .js-media-list.media_size-auto {
   --wholesale-product-media-max-height: min(80vh, calc(100vh - var(--countdown-height, 0px) - var(--announcement-height, 0px) - var(--header-height, 0px) - 8rem));
+  height: var(--wholesale-product-media-max-height) !important;
   max-height: var(--wholesale-product-media-max-height);
 }
 
-body.template-product-b2b-readonly .product__media-list.media_size-auto .product__media-item,
-body.template-product-b2b-readonly .product__media-list.media_size-auto .product__media {
-  height: auto !important;
+body.template-product-b2b-readonly .js-media-list.media_size-auto > .swiper-wrapper,
+body.template-product-b2b-readonly .js-media-list.media_size-auto .product__media-item,
+body.template-product-b2b-readonly .js-media-list.media_size-auto .product__modal-opener,
+body.template-product-b2b-readonly .js-media-list.media_size-auto .product__media {
+  height: 100% !important;
   min-height: 0 !important;
-  max-height: var(--wholesale-product-media-max-height);
+  max-height: 100%;
   padding-top: 0 !important;
 }
 
-body.template-product-b2b-readonly .product__media-list.media_size-auto .product__media {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-body.template-product-b2b-readonly .product__media-list.media_size-auto .product__media img {
-  position: static !important;
-  inset: auto !important;
+body.template-product-b2b-readonly .js-media-list.media_size-auto .product__media img {
+  position: absolute !important;
+  inset: 0 !important;
   display: block;
-  width: auto !important;
+  width: 100% !important;
   max-width: 100%;
-  height: auto !important;
-  max-height: var(--wholesale-product-media-max-height);
+  height: 100% !important;
+  max-height: 100%;
   object-fit: contain;
   object-position: center;
 }
 
 @supports (height: 100svh) {
-  body.template-product-b2b-readonly .product__media-list.media_size-auto {
+  body.template-product-b2b-readonly .js-media-list.media_size-auto {
     --wholesale-product-media-max-height: min(80svh, calc(100svh - var(--countdown-height, 0px) - var(--announcement-height, 0px) - var(--header-height, 0px) - 8rem));
-    max-height: var(--wholesale-product-media-max-height);
   }
 }
