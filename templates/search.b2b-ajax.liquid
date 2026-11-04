@@ -1,12 +1,15 @@
   {% layout none %}
 
-  {% unless customer or request.design_mode %}
-    <p style="grid-column: 1/-1; text-align: center; padding: 5rem; font-size: 1.6rem;">
-      A busca do catálogo B2B está disponível somente para parceiros autenticados.
-    </p>
-  {% else %}
   {% paginate search.results by 50 %}
-    {% if search.results_count == 0 %}
+    {% assign b2b_result_count = 0 %}
+    {% for item in search.results %}
+      {% if item.object_type == 'product' %}
+        {% if item.tags contains 'atacado' %}
+          {% assign b2b_result_count = b2b_result_count | plus: 1 %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% if b2b_result_count == 0 %}
       <p style="grid-column: 1/-1; text-align: center; padding: 5rem; font-size: 1.6rem;">
         Nenhum produto encontrado no atacado para sua busca.
       </p>
@@ -14,6 +17,7 @@
       {% for item in search.results %}
         {% comment %} Filtro garantido para processar apenas produtos {% endcomment %}
         {% if item.object_type == 'product' %}
+          {% if item.tags contains 'atacado' %}
           {% assign product = item %}
           
           <div class="b2b-card" style="border: 1px solid var(--color-border); padding: 1.5rem; border-radius: 8px; display: flex; flex-direction: column; background: var(--color-background);">
@@ -54,6 +58,7 @@
             <div style="flex-grow: 1;"></div>
 
             {% comment %} Formulário de Compra e Swatches [cite: 98, 134] {% endcomment %}
+            {% if customer %}
             <product-form>
               <form method="post" action="/cart/add" class="b2b-add-form" style="margin: 0; display: flex; flex-direction: column; gap: 1.5rem;">
                 {% unless product.has_only_default_variant %}
@@ -115,9 +120,14 @@
                 </button>
               </form>
             </product-form>
+            {% else %}
+              <a class="button button--primary" href="{{ routes.storefront_login_url }}?return_to={{ product.url | url_encode }}" style="width:100%; margin-top:0.5rem; text-align:center;">
+                Entrar para adicionar ao carrinho
+              </a>
+            {% endif %}
           </div>
+          {% endif %}
         {% endif %}
       {% endfor %}
     {% endif %}
   {% endpaginate %}
-  {% endunless %}

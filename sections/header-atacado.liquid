@@ -98,7 +98,6 @@
 			{% endif %}
 </header>
 
-{% if customer or request.design_mode %}
 {% comment %} ==========================================
            BUSCA B2B INTEGRADA NA LINHA (ÍCONE + OVERLAY)
            ========================================== {% endcomment %}
@@ -152,10 +151,15 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <form id="b2b-ajax-search-form" style="flex-grow:1; margin:0; display:flex;">
-              <input type="text" id="b2b-search-input" placeholder="O que você procura no atacado?" autocomplete="off">
+            <form id="b2b-ajax-search-form" action="{{ routes.search_url }}" method="get" role="search" style="flex-grow:1; margin:0; display:flex; align-items:center;">
+              <input type="hidden" name="type" value="product">
+              <input type="hidden" name="view" value="b2b-ajax">
+              <input type="search" id="b2b-search-input" name="q" aria-label="Buscar produtos no atacado" placeholder="O que você procura no atacado?" autocomplete="off" required>
+              <button type="submit" aria-label="Buscar no atacado" style="background:none; border:0; padding:1rem; color:inherit; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              </button>
             </form>
-            <button type="button" onclick="document.getElementById('b2b-search-overlay').style.display='none'" style="background:none; border:none; cursor:pointer; font-size:2.5rem;">&times;</button>
+            <button type="button" aria-label="Fechar busca" onclick="document.getElementById('b2b-search-overlay').style.display='none'" style="background:none; border:none; cursor:pointer; font-size:2.5rem;">&times;</button>
           </div>
         </div>
 
@@ -197,8 +201,16 @@
       grid.style.opacity = '0.5';
       grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 5rem; font-size: 1.6rem;">Buscando produtos...</p>';
 
-      fetch(`/search?q=${encodeURIComponent(query + ' AND tag:atacado')}&type=product&view=b2b-ajax`)
-        .then(response => response.text())
+      const searchUrl = new URL({{ routes.search_url | json }}, window.location.origin);
+      searchUrl.searchParams.set('q', `${query} AND tag:atacado`);
+      searchUrl.searchParams.set('type', 'product');
+      searchUrl.searchParams.set('view', 'b2b-ajax');
+
+      fetch(searchUrl.toString())
+        .then(response => {
+          if (!response.ok) throw new Error('Falha ao buscar produtos.');
+          return response.text();
+        })
         .then(html => {
           grid.style.opacity = '1';
           grid.innerHTML = html;
@@ -210,6 +222,7 @@
     });
   }
 
+  {% if customer or request.design_mode %}
   // 3. INTERCEPTOR DE CARRINHO (ATUALIZAÇÃO EM TEMPO REAL)
   document.addEventListener('submit', function(e) {
     const form = e.target.closest('.b2b-add-form');
@@ -280,9 +293,9 @@
       }
     });
   }, true);
+  {% endif %}
 });
 </script>
-{% endif %}
 
 		</{% if section.settings.enable_sticky_header %}sticky-header{% else %}div{% endif %}>
 {% endunless %}
