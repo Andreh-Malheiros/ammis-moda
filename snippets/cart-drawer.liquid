@@ -32,9 +32,9 @@
   {%- if is_b2b_cart -%}
     {%- assign wholesale_page = pages['atacado'] -%}
     {%- if wholesale_page != blank -%}
-      {%- assign empty_cart_button_url = wholesale_page.url -%}
+      {%- assign empty_cart_button_url = wholesale_page.url | append: '#catalogo-atacado' -%}
     {%- else -%}
-      {%- assign empty_cart_button_url = '/pages/atacado' -%}
+      {%- assign empty_cart_button_url = '/pages/atacado#catalogo-atacado' -%}
     {%- endif -%}
   {%- endif -%}
   <div id="CartDrawer" class="cart-drawer {% if settings.notification %} notification {% endif %}">
