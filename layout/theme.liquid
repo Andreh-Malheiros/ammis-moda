@@ -647,7 +647,17 @@
       })();
     </script>
 
-    {% unless template.suffix == 'b2b-readonly' or template contains 'wholesale' or template contains 'atacado' %}
+    {% liquid
+      assign has_b2b_cart_items = false
+      for cart_item in cart.items
+        if cart_item.product.tags contains 'atacado'
+          assign has_b2b_cart_items = true
+          break
+        endif
+      endfor
+    %}
+
+    {% unless template.suffix == 'b2b-readonly' or template contains 'wholesale' or template contains 'atacado' or has_b2b_cart_items %}
       <style>
         /* Ocultar botões do PayPal e outros checkouts alternativos */
         #buttons-container,
@@ -1011,21 +1021,21 @@
       </script>
     {% endunless %}
 
-    {% comment %} ===== LEÃO DE CHÁCARA B2C: Bloqueia produtos de atacado APENAS no Varejo ===== {% endcomment %}
+    {% comment %} ===== Mantém os itens do carrinho separados entre atacado e varejo ===== {% endcomment %}
     {% unless template.suffix == 'b2b-readonly' or template contains 'wholesale' or template contains 'atacado' %}
-      {% if cart.item_count > 0 %}
+      {% if cart.item_count > 0 and has_b2b_cart_items %}
         <script>
           (function() {
             let updates = {};
-            let hasB2BItems = false;
+            let hasRetailItems = false;
             {% for item in cart.items %}
-              {% if item.product.tags contains 'atacado' %}
+              {% unless item.product.tags contains 'atacado' %}
                 updates['{{ item.key }}'] = 0;
-                hasB2BItems = true;
-              {% endif %}
+                hasRetailItems = true;
+              {% endunless %}
             {% endfor %}
 
-            if (hasB2BItems) {
+            if (hasRetailItems) {
               fetch(window.Shopify.routes.root + 'cart/update.js', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
