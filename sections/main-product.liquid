@@ -947,7 +947,8 @@
                     {% if template.suffix == 'b2b-readonly' and customer == blank %}
                       <a
                         href="{{ routes.storefront_login_url }}?return_to={{ request.path | url_encode }}"
-                        class="button button--tertiary focus-inset"
+                        class="button button--primary focus-inset"
+                        style="display: flex; align-items: center; justify-content: center; width: 100%; min-height: 5.2rem; padding: 1.2rem 1.6rem; text-align: center; line-height: 1.3; white-space: normal;"
                       >
                         Entrar para adicionar ao carrinho
                       </a>
