@@ -87,7 +87,13 @@
   or template_base == 'customers/register'
 %}
 
-	<{% if section.settings.sticky_header_type != 'none' %}sticky-header data-sticky-type="{{ section.settings.sticky_header_type }}"{% else %}div{% endif %} class="header-wrapper {% if section.settings.enable_border %}header--border{% endif %}">
+  {% liquid
+    assign header_tag = 'div'
+    if section.settings.sticky_header_type != 'none'
+      assign header_tag = 'sticky-header'
+    endif
+  %}
+  <{{ header_tag }} data-sticky-type="{{ section.settings.sticky_header_type }}" class="header-wrapper {% if section.settings.enable_border %}header--border{% endif %}">
 		<header class=" {% if section.settings.sticky_header_type != 'none' and section.settings.header_type == 'center-logo-burger' %} header-always {% endif %} header header--{{ section.settings.header_type }} {% if section.settings.header_type == 'center-logo-burger' %}header--center-logo{% endif %} {% if section.settings.menu != blank %}header--has-menu{% endif %} {% if section.settings.header_animation_type == 'slide' %} header-animation-slide {% endif %} container">	
 			{% if section.settings.header_type == 'left-logo' %}
 				{% render 'header-left-logo' %}
@@ -151,10 +157,8 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <form id="b2b-ajax-search-form" action="{{ routes.search_url }}" method="get" role="search" style="flex-grow:1; margin:0; display:flex; align-items:center;">
-              <input type="hidden" name="type" value="product">
-              <input type="hidden" name="view" value="b2b-ajax">
-              <input type="search" id="b2b-search-input" name="q" aria-label="Buscar produtos no atacado" placeholder="O que você procura no atacado?" autocomplete="off" required>
+            <form id="b2b-ajax-search-form" data-catalog-url="{{ routes.root_url }}pages/atacado" data-error="{{ 'b2b_search.error' | t | escape }}" action="{{ routes.root_url }}pages/atacado" method="get" role="search" style="flex-grow:1; margin:0; display:flex; align-items:center;">
+              <input type="search" id="b2b-search-input" name="b2b_q" aria-label="Buscar produtos no atacado" placeholder="O que você procura no atacado?" autocomplete="off" required>
               <button type="submit" aria-label="Buscar no atacado" style="background:none; border:0; padding:1rem; color:inherit; cursor:pointer; display:flex; align-items:center; justify-content:center;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
               </button>
@@ -163,6 +167,7 @@
           </div>
         </div>
 
+<script src="{{ 'wholesale-search.js' | asset_url }}" defer="defer"></script>
 <script>
  document.addEventListener('DOMContentLoaded', function() {
   // 1. INJEÇÃO DO ÍCONE DE BUSCA
@@ -171,6 +176,7 @@
     const searchBtn = document.createElement('button');
     searchBtn.className = 'b2b-header-search-icon';
     searchBtn.setAttribute('type', 'button');
+    searchBtn.setAttribute('aria-label', {{ 'b2b_search.open' | t | json }});
     searchBtn.innerHTML = `
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -184,42 +190,6 @@
       }
     };
     iconsContainer.prepend(searchBtn);
-  }
-
-  // 2. LÓGICA DE BUSCA AJAX (USA O TEMPLATE ALTERNATIVO)
-  const searchForm = document.getElementById('b2b-ajax-search-form');
-  if (searchForm) {
-    searchForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const query = document.getElementById('b2b-search-input').value.trim();
-      const grid = document.querySelector('.b2b-grid');
-      const overlay = document.getElementById('b2b-search-overlay');
-
-      if (!query || !grid) return;
-
-      overlay.style.display = 'none';
-      grid.style.opacity = '0.5';
-      grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 5rem; font-size: 1.6rem;">Buscando produtos...</p>';
-
-      const searchUrl = new URL({{ routes.search_url | json }}, window.location.origin);
-      searchUrl.searchParams.set('q', `${query} AND tag:atacado`);
-      searchUrl.searchParams.set('type', 'product');
-      searchUrl.searchParams.set('view', 'b2b-ajax');
-
-      fetch(searchUrl.toString())
-        .then(response => {
-          if (!response.ok) throw new Error('Falha ao buscar produtos.');
-          return response.text();
-        })
-        .then(html => {
-          grid.style.opacity = '1';
-          grid.innerHTML = html;
-        })
-        .catch(error => {
-          grid.style.opacity = '1';
-          grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 5rem; font-size: 1.6rem;">Erro ao carregar resultados.</p>';
-        });
-    });
   }
 
   {% if customer or request.design_mode %}
@@ -297,7 +267,7 @@
 });
 </script>
 
-		</{% if section.settings.enable_sticky_header %}sticky-header{% else %}div{% endif %}>
+		</{{ header_tag }}>
 {% endunless %}
 
 {% javascript %}

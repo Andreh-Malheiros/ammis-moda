@@ -649,5 +649,13 @@
   "product-carousel": {
     "previous": "Previous",
     "next": "Next"
+  },
+  "b2b_search": {
+    "open": "Buscar produtos no atacado",
+    "loading": "Buscando produtos…",
+    "results": "{{ count }} produto(s) encontrado(s) para “{{ query }}”.",
+    "empty": "Nenhum produto encontrado no atacado para “{{ query }}”.",
+    "error": "Não foi possível pesquisar o catálogo. Tente novamente.",
+    "clear": "Limpar busca"
   }
 }

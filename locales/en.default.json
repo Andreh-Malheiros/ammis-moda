@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "general": {
 	  "size": "Size",
@@ -640,5 +649,13 @@
 	"product-carousel": {
 		"previous": "Previous",
 		"next": "Next"
-	}
+	},
+  "b2b_search": {
+    "open": "Search wholesale products",
+    "loading": "Searching products…",
+    "results": "{{ count }} product(s) found for “{{ query }}”.",
+    "empty": "No wholesale products found for “{{ query }}”.",
+    "error": "Unable to search the catalog. Please try again.",
+    "clear": "Clear search"
+  }
 }

@@ -32,16 +32,27 @@
   {% endif %}
 
   {% if section.settings.collection != blank %}
-    <div
-      class="b2b-grid"
-      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 3rem;"
-    >
-      {% paginate section.settings.collection.products by 250 %}
+    <div class="b2b-search-feedback" hidden>
+      <p class="b2b-search-status" role="status" tabindex="-1"
+        data-loading="{{ 'b2b_search.loading' | t | escape }}"
+        data-results="{{ 'b2b_search.results' | t: count: '__count__', query: '__query__' | escape }}"
+        data-empty="{{ 'b2b_search.empty' | t: query: '__query__' | escape }}"
+        data-error="{{ 'b2b_search.error' | t | escape }}"></p>
+      <button type="button" class="button button--secondary b2b-search-clear">{{ 'b2b_search.clear' | t }}</button>
+    </div>
+    {% paginate section.settings.collection.products by 250 %}
+      <div
+        class="b2b-grid"
+        data-section-id="{{ section.id }}"
+        data-next-page="{{ paginate.next.url | escape }}"
+        data-product-count="{{ section.settings.collection.products_count }}"
+        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 3rem;"
+      >
         {% for product in section.settings.collection.products %}
           {% render 'wholesale-product-card', product: product, card_id: section.id %}
         {% endfor %}
-      {% endpaginate %}
-    </div>
+      </div>
+    {% endpaginate %}
   {% else %}
     <p style="text-align: center; font-size: 1.6rem;">
       Selecione uma coleção B2B no menu lateral para exibir os produtos.
@@ -51,6 +62,11 @@
 
 {% comment %} Estilos e Elementos do Visualizador {% endcomment %}
 <style>
+  #catalogo-atacado .b2b-card[hidden],
+  #catalogo-atacado .b2b-search-feedback[hidden] { display: none !important; }
+  #catalogo-atacado .b2b-search-feedback { margin-bottom: 3rem; }
+  #catalogo-atacado .b2b-search-status { scroll-margin-top: 12rem; font-size: 1.6rem; }
+
   /* Estilos do Carrossel e Setas */
   .b2b-carousel::-webkit-scrollbar { display: none; }
   .b2b-carousel { -ms-overflow-style: none; scrollbar-width: none; }
