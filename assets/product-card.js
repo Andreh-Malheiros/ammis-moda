@@ -21,13 +21,27 @@ const createImageElement = (image, classes, sizes, productTitle) => {
 const checkSwatches = () => {
   document.querySelectorAll('.js-color-swatches-wrapper').forEach(wrapper => {
     wrapper.querySelectorAll('.js-color-swatches input').forEach(input => {
+      if (input.dataset.retailCardColorListener === 'true') return;
+      input.dataset.retailCardColorListener = 'true';
+
       input.addEventListener('click', (event) => {
         const primaryImage = wrapper.querySelector(".media--first");
         const secondaryImage = wrapper.querySelector(".media--second");
         const handleProduct = wrapper.dataset.product;
-        
-        if (event.currentTarget.checked && primaryImage) {
-          wrapper.querySelector('.js-color-swatches-link').setAttribute('href', event.currentTarget.dataset.variantLink);
+
+        if (event.currentTarget.checked) {
+          const productLink = wrapper.querySelector('.js-color-swatches-link');
+          if (productLink && event.currentTarget.dataset.variantLink) {
+            productLink.setAttribute('href', event.currentTarget.dataset.variantLink);
+          }
+
+          const sizeOptions = wrapper.querySelector('[data-retail-card-sizes]');
+          if (sizeOptions) {
+            sizeOptions.querySelectorAll('[data-retail-card-size-color]').forEach((group) => {
+              group.hidden = group.dataset.retailCardSizeColor !== event.currentTarget.value;
+            });
+          }
+
           if (wrapper.querySelector('.card__add-to-cart button[name="add"]')) {
             wrapper.querySelector('.card__add-to-cart button[name="add"]').setAttribute('aria-disabled', false);
             if (wrapper.querySelector('.card__add-to-cart button[name="add"] > span')) {
@@ -36,8 +50,10 @@ const checkSwatches = () => {
             }
             wrapper.querySelector('.card__add-to-cart input[name="id"]').value = event.currentTarget.dataset.variantId;
           }
-          
+
           const currentColor = event.currentTarget.value;
+
+          if (!primaryImage) return;
 
           jQuery.getJSON(window.Shopify.routes.root + `products/${handleProduct}.js`, function(product) {
             const variant = product.variants.filter(item => item.featured_media != null && item.options.includes(currentColor))[0];

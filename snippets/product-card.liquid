@@ -352,71 +352,12 @@
           {% render 'price', product: product_card_product, price_class: '' %}
         </div>
 
-        <style>
-          .custom-size-variants {
-              display: flex;
-              flex-wrap: wrap;
-              gap: 8px;
-              margin-top: 10px;
-              justify-content: flex-start;
-              /* CORREÇÃO DO BLOQUEIO: Eleva o container inteiro acima da camada invisível */
-              position: relative;
-              z-index: 99;
-              pointer-events: auto;
-          }
-          .custom-size-variants .size-badge {
-              display: inline-flex;
-              align-items: center;
-              justify-content: center;
-              min-width: 32px;
-              height: 28px;
-              padding: 0 6px;
-              border: 1px solid #dcdcdc;
-              border-radius: 4px;
-              font-size: 1.1rem;
-              color: #1a1a1a;
-              text-decoration: none;
-              background-color: transparent;
-              transition: border-color 0.2s ease, background-color 0.2s ease;
-              cursor: pointer;
-          }
-          .custom-size-variants .size-badge:hover {
-              border-color: #1a1a1a;
-              background-color: #f5f5f5;
-          }
-          .custom-size-variants .size-badge.size-badge--disabled {
-              color: #a3a3a3;
-              border-color: #ebebeb;
-              text-decoration: line-through;
-              pointer-events: none;
-          }
-        </style>
-
-        <div class="custom-size-variants">
-          {%- for option in product_card_product.options_with_values -%}
-            {%- assign option_name_downcase = option.name | downcase -%}
-            {%- if option_name_downcase == 'tamanho' or option_name_downcase == 'size' -%}
-              {%- for value in option.values -%}
-                {%- assign variant_available = false -%}
-
-                {%- for variant in product_card_product.variants -%}
-                  {%- if variant.options contains value and variant.available -%}
-                    {%- assign variant_available = true -%}
-                    {%- break -%}
-                  {%- endif -%}
-                {%- endfor -%}
-
-                <a
-                  href="{{ product_card_product.url }}"
-                  class="size-badge {% unless variant_available %}size-badge--disabled{% endunless %}"
-                  aria-label="Ver produto"
-                >
-                  {{ value }}
-                </a>
-              {%- endfor -%}
-            {%- endif -%}
-          {%- endfor -%}
-        </div>
+        {% render 'retail-card-variant-options',
+          product: product_card_product,
+          section_id: section_id,
+          card_id: add_id,
+          show_color_swatches: show_color_count
+        %}
         {% render 'auto-discounted-price', product: product_card_product %}
         {%- if show_desc and product_card_product.description != blank -%}
           <div class="card__description">
@@ -425,57 +366,6 @@
         {%- endif -%}
 
         <div class="product-parameters {% if settings.show_on_mobile %} quick-add-block-enable{% endif %}">
-          {% if show_color_count %}
-            {%- unless product_card_product.has_only_default_variant -%}
-              {%- for option in product_card_product.options_with_values -%}
-                {% liquid
-                  assign color_swatch = false
-                  assign product_option_name_first = ''
-                  assign color_trigger = settings.trigger_swatch | append: '<br />' | append: settings.trigger_swatch_other | strip | newline_to_br | split: '<br />'
-                  assign name_option = option.name | handle | strip
-
-                  for item in color_trigger
-                    assign item_temp = item | handle | strip
-                    if name_option == item_temp
-                      assign color_swatch = true
-                      assign product_option_name_first = item_temp
-                    endif
-                  endfor
-                %}
-
-                {% if product_card_product.available %}
-                {% endif %}
-                {%- if color_swatch -%}
-                  {% for product_option in product_card_product.options_with_values %}
-                    {% assign product_option_name = product_option.name | escape | downcase %}
-
-                    {% if product_option_name == product_option_name_first %}
-                      {% if settings.product_color_option_display == 'count' %}
-                        <div class="product_color-count subtitle">
-                          {{ product_option.values | size }}
-                          {{ 'products.product.colors' | t }}
-                        </div>
-                      {% endif %}
-                    {% endif %}
-                  {% endfor %}
-                {%- endif -%}
-                {% if settings.type_color_swatch == 'custom' and color_swatch %}
-                  {% if settings.product_color_option_display == 'value' %}
-                    <div class="product-form__controls product_color-count js-color-swatches">
-                      <div class="product-form__controls-group">
-                        {% render 'product-card-variant-options',
-                          product: product_card_product,
-                          option: option,
-                          no_form_id: true
-                        %}
-                      </div>
-                    </div>
-                  {% endif %}
-                {% endif %}
-              {%- endfor -%}
-            {%- endunless -%}
-          {% endif %}
-
           {% if show_size_count %}
             {%- unless product_card_product.has_only_default_variant -%}
               {%- for option in product_card_product.options_with_values -%}

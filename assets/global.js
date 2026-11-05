@@ -1802,8 +1802,7 @@ class ProductRecommendations extends HTMLElement {
 					};
 
 					const checkSwatches = () => {
-						document
-							.querySelectorAll(".js-color-swatches-wrapper")
+						this.querySelectorAll(".js-color-swatches-wrapper")
 							.forEach((wrapper) => {
 								wrapper
 									.querySelectorAll(".js-color-swatches input")
@@ -1815,13 +1814,18 @@ class ProductRecommendations extends HTMLElement {
 												wrapper.querySelector(".media--second");
 											const handleProduct = wrapper.dataset.product;
 
-											if (event.currentTarget.checked && primaryImage) {
-												wrapper
-													.querySelector(".js-color-swatches-link")
-													.setAttribute(
-														"href",
-														event.currentTarget.dataset.variantLink
-													);
+											if (event.currentTarget.checked) {
+												const productLink = wrapper.querySelector(".js-color-swatches-link");
+												if (productLink && event.currentTarget.dataset.variantLink) {
+													productLink.setAttribute("href", event.currentTarget.dataset.variantLink);
+												}
+												const sizeOptions = wrapper.querySelector("[data-retail-card-sizes]");
+												if (sizeOptions) {
+													sizeOptions.querySelectorAll("[data-retail-card-size-color]").forEach((group) => {
+														group.hidden = group.dataset.retailCardSizeColor !== event.currentTarget.value;
+													});
+												}
+												if (!primaryImage) return;
 												if (
 													wrapper.querySelector(
 														'.card__add-to-cart button[name="add"]'

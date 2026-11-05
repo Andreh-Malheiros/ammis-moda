@@ -1,0 +1,229 @@
+{% doc %}
+  Renders color swatches and size availability for a retail product card.
+
+  @param {product} product - Product shown in the card.
+  @param {string} [section_id] - Section containing the card.
+  @param {string} [card_id] - Unique card identifier within the section.
+  @param {boolean} [show_color_swatches] - Whether to display color swatches.
+{% enddoc %}
+
+{%- liquid
+  assign card_color_option = blank
+  assign card_size_option = blank
+  assign card_color_option_position = 0
+  assign card_size_option_position = 0
+  assign card_color_trigger_list = settings.trigger_swatch | append: '<br />' | append: settings.trigger_swatch_other | strip | newline_to_br | split: '<br />'
+  assign translated_size_name = 'general.size' | t | handle
+
+  for card_option in product.options_with_values
+    assign card_option_name = card_option.name | handle | strip
+    assign card_option_is_color = false
+
+    if card_option_name contains 'cor' or card_option_name contains 'color' or card_option_name contains 'colour'
+      assign card_option_is_color = true
+    endif
+
+    for card_color_trigger in card_color_trigger_list
+      assign card_color_trigger_name = card_color_trigger | handle | strip
+      if card_option_name == card_color_trigger_name
+        assign card_option_is_color = true
+      endif
+    endfor
+
+    if card_option_is_color and card_color_option_position == 0
+      assign card_color_option = card_option
+      assign card_color_option_position = card_option.position
+    endif
+
+    if card_option_name == translated_size_name or card_option_name == 'size' or card_option_name contains 'tamanho'
+      assign card_size_option = card_option
+      assign card_size_option_position = card_option.position
+    endif
+  endfor
+
+  assign card_color_index = card_color_option_position | minus: 1
+  assign card_size_index = card_size_option_position | minus: 1
+  assign card_selected_variant = product.selected_or_first_available_variant
+  assign card_selected_color = card_selected_variant.options[card_color_index]
+  assign card_instance_id = section_id | append: '-' | append: product.id | append: '-' | append: card_id
+-%}
+
+<div class="retail-card-variant-options">
+  {% if show_color_swatches and card_color_option_position > 0 %}
+    <div class="retail-card-color-swatches js-color-swatches" role="group" aria-label="Cores disponíveis">
+      {% for card_color_value in card_color_option.values %}
+        {% liquid
+          assign card_color_name = card_color_value.name | default: card_color_value
+          assign card_color_variant = blank
+          assign card_swatch_color = card_color_value.swatch.color
+          assign card_color_handle = card_color_name | handle
+
+          for variant in product.variants
+            if variant.available and variant.options[card_color_index] == card_color_name
+              assign card_color_variant = variant
+              break
+            endif
+          endfor
+
+          if card_swatch_color == blank and settings.custom_colors != blank
+            assign card_custom_colors = settings.custom_colors | strip | newline_to_br | split: '<br />'
+            for card_custom_color in card_custom_colors
+              assign card_custom_color_name = card_custom_color | split: ':' | first | handle | strip
+              if card_custom_color_name == card_color_handle
+                assign card_swatch_color = card_custom_color | split: ':' | last | strip
+                break
+              endif
+            endfor
+          endif
+
+          if card_swatch_color == blank
+            case card_color_handle
+              when 'azul'
+                assign card_swatch_color = '#0055ff'
+              when 'azul-claro'
+                assign card_swatch_color = '#add8e6'
+              when 'azul-marinho', 'marinho'
+                assign card_swatch_color = '#000080'
+              when 'bege'
+                assign card_swatch_color = '#f5f5dc'
+              when 'blush', 'rosa'
+                assign card_swatch_color = '#de5d83'
+              when 'branca', 'branco'
+                assign card_swatch_color = '#ffffff'
+              when 'canela'
+                assign card_swatch_color = '#d2691e'
+              when 'demerara'
+                assign card_swatch_color = '#d4b895'
+              when 'gengibre'
+                assign card_swatch_color = '#b06500'
+              when 'hibisco'
+                assign card_swatch_color = '#e43f5a'
+              when 'listrada'
+                assign card_swatch_color = '#aaaaaa'
+              when 'madeira'
+                assign card_swatch_color = '#8b5a2b'
+              when 'natural'
+                assign card_swatch_color = '#eaddcf'
+              when 'off', 'off-white'
+                assign card_swatch_color = '#f4f4f0'
+              when 'preto'
+                assign card_swatch_color = '#000000'
+              when 'preto-branco'
+                assign card_swatch_color = '#808080'
+              when 'rose-argila'
+                assign card_swatch_color = '#c08081'
+              when 'verde'
+                assign card_swatch_color = '#4f7942'
+              when 'vinho'
+                assign card_swatch_color = '#722f37'
+              when 'amarelo'
+                assign card_swatch_color = '#f2d64b'
+              when 'dourado'
+                assign card_swatch_color = '#c9a227'
+              when 'prata'
+                assign card_swatch_color = '#c0c0c0'
+              else
+                assign card_swatch_color = '#cccccc'
+            endcase
+          endif
+        %}
+
+        <input
+          class="retail-card-color-swatch-input"
+          type="radio"
+          id="RetailCardColor-{{ card_instance_id }}-{{ forloop.index0 }}"
+          name="RetailCardColor-{{ card_instance_id }}"
+          value="{{ card_color_name | escape }}"
+          {% if card_color_name == card_selected_color %}checked{% endif %}
+          {% unless card_color_variant %}disabled{% endunless %}
+          {% if card_color_variant %}
+            data-variant-link="{{ card_color_variant.url }}"
+            data-variant-id="{{ card_color_variant.id }}"
+          {% endif %}
+        >
+        <label
+          class="retail-card-color-swatch-label"
+          for="RetailCardColor-{{ card_instance_id }}-{{ forloop.index0 }}"
+          title="{{ card_color_name | escape }}"
+          style="--retail-card-swatch-color: {{ card_swatch_color }};"
+        >
+          <span class="visually-hidden">{{ card_color_name | escape }}</span>
+        </label>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if card_size_option_position > 0 %}
+    <div class="custom-size-variants retail-card-size-options" role="group" aria-label="Tamanhos disponíveis" data-retail-card-sizes>
+      {% if show_color_swatches and card_color_option_position > 0 %}
+        {% for card_color_value in card_color_option.values %}
+          {% assign card_color_name = card_color_value.name | default: card_color_value %}
+          <div
+            class="custom-size-variants__group"
+            data-retail-card-size-color="{{ card_color_name | escape }}"
+            aria-label="Tamanhos disponíveis para {{ card_color_name | escape }}"
+            {% unless card_color_name == card_selected_color %}hidden{% endunless %}
+          >
+            {% for card_size_value in card_size_option.values %}
+              {% liquid
+                assign card_size_name = card_size_value.name | default: card_size_value
+                assign card_size_variant = blank
+
+                for variant in product.variants
+                  if variant.available and variant.options[card_color_index] == card_color_name and variant.options[card_size_index] == card_size_name
+                    assign card_size_variant = variant
+                    break
+                  endif
+                endfor
+              %}
+
+              {% if card_size_variant %}
+                <a
+                  class="size-badge"
+                  href="{{ card_size_variant.url | default: product.url }}"
+                  aria-label="{{ card_size_name | escape }} — {{ card_color_name | escape }}"
+                >
+                  {{ card_size_name | escape }}
+                </a>
+              {% else %}
+                <span class="size-badge size-badge--disabled" aria-disabled="true">
+                  {{ card_size_name | escape }}
+                </span>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="custom-size-variants__group">
+          {% for card_size_value in card_size_option.values %}
+            {% liquid
+              assign card_size_name = card_size_value.name | default: card_size_value
+              assign card_size_variant = blank
+
+              for variant in product.variants
+                if variant.available and variant.options[card_size_index] == card_size_name
+                  assign card_size_variant = variant
+                  break
+                endif
+              endfor
+            %}
+
+            {% if card_size_variant %}
+              <a
+                class="size-badge"
+                href="{{ card_size_variant.url | default: product.url }}"
+                aria-label="{{ card_size_name | escape }}"
+              >
+                {{ card_size_name | escape }}
+              </a>
+            {% else %}
+              <span class="size-badge size-badge--disabled" aria-disabled="true">
+                {{ card_size_name | escape }}
+              </span>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
