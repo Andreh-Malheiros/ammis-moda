@@ -1264,7 +1264,7 @@ main .shopify-section:first-child.not-margin .section--have-overlay:not(.article
 }
 .product .price-wrapper .price--on-sale .price__sale {
   column-gap: 0;
-  flex-direction: row-reverse;
+  flex-direction: row;
 }
 .product .price-wrapper .price--on-sale .price__sale dd.price__compare {
   margin-left: 0.4rem;
