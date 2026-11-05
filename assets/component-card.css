@@ -170,11 +170,6 @@
 .card-wrapper .product-button-group svg {
   color: rgb(var(--color-product-card-slider-control));
 }
-@media screen and (min-width: 990px) {
-  .card-wrapper .product-button-group {
-    opacity: 0;
-  }
-}
 .card-wrapper .product-button-group.button-next {
   right: 7px;
 }
