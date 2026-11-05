@@ -291,6 +291,9 @@
     <script src="{{ 'ScrollTrigger.min.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'gsap.min.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'swiper-bundle.min.js' | asset_url }}" defer="defer"></script>
+    {% unless settings.on_hover == 'slider' %}
+      <script src="{{ 'product-card-slider.js' | asset_url }}" defer="defer"></script>
+    {% endunless %}
     <script src="{{ 'product-card.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'popup.js' | asset_url }}" defer="defer"></script>
     {% if settings.home_page_slider and template.name == 'index' %}

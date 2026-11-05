@@ -159,18 +159,13 @@
   margin-top: 0;
 }
 .card-wrapper .product-button-group {
-  display: none;
+  display: block;
   position: absolute;
   padding: 2px;
   z-index: 2;
   top: 50%;
   transform: translateY(-50%);
   transition: opacity var(--duration-default);
-}
-@media screen and (min-width: 990px) {
-  .card-wrapper .product-button-group {
-    display: block;
-  }
 }
 .card-wrapper .product-button-group svg {
   color: rgb(var(--color-product-card-slider-control));

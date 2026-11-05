@@ -61,7 +61,7 @@
           assign featured_media_aspect_ratio = 1
         endif
       -%}
-      {% if settings.on_hover == 'slider' and show_slide %}
+      {% if show_slide %}
         <div
           class="media media--transparent media--{{ media_size }} media--hover-effect"
           {%- if media_size == 'landscape' -%}
@@ -142,19 +142,21 @@
                   </div>
                 {% endfor %}
               </div>
-              <div class="product-button-group button-prev">
-                <div class="swiper-button-prev focus-inset">
-                  {% render 'icon-caret-left' %}
+              {% if product_card_product.media.size > 1 %}
+                <div class="product-button-group button-prev">
+                  <div class="swiper-button-prev focus-inset">
+                    {% render 'icon-caret-left' %}
+                  </div>
                 </div>
-              </div>
-              <div class="product-button-group button-next">
-                <div class="swiper-button-next focus-inset">
-                  {% render 'icon-caret-right' %}
+                <div class="product-button-group button-next">
+                  <div class="swiper-button-next focus-inset">
+                    {% render 'icon-caret-right' %}
+                  </div>
                 </div>
-              </div>
-              <div class="product-pagination">
-                <div class="swiper-pagination"></div>
-              </div>
+                <div class="product-pagination">
+                  <div class="swiper-pagination"></div>
+                </div>
+              {% endif %}
             </div>
           {%- else -%}
             {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
@@ -669,7 +671,7 @@
       </div>
     </div>
   </div>
-  {% if settings.on_hover != 'slider' or show_slide == false %}
+  {% if show_slide == false %}
     <a
       href="{{ product_card_product.url | default: '#' }}"
       class="link link--overlay card-wrapper__link--overlay js-color-swatches-link"
