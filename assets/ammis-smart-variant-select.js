@@ -67,9 +67,41 @@
 
   /** Retorna os valores atualmente selecionados em cada fieldset */
   function getSelections(container) {
-    return Array.from(
-      container.querySelectorAll(`${OPTION_WRAPPER} input[type="radio"]:checked`)
-    ).map((el) => el.value);
+    return getOptionGroups(container).map((group) =>
+      group.wrapper.querySelector('input[type="radio"]:checked')?.value || ''
+    );
+  }
+
+  function getOptionGroups(container) {
+    return Array.from(container.querySelectorAll(OPTION_WRAPPER))
+      .map((wrapper, index) => ({
+        wrapper,
+        index: Number(wrapper.dataset.optionPosition || index + 1) - 1,
+        name: normalizeOptionName(wrapper.dataset.optionName || ''),
+      }))
+      .sort((a, b) => a.index - b.index);
+  }
+
+  function normalizeOptionName(name) {
+    return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
+  }
+
+  function getOptionIndex(groups, pattern, fallback) {
+    const group = groups.find((item) => pattern.test(item.name));
+    return group ? group.index : fallback;
+  }
+
+  function getAvailableValuesInDisplayOrder(group, variants, position) {
+    const availableValues = new Set(
+      variants
+        .filter((variant) => variant.available)
+        .map((variant) => variant[`option${position + 1}`])
+    );
+    const displayedValues = Array.from(
+      group.wrapper.querySelectorAll('input[type="radio"]')
+    ).map((input) => input.value);
+
+    return unique(displayedValues.filter((value) => availableValues.has(value)));
   }
 
   /** Encontra a variante que corresponde exatamente às seleções atuais */
@@ -96,8 +128,8 @@
     const variants = getVariants(container);
     if (!variants.length) return;
 
-    container.querySelectorAll(OPTION_WRAPPER).forEach((wrapper, idx) => {
-      const pos = idx + 1; // option1, option2, option3...
+    getOptionGroups(container).forEach(({ wrapper, index }) => {
+      const pos = index + 1;
 
       wrapper.querySelectorAll('input[type="radio"]').forEach((input) => {
         const val = input.getAttribute('value');
@@ -140,15 +172,21 @@
       inStock = false;
 
       if (selections.length >= 2) {
-        // Convenção do tema AMMIS: option1 = Tamanho, última opção = Cor
-        const colorVal = selections[selections.length - 1];
-        const sizeVal  = selections[0];
+        const optionGroups = getOptionGroups(container);
+        const colorIndex = getOptionIndex(optionGroups, /\b(cor|color)\b/, selections.length - 1);
+        const sizeIndex = getOptionIndex(optionGroups, /\b(tamanho|size|numeracao)\b/, 0);
+        const colorVal = selections[colorIndex];
+        const sizeVal = selections[sizeIndex];
+        const colorPosition = colorIndex + 1;
+        const sizePosition = sizeIndex + 1;
+        const colorGroup = optionGroups.find((group) => group.index === colorIndex);
+        const sizeGroup = optionGroups.find((group) => group.index === sizeIndex);
 
         // Tamanhos que têm ESTA cor disponível (com estoque)
-        const sizesWithColor = unique(
-          variants
-            .filter((v) => v[`option${selections.length}`] === colorVal && v.available)
-            .map((v) => v.option1)
+        const sizesWithColor = getAvailableValuesInDisplayOrder(
+          sizeGroup,
+          variants.filter((variant) => variant[`option${colorPosition}`] === colorVal),
+          sizeIndex
         );
 
         if (sizesWithColor.length > 0) {
@@ -156,10 +194,10 @@
           text = MSG.colorInSizes(sizesWithColor.join(', '));
         } else {
           // A cor não tem estoque em nenhum tamanho — mostrar cores disponíveis neste tamanho
-          const colorsInSize = unique(
-            variants
-              .filter((v) => v.option1 === sizeVal && v.available)
-              .map((v) => v[`option${selections.length}`])
+          const colorsInSize = getAvailableValuesInDisplayOrder(
+            colorGroup,
+            variants.filter((variant) => variant[`option${sizePosition}`] === sizeVal),
+            colorIndex
           );
 
           text = colorsInSize.length > 0

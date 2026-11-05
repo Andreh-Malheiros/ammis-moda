@@ -546,6 +546,8 @@
                             <fieldset
                               class="product-form__controls product-form__controls--{% if settings.type_color_swatch == 'custom' and color_swatch %}colors{% endif %}"
                               id="SingleOptionSelector-{{ forloop.index0 }}"
+                              data-option-name="{{ option.name | escape }}"
+                              data-option-position="{{ option.position }}"
                             >
                               {% if block.settings.pill_group %}
                                 <div class="product-form__group-name subtitle">
@@ -662,7 +664,11 @@
                                 endif
                               endfor
                             %}
-                            <fieldset class="product-form__controls product-form__controls--dropdown">
+                            <fieldset
+                              class="product-form__controls product-form__controls--dropdown"
+                              data-option-name="{{ option.name | escape }}"
+                              data-option-position="{{ option.position }}"
+                            >
                               {% comment %}
                                 <label for="Option-{{ section.id }}-{{ forloop.index0 }}" class="product-form__group-name">
                                 	{{ option.name }}:
