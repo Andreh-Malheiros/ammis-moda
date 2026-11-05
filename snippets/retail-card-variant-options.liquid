@@ -185,10 +185,6 @@
                 >
                   {{ card_size_name | escape }}
                 </a>
-              {% else %}
-                <span class="size-badge size-badge--disabled" aria-disabled="true">
-                  {{ card_size_name | escape }}
-                </span>
               {% endif %}
             {% endfor %}
           </div>
@@ -216,10 +212,6 @@
               >
                 {{ card_size_name | escape }}
               </a>
-            {% else %}
-              <span class="size-badge size-badge--disabled" aria-disabled="true">
-                {{ card_size_name | escape }}
-              </span>
             {% endif %}
           {% endfor %}
         </div>
