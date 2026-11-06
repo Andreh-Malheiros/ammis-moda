@@ -233,6 +233,7 @@
       // 2. Atualiza o conteúdo do Drawer e abre a interface
       const cartDrawer = document.querySelector('cart-drawer');
       if (cartDrawer) {
+        cartDrawer.classList.remove('is-empty');
         // Tenta usar o método nativo do Dawn para renderizar
         if (typeof cartDrawer.renderContents === 'function') {
           cartDrawer.renderContents(data);
