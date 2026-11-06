@@ -1,6 +1,7 @@
 <!doctype html>
 <html class="no-js" lang="{{ request.locale.iso_code }}" data-scheme="{{ settings.color_scheme }}">
   <head>
+    {% render 'wholesale-checkout-login' %}
     {% if request.page_type == 'collection' and collection.handle == 'catalogo-atacado' %}
       <script>
         window.location.replace('/pages/atacado');

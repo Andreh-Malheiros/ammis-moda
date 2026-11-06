@@ -1,0 +1,60 @@
+{% doc %}
+Requires sign-in when a guest proceeds from a wholesale cart to checkout.
+@param {boolean} [wholesale_context] Whether the current layout is wholesale.
+{% enddoc %}
+
+{% liquid
+  assign wholesale_checkout = wholesale_context | default: false
+  if template.suffix == 'b2b-readonly' or template contains 'wholesale' or template contains 'atacado' or product.tags contains 'atacado'
+    assign wholesale_checkout = true
+  endif
+  for item in cart.items
+    if item.product.tags contains 'atacado'
+      assign wholesale_checkout = true
+      break
+    endif
+  endfor
+  assign checkout_path = routes.root_url | append: 'checkout'
+  assign login_path = routes.root_url | append: 'customer_authentication/login?return_to='
+  assign checkout_return = checkout_path | url_encode
+  assign checkout_login_url = login_path | append: checkout_return
+%}
+
+{% if wholesale_checkout and customer == blank %}
+  <style>
+    [data-buy-now],
+    .shopify-payment-button,
+    .additional-checkout-buttons,
+    .cart__footer-dynamic-checkout {
+      display: none !important;
+    }
+  </style>
+  <script>
+    (() => {
+      const loginUrl = {{ checkout_login_url | json }};
+      const goToLogin = (event) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        window.location.assign(loginUrl);
+      };
+      const isCheckoutUrl = (value) => {
+        if (!value) return false;
+        const url = new URL(value, window.location.origin);
+        return url.origin === window.location.origin && /\/checkouts?(\/|$)/.test(url.pathname);
+      };
+      document.addEventListener('click', (event) => {
+        if (!(event.target instanceof Element)) return;
+        const checkout = event.target.closest('[name="checkout"], #CartDrawer-Checkout, .cart__checkout-button, [data-buy-now]');
+        const link = event.target.closest('a[href]');
+        if (checkout || (link && isCheckoutUrl(link.href))) goToLogin(event);
+      }, true);
+      document.addEventListener('submit', (event) => {
+        const form = event.target;
+        if (!(form instanceof HTMLFormElement)) return;
+        if (event.submitter?.name === 'checkout' || isCheckoutUrl(form.action)) {
+          goToLogin(event);
+        }
+      }, true);
+    })();
+  </script>
+{% endif %}

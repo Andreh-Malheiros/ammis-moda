@@ -192,7 +192,6 @@
     iconsContainer.prepend(searchBtn);
   }
 
-  {% if customer or request.design_mode %}
   // 3. INTERCEPTOR DE CARRINHO (ATUALIZAÇÃO EM TEMPO REAL)
   document.addEventListener('submit', function(e) {
     const form = e.target.closest('.b2b-add-form');
@@ -263,7 +262,6 @@
       }
     });
   }, true);
-  {% endif %}
 });
 </script>
 

@@ -428,6 +428,21 @@
 												</button>
 											</noscript>
 
+{% liquid
+  assign wholesale_cart = false
+  for item in cart.items
+    if item.product.tags contains 'atacado'
+      assign wholesale_cart = true
+      break
+    endif
+  endfor
+%}
+{% if wholesale_cart and customer == blank %}
+  <a class="cart__checkout-button button button--tertiary focus-inset"
+    href="{{ routes.root_url }}customer_authentication/login?return_to={{ routes.root_url | append: 'checkout' | url_encode }}">
+    <span>{{ 'sections.cart.checkout' | t }}</span>
+  </a>
+{% else %}
 											<button
 												type="submit"
 												class="cart__checkout-button button button--tertiary focus-inset"
@@ -439,6 +454,7 @@
 											>
 												<span> {{ 'sections.cart.checkout' | t }} </span>
 											</button>
+{% endif %}
 
 											{%- if additional_checkout_buttons -%}
 												<div class="cart__footer-dynamic-checkout">
