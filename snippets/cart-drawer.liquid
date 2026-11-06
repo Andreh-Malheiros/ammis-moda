@@ -687,6 +687,7 @@
               <div class="cart__ctas" {{ block.shopify_attributes }}>
                 {% if is_b2b_cart and customer == blank %}
                   <a
+                    id="CartDrawer-Checkout"
                     href="{{ routes.root_url }}customer_authentication/login?return_to={{ routes.root_url | append: 'checkout' | url_encode }}"
                     class="cart__checkout-button button button--{{ settings.cart_button_style }} button--full-width focus-inset"
                   >
