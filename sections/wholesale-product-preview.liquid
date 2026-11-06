@@ -20,7 +20,7 @@
 
     {%- if preview_collection != blank and preview_collection.products_count > 0 -%}
       <div class="wholesale-product-preview__grid">
-        {%- for product in preview_collection.products limit: 16 -%}
+        {%- for product in preview_collection.products limit: 8 -%}
           {% render 'wholesale-product-card', product: product, card_id: section.id %}
         {%- endfor -%}
       </div>
@@ -134,6 +134,10 @@
       gap: 2rem 1rem;
     }
 
+
+    #shopify-section-{{ section.id }} .wholesale-product-preview__grid > .b2b-card:nth-child(n + 5) {
+      display: none;
+    }
 
     #shopify-section-{{ section.id }} .wholesale-product-preview__button {
       width: 100%;
