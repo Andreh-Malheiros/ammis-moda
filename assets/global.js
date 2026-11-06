@@ -1804,6 +1804,15 @@ class ProductRecommendations extends HTMLElement {
 					const checkSwatches = () => {
 						this.querySelectorAll(".js-color-swatches-wrapper")
 							.forEach((wrapper) => {
+								if (wrapper.querySelector('.retail-card-variant-options')) {
+								  const initialize = () => window.initRetailCardSwatches(wrapper);
+								  if (typeof window.initRetailCardSwatches === 'function') {
+								    initialize();
+								  } else {
+								    document.addEventListener('retail-card-swatches:ready', initialize, { once: true });
+								  }
+								  return;
+								}
 								wrapper
 									.querySelectorAll(".js-color-swatches input")
 									.forEach((input) => {

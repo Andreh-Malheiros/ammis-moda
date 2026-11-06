@@ -18,8 +18,11 @@ const createImageElement = (image, classes, sizes, productTitle) => {
   return newImage;
 }
 
-const checkSwatches = () => {
-  document.querySelectorAll('.js-color-swatches-wrapper').forEach(wrapper => {
+const checkSwatches = (root = document) => {
+  const wrappers = root.matches?.('.js-color-swatches-wrapper')
+    ? [root]
+    : root.querySelectorAll('.js-color-swatches-wrapper');
+  wrappers.forEach(wrapper => {
     wrapper.querySelectorAll('.js-color-swatches input').forEach(input => {
       if (input.dataset.retailCardColorListener === 'true') return;
       input.dataset.retailCardColorListener = 'true';
@@ -42,13 +45,21 @@ const checkSwatches = () => {
             });
           }
 
-          if (wrapper.querySelector('.card__add-to-cart button[name="add"]')) {
-            wrapper.querySelector('.card__add-to-cart button[name="add"]').setAttribute('aria-disabled', false);
-            if (wrapper.querySelector('.card__add-to-cart button[name="add"] > span')) {
-              wrapper.querySelector('.card__add-to-cart button[name="add"] > span').classList.remove('hidden');
-              wrapper.querySelector('.card__add-to-cart button[name="add"] .sold-out-message').classList.add('hidden');
+          const addButton = wrapper.querySelector('.card__add-to-cart button[name="add"]');
+          if (addButton) {
+            const canPurchase = event.currentTarget.dataset.variantAvailable !== 'false' &&
+              Boolean(event.currentTarget.dataset.variantId);
+            addButton.disabled = !canPurchase;
+            addButton.setAttribute('aria-disabled', String(!canPurchase));
+            const label = addButton.querySelector('span:not(.sold-out-message)');
+            const soldOut = addButton.querySelector('.sold-out-message');
+            label?.classList.toggle('hidden', !canPurchase);
+            soldOut?.classList.toggle('hidden', canPurchase);
+            const variantInput = wrapper.querySelector('.card__add-to-cart input[name="id"]');
+            if (variantInput) {
+              variantInput.value = event.currentTarget.dataset.variantId || '';
+              variantInput.disabled = !canPurchase;
             }
-            wrapper.querySelector('.card__add-to-cart input[name="id"]').value = event.currentTarget.dataset.variantId;
           }
 
           const currentColor = event.currentTarget.value;
@@ -92,6 +103,9 @@ const checkSwatches = () => {
     })
   })
 }
+
+window.initRetailCardSwatches = checkSwatches;
+document.dispatchEvent(new Event('retail-card-swatches:ready'));
 
 function colorSwatches() {
   checkSwatches();

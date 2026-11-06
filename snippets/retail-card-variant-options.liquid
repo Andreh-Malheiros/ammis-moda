@@ -54,14 +54,19 @@
       {% for card_color_value in card_color_option.values %}
         {% liquid
           assign card_color_name = card_color_value.name | default: card_color_value
-          assign card_color_variant = blank
+          assign card_color_variant = false
           assign card_swatch_color = card_color_value.swatch.color
           assign card_color_handle = card_color_name | handle
 
           for variant in product.variants
-            if variant.available and variant.options[card_color_index] == card_color_name
-              assign card_color_variant = variant
-              break
+            if variant.options[card_color_index] == card_color_name
+              if card_color_variant == false
+                assign card_color_variant = variant
+              endif
+              if variant.available
+                assign card_color_variant = variant
+                break
+              endif
             endif
           endfor
 
@@ -139,6 +144,7 @@
           {% if card_color_variant %}
             data-variant-link="{{ card_color_variant.url }}"
             data-variant-id="{{ card_color_variant.id }}"
+            data-variant-available="{{ card_color_variant.available }}"
           {% endif %}
         >
         <label
@@ -167,7 +173,7 @@
             {% for card_size_value in card_size_option.values %}
               {% liquid
                 assign card_size_name = card_size_value.name | default: card_size_value
-                assign card_size_variant = blank
+                assign card_size_variant = false
 
                 for variant in product.variants
                   if variant.available and variant.options[card_color_index] == card_color_name and variant.options[card_size_index] == card_size_name
@@ -177,14 +183,22 @@
                 endfor
               %}
 
-              {% if card_size_variant %}
+              {% if card_size_variant.available == true %}
                 <a
                   class="size-badge"
-                  href="{{ card_size_variant.url | default: product.url }}"
+                  href="{{ card_size_variant.url }}"
                   aria-label="{{ card_size_name | escape }} — {{ card_color_name | escape }}"
                 >
                   {{ card_size_name | escape }}
                 </a>
+              {% else %}
+                <span
+                  class="size-badge size-badge--disabled"
+                  aria-disabled="true"
+                  aria-label="{{ card_size_name | escape }} — {{ card_color_name | escape }} — {{ 'products.product.sold_out' | t | escape }}"
+                >
+                  {{ card_size_name | escape }}
+                </span>
               {% endif %}
             {% endfor %}
           </div>
@@ -194,7 +208,7 @@
           {% for card_size_value in card_size_option.values %}
             {% liquid
               assign card_size_name = card_size_value.name | default: card_size_value
-              assign card_size_variant = blank
+              assign card_size_variant = false
 
               for variant in product.variants
                 if variant.available and variant.options[card_size_index] == card_size_name
@@ -204,14 +218,22 @@
               endfor
             %}
 
-            {% if card_size_variant %}
+            {% if card_size_variant.available == true %}
               <a
                 class="size-badge"
-                href="{{ card_size_variant.url | default: product.url }}"
+                href="{{ card_size_variant.url }}"
                 aria-label="{{ card_size_name | escape }}"
               >
                 {{ card_size_name | escape }}
               </a>
+            {% else %}
+              <span
+                class="size-badge size-badge--disabled"
+                aria-disabled="true"
+                aria-label="{{ card_size_name | escape }} — {{ 'products.product.sold_out' | t | escape }}"
+              >
+                {{ card_size_name | escape }}
+              </span>
             {% endif %}
           {% endfor %}
         </div>
