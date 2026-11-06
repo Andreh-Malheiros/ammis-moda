@@ -163,8 +163,12 @@
   z-index: 99;
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
-  margin-top: 0.8rem;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  gap: 0.7rem;
+  margin-top: 0.7rem;
+  padding: 0.4rem;
   pointer-events: auto;
 }
 .retail-card-color-swatches,
@@ -172,7 +176,9 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.8rem;
+  min-width: 0;
+  max-width: 100%;
+  gap: 0.6rem;
 }
 .retail-card-color-swatch-input {
   position: absolute;
@@ -184,13 +190,16 @@
 }
 .retail-card-color-swatch-label {
   display: inline-flex;
-  width: 2rem;
-  height: 2rem;
-  flex: 0 0 2rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  flex: 0 0 2.2rem;
+  box-sizing: border-box;
+  margin: 0;
   border: 1px solid rgba(var(--color-foreground), 0.25);
   border-radius: 50%;
   background-color: var(--retail-card-swatch-color);
   cursor: pointer;
+  transition: outline-color 0.2s ease;
 }
 .retail-card-color-swatch-input:checked + .retail-card-color-swatch-label,
 .retail-card-color-swatch-input:focus-visible + .retail-card-color-swatch-label {
@@ -204,23 +213,29 @@
 .retail-card-size-options {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.8rem;
+  width: 100%;
+  min-width: 0;
+  gap: 0.6rem;
 }
 .custom-size-variants__group[hidden] {
   display: none !important;
 }
 .custom-size-variants .size-badge {
   display: inline-flex;
+  flex: 0 0 auto;
+  box-sizing: border-box;
   min-width: 3.2rem;
-  height: 2.8rem;
-  padding: 0 0.6rem;
+  min-height: 3rem;
+  padding: 0.5rem 0.7rem;
   align-items: center;
   justify-content: center;
-  border: 1px solid #dcdcdc;
-  border-radius: 4px;
+  border: 1px solid #d6d6d6;
+  border-radius: 0.5rem;
   background-color: transparent;
   color: #1a1a1a;
   font-size: 1.1rem;
+  line-height: 1.2;
+  white-space: nowrap;
   text-decoration: none;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
@@ -228,10 +243,17 @@
   border-color: #1a1a1a;
   background-color: #f5f5f5;
 }
+.custom-size-variants a.size-badge:focus-visible {
+  outline: 1px solid rgb(var(--color-foreground));
+  outline-offset: 2px;
+}
 .custom-size-variants .size-badge--disabled {
-  border-color: #ebebeb;
-  color: #a3a3a3;
+  border-color: #e6e6e6;
+  background-color: #fafafa;
+  color: #999;
   text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  cursor: not-allowed;
 }
 .card-wrapper .product-button-group {
   display: block;
