@@ -16,51 +16,34 @@
     {% if opportunity_blocks.size > 0 %}
       <div class="wholesale-partnership-paths__opportunities">
         {% for block in opportunity_blocks %}
-          <article class="wholesale-partnership-paths__opportunity" {{ block.shopify_attributes }}>
-            <span class="wholesale-partnership-paths__index" aria-hidden="true">0{{ forloop.index }}</span>
-            {% if block.settings.heading != blank %}
-              <h3>{{ block.settings.heading | escape }}</h3>
+          <article class="wholesale-partnership-paths__opportunity{% if block.settings.image != blank or block.settings.image_asset != blank %} wholesale-partnership-paths__opportunity--with-image{% endif %}" {{ block.shopify_attributes }}>
+            {% if block.settings.image != blank %}
+              {{ block.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '600, 1200', sizes: '(min-width: 750px) 33vw, 100vw', class: 'wholesale-partnership-paths__image', alt: '' }}
+            {% elsif block.settings.image_asset != blank %}
+              {% assign small_image = block.settings.image_asset | append: '-600.webp' %}
+              {% assign large_image = block.settings.image_asset | append: '-1200.webp' %}
+              <img class="wholesale-partnership-paths__image" src="{{ large_image | asset_url }}" srcset="{{ small_image | asset_url }} 600w, {{ large_image | asset_url }} 1200w" sizes="(min-width: 750px) 33vw, 100vw" width="1200" height="1800" alt="" loading="lazy">
             {% endif %}
-            {% if block.settings.text != blank %}
-              <p>{{ block.settings.text | escape }}</p>
+            <div class="wholesale-partnership-paths__card-content">
+              <span class="wholesale-partnership-paths__index" aria-hidden="true">0{{ forloop.index }}</span>
+              {% if block.settings.heading != blank %}
+                <h3>{{ block.settings.heading | escape }}</h3>
+              {% endif %}
+              {% if block.settings.text != blank %}
+                <p>{{ block.settings.text | escape }}</p>
+              {% endif %}
+            </div>
+            {% if block.settings.link != blank %}
+              <a class="wholesale-partnership-paths__card-link" href="{{ block.settings.link | escape }}" target="_blank" rel="noopener noreferrer" aria-label="{{ block.settings.heading | escape }}">
+                <span aria-hidden="true">↗</span>
+              </a>
             {% endif %}
           </article>
         {% endfor %}
       </div>
     {% endif %}
 
-    <div id="formas-de-pedido-ammis" class="wholesale-partnership-paths__order">
-      <div class="wholesale-partnership-paths__order-intro">
-        {% if section.settings.order_eyebrow != blank %}
-          <p class="wholesale-partnership-paths__eyebrow">{{ section.settings.order_eyebrow | escape }}</p>
-        {% endif %}
-        {% if section.settings.order_heading != blank %}
-          <h3>{{ section.settings.order_heading | escape }}</h3>
-        {% endif %}
-        {% if section.settings.order_text != blank %}
-          <p>{{ section.settings.order_text | escape }}</p>
-        {% endif %}
-      </div>
 
-      {% assign order_blocks = section.blocks | where: 'type', 'order_option' %}
-      {% if order_blocks.size > 0 %}
-        <div class="wholesale-partnership-paths__order-options">
-          {% for block in order_blocks %}
-            <article class="wholesale-partnership-paths__order-option" {{ block.shopify_attributes }}>
-              <span class="wholesale-partnership-paths__order-mark" aria-hidden="true">↗</span>
-              <div class="wholesale-partnership-paths__order-option-content">
-                {% if block.settings.heading != blank %}
-                  <h4>{{ block.settings.heading | escape }}</h4>
-                {% endif %}
-                {% if block.settings.text != blank %}
-                  <p>{{ block.settings.text | escape }}</p>
-                {% endif %}
-              </div>
-            </article>
-          {% endfor %}
-        </div>
-      {% endif %}
-    </div>
   </div>
 </section>
 
@@ -263,16 +246,102 @@
       border-left: 0;
     }
   }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunities {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.6rem;
+    border: 0;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity {
+    position: relative;
+    display: flex;
+    align-items: end;
+    min-height: 44rem;
+    padding: 3.2rem 2.4rem;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity + .wholesale-partnership-paths__opportunity {
+    padding: 3.2rem 2.4rem;
+    border: 0;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity--with-image {
+    background: #171717;
+    color: #fff;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity--with-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.04) 10%, rgba(0, 0, 0, 0.84) 100%);
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__image {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 240ms ease;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity--with-image h3,
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity--with-image p,
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity--with-image .wholesale-partnership-paths__index {
+    color: #fff;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__card-link {
+    position: absolute;
+    inset: 0;
+    padding: 2rem;
+    color: #fff;
+    text-decoration: none;
+    text-align: right;
+    font-size: 2.4rem;
+  }
+
+  #shopify-section-{{ section.id }} .wholesale-partnership-paths__card-link:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: -6px;
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity:has(a):hover .wholesale-partnership-paths__image {
+      transform: scale(1.035);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunities {
+      grid-template-columns: 1fr;
+    }
+    #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity,
+    #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity + .wholesale-partnership-paths__opportunity,
+    #shopify-section-{{ section.id }} .wholesale-partnership-paths__opportunity:nth-child(n + 3) {
+      min-height: 42rem;
+      padding: 3.2rem 2.4rem;
+      border: 0;
+    }
+  }
 {% endstyle %}
 
 {% schema %}
 {
-  "name": "Parceria e pedidos",
+  "name": "Evolução da parceria",
   "tag": "section",
   "class": "wholesale-partnership-paths-section",
   "limit": 1,
   "enabled_on": {
-    "templates": ["page"]
+    "templates": [
+      "page"
+    ]
   },
   "settings": [
     {
@@ -292,24 +361,6 @@
       "id": "text",
       "label": "Introdução",
       "default": "Conforme a estratégia e o potencial comercial, novas possibilidades podem ser construídas ao longo da relação."
-    },
-    {
-      "type": "text",
-      "id": "order_eyebrow",
-      "label": "Identificação das formas de pedido",
-      "default": "Faça seu pedido do seu jeito"
-    },
-    {
-      "type": "text",
-      "id": "order_heading",
-      "label": "Título das formas de pedido",
-      "default": "O relacionamento comercial vai além do catálogo online"
-    },
-    {
-      "type": "textarea",
-      "id": "order_text",
-      "label": "Texto das formas de pedido",
-      "default": "Escolha o formato que melhor acompanha o momento da sua loja e a construção do seu mix."
     }
   ],
   "blocks": [
@@ -329,41 +380,38 @@
           "id": "text",
           "label": "Texto",
           "default": "Possibilidade de exclusividade de praça e/ou produto, conforme estratégia e potencial comercial."
-        }
-      ]
-    },
-    {
-      "type": "order_option",
-      "name": "Forma de pedido",
-      "limit": 4,
-      "settings": [
-        {
-          "type": "text",
-          "id": "heading",
-          "label": "Título",
-          "default": "Catálogo"
         },
         {
-          "type": "textarea",
-          "id": "text",
-          "label": "Texto",
-          "default": "Seleção orientada a partir do material comercial."
+          "type": "image_picker",
+          "id": "image",
+          "label": "Imagem de fundo"
+        },
+        {
+          "type": "text",
+          "id": "image_asset",
+          "label": "Arquivo de imagem do tema"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link do card"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Parceria e pedidos",
+      "name": "Evolução da parceria",
       "blocks": [
-        { "type": "opportunity" },
-        { "type": "opportunity" },
-        { "type": "opportunity" },
-        { "type": "opportunity" },
-        { "type": "order_option" },
-        { "type": "order_option" },
-        { "type": "order_option" },
-        { "type": "order_option" }
+        {
+          "type": "opportunity"
+        },
+        {
+          "type": "opportunity"
+        },
+        {
+          "type": "opportunity"
+        }
       ]
     }
   ]

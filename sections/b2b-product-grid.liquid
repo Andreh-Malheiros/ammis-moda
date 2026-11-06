@@ -11,8 +11,8 @@
       <a
         href="{{ section.settings.branding_book_pdf }}"
         target="_blank"
-        class="button button--secondary"
-        style="display: inline-flex; align-items: center; gap: 10px; text-decoration: none; z-index: 50;"
+        class="button wholesale-brandbook-button"
+        rel="noopener noreferrer"
       >
         <svg
           width="20"
@@ -28,6 +28,12 @@
         </svg>
         {{ section.settings.branding_book_text }}
       </a>
+    </div>
+  {% endif %}
+
+  {% if section.settings.show_winter_banner %}
+    <div class="wholesale-winter-banner">
+      <img src="{{ 'wholesale-winter27-1800.webp' | asset_url }}" srcset="{{ 'wholesale-winter27-900.webp' | asset_url }} 900w, {{ 'wholesale-winter27-1800.webp' | asset_url }} 1800w" sizes="(min-width: 1200px) 1160px, 100vw" width="1800" height="2700" loading="lazy" alt="Detalhe da coleção Inverno 27 AMMIS">
     </div>
   {% endif %}
 
@@ -62,6 +68,57 @@
 
 {% comment %} Estilos e Elementos do Visualizador {% endcomment %}
 <style>
+
+  #catalogo-atacado .wholesale-brandbook-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.4rem;
+    width: min(100%, 48rem);
+    min-height: 8rem;
+    padding: 2rem 3.2rem;
+    border: 2px solid #171717;
+    background: #171717;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+  }
+  #catalogo-atacado .wholesale-brandbook-button::before,
+  #catalogo-atacado .wholesale-brandbook-button::after {
+    display: none;
+  }
+  #catalogo-atacado .wholesale-brandbook-button:hover {
+    background: #fff;
+    color: #171717;
+  }
+  #catalogo-atacado .wholesale-brandbook-button:focus-visible {
+    outline: 2px solid #171717;
+    outline-offset: 4px;
+  }
+  #catalogo-atacado .wholesale-brandbook-button svg {
+    flex-shrink: 0;
+  }
+  #catalogo-atacado .wholesale-winter-banner {
+    height: clamp(18rem, 24vw, 30rem);
+    margin: 0 0 5rem;
+    overflow: hidden;
+    background: #ecebea;
+  }
+  #catalogo-atacado .wholesale-winter-banner img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 50%;
+  }
+  @media screen and (max-width: 749px) {
+    #catalogo-atacado .wholesale-winter-banner {
+      height: 26rem;
+    }
+  }
+
   #catalogo-atacado .b2b-card[hidden],
   #catalogo-atacado .b2b-search-feedback[hidden] { display: none !important; }
   #catalogo-atacado .b2b-search-feedback { margin-bottom: 3rem; }
@@ -373,6 +430,12 @@
       "id": "partner_signup_link",
       "label": "Link para cadastro de parceiros",
       "info": "Deixe vazio até definir a página de destino."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_winter_banner",
+      "label": "Exibir mini banner Inverno 27",
+      "default": false
     }
   ]
 }

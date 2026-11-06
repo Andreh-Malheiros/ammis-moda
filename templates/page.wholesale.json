@@ -27,7 +27,7 @@
         "primary_button_link": "",
         "commercial_button_label": "Falar com o comercial",
         "commercial_button_link": "",
-        "partnership_button_label": "Conhecer a parceria"
+        "partnership_button_label": ""
       }
     },
     "wholesale_partnership": {
@@ -101,13 +101,6 @@
     "wholesale_commercial_guidance": {
       "type": "wholesale-commercial-guidance",
       "blocks": {
-        "guidance_market": {
-          "type": "guidance",
-          "settings": {
-            "heading": "Indicadores e movimentos de mercado",
-            "text": "Uma leitura comercial para apoiar decisões mais seguras na escolha do mix."
-          }
-        },
         "guidance_bestsellers": {
           "type": "guidance",
           "settings": {
@@ -128,21 +121,12 @@
             "heading": "Produção, reposição e personalização",
             "text": "Produção interna, fábrica própria, pequenas reposições mediante disponibilidade, peças sob encomenda e personalização podem ser avaliadas conforme a necessidade comercial."
           }
-        },
-        "guidance_support": {
-          "type": "guidance",
-          "settings": {
-            "heading": "Suporte ao cliente final",
-            "text": "A proximidade com o parceiro também apoia a experiência da cliente na ponta."
-          }
         }
       },
       "block_order": [
-        "guidance_market",
         "guidance_bestsellers",
         "guidance_mix",
-        "guidance_production",
-        "guidance_support"
+        "guidance_production"
       ],
       "name": "Curadoria e produção AMMIS",
       "settings": {
@@ -195,42 +179,6 @@
             "heading": "Fatto a mano",
             "text": "Bordados, crochê, tramas em couro e patchwork feitos com presença manual."
           }
-        },
-        "value_specialists": {
-          "type": "value",
-          "settings": {
-            "heading": "Profissionais especializados"
-          }
-        },
-        "value_customization": {
-          "type": "value",
-          "settings": {
-            "heading": "Personalização"
-          }
-        },
-        "value_attention": {
-          "type": "value",
-          "settings": {
-            "heading": "Atenção às necessidades do parceiro"
-          }
-        },
-        "value_quality": {
-          "type": "value",
-          "settings": {
-            "heading": "Qualidade dos tecidos e acabamentos"
-          }
-        },
-        "value_consistency": {
-          "type": "value",
-          "settings": {
-            "heading": "Relações consistentes"
-          }
-        },
-        "value_alignment": {
-          "type": "value",
-          "settings": {
-            "heading": "Parceiros alinhados à marca"
-          }
         }
       },
       "block_order": [
@@ -239,102 +187,56 @@
         "strength_leather",
         "strength_design",
         "strength_materials",
-        "strength_fatto",
-        "value_specialists",
-        "value_customization",
-        "value_attention",
-        "value_quality",
-        "value_consistency",
-        "value_alignment"
+        "strength_fatto"
       ],
       "name": "Fortalezas AMMIS",
       "settings": {
         "eyebrow": "Fortalezas AMMIS",
         "heading": "Códigos autorais, feitos para permanecer",
-        "text": "Uma combinação de design, matéria-prima e trabalho especializado que dá consistência ao produto e à parceria.",
-        "values_eyebrow": "Valores da parceria",
-        "values_heading": "Relações consistentes começam nos detalhes",
-        "values_text": "Atenção às necessidades de cada parceiro, qualidade em cada etapa e alinhamento com a identidade da marca."
+        "text": "Uma combinação de design, matéria-prima e trabalho especializado que dá consistência ao produto e à parceria."
       }
     },
     "wholesale_partnership_paths": {
       "type": "wholesale-partnership-paths",
       "blocks": {
-        "opportunity_exclusivity": {
-          "type": "opportunity",
-          "settings": {
-            "heading": "Exclusividade",
-            "text": "Possibilidade de exclusividade de praça e/ou produto, conforme estratégia e potencial comercial."
-          }
-        },
         "opportunity_events": {
           "type": "opportunity",
           "settings": {
             "heading": "Eventos personalizados",
-            "text": "Possibilidade de criar ações com participação da AMMIS, conforme o contexto da loja."
+            "text": "Possibilidade de criar ações com participação da AMMIS, conforme o contexto da loja.",
+            "image_asset": "wholesale-events",
+            "link": "https://drive.google.com/drive/folders/1HpWK9ICkzPpMIc1ITDU2FHX4XlkQbDaR"
           }
         },
         "opportunity_collabs": {
           "type": "opportunity",
           "settings": {
             "heading": "Collabs",
-            "text": "Possibilidade de desenvolver produtos exclusivos junto ao lojista."
+            "text": "Possibilidade de desenvolver produtos exclusivos junto ao lojista.",
+            "image_asset": "wholesale-collabs",
+            "link": "https://drive.google.com/drive/folders/1YA_F2Xn_rnCcKtYMu9liK4e4mftmGjKy"
           }
         },
         "opportunity_support": {
           "type": "opportunity",
           "settings": {
             "heading": "Suporte 360°",
-            "text": "Possibilidade de apoio em marketing, visual merchandising, comercial e planejamento."
-          }
-        },
-        "order_catalog": {
-          "type": "order_option",
-          "settings": {
-            "heading": "Catálogo",
-            "text": "Seleção orientada a partir do material comercial."
-          }
-        },
-        "order_site": {
-          "type": "order_option",
-          "settings": {
-            "heading": "Site",
-            "text": "Consulta digital de peças e informações."
-          }
-        },
-        "order_media": {
-          "type": "order_option",
-          "settings": {
-            "heading": "Fotos e vídeos",
-            "text": "Apresentação remota da coleção para apoiar a escolha."
-          }
-        },
-        "order_personal": {
-          "type": "order_option",
-          "settings": {
-            "heading": "Presencialmente",
-            "text": "Atendimento personalizado para composição do mix."
+            "text": "Possibilidade de apoio em marketing, visual merchandising, comercial e planejamento.",
+            "image_asset": "wholesale-support",
+            "link": ""
           }
         }
       },
       "block_order": [
-        "opportunity_exclusivity",
         "opportunity_events",
         "opportunity_collabs",
-        "opportunity_support",
-        "order_catalog",
-        "order_site",
-        "order_media",
-        "order_personal"
+        "opportunity_support"
       ],
-      "name": "Evolução e formas de pedido",
+      "name": "Possibilidades de evolução",
       "settings": {
         "eyebrow": "Possibilidades de evolução",
         "heading": "Uma parceria que pode crescer com a sua loja",
-        "text": "Conforme a estratégia e o potencial comercial, novas possibilidades podem ser construídas ao longo da relação.",
-        "order_eyebrow": "Faça seu pedido do seu jeito",
-        "order_heading": "O relacionamento comercial vai além do catálogo online",
-        "order_text": "Escolha o formato que melhor acompanha o momento da sua loja e a construção do seu mix."
+        "text": "Conforme a estratégia e o potencial comercial, novas possibilidades podem ser construídas ao longo da relação."
       }
     },
     "main": {
@@ -414,7 +316,7 @@
       "settings": {
         "title": "Catálogo Atacado",
         "collection": "inverno-27",
-        "branding_book_pdf": "https://drive.google.com/file/d/1HuY2-ac-ATTgXx9J7lKmpRJylnmrKRJn/view?usp=sharing",
+        "branding_book_pdf": "https://drive.google.com/file/d/1LPaF4QdqqYSc2LTSwJLMmNuHIxvonl9N/view",
         "branding_book_text": "Baixar Branding Book AMMIS",
         "access_eyebrow": "Área exclusiva para parceiros AMMIS",
         "access_heading": "Acesse o catálogo de atacado",
@@ -422,7 +324,8 @@
         "login_button_label": "Fazer login",
         "partner_signup_text": "Ainda não é parceiro?",
         "partner_signup_button_label": "Conhecer cadastro de revendedores",
-        "partner_signup_link": ""
+        "partner_signup_link": "",
+        "show_winter_banner": true
       }
     },
     "wholesale_product_preview": {
@@ -432,16 +335,62 @@
         "collection": "inverno-27",
         "catalog_pdf": "https://drive.google.com/file/d/1HuY2-ac-ATTgXx9J7lKmpRJylnmrKRJn/view?usp=sharing"
       }
+    },
+    "wholesale_order_options": {
+      "type": "wholesale-order-options",
+      "name": "Formas de pedido",
+      "settings": {
+        "order_eyebrow": "Faça seu pedido do seu jeito",
+        "order_heading": "O relacionamento comercial vai além do catálogo online",
+        "order_text": "Escolha o formato que melhor acompanha o momento da sua loja e a construção do seu mix."
+      },
+      "blocks": {
+        "order_catalog": {
+          "type": "order_option",
+          "settings": {
+            "heading": "Catálogo",
+            "text": "Seleção orientada a partir do material comercial."
+          }
+        },
+        "order_site": {
+          "type": "order_option",
+          "settings": {
+            "heading": "Site",
+            "text": "Consulta digital de peças e informações."
+          }
+        },
+        "order_media": {
+          "type": "order_option",
+          "settings": {
+            "heading": "Fotos e vídeos",
+            "text": "Apresentação remota da coleção para apoiar a escolha."
+          }
+        },
+        "order_personal": {
+          "type": "order_option",
+          "settings": {
+            "heading": "Presencialmente",
+            "text": "Atendimento personalizado para composição do mix."
+          }
+        }
+      },
+      "block_order": [
+        "order_catalog",
+        "order_site",
+        "order_media",
+        "order_personal"
+      ]
     }
   },
   "order": [
-    "wholesale_product_preview",
     "wholesale_hero",
     "wholesale_partnership",
+    "wholesale_product_preview",
     "wholesale_commercial_model",
     "wholesale_commercial_guidance",
-    "wholesale_strengths",
     "wholesale_partnership_paths",
+    "wholesale_strengths",
+    "wholesale_order_options",
     "main",
     "slideshow_tGPdzb",
     "b2b_product_grid_ayBY33"
