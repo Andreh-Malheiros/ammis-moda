@@ -42,8 +42,10 @@
             {%- liquid
               assign b2b_hidden_count = 0
               for item in search.results
-                if item.object_type == 'product' and item.tags contains 'atacado'
-                  assign b2b_hidden_count = b2b_hidden_count | plus: 1
+                if item.object_type == 'product'
+                  if item.tags contains 'atacado' or item.metafields.seo.hidden.value == 1
+                    assign b2b_hidden_count = b2b_hidden_count | plus: 1
+                  endif
                 endif
               endfor
               assign real_results_count = search.results_count | minus: b2b_hidden_count
@@ -261,7 +263,7 @@
                   assign search_products = search.results | where: 'object_type', 'product'
                   assign b2b_hidden = 0
                   for item in search_products
-                    if item.tags contains 'atacado'
+                    if item.tags contains 'atacado' or item.metafields.seo.hidden.value == 1
                       assign b2b_hidden = b2b_hidden | plus: 1
                     endif
                   endfor
@@ -287,7 +289,7 @@
                     role="list"
                   >
                     {%- for item in search_products -%}
-                      {% if item.tags contains 'atacado' %}{% continue %}{% endif %}
+                      {% if item.tags contains 'atacado' or item.metafields.seo.hidden.value == 1 %}{% continue %}{% endif %}
                       <li class="template-search__item collection-product-card {% if settings.on_hover == "hover" %}quickview--hover{% endif %}">
                         {%- capture product_settings -%}
 														{%- if section.settings.show_vendor -%}vendor,{%- endif -%}title,price{%- endcapture -%}

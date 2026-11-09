@@ -63,7 +63,7 @@
               </li>
               {%- if predictive_search.resources.products.size > 0 -%}
                 {%- for product in predictive_search.resources.products -%}
-                  {% if product.tags contains 'atacado' %}{% continue %}{% endif %}
+                  {% if product.tags contains 'atacado' or product.metafields.seo.hidden.value == 1 %}{% continue %}{% endif %}
                   <li
                     id="predictive-search-option-product-{{ forloop.index }}"
                     class="predictive-search__list-item search__categories-item"
