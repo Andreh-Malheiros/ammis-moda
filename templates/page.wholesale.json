@@ -331,12 +331,17 @@
       "type": "wholesale-product-preview",
       "name": "Prévia catálogo atacado",
       "settings": {
-        "collection": "inverno-27",
         "catalog_pdf": "https://drive.google.com/file/d/1HuY2-ac-ATTgXx9J7lKmpRJylnmrKRJn/view?usp=sharing"
       }
     },
     "wholesale_order_options": {
       "type": "wholesale-order-options",
+      "name": "Formas de pedido",
+      "settings": {
+        "order_eyebrow": "Faça seu pedido do seu jeito",
+        "order_heading": "O relacionamento comercial vai além do catálogo online",
+        "order_text": "Escolha o formato que melhor acompanha o momento da sua loja e a construção do seu mix."
+      },
       "blocks": {
         "order_catalog": {
           "type": "order_option",
@@ -372,13 +377,7 @@
         "order_site",
         "order_media",
         "order_personal"
-      ],
-      "name": "Formas de pedido",
-      "settings": {
-        "order_eyebrow": "Faça seu pedido do seu jeito",
-        "order_heading": "O relacionamento comercial vai além do catálogo online",
-        "order_text": "Escolha o formato que melhor acompanha o momento da sua loja e a construção do seu mix."
-      }
+      ]
     }
   },
   "order": [

@@ -1,4 +1,4 @@
-{%- assign preview_collection = section.settings.collection -%}
+{%- assign wholesale_products = page.metafields.custom.wholesale_catalog_products_1.value -%}
 
 <section class="wholesale-product-preview" aria-label="Prévia do catálogo de atacado">
   <div class="wholesale-product-preview__inner">
@@ -18,9 +18,9 @@
       </div>
     {%- endif -%}
 
-    {%- if preview_collection != blank and preview_collection.products_count > 0 -%}
+    {%- if wholesale_products.count > 0 -%}
       <div class="wholesale-product-preview__grid">
-        {%- for product in preview_collection.products limit: 8 -%}
+        {%- for product in wholesale_products limit: 8 -%}
           {% render 'wholesale-product-card', product: product, card_id: section.id %}
         {%- endfor -%}
       </div>
@@ -35,7 +35,7 @@
         </a>
       </div>
     {%- else -%}
-      <p class="wholesale-product-preview__empty">Selecione uma coleção para exibir os produtos.</p>
+      <p class="wholesale-product-preview__empty">O catálogo de atacado ainda não tem produtos configurados.</p>
     {%- endif -%}
   </div>
 </section>
@@ -154,11 +154,6 @@
     "templates": ["page"]
   },
   "settings": [
-    {
-      "type": "collection",
-      "id": "collection",
-      "label": "Coleção de produtos"
-    },
     {
       "type": "url",
       "id": "catalog_pdf",

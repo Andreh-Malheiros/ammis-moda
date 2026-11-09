@@ -37,7 +37,10 @@
     </div>
   {% endif %}
 
-  {% if section.settings.collection != blank %}
+  {% assign wholesale_primary_products = page.metafields.custom.wholesale_catalog_products_1.value %}
+  {% assign wholesale_secondary_products = page.metafields.custom.wholesale_catalog_products_2.value %}
+  {% assign wholesale_product_count = wholesale_primary_products.count | plus: wholesale_secondary_products.count %}
+  {% if wholesale_product_count > 0 %}
     <div class="b2b-search-feedback" hidden>
       <p class="b2b-search-status" role="status" tabindex="-1"
         data-loading="{{ 'b2b_search.loading' | t | escape }}"
@@ -46,22 +49,27 @@
         data-error="{{ 'b2b_search.error' | t | escape }}"></p>
       <button type="button" class="button button--secondary b2b-search-clear">{{ 'b2b_search.clear' | t }}</button>
     </div>
-    {% paginate section.settings.collection.products by 250 %}
-      <div
-        class="b2b-grid"
-        data-section-id="{{ section.id }}"
-        data-next-page="{{ paginate.next.url | escape }}"
-        data-product-count="{{ section.settings.collection.products_count }}"
-        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 3rem;"
-      >
-        {% for product in section.settings.collection.products %}
+    <div
+      class="b2b-grid"
+      data-section-id="{{ section.id }}"
+      data-next-page=""
+      data-product-count="{{ wholesale_product_count }}"
+      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 3rem;"
+    >
+      {% paginate wholesale_primary_products by 250 %}
+        {% for product in wholesale_primary_products limit: 250 %}
           {% render 'wholesale-product-card', product: product, card_id: section.id %}
         {% endfor %}
-      </div>
-    {% endpaginate %}
+      {% endpaginate %}
+      {% paginate wholesale_secondary_products by 250 %}
+        {% for product in wholesale_secondary_products limit: 250 %}
+          {% render 'wholesale-product-card', product: product, card_id: section.id %}
+        {% endfor %}
+      {% endpaginate %}
+    </div>
   {% else %}
     <p style="text-align: center; font-size: 1.6rem;">
-      Selecione uma coleção B2B no menu lateral para exibir os produtos.
+      O catálogo de atacado ainda não tem produtos configurados.
     </p>
   {% endif %}
 </div>
@@ -370,9 +378,8 @@
       "default": "Catálogo Atacado"
     },
     {
-      "type": "collection",
-      "id": "collection",
-      "label": "Selecione a Coleção B2B"
+      "type": "paragraph",
+      "content": "A lista de produtos é mantida nos metacampos da página Atacado."
     },
     {
       "type": "url",
