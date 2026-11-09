@@ -37,7 +37,8 @@
     </div>
   {% endif %}
 
-  {% if section.settings.collection != blank %}
+  {% assign wholesale_products = page.metafields.custom.wholesale_catalog_products_1.value | concat: page.metafields.custom.wholesale_catalog_products_2.value | uniq %}
+  {% if wholesale_products.size > 0 %}
     <div class="b2b-search-feedback" hidden>
       <p class="b2b-search-status" role="status" tabindex="-1"
         data-loading="{{ 'b2b_search.loading' | t | escape }}"
@@ -46,22 +47,22 @@
         data-error="{{ 'b2b_search.error' | t | escape }}"></p>
       <button type="button" class="button button--secondary b2b-search-clear">{{ 'b2b_search.clear' | t }}</button>
     </div>
-    {% paginate section.settings.collection.products by 250 %}
+    {% paginate wholesale_products by 50 %}
       <div
         class="b2b-grid"
         data-section-id="{{ section.id }}"
         data-next-page="{{ paginate.next.url | escape }}"
-        data-product-count="{{ section.settings.collection.products_count }}"
+        data-product-count="{{ wholesale_products.size }}"
         style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 3rem;"
       >
-        {% for product in section.settings.collection.products %}
+        {% for product in wholesale_products %}
           {% render 'wholesale-product-card', product: product, card_id: section.id %}
         {% endfor %}
       </div>
     {% endpaginate %}
   {% else %}
     <p style="text-align: center; font-size: 1.6rem;">
-      Selecione uma coleção B2B no menu lateral para exibir os produtos.
+      O catálogo de atacado ainda não tem produtos configurados.
     </p>
   {% endif %}
 </div>
@@ -370,9 +371,8 @@
       "default": "Catálogo Atacado"
     },
     {
-      "type": "collection",
-      "id": "collection",
-      "label": "Selecione a Coleção B2B"
+      "type": "paragraph",
+      "content": "A lista de produtos é mantida nos metacampos da página Atacado."
     },
     {
       "type": "url",

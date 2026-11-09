@@ -315,7 +315,6 @@
       "name": "Grade B2B Exclusiva",
       "settings": {
         "title": "Catálogo Atacado",
-        "collection": "inverno-27",
         "branding_book_pdf": "https://drive.google.com/file/d/1LPaF4QdqqYSc2LTSwJLMmNuHIxvonl9N/view",
         "branding_book_text": "Baixar Branding Book AMMIS",
         "access_eyebrow": "Área exclusiva para parceiros AMMIS",
@@ -332,7 +331,6 @@
       "type": "wholesale-product-preview",
       "name": "Prévia catálogo atacado",
       "settings": {
-        "collection": "inverno-27",
         "catalog_pdf": "https://drive.google.com/file/d/1HuY2-ac-ATTgXx9J7lKmpRJylnmrKRJn/view?usp=sharing"
       }
     },
