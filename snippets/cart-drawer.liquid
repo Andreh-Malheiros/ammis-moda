@@ -683,6 +683,31 @@
               </small>
             </div>
 
+            {% unless is_b2b_cart %}
+              <div data-cart-discount style="margin:1.2rem 0;">
+                <label for="CartDrawer-Coupon">Cupom de desconto</label>
+                <div style="display:flex; gap:0.6rem; margin-top:0.6rem;">
+                  <input id="CartDrawer-Coupon" type="text" maxlength="100" autocomplete="off" placeholder="Digite seu cupom" style="min-width:0; flex:1; padding:0.9rem; border:1px solid #ccc;">
+                  <button type="button" data-apply-discount class="button button--secondary" style="padding:0.9rem;">Aplicar</button>
+                </div>
+                {% assign applied_coupon = blank %}
+                {% for discount in cart.cart_level_discount_applications %}
+                  {% if discount.type == 'discount_code' %}{% assign applied_coupon = discount.title %}{% endif %}
+                {% endfor %}
+                {% for cart_item in cart.items %}
+                  {% for allocation in cart_item.line_level_discount_allocations %}
+                    {% if allocation.discount_application.type == 'discount_code' %}{% assign applied_coupon = allocation.discount_application.title %}{% endif %}
+                  {% endfor %}
+                {% endfor %}
+                {% if applied_coupon != blank %}
+                  <div style="margin-top:0.6rem;">{{ applied_coupon | escape }}
+                    <button type="button" data-remove-discount style="text-decoration:underline;">Remover cupom</button>
+                  </div>
+                {% endif %}
+                <p role="status" aria-live="polite" style="font-size:1.1rem; margin:0.6rem 0;"></p>
+              </div>
+            {% endunless %}
+
             <div class="cart-drawer__bottom">
               <div class="cart__ctas" {{ block.shopify_attributes }}>
                 {% if is_b2b_cart and customer == blank %}

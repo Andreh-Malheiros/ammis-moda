@@ -709,6 +709,11 @@
 
                 const data = {
                   items: items,
+                  cart_token: cart.token,
+                  discount_code: (cart.discount_codes || []).find(code => code.applicable)?.code ||
+                    [...(cart.cart_level_discount_applications || []),
+                      ...cart.items.flatMap(item => (item.line_level_discount_allocations || []).map(allocation => allocation.discount_application))
+                    ].find(discount => discount.type === 'discount_code')?.title || null,
                 };
 
                 const hash = btoa(JSON.stringify(data));
@@ -722,51 +727,12 @@
             return false;
           }
 
-          // Interceptar botão do Cart Drawer
-          function interceptCartDrawerButton() {
-            const button = document.getElementById('CartDrawer-Checkout');
-            if (!button) return false;
-            if (button.dataset.intercepted === 'true') return true;
-
-            console.log('Interceptando botão CartDrawer-Checkout');
-            button.addEventListener('click', redirectToCustomCheckout, true);
-            button.dataset.intercepted = 'true';
-
-            return true;
-          }
-
-          // Interceptar botão da página /cart
-          function interceptCartPageButton() {
-            const button = document.querySelector('button[name="checkout"][form="cart"]');
-            if (!button) return false;
-            if (button.dataset.intercepted === 'true') return true;
-
-            console.log('Interceptando botão da página /cart');
-            button.addEventListener('click', redirectToCustomCheckout, true);
-            button.dataset.intercepted = 'true';
-
-            return true;
-          }
-
-          // Verificar periodicamente se os botões apareceram
-          let cartDrawerIntercepted = false;
-          let cartPageIntercepted = false;
-
-          let checkInterval = setInterval(function () {
-            if (!cartDrawerIntercepted && interceptCartDrawerButton()) {
-              console.log('Botão do Cart Drawer interceptado com sucesso');
-              cartDrawerIntercepted = true;
+          // Delegation survives cart section replacements after a coupon or quantity update.
+          document.addEventListener('click', function (event) {
+            if (event.target.closest('#CartDrawer-Checkout, button[name="checkout"][form="cart"]')) {
+              redirectToCustomCheckout(event);
             }
-
-            if (!cartPageIntercepted && interceptCartPageButton()) {
-              console.log('Botão da página /cart interceptado com sucesso');
-              cartPageIntercepted = true;
-            }
-
-            if (cartDrawerIntercepted && cartPageIntercepted) {
-              clearInterval(checkInterval);
-            }
-          }, 500);
+          }, true);
 
           // Substituir botões do PayPal/Wallet pelo botão padrão de checkout
           function replaceWalletButtons() {
@@ -1229,5 +1195,6 @@
         });
       </script>
     {% endif %}
-  </body>
+    <script src="{{ 'cart-discount.js' | asset_url }}" defer="defer"></script>
+</body>
 </html>
